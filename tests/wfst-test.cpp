@@ -79,6 +79,8 @@ int main(int argc,char **argv)
 	Sentence st(ss[i]);
 	st.standardize();
 	st.tokenize();
+	if (!st.get_syllable_count())
+		continue;
 	Words words;
 	words.construct(st);
 	Segmentation seg(words.we);

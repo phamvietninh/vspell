@@ -1,4 +1,5 @@
 #include "wfst.h"
+#include "sentence.h"
 #include <fstream>
 #include <iostream>
 #include <algorithm>
@@ -23,29 +24,33 @@ int main(int argc,char **argv)
   while (getline(cin,s)) {
     if (s.empty()) continue;
 
-    Sentence st(s);
-    st.standardize();
-    st.tokenize();
-    Words words;
-    Segmentation seg;
-    Segmentor segtor;
-    words.construct(st);
-    segtor.init(st,words,0,4);
-    while (segtor.step(seg)) {
-      int ngram_length=2;
-      seg.prob = 0;
-      VocabIndex *vi = new VocabIndex[ngram_length];
-      vi[ngram_length] = Vocab_None;
-      for (int i = ngram_length-1;i < seg.size();i ++) {
-	for (int j = 0;j < ngram_length-1;j++)
-	  vi[j] = seg[i-1-j].node.node->get_id();
-	seg.prob += -ngram.wordProb(seg[i].node.node->get_id(),vi);
-      }
+    vector<string> ss;
+    sentences_split(s,ss);
+    for (int ii = 0;ii < ss.size();ii ++) {
+      Sentence st(ss[ii]);
+      st.standardize();
+      st.tokenize();
+      Words words;
+      Segmentation seg;
+      Segmentor segtor;
+      words.construct(st);
+      segtor.init(words,0,4);
+      while (segtor.step(seg)) {
+	int ngram_length=2;
+	seg.prob = 0;
+	VocabIndex *vi = new VocabIndex[ngram_length];
+	vi[ngram_length] = Vocab_None;
+	for (int i = ngram_length-1;i < seg.size();i ++) {
+	  for (int j = 0;j < ngram_length-1;j++)
+	    vi[j] = seg[i-1-j].node.node->get_id();
+	  seg.prob += -ngram.wordProb(seg[i].node.node->get_id(),vi);
+	}
       
-      cout << seg << " " << seg.prob << endl;
-      //cout << seg << endl;
+	cout << seg << " " << seg.prob << endl;
+	//cout << seg << endl;
+      }
+      segtor.done();
     }
-    segtor.done();
   }
     
   return 0;

@@ -74,15 +74,18 @@ int main(int argc,char **argv)
       //sentences.push_back(Sentence(s));
       //Sentence &st = sentences.back();
       for (int i = 0;i < ss.size();i ++) {
-	cout << ss[i] << endl;
+	//cout << ss[i] << endl;
 	Sentence st(ss[i]);
 	st.standardize();
 	st.tokenize();
-	Segmentation seg;
 	Words words;
 	words.construct(st);
-	wfst.segment_best(st,words,seg);
-	cout << seg << endl;
+	Segmentation seg(words.we);
+	if (argc > 2)
+	  wfst.segment_best_no_fuzzy(words,seg);
+	else
+	  wfst.segment_best(words,seg);
+	seg.pretty_print(cout,st) << endl;
 	//	sarch.clear_rest();
       }
     }

@@ -61,11 +61,11 @@ void iterate(ostream &os,int level)
   for (ist = 0;ist < nr_sentences;ist ++) {
     Sentence &st = sentences[ist];
   
-    Segmentation seg;
     Words words;
     words.construct(st);
+    Segmentation seg(words.we);
     //print_all_words(words);
-    wfst.segment_best(st,words,seg);
+    wfst.segment_best(words,seg);
     cerr << seg << endl;
 
 

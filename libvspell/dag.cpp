@@ -13,15 +13,23 @@ const void* WordDAG::node_info(uint node_id) const
 	return node_id < we.size() ? &we[node_id] : NULL;
 }
 
+VocabIndex WordDAG::node_id(uint id) const
+{
+	const	WordEntries& we = *lattice->we;
+	return id < we.size() ? we[id].node.node->get_id() : 
+		get_id(id == node_begin() ? START_ID : STOP_ID);
+}
+
 void WordDAG::get_next(uint node_id,vector<uint> &next_id) const
 {
 	const	WordEntries& we = *lattice->we;
 
 	if (node_id < we.size()) {
-		if (we[node_id].pos+we[node_id].len == lattice->get_word_count())
+		uint pos = we[node_id].pos+we[node_id].len;
+		if (pos >= lattice->get_word_count())
 			next_id.push_back(node_end());
 		else {
-			const WordEntryRefs& wes = lattice->get_we(we[node_id].pos+we[node_id].len);
+			const WordEntryRefs& wes = lattice->get_we(pos);
 			int i,n = wes.size();
 			for (i = 0;i < n;i ++)
 				next_id.push_back(wes[i]->id);
@@ -59,42 +67,15 @@ float WordDAG::edge_value(uint node_from,uint node_to) const
 	return (-get_ngram().wordProb(v,vi));
 }
 
-class DAG2 : public DAG {
-protected:
-	WordDAG *dag;
-	struct Node {
-		uint n1,n2;									// refer to node_id in dag
-		uint id;										// refer to nodes
-		bool operator < (const Node &n) const {
-			return n1 != n.n1 ? n1 < n.n1 : n2 < n.n2;
-		}
-		friend bool node_cmp (const Node &n1,const Node &n2) {
-			return n1.n1 < n2.n1;
-		}
-
-	};
-	typedef vector<Node> Nodes;
-	Nodes nodes;
-
-public:
-	DAG2(WordDAG *dag_);
-	virtual uint node_begin() const { return nodes.size(); }
-	virtual uint node_end() const { return nodes.size()+1; }
-	virtual uint node_count() const { return nodes.size()+2; }
-	virtual const void* node_info(uint node_id) const;
-	virtual void get_next(uint node_id,std::vector<uint> &next_id) const;
-	virtual float edge_value(uint node_from,uint node_to) const;
-};
-
-DAG2::DAG2(WordDAG *dag_):dag(dag_)
+WordDAG2::WordDAG2(WordDAG *dag_):dag(dag_)
 {
 	vector<bool> done;
 	vector<uint> nexts;
 	uint l,i,v,n,ii,nn;
 
 	done.resize(dag->node_count());
-	nexts.clear();
 	nexts.push_back(dag->node_begin());
+	i = 0;
 	while (i < (l = nexts.size())) {
 		v = nexts[i++];
 		if (done[v])
@@ -109,19 +90,22 @@ DAG2::DAG2(WordDAG *dag_):dag(dag_)
 			node.n2 = nexts[ii];
 			nodes.push_back(node);
 			push_heap(nodes.begin(),nodes.end());
+			//cerr << node.n1 << "=" << node.n2 << endl;
 		}
 	}
 	done.clear();
 
 	n = nodes.size();
 	for (i = 0;i < n;i ++) {
-		pop_heap(nodes.begin()+i,nodes.end());
-		nodes[i].id = i;
+		pop_heap(nodes.begin(),nodes.end()-i);
+		nodes[n-i-1].id = n-i-1;
 	}
-	
+	//for (i = 0;i < n;i ++) {
+	//	cerr << nodes[i].n1 << "-" << nodes[i].n2 << " " << nodes[i].id << endl;
+	//}
 }
 
-void DAG2::get_next(uint node_id,std::vector<uint> &next_id) const
+void WordDAG2::get_next(uint node_id,std::vector<uint> &next_id) const
 {
 	if (node_id == node_end())
 		return;
@@ -141,33 +125,55 @@ void DAG2::get_next(uint node_id,std::vector<uint> &next_id) const
 		next_id.push_back(i->id);
 }
 
-float DAG2::edge_value(uint node_from,uint node_to) const
+float WordDAG2::edge_value(uint node_from,uint node_to) const
 {
 	uint n = nodes.size();
+	WordEntry *we;
 	VocabIndex v[3],v2;
 	v[2] = Vocab_None;
 
 	if (node_from < n && node_to < n) {
 		if (nodes[node_from].n2 != nodes[node_to].n1)
 			return 1000;							// no edge between these nodes
-		v[0] = ((WordEntry*)dag->node_info(nodes[node_from].n1))->node.node->get_id();
-		v[1] = ((WordEntry*)dag->node_info(nodes[node_from].n2))->node.node->get_id();
-		v2   = ((WordEntry*)dag->node_info(nodes[node_to  ].n2))->node.node->get_id();
+		v[1] = dag->node_id(nodes[node_from].n1);
+		v[0] = dag->node_id(nodes[node_from].n2);
+		v2   = dag->node_id(nodes[node_to  ].n2);
 	} else if (node_from == node_begin() && node_to < n) {
-		v[0] = get_id(START_ID);
-		v[1] = ((WordEntry*)dag->node_info(nodes[node_to].n1))->node.node->get_id();
-		v2   = ((WordEntry*)dag->node_info(nodes[node_to].n2))->node.node->get_id();
+		v[1] = get_id(START_ID);
+		v[0] = dag->node_id(nodes[node_to].n1);
+		v2   = dag->node_id(nodes[node_to].n2);
 	} else if (node_to == node_end() && node_from < n) {
-		v[0] = ((WordEntry*)dag->node_info(nodes[node_from].n1))->node.node->get_id();
-		v[1] = ((WordEntry*)dag->node_info(nodes[node_from].n2))->node.node->get_id();
+		v[1] = dag->node_id(nodes[node_from].n1);
+		v[0] = dag->node_id(nodes[node_from].n2);
 		v2   = get_id(START_ID);
 	} else
 		return 1000;
 
+	if (v[0] == v[1] && v[1] == get_id(START_ID))	// back to 2-gram
+		v[1] = Vocab_None;
+	if (v[1] == v2 && v2 == get_id(STOP_ID)) {
+		v[1] = Vocab_None;
+		return (-get_ngram().wordProb(v2,v));
+	}
 	return (-get_ngram().wordProb(v2,v));
 }
 
-const void* DAG2::node_info(uint node_id) const
+const void* WordDAG2::node_info(uint node_id) const
 {
 	return (node_id < nodes.size()) ?  dag->node_info(nodes[node_id].n2) : NULL;
 }
+
+VocabIndex WordDAG2::node_id(uint id) const
+{
+	return (id < nodes.size()) ?  dag->node_id(nodes[id].n2) :
+		get_id(id == node_begin() ? START_ID : STOP_ID);
+}
+
+void WordDAG2::demangle(vector<uint> &next_id) const
+{
+	uint i,n = next_id.size();
+	for (i = 0;i < n-1;i ++)
+		next_id[i] = nodes[next_id[i]].n2;
+	next_id.resize(n-1);
+}
+

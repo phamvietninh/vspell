@@ -32,7 +32,7 @@ static WordNodePtr myroot;
 static strid unk_id,start_id,stop_id,punct_id,proper_name_id,poem_id,number_id;
 
 static StringArchive sarch;
-static Ngram ngram(sarch.get_dict(),2);
+static Ngram ngram(sarch.get_dict(),3);
 
 
 bool syllable_init();

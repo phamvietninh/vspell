@@ -34,6 +34,9 @@ public:
 	virtual const void* node_info(uint node_id) const {
 		return dag->node_info(node_id);
 	}
+	virtual VocabIndex node_id(uint id) const {
+		return dag->node_id(id);
+	}
 	virtual void get_next(uint node_id,std::vector<uint> &next_id) const {
 		dag->get_next(node_id,next_id);
 	}

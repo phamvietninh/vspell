@@ -481,7 +481,7 @@ bool syllable_init()
 	confusion_sets.push_back(confusion_set());
 	confusion_sets.back().push_back(Syllable(NULL,NULL,NULL,NULL,Syllable::Hook));
 	confusion_sets.back().push_back(Syllable(NULL,NULL,NULL,NULL,Syllable::Tilde));
-	confusion_sets.back().push_back(Syllable(NULL,NULL,NULL,NULL,Syllable::Dot));
+	//confusion_sets.back().push_back(Syllable(NULL,NULL,NULL,NULL,Syllable::Dot));
 	return true;
 }
 

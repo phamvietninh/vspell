@@ -33,8 +33,8 @@ int main(int argc,char **argv)
 		 new FuzzyWordNode(get_sarch()["<root>"]));
 
 	cerr << "Loading... ";
-	//str = (boost::format("wordlist.wl.%s") % oldres).str().c_str();
-	str = "wordlist.wl";
+	//str = (boost::format("wordlist.%s") % oldres).str().c_str();
+	str = "wordlist";
 	get_root()->load(str);
 	str = (boost::format("ngram.%s") % oldres).str().c_str();
 	File f(str,"rt",0);
@@ -66,6 +66,7 @@ int main(int argc,char **argv)
 			st.tokenize();
 			if (!st.get_syllable_count())
 				continue;
+			//cerr << st << endl; 
 			Lattice words;
 			words.construct(st);
 			//cerr << words << endl;
@@ -86,15 +87,24 @@ int main(int argc,char **argv)
 			//seg.pretty_print(cout,st) << endl;
 
 			n = path.size();
-			VocabIndex *vi = new VocabIndex[n];
-			vi[n] = Vocab_None;
-			for (i = 0;i < n;i ++) {
-				vi[i] = seg[i].node.node->get_id();
-				//cerr << "<" << sarch[vi[i]] << "> ";
+			if (n > 3) {
+				VocabIndex *vi = new VocabIndex[n+1];
+				vi[n] = Vocab_None;
+				for (i = 0;i < n;i ++) {
+					if (path[i] == dag.node_begin())
+						vi[i] = get_id(START_ID);
+					else if (path[i] == dag.node_end())
+						vi[i] = get_id(STOP_ID);
+					else
+						vi[i] = ((WordEntry*)dag.node_info(path[i]))->node.node->get_id();
+					//cerr << "<" << sarch[vi[i]] << "> ";
+				}
+				//cerr << endl;
+				//cerr << n << endl;
+				stats.countSentence(vi);
+				//cerr << "done" << endl;
+				delete[] vi;
 			}
-			//cerr << endl;
-			stats.countSentence(vi);
-			delete[] vi;
 
 			/*
 			const WordEntries &we = *words.we;

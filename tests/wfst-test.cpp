@@ -16,10 +16,12 @@ int main(int argc,char **argv)
 {
   bool fuzzy = true;
   bool bellman = false;
+  bool threegram = false;
 
   for (int i = 1;i < argc;i ++) {
     if (!strcmp(argv[i],"nofuzzy")) fuzzy = false;
     else if (!strcmp(argv[i],"bellman")) bellman = true;
+    else if (!strcmp(argv[i],"3gram")) threegram = true;
   }
   dic_init(!fuzzy ? 
 	   new WordNode(get_sarch()["<root>"]) : 
@@ -100,13 +102,22 @@ int main(int argc,char **argv)
 	  wfst.segment_best(words,seg);
 	*/
 	Path path;
-	WordDAG dag(&words);
+	WordDAG dagw(&words);
+	DAG *dag = &dagw;
+	if (threegram) {
+	  WordDAG2 *dagw2 = new WordDAG2(&dagw);
+	  dag = dagw2;
+	}
 	if (bellman) {
 	  Bellman wfst;
-	  wfst.search(dag,path);
+	  wfst.search(*dag,path);
 	} else {
 	  PFS wfst;
-	  wfst.search(dag,path);
+	  wfst.search(*dag,path);
+	}
+	if (threegram) {
+	  ((WordDAG2*)dag)->demangle(path);
+	  delete (WordDAG2*)dag;
 	}
 	seg.resize(path.size()-2);
 	copy(path.begin()+1,path.end()-1,seg.begin());

@@ -4,10 +4,11 @@
 \renewcommand{\sfdefault}{uhv}
 \renewcommand{\ttdefault}{ucr}
 
-\usepackage[hmargin={3cm,2cm}]{geometry}
+\usepackage[vmargin={3cm,3.5cm},hmargin={3.5cm,2cm}]{geometry}
 \usepackage{graphicx}
 \usepackage{amsmath}
-%TOC\usepackage[vietnam]{minitoc}
+%TOC
+\usepackage[vietnam]{minitoc}
 \usepackage{tabularx}
 \usepackage{footnote}
 \usepackage{tipa}
@@ -20,8 +21,13 @@
 %\newtheorem{algo}{Thuật toán}
 
 %\setlength{\parskip}{1.2ex plus 0.7ex minus 0.6ex}
+\usepackage{setspace}
+\usepackage{fancyhdr}
+\usepackage[sideway]{rotating} % sideway tables
 
-%TOC\setcounter{minitocdepth}{4}
+
+%TOC
+\setcounter{minitocdepth}{4}
 
 %\usepackage{tocloft}
 %\newcommand{\listalgo}{Danh sách thuật toán}
@@ -48,21 +54,41 @@
 \author{Nguyễn Thái Ngọc Duy\\0012020}
 
 \begin{document}
-%TOC\dominitoc
+\begin{spacing}{1.24}
+
+
+%TOC
+\dominitoc
 %\doparttoc
-\maketitle
+%\maketitle
 %\large
+
+\begin{titlepage}
+  \begin{center}
+    \Large Tóm tắt
+  \end{center}
+\end{titlepage}
 
 \begin{titlepage}
   \begin{center}
     \Large Lời cảm ơn
   \end{center}
-  Xin chân thành cảm ơn TS. Đinh Điền đã tận tình hướng dẫn, giúp đỡ
-  trong quá trình làm luận văn. Ngoài ra xin cảm ơn các thành viên
-  trong nhóm VCL đã hỗ trợ, động viên hoàn thành luận văn này.
+Lời đầu tiên em xin chân thành cảm ơn thầy Đinh Điền, người đã trực tiếp hướng dẫn em hoàn thành luận văn này. Thầy là người đã truyền thụ cho em rất nhiều kiến thức về tin học và ngôn ngữ học, giúp em có được hiểu biết sâu hơn về một trong các ứng dụng có ý nghĩa vô cùng to lớn trong cuộc sống của tin học –-- vấn đề dịch máy.
+
+        Em cũng xin chân thành cảm ơn các thầy cô trong khoa Công nghệ thông tin đã tận tình chỉ bảo và giúp đỡ cho em trong suốt thời gian em học đại học và hỗ trợ em trong quá trình thực hiện luận văn.
+
+        Con xin chân thành cảm ơn ba mẹ, các anh và những người thân trong gia đình đã nuôi dạy, tạo mọi điều kiện tốt nhất cho con học tập và động viên con trong thời gian thực hiện luận văn.
+
+        Và cuối cùng, xin gởi lời cảm ơn đến tất cả bạn bè và nhất là các bạn trong nhóm VCL (Vietnamese Computational Linguistics), những người đã giúp đỡ và hỗ trợ trong quá trình hoàn thiện luận văn này.
+
+%%   Xin chân thành cảm ơn TS. Đinh Điền đã tận tình hướng dẫn, giúp đỡ
+%%   trong quá trình làm luận văn. Ngoài ra xin cảm ơn các thành viên
+%%   trong nhóm VCL đã hỗ trợ, động viên hoàn thành luận văn này.
 \vskip 1cm
 \begin{flushright}
-  Nguyễn Thái Ngọc Duy
+  Tp. Hồ Chí Minh, tháng 7 năm 2004
+
+  Nguyễn Thái Ngọc Duy --- 0012020
 \end{flushright}
 \end{titlepage}
 
@@ -76,8 +102,9 @@
 %\refstepcounter{chapter}\addcontentsline{toc}{chapter}{\protect\numberline{\thechapter}\listtablename}
 
 %%\eject\addcontentsline{toc}{chapter}{Danh sách thuật toán}
-\listof{algo}{Danh sách thuật toán}
+%%%\listof{algo}{Danh sách thuật toán}
 %\refstepcounter{chapter}\addcontentsline{toc}{chapter}{\protect\numberline{\thechapter}Danh sách thuật toán}
+
 
 %% \chapter{Giới thiệu}
 %% \label{cha:intro}
@@ -176,9 +203,11 @@
 %% May be you - goodnight''
 %%\end{center}
 
-\chapter{Tổng quan}
+\chapter{Mở đầu}
+\pagestyle{fancy}
 \label{cha:overview}
-%TOC\minitoc
+%TOC
+\minitoc
 
 
 Ngôn ngữ là một phần quan trọng của đời sống, là phương tiện chuyển
@@ -188,10 +217,10 @@ viết.
 
 % Tại sao lại làm đề tài này? (Đặt vấn đề)
 Khi viết, đôi khi ta mắc phải những lỗi sai chính tả. Chữ quốc ngữ
-chịu ảnh hưởng mạnh của ngôn ngữ nói. Một số âm tiết lại rất dễ 
-lầm lẫn, khó phân biệt rõ ràng. Ngôn ngữ nói ở những vùng khác nhau lại
-có những dị biệt riêng. Những dị biệt này rất dễ gây ra
-những lỗi chính tả khi viết nếu người viết không hiểu rõ về tiếng
+là thứ chữ ghi âm nên một số âm tiết rất dễ 
+nhầm lẫn, khó phân biệt rõ ràng. Ngôn ngữ nói ở những vùng khác nhau lại
+có những điểm khác nhau. Những điểm khác nhau này rất dễ gây ra
+những lỗi chính tả khi viết nếu người viết không để ý khi sử dụng tiếng
 Việt.
 
 Những thao tác chuyển thông tin ở dạng khác thành văn bản cũng có thể
@@ -213,7 +242,7 @@ dụng trong nhiều lĩnh vực khác nhau và chứng tỏ tính hiệu quả 
 nó. Tuy nhiên, việc ứng dụng tin học nhằm hỗ trợ bắt lỗi
 chính tả tiếng Việt chỉ mới được bắt đầu trong thời gian gần
 đây. Những ứng dụng bắt lỗi chính tả hiện có vẫn còn khá đơn
-giản, chưa đáp ứng được nhu cầu thực tế. Luận văn này đề ra một giải
+giản, hoặc chưa hiệu quả, chưa đáp ứng được nhu cầu thực tế. Luận văn này đề ra một giải
 pháp khác để bắt lỗi chính tả, với hy vọng góp phần nâng cao chất
 lượng ứng dụng bắt lỗi chính tả tiếng Việt bằng máy tính.
 
@@ -246,7 +275,8 @@ Lỗi chính tả ở đây bao gồm chủ yếu hai loại lỗi sau:
 Không xử lý lỗi từ vựng, lỗi cú pháp.
 
 Giả định rằng, nếu từ bị sai chính tả, thì chỉ sai bởi một trong những
-lý do nêu trên {\em một lần}. Nghĩa là không xét những trường hợp sai
+lý do nêu trên {\em một lần} (mỗi từ chỉ sai một lỗi chính tả, lỗi đó thuộc
+một trong những loại đã nêu). Nghĩa là không xét những trường hợp sai
 chính tả, vừa gõ nhầm chữ này bằng chữ khác, vừa gõ dư chữ.
 
 Giả định người dùng chỉ sử dụng một trong hai cách gõ tiếng Việt là
@@ -293,12 +323,11 @@ thường ngầm định là dữ liệu đúng chính xác. Nên khi phải tá
 bước kiểm tra chính tả, ngầm định trên không còn đúng. Bài toán tách
 từ trở thành một bài toán khác, phức tạp hơn.
 
-Do tài nguyên ngữ liệu tiếng Việt, đặc biệt là ngữ liệu tiếng Việt
-trên máy tính vẫn còn hạn chế, đề tài này chỉ sử dụng các cách hình
+Đề tài này chỉ sử dụng các cách hình
 thành lỗi chính tả, từ điển từ tiếng Việt và ngữ liệu văn bản dạng
 thô. Việc không thể áp dụng được những thông tin cấp cao hơn như từ
-loại, cú pháp, ngữ nghĩa~\ldots{} sẽ làm hạn chế đáng kể khả năng của
-chương trình.
+loại, cú pháp, ngữ nghĩa~\ldots{} sẽ làm chương trình không thể phát
+huy tối đa khả năng.
 
 %% Dùng sai từ là lỗi từ vựng
 
@@ -357,7 +386,8 @@ Luận văn được chia thành các chương sau:
 
 \chapter{Cơ sở lý thuyết ngôn ngữ}
 \label{cha:vietnamese}
-%TOC\minitoc
+%TOC
+\minitoc
 
 
 \section{Âm tiết}
@@ -1323,7 +1353,7 @@ không ghi phụ âm đầu có thể có âm đầu là âm tắt thanh hầu \
       \textipa{/e/}&ê&\textipa{/O/}&o,oo\\
       \textipa{/E/}&e,a&\textipa{/\v{7}/}&â\\
       \textipa{/W/}&ư&\textipa{/\v{a}/}&a,ă\\
-      \textipa{/7/}&ơ&\textipa{/ie/}&iê,ia,yê,y\\
+      \textipa{/7/}&ơ&\textipa{/ie/}&iê,ia,yê,ya\\
       \textipa{/a/}&a&\textipa{/uo/}&uô,ua\\
       \textipa{/u/}&u&\textipa{/W7/}&ươ,ưa\\
     \end{tabular}
@@ -1400,7 +1430,7 @@ nguyên âm dài, 2 nguyên âm ngắn, 3 nguyên âm đôi. Tóm gọn các cá
 biểu diễn nguyên âm chính gồm: i, y, ê, e, a, ư, ơ, a, u, ô, o, â, ă,
 iê, ia, yê, y, uô, y, uô, ươ, ưa.
 
-Các phụ âm cuối được ghi bằng ``ch'' khi đứng sau các nguyên âm i, y,
+Các phụ âm cuối được ghi bằng ``nh'' khi đứng sau các nguyên âm i, y,
 ê, e, a. Ví dụ: {\em minh, mênh, manh}. Trong các trường hợp khác lại
 được ghi bằng ``ng''. Ví dụ: {\em mang, vâng, hồng, xuống}.
 
@@ -1487,7 +1517,8 @@ riêng, thuật ngữ, tên tiếng nước ngoài không đúng qui cách.
 
 \chapter{Cơ sở tin học}
 \label{cha:math}
-%TOC\minitoc
+%TOC
+\minitoc
 
 % typographic errors
 
@@ -1648,7 +1679,7 @@ như trong thuật toán~\vref{algo:capital}.
 
 Sau khi phát hiện ra từ bị sai chính tả, ta cần đưa ra một số từ ``gần
 giống'' có khả năng thay thế từ bị sai chính tả. Trong trường hợp lý
-tưởng, ta nên đưa ra {\em duy nhất một từ}, đó chính là từ đúng
+tưởng, ta nên đưa ra {\em một từ duy nhất}, đó chính là từ đúng
 chính tả, lẽ ra cần phải được dùng thay cho từ bị sai chính tả.
 
 Tuy nhiên, việc tìm ra từ đúng của từ bị sai chính tả là một công việc
@@ -1666,7 +1697,7 @@ chính tả) tự động. Việc tạo ra một chương trình bắt lỗi ch�
 động hoàn toàn mở ra một khả năng to lớn khi áp dụng vào thực tế, giúp
 giảm đáng kể công sức của con người.
 
-Trong trường hợp không thể đưa ra duy nhất một đề nghị, ta có thể đưa
+Trong trường hợp không thể đưa ra một đề nghị duy nhất, ta có thể đưa
 ra một danh sách các từ ``có khả năng'' để người dùng chọn lựa. Yêu
 cầu đặt ra là từ đúng phải nằm trong danh sách từ lựa chọn. Và tốt hơn
 nữa là từ đúng nên được đặt trên cùng danh sách để gây sự chú ý của
@@ -1748,7 +1779,7 @@ nhau giữa các chữ cái khi viết. Thông thường, bản thân các công
 cũng được cài đặt một trình bắt lỗi chính tả tự động (dạng đơn giản
 hoặc phức tạp) nhằm giảm thiểu các lỗi chính tả.
 
-\section{Sắp xếp danh sách từ đề nghị}
+\section{Sắp xếp danh sách}
 \label{sec:sort-candidates}
 
 
@@ -1894,7 +1925,7 @@ nhằng. Tuy nhiên việc giảm nhập nhằng bằng CD cũng giúp ít rất
 cho trình bắt lỗi chính tả. 
 
 Hạn chế quan trọng của CD khi áp dụng cho
-tiếng Việt là thiếu WordNet dành cho tiếng Việt. Việc xây dựng một
+tiếng Việt là thiếu WordNet hoàn chỉnh cho tiếng Việt. Việc xây dựng một
 mạng ngữ nghĩa tiếng Việt có tầm vóc như WordNet sẽ tốn rất nhiều công
 sức, chưa kể các điểm khác biệt giữa tiếng Anh và tiếng Việt đòi hỏi
 các nhà ngôn ngữ học phải xem xét lại có thể áp dụng hoàn toàn các mối quan hệ
@@ -1902,11 +1933,12 @@ các nhà ngôn ngữ học phải xem xét lại có thể áp dụng hoàn to�
 vào một số quan hệ khác cho phù hợp với tiếng Việt. Nói tóm lại, đây
 là một giải pháp hay tuy nhiên không thể áp dụng trong điều kiện hiện
 tại. Gần đây có nhiều đề tài nghiên cứu xây dựng WordNet tiếng
-Việt. Hy vọng có thể áp dụng CD và các giải pháp dựa trên WordNet khác
+Việt~\cite{wordnetviet}. Hy vọng có thể áp dụng CD và các giải pháp
+dựa trên WordNet khác 
 cho tiếng Việt trong tương lai không xa.
 
 
-\section{Tự động phát hiện và sửa lỗi chính tả}
+\section{Bắt lỗi tự động}
 \label{sec:context-spelling}
 
 Tự động phát hiện và sửa lỗi chính tả được đặt ra để cải tiến các
@@ -2201,7 +2233,7 @@ xét.
 
 Phương pháp này được đề nghị bởi~\cite{Golding95}.
 
-\section{Bắt lỗi chính tả các ngôn ngữ châu Á}
+\section{Bắt lỗi tiếng châu Á}
 
 
 Điểm đặc trưng dễ thấy giữa các ngôn ngữ châu Âu và các ngôn ngữ châu
@@ -2237,7 +2269,8 @@ yếu tố này sẽ dễ dẫn đến sai lầm, vì mọi phương pháp tách
 lỗi chính tả trở nên đơn giản. Ta có thể áp dụng các kỹ thuật đã được
 áp dụng trên bắt lỗi chính tả các ngôn ngữ châu Âu dễ dàng.
 
-Với tiếng Việt, do độ dài mỗi tiếng ngắn (khoảng năm chữ cái). Tuy
+Với tiếng Việt, do độ dài mỗi tiếng ngắn (khoảng năm chữ cái, tối đa
+bảy chữ cái). Tuy
 nhiên nếu tính theo cấu trúc âm tiết thì mỗi tiếng chỉ gồm tối đa bốn
 thành phần (không kể thanh điệu) là âm đầu, âm đệm, âm chính và âm
 cuối. Mỗi thành phần đều được thể hiện bằng một cụm chữ cái riêng
@@ -2248,8 +2281,8 @@ một tiếng lớn hơn rất nhiều so với các ngôn ngữ châu Âu dù c
 từ đồng âm.
 
 Trình bắt lỗi tiếng Việt đã được nghiên cứu trong những năm gần
-đây~\cite{Tuoi,vietdecisionlist}. Giải pháp được đề nghị
-trong~\cite{Tuoi} sử dụng phân tích cú pháp để đánh giá các cách tách
+đây~\cite{Tuoi,vietdecisionlist,grcheck}. Giải pháp được đề nghị
+trong~\cite{Tuoi,grcheck} sử dụng phân tích cú pháp để đánh giá các cách tách
 từ. Trong khi đó \cite{vietdecisionlist} sử dụng danh sách quyết định
 để khử nhập nhằng cho từng từ một.
 
@@ -2455,7 +2488,7 @@ WFST\footnote{Weighted Finite State Transducer} đã được~\cite{Sproat}
 kết hợp với trọng số là xác suất xuất hiện của mỗi từ trong ngữ
 liệu. Dùng WFST để duyệt qua câu cần xét. Cách duyệt có  trọng số lớn
 nhất sẽ là cách tách từ được chọn. Giải pháp này cũng đã được áp dụng
-trong~\cite{Tachtu} kèm với mạng nơ-ron để khử nhập nhằng. 
+trong~\cite{Tachtu,Tachtu2} kèm với mạng nơ-ron để khử nhập nhằng. 
 
 %% \subsection{Mô hình TBL}
 
@@ -2677,7 +2710,8 @@ ngôn ngữ học, do đó phần nào hạn chế kết quả cuối cùng.
 
 \chapter{Mô hình}
 \label{cha:model}
-%TOC\minitoc
+%TOC
+\minitoc
 
 \section{Mô hình chung}
 
@@ -2856,9 +2890,10 @@ câu.
 \subsubsection{Chuẩn hoá dấu}
 
 Chuẩn hoá là đặt lại vị trí dấu trong các tiếng nhằm đảm bảo thống
-nhất một quy tắc đặt dấu chung. Do tiếng Việt không quy định cụ thể
-quy tắc bỏ dấu nên hình thành nhiều cách bỏ dấu khác nhau (bỏ dấu khoa
-học, bỏ dấu mỹ thuật~\ldots). Việc bỏ dấu không thống nhất sẽ gây khó
+nhất một quy tắc đặt dấu chung. Do tiếng Việt có nhiều hơn một quy
+định về
+quy tắc bỏ dấu (bỏ dấu khoa
+học, bỏ dấu mỹ thuật~\ldots), gây khó
 khăn cho các thao tác xử lý về sau, bởi vì cùng một chữ nhưng dùng hai
 quy tắc bỏ dấu khác nhau sẽ cho ra hai chuỗi ký tự hoàn toàn khác nhau
 (Ví dụ, ``hoà'' và ``hòa''). 
@@ -2904,7 +2939,7 @@ thay vì âm chính `i'. Một số chữ kết thúc bằng `i' cũng không th
 chuyển sang `y', ví dụ ``bí'', ``chí''~\ldots{} Việc cho phép viết
 một từ ở hai cách sẽ làm giảm hiệu suất của chương trình do chương
 trình coi ``quý'' và ``quí'' là hai chữ hoàn toàn khác nhau. Giải pháp
-là lập danh sách những từ kết thúc bằng `y' có thể chuyển sang `i',
+là lập danh sách những từ có âm chính là y/i và là âm tiết mở,
 sau đó chuyển tất cả những từ kết thúc bằng `i' có trong danh sách
 trên sang `y'. Trong quá trình bắt lỗi chính tả, nếu người dùng yêu
 cầu chuẩn hoá thì ta có thể xem việc viết `y' hoặc `i' như là sai
@@ -3341,9 +3376,9 @@ toán~\vref{algo:error:nonword}.
 \label{algo:error:nonword}
   \begin{enumerate}
   \item Phân tích cấu trúc âm tiết.
-  \item Tạo danh sách âm tiết~\vref{algo:syllable-candidate-list}, bao
+  \item Tạo danh sách âm tiết, bao
     gồm các âm tiết có phát âm tương tự với âm tiết ban đầu.
-  \item Lọc lại danh sách, những âm tiết không có tront từ điển tiếng
+  \item Lọc lại danh sách, những âm tiết không có trong từ điển tiếng
     bị loại bỏ.
   \end{enumerate}
 \end{algo}
@@ -3656,8 +3691,8 @@ tổng quát.
 \end{algo}
 
 Khi phân tích tiếng, có thể có một số nhập nhằng giữa các thành phần
-của tiếng. Ví dụ, ``lúa'' bao gồm âm chính ``ua'' hay âm đệm ``u'' và âm
-chính ``a''. Những âm có thể gây nhập nhằng xuất phát từ việc âm `u'
+của tiếng. Ví dụ, ``lúa'' bao gồm âm đôi ``ua'' hay âm đệm ``u'' và âm
+chính ``a''? Những âm có thể gây nhập nhằng xuất phát từ việc âm `u'
 và `o' có thể vừa là âm đệm, vừa là âm chính, bao gồm các âm ``uô'',
 ``ua''. Ngoài ra còn có nhập nhằng giữa âm chính và âm cuối, bao gồm
 ``ui'', ``uy'', ``oi''. Cuối cùng là trường hợp ``qu''. Hầu hết các
@@ -3969,13 +4004,16 @@ Do chương trình cần một số tham số như thống kê tần số xuất
 từ, mô hình ngôn ngữ bi\-gram, tri\-gram~\ldots nên ta cần phải thu thập
 các tham số này. Đối với tiếng Anh, việc này tương đối dễ dàng. Tuy
 nhiên, do không thể xác định ranh giới từ tiếng Việt, ta cần phải sử
-dụng một bộ tách từ trước khi huấn luyện.
+dụng một bộ tách từ trước khi huấn luyện. Chương trình sử dụng một tập
+ngữ liệu đã tách từ sẵn dựa trên~\cite{smt}. Tuy nhiên, mô hình ngôn
+ngữ đòi hỏi ngữ liệu huấn luyện càng lớn càng tốt. Do vậy chương trình
+tự tạo thêm ngữ liệu huấn luyện thêm ngữ liệu dựa thô chưa tách từ.
 
 Đối với tiếng Việt, đã có một số nghiên cứu về tách từ tiếng Việt,
-tiêu biểu là~\cite{Tachtu}. Chương trình này không sử dụng bộ tách từ
+tiêu biểu là~\cite{Tachtu,Tachtu2}. Chương trình này không sử dụng bộ tách từ
 hiện có vì các lý do sau:
 \begin{itemize}
-\item Bộ tách từ trong~\cite{Tachtu} sử dụng uni\-gram. Trên lý thuyết,
+\item Bộ tách từ trong~\cite{Tachtu,Tachtu2} sử dụng uni\-gram. Trên lý thuyết,
   bi\-gram/tri\-gram tốt hơn uni\-gram do chứa đựng thông tin về ngữ cảnh.
 \item Do bộ tách từ thống kê thường phụ thuộc vào ngữ liệu, nếu sử
   dụng một bộ tách từ trên lĩnh vực khác với lĩnh vực được huấn luyện
@@ -4285,14 +4323,15 @@ phải dùng lưới~3-từ để tính tri\-gram, nếu dùng thuật toán g�
 
 \chapter{Cài đặt}
 \label{cha:implementation}
-%TOC\minitoc
+%TOC
+\minitoc
 \tolerance=10000
 
 Chương trình được cài đặt bằng C++ trên nền Linux. Phần giao diện được
 cài đặt bằng Gtk+. Phần giao diện này chỉ mang tính chất minh
 hoạ. Trong thực tế, chương trình nên được tích hợp vào các bộ soạn
 thảo văn bản như Open Office, AbiWord~\ldots{} để có thể phát huy tác
-dụng. Ngoài ra chương trình sử dụng thư viện SRILM~\cite{XXX} để tính toán mô
+dụng. Ngoài ra chương trình sử dụng thư viện SRILM~\cite{srilm} để tính toán mô
 hình ngôn ngữ.
 
 Chương trình gồm hai phần: phần bắt lỗi chính tả và phần huấn
@@ -4311,8 +4350,8 @@ lưu toàn bộ các token có thể có vào một mảng chung. Mọi token đ
 tham chiếu bằng một con số, tạm gọi là \verb@strid@ (chính là số thứ tự
 token trong mảng). Ngoài ra một bảng băm được dùng để ánh xạ chuỗi
 sang strid. Cả hai cấu trúc dữ liệu này được cài đặt trong lớp
-\verb@StringArchive@. Chương trình chỉ sử dụng duy nhất một đối tượng 
-thuộc lớp này, được truy cập thông qua hàm \verb@get_sarch()@. Toán tử
+\verb@StringArchive@. Chương trình chỉ sử dụng một đối tượng 
+duy nhất thuộc lớp này, được truy cập thông qua hàm \verb@get_sarch()@. Toán tử
 \verb@[]@, được cài đặt để chuyển đổi từ strid sang chuỗi và ngược lại.
 
 Từ và tiếng đều được lưu trong StringArchive. Với từ, các khoảng trắng
@@ -4640,7 +4679,7 @@ tạo ra các nút \verb@<caseleaf>@, trong đó đường đi đến
 \verb@<caseleaf>@ là chữ thường chữ không phải chữ viết hoa.
 
 
-\paragraph{Tìm từ giống cách phát âm} được thực hiện bởi lớp
+\paragraph{Tìm từ phát âm tương tự} được thực hiện bởi lớp
 \verb@FuzzyWordState@. Lớp này thực hiện tìm kiếm dựa trên tất cả các
 tiếng có phát âm giống với tiếng tương ứng trong câu. Sau đó trả về
 các nút lá \verb@<mainleaf>@. Việc tìm tiếng giống phát âm dựa trên
@@ -4827,7 +4866,7 @@ lưu trong mảng \verb@components@. Hàm \verb@Syllable::parse()@ nhận
 một chuỗi của một âm tiết, sau đó tách âm tiết này ra và điền thông
 tin vào \verb@Syllable::components@.
 
-\subsubsection{Tìm các tiếng tương tự cách phát âm}
+\subsubsection{Tìm các tiếng phát âm tương tự}
 \label{sec:impl:fuzzy-cmp}
 Việc tìm các tiếng tương tự cách phát âm được cài đặt trong lớp
 \verb@Syllable@ và hàm
@@ -5383,7 +5422,8 @@ Một số hàm được tạo ra để hỗ trợ việc xử lý tiếng Việ
 \tolerance=200%reset tolerance because i used infinitive tolerance in
               %the last chapter
 \label{cha:conclusion}
-%TOC\minitoc
+%TOC
+\minitoc
 
 \section{Tóm tắt}
 
@@ -5415,7 +5455,7 @@ Sau đây là tóm tắt các đặc điểm mô hình được đề nghị:
 %% \item 
 %% \end{itemize}
 
-\section{Kết quả thử nghiệm}
+\section{Thử nghiệm}
 
 Chương trình được huấn luyện dựa trên ngữ liệu từ các bài báo của mạng
 VnExpress.net. Ngữ liệu sử dụng có kích thước 12283822 byte, bao gồm
@@ -5423,8 +5463,8 @@ VnExpress.net. Ngữ liệu sử dụng có kích thước 12283822 byte, bao g�
 câu\footnote{xem phần~\vref{sec:model:sentence-segmentation}  để biết
   các quy tắc tách câu}. Trình huấn luyện chạy trong vòng 18 phút,
 trung bình khoảng 350 câu một giây. Dữ
-liệu xuất bao gồm 76682 uni\-gram, 446513 bi\-gram, 1101256 tri\-gram với
-kích thước tổng cộng 53939974 byte. Mô
+liệu xuất bao gồm 76682 uni\-gram, 561796 bi\-gram, 1729882 tri\-gram với
+kích thước tổng cộng 71084052 byte. Mô
 hình ngôn ngữ n\-gram-tiếng bao gồm 76224 uni\-gram và 324326 bi\-gram
 (8489570 byte). Dữ
 liệu tên riêng bao gồm 790 tiếng tạo thành tên người, rút trích từ
@@ -5459,29 +5499,29 @@ quả PE, NE, CE là:
   nghị không có từ đúng.
 \end{itemize}
 
-\begin{table}[htbp]
+\begin{sidewaystable}
 \centering
 \begin{tabular}{cccc|rrr|rrr|rrr}
 %Trigram&Chuẩn hóa&Bắt lỗi chặt&Heuristic&Đúng&Sai&Nhảm\\\hline
 \multicolumn{4}{c|}{Tham số}&\multicolumn{3}{c|}{Non-word}&\multicolumn{3}{c|}{Real-word}&\multicolumn{3}{c}{Total}\\
-T&C&S&H&\multicolumn{1}{c}{PE}&\multicolumn{1}{c}{NE}&\multicolumn{1}{c|}{CE}&\multicolumn{1}{c}{PE}&\multicolumn{1}{c}{NE}&\multicolumn{1}{c|}{CE}&\multicolumn{1}{c}{PE}&\multicolumn{1}{c}{NE}&\multicolumn{1}{c}{CE}\\\hline\hline
+T&C&S&H&\multicolumn{1}{c}{PE(\%)}&\multicolumn{1}{c}{NE(\%)}&\multicolumn{1}{c|}{CE(\%)}&\multicolumn{1}{c}{PE(\%)}&\multicolumn{1}{c}{NE(\%)}&\multicolumn{1}{c|}{CE(\%)}&\multicolumn{1}{c}{PE(\%)}&\multicolumn{1}{c}{NE(\%)}&\multicolumn{1}{c}{CE(\%)}\\\hline\hline
 \input{result1.tab}
 \end{tabular}
 \caption{Kết quả thử nghiệm tập dữ liệu 1}
 \label{tab:result1}
-\end{table}
+\end{sidewaystable}
 
-\begin{table}[htbp]
+\begin{sidewaystable}
 \centering
 \begin{tabular}{cccc|rrr|rrr|rrr}
 %Trigram&Chuẩn hóa&Bắt lỗi chặt&Heuristic&Đúng&Sai&Nhảm\\\hline
 \multicolumn{4}{c|}{Tham số}&\multicolumn{3}{c|}{Non-word}&\multicolumn{3}{c|}{Real-word}&\multicolumn{3}{c}{Total}\\
-T&C&S&H&\multicolumn{1}{c}{PE}&\multicolumn{1}{c}{NE}&\multicolumn{1}{c|}{CE}&\multicolumn{1}{c}{PE}&\multicolumn{1}{c}{NE}&\multicolumn{1}{c|}{CE}&\multicolumn{1}{c}{PE}&\multicolumn{1}{c}{NE}&\multicolumn{1}{c}{CE}\\\hline\hline
+T&C&S&H&\multicolumn{1}{c}{PE(\%)}&\multicolumn{1}{c}{NE(\%)}&\multicolumn{1}{c|}{CE(\%)}&\multicolumn{1}{c}{PE(\%)}&\multicolumn{1}{c}{NE(\%)}&\multicolumn{1}{c|}{CE(\%)}&\multicolumn{1}{c}{PE(\%)}&\multicolumn{1}{c}{NE(\%)}&\multicolumn{1}{c}{CE(\%)}\\\hline\hline
 \input{result2.tab}
 \end{tabular}
 \caption{Kết quả tập thử nghiệm dữ liệu 2}
 \label{tab:result2}
-\end{table}
+\end{sidewaystable}
 
 Với nhóm non-word, trong thực tế khi phạm lỗi non-word, chương trình
 sẽ yêu cầu người dùng sửa hết lỗi trước khi tìm lỗi real-word. Do chương
@@ -5513,9 +5553,21 @@ heuristic. Độ chính xác real-word trong trường hợp này là 42,91\% v�
 
 \section{Đánh giá}
 
-Hạn chế đầu tiên của chương trình chính là lượng thông tin được sử
-dụng để khử nhập nhằng khi tách từ mờ. Do chỉ sử dụng thông tin về xác
-suất xuất hiện của một chuỗi từ liên tục nên kết quả có phần hạn
+So với các phương pháp khác đã được áp dụng để bắt lỗi chính tả tiếng
+Việt, phương pháp được tiến hành một cách có hệ thống, dựa trên ngữ
+liệu huấn luyện sẵn có (từ công trình Luận án Tiến sĩ Ngôn ngữ học của
+TS. Đinh Điền), bảo đảm tính chính xác khi hoạt động. Phương
+pháp được dùng trong~\cite{Tuoi} không khả thi do chưa thực hiện tách
+từ (dùng heuristic để đánh giá các cách tách từ). Phương pháp được dùng
+trong~\cite{vietdecisionlist} sử dụng mô hình Markov ẩn để tạo ngữ
+liệu tách từ từ ngữ liệu thô, do đó không bảo đảm tính chính xác của
+ngữ liệu huấn luyện. Phương pháp được dùng trong chương trình bắt lỗi
+chính tả VietSpell của tác giả Lưu Hà Xuyên chỉ sử dụng heuristic,
+không tách từ.
+
+Tuy nhiên, chương trình vẫn có một số hạn chế nhất định.
+Do chỉ sử dụng thông tin về xác
+suất xuất hiện của một chuỗi từ liên tục khi tách từ mở nên kết quả có phần hạn
 chế. Trong nhiều trường hợp ta có thể khử nhập nhằng bằng từ loại,
 bằng thông tin cú pháp, hoặc thông tin về ngữ nghĩa. Thông tin xác
 suất lẽ ra chỉ là giải pháp bổ trợ cho các thông tin trên. Khi những
@@ -5700,13 +5752,13 @@ là rất lớn, có thể ta chỉ cần xét n cách tách từ tốt nhất m
 %%   trên một đường đi nhất định.
 %% \end{itemize}
 
-\appendix\eject\addcontentsline{toc}{part}{Phụ lục}
-\chapter{Dữ liệu kiểm tra}
-{\small\input{test}}
-
 %\eject\addcontentsline{toc}{chapter}{\bibname}
 \bibliographystyle{alpha}
 \bibliography{reference}
+
+\appendix\eject\addcontentsline{toc}{part}{Phụ lục}
+\chapter{Dữ liệu kiểm tra}
+{\small\input{test}}
 
 %% \begin{thebibliography}{}
 %% \bibitem{Ravishankar}Mosur K. Ravishankar. 1996. {\em Efficient Algorithms for
@@ -5791,6 +5843,7 @@ là rất lớn, có thể ta chỉ cần xét n cách tách từ tốt nhất m
 %%     the Association for Computational Linguistics.
 %% \end{thebibliography}
 
+\end{spacing}
 
 \end{document}
 

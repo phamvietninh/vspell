@@ -116,21 +116,6 @@ std::ostream& operator <<(std::ostream &os,const Segmentation &seg)
 	return os;
 }
 
-std::ostream& Segmentation::pretty_print(std::ostream &os,const Sentence &st)
-{
-	int i,n = size();
-	VocabIndex id;
-	for (i = 0;i < n;i ++) {
-		if (i)
-			os << " ";
-		id = (*this)[i].node.node->get_id();
-		if (id == get_id(UNK_ID))
-			id = st[(*this)[i].pos].id;
-		os << get_sarch()[id];
-	}
-	return os;
-}
-
 void Section::segment_best(const Lattice &w,Segmentation &final_seg)
 {
 	Segmentation seg(w.we);

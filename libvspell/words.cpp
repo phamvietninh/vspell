@@ -188,16 +188,20 @@ void Lattice::pre_construct(const Sentence &sent,set<WordEntry> &we,const WordSt
 		nn = states2.size();
 		for (ii = 0;ii < nn;ii ++) {
 			std::vector<LeafNode*> leaves;
-			states2[ii]->dnode.node->get_leaves(leaves,MAIN_LEAF|CASE_LEAF);
-			nnn = leaves.size();
-			for (iii = 0;iii < nnn;iii ++) {
-				WordEntry e;
-				e.pos = states2[ii]->pos;
-				e.len = i-states2[ii]->pos+1;
-				e.fuzid = states2[ii]->fuzid;
-				e.node = leaves[iii];
-				//cerr << "Add " << e << endl;
-				we.insert(e);
+			uint kind[2] = {MAIN_LEAF,CASE_LEAF};
+			for (uint i_kind = 0;i_kind < 2;i_kind ++) {
+				leaves.clear();
+				states2[ii]->dnode.node->get_leaves(leaves,kind[i_kind]);
+				nnn = leaves.size();
+				for (iii = 0;iii < nnn;iii ++) {
+					WordEntry e;
+					e.pos = states2[ii]->pos;
+					e.len = i-states2[ii]->pos+1;
+					e.fuzid = states2[ii]->fuzid;
+					e.node = leaves[iii];
+					//cerr << "Add " << e << endl;
+					we.insert(e);
+				}
 			}
 		}
 

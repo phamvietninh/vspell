@@ -217,3 +217,18 @@ ostream& operator <<(ostream &os, const Sentence &st)
 */
 
 
+std::ostream& Segmentation::pretty_print(std::ostream &os,const Sentence &st)
+{
+	int i,n = size();
+	VocabIndex id;
+	for (i = 0;i < n;i ++) {
+		if (i)
+			os << " ";
+		id = (*this)[i].node.node->get_id();
+		if (id == get_id(UNK_ID))
+			id = st[(*this)[i].pos].id;
+		os << get_sarch()[id];
+	}
+	return os;
+}
+

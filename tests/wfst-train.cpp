@@ -67,7 +67,17 @@ int main(int argc,char **argv)
 				continue;
 			//cerr << st << endl; 
 			Lattice words;
-			words.construct(st);
+			set<WordEntry> wes;
+			WordStateFactories factories;
+			ExactWordStateFactory exact;
+			LowerWordStateFactory lower;
+			//FuzzyWordStateFactory fuzzy;
+			factories.push_back(&exact);
+			factories.push_back(&lower);
+			//factories.push_back(&fuzzy);
+			words.pre_construct(sent,wes,factories);
+			mark_proper_name(sent,wes);
+			words.post_construct(wes);
 			//cerr << words << endl;
 			Segmentation seg(words.we);
 			PFS wfst;

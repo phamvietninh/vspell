@@ -8,6 +8,7 @@
 #include <cmath>
 #include <cstdio>
 #include <../libvspell/boost/format.hpp>
+#include "propername.h"
 
 using namespace std;
 
@@ -68,7 +69,18 @@ int main(int argc,char **argv)
 	if (!st.get_syllable_count())
 		continue;
 	Lattice words;
-	words.construct(st);
+	set<WordEntry> wes;
+	WordStateFactories factories;
+	ExactWordStateFactory exact;
+	LowerWordStateFactory lower;
+	FuzzyWordStateFactory ffuzzy;
+	factories.push_back(&exact);
+	factories.push_back(&lower);
+	if (fuzzy)
+	  factories.push_back(&ffuzzy);
+	words.pre_construct(st,wes,factories);
+	mark_proper_name(st,wes);
+	words.post_construct(wes);
 	Segmentation seg(words.we);
 	/*
 	if (argc > 2)

@@ -44,19 +44,13 @@ namespace Dictionary {
 
 
 	class WordNode {
-	private:
+	protected:
 		struct WordInfo {
 			VocabIndex id;
 			float prob;
 			VocabIndex* syllables;
-#ifdef TRAINING
 			int a,b;			// a/b
-#endif
-#ifdef TRAINING
 			WordInfo():prob(0),syllables(NULL),a(0),b(0) {}
-#else
-			WordInfo():prob(0),syllables(NULL) {}
-#endif
 			//      ~WordInfo() { if (syllables) delete[] syllables; }
 		};
 		//  WordNodePtr wl;
@@ -78,19 +72,7 @@ namespace Dictionary {
 			}
 		};
 
-#ifdef TRAINING
 		void recalculate();
-#endif
-
-	private:
-		bool fuzzy_get_next_with_syllable(strid str,
-							std::vector<DistanceNode>& _nodes,
-							const Syllable &syll) const;
-		bool fuzzy_get_next_with_ed(strid str,
-				std::vector<DistanceNode>& _nodes,
-				const char *str_data,
-				bool parsable) const;
-
 
 	public:
 
@@ -116,6 +98,24 @@ namespace Dictionary {
 
 		bool load(const char* filename);
 		bool save(const char* filename);
+	};
+
+	class FuzzyWordNode:public WordNode {
+	protected:
+		bool fuzzy_get_next_with_syllable(strid str,
+																			std::vector<DistanceNode>& _nodes,
+																			const Syllable &syll) const;
+		bool fuzzy_get_next_with_ed(strid str,
+																std::vector<DistanceNode>& _nodes,
+																const char *str_data,
+																bool parsable) const;
+		bool fuzzy;
+
+	public:
+		FuzzyWordNode(strid _id):WordNode(_id),fuzzy(true) {}
+		virtual bool fuzzy_get_next(strid str,std::vector<DistanceNode>& _nodes) const;
+		virtual WordNodePtr create_next(strid str);
+		void enable_fuzzy(bool _fuzzy) { fuzzy = _fuzzy; }
 	};
 
 	class Syllable {
@@ -164,7 +164,7 @@ namespace Dictionary {
 	bool viet_islower(int ch);
 
 	WordNodePtr get_root();
-	bool initialize();
+	bool initialize(WordNodePtr _root);
 	void clean();
 	bool is_syllable_exist(const std::string &syll);
 	float get_syllable(const std::string &syll);

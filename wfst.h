@@ -37,6 +37,7 @@ private:
 public:
 	Sentence(const std::string &st):sent_(st) {}
 	void set_sentence(const std::string &st) { sent_ = st; syllables.clear(); }
+	std::string get_sentence() { return sent_; }
 	void tokenize();
 	void standardize();
 	int get_syllable_count() const { return syllables.size(); }
@@ -44,6 +45,8 @@ public:
 	Syllable& operator[] (int i) { return syllables[i]; }
 	Syllable operator[] (int i) const { return syllables[i]; }
 	//  Syllable& operator[] (int i) { return syllables[i]; }
+	bool is_contiguous(int i);		// i & i+1 is contiguous ?
+	void merge(int i);
 };
 
 struct Segmentation
@@ -68,8 +71,23 @@ struct WordInfo {
 	Dictionary::WordNode::DistanceNode exact_match;
 	std::vector<Dictionary::WordNode::DistanceNode> fuzzy_match;
 };
-typedef std::vector<WordInfo> WordInfos;
-typedef std::vector<WordInfos> Words;
+typedef std::vector<WordInfo*> WordInfos;
+class Words:public std::vector<WordInfos*> {
+public:
+	int get_word_count() const { return size(); }
+	int get_len(int i) const { return (*this)[i]->size(); }
+	int get_fuzzy_count(int i,int l) const { 
+		return (*(*this)[i])[l]->fuzzy_match.size();
+	}
+	Dictionary::WordNode::DistanceNode& get_fuzzy(int i,int l,int f) {
+		return (*(*this)[i])[l]->fuzzy_match[f];
+	}
+	const Dictionary::WordNode::DistanceNode& get_fuzzy(int i,int l,int f) const{
+		return (*(*this)[i])[l]->fuzzy_match[f];
+	}
+	~Words();											// WARN: destroy all.
+};
+// Words[from][len].fuzzy_match[i]
 
 class WFST
 {
@@ -90,13 +108,13 @@ public:
 	void get_all_words(const Sentence &sent,
 				 Words &words);
 	void segment_best(const Sentence &sent,
-				const std::vector<WordInfos> &words,
+				const Words &words,
 				Segmentation &seps);
 	void segment_all(const Sentence &sent,
 			 std::vector<Segmentation> &result);
 private:
 	void segment_all1(const Sentence &sent,
-				const std::vector<WordInfos> &words,
+				const Words &words,
 				int from,int to,
 				std::vector<Segmentation> &result);
 	

@@ -13,19 +13,19 @@ using namespace Dictionary;
 /*
 
 	The process:
-	1. Separate "words" by spaces.
-	2. Sentence segmentation. 1 Sentence -> n Sentence.
-	3. Punctuation seperation.
+	1. Sentence segmentation. (sentences_split)
+	2. Separate "words" by spaces. (tokenize)
+	3. Punctuation separation. (tokenize/tokenize_punctuation)
 	4. Foreign/Abbreviation detection.
 	5. Proper name detection.
 	6. Generalization (into class e.g. number_class, foreign_class ...). Try to
 	   generalize all capitalized words.
-	6* Syllable checking.
-	7. Find all possible (misspelled) words. (**)
+	6* Syllable checking. (check1)
+	7. Find all possible (misspelled) words. (**) (get_all_words)
 	8. "pre-separate" sentence into phrases.
 	9. Word segmentation. (**)
-	10. Find the best segmentation.
-	10* Word checking.
+	10. Find the best segmentation. (segment_best)
+	10* Word checking. (check2)
 
  */
 
@@ -42,7 +42,7 @@ namespace Spell {
       st[i].sid = unk_id;
 
       VocabString s = sarch[id];
-      if (strlen(s) == 1 && viet_isupper(s[0]) && viet_islower(s[0])) {
+      if (strlen(s) == 1 && !viet_isupper(s[0]) && !viet_islower(s[0])) {
 				st[i].sid = sarch["<PUNCT>"];
 				continue;
       }

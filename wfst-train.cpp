@@ -17,7 +17,7 @@ vector<Sentence> sentences;
 
 int main()
 {
-  Dictionary::initialize();
+  Dictionary::initialize(new Dictionary::WordNode(Dictionary::sarch["<root>"]));
 
   cerr << "Loading... ";
   Dictionary::get_root()->load("wordlist.wl");

@@ -1,6 +1,6 @@
 SRILM_LIBS =  -lsrilm #-loolm  -ldstruct -lmisc 
 SRILM_CXXFLAGS = 
-TRAIN_CXXFLAGS = -DTRAINING -Isrilm/include -Isrilm/include/srilm #-DUSE_EXACT_MATCH
+TRAIN_CXXFLAGS = -Isrilm/include -Isrilm/include/srilm
 CXXFLAGS = -I. -g $(TRAIN_CXXFLAGS) $(SRILM_CXXFLAGS)
 LDFLAGS = -g -Lsrilm $(SRILM_LIBS)
 GTK_CFLAGS = `pkg-config --cflags gtk+-2.0` 
@@ -26,6 +26,10 @@ dictionary.o: dictionary.cpp dictionary.h distance.h config.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 distance.o: distance.cpp distance.h config.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
+sentence.o: sentence.cpp sentence.h dictionary.h config.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+sentence-test.o: sentence-test.cpp sentence.h config.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 wfst-test.o: wfst-test.cpp distance.h wfst.h dictionary.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
@@ -48,5 +52,7 @@ dictionary-test: dictionary-test.o dictionary.o distance.o syllable.o
 	$(CXX) $^ -o $@ $(LDFLAGS)
 syllable-test: syllable-test.o dictionary.o syllable.o distance.o
 	$(CXX) $^ -o $@ $(LDFLAGS)
-vspell: gui.o wfst.o distance.o dictionary.o syllable.o spell.o
+sentence-test: sentence-test.o sentence.o dictionary.o syllable.o distance.o
+	$(CXX) $^ -o $@ $(LDFLAGS)
+vspell: gui.o wfst.o distance.o dictionary.o syllable.o spell.o sentence.o
 	$(CXX) $^ -o $@ $(LDFLAGS) $(GTK_LDFLAGS)

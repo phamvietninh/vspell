@@ -12,7 +12,7 @@ void print_all_words(const Words &words);
 int main()
 {
   WFST wfst;
-  Dictionary::initialize();
+  Dictionary::initialize(new Dictionary::WordNode(Dictionary::sarch["<root>"]));
   ed_init();
   
 

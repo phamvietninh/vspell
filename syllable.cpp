@@ -9,12 +9,12 @@ using namespace std;
 namespace Dictionary {
 
 	char *vowels[] = {
-		"iъ","yъ","ia",
-		"▀╜","▀a","uЇ","ua",
-		"a","х","т",
-		"e","ъ",
-		"o","Ї","╜",
-		"u","▀","i","y",
+		"iЪвъ","yЪвъ","ia",
+		"Ъв▀Ъв╜","Ъв▀a","uЪвЇ","ua",
+		"a","Ъвх","Ъвт",
+		"e","Ъвъ",
+		"o","ЪвЇ","Ъв╜",
+		"u","Ъв▀","i","y",
 		NULL
 	};
 
@@ -37,7 +37,7 @@ namespace Dictionary {
 		"k",				// 15
 		"q",				// 16
 		"d",				// 17
-		"Ё",				// 18
+		"ЪвЁ",				// 18
 		"g",				// 19
 		"h",				// 20
 		"l",				// 21
@@ -50,7 +50,7 @@ namespace Dictionary {
 
 	char *last_consonants[] = {	// longest first
 		"nh","ng","ch",/*"gh","ph","th","tr","gi","kh",*/
-		"c","m","n","p","t",/*"b","k","q","d","Ё","g","h","l","r","s","v","x",*/
+		"c","m","n","p","t",/*"b","k","q","d","ЪвЁ","g","h","l","r","s","v","x",*/
 		// these are semivowels, not consonants.
 		"i","y","o","u",
 		NULL
@@ -62,17 +62,17 @@ namespace Dictionary {
 	};
 
 	char *diacritic_table[6] = {
-		"aтхeъioЇ╜u▀y",
-		"сдбщкэєп╛·╤¤",
-		"ревшльЄ░╢∙╫╧",
-		"фж╞ымяЎ▒╖№╪╓",
-		"уч╟инюї▓▐√ц█",
-		"╒згйо╕ў╡■°ё▄",
+		"aЪвтЪвхeЪвъioЪвЇЪв╜uЪв▀y",
+		"ЪвсЪвдЪвбЪвщЪвкЪвэЪвєЪвпЪв╛Ъв·Ъв╤Ъв¤",
+		"ЪврЪвеЪввЪвшЪвлЪвьЪвЄЪв░Ъв╢Ъв∙Ъв╫Ъв╧",
+		"ЪвфЪвжЪв╞ЪвыЪвмЪвяЪвЎЪв▒Ъв╖Ъв№Ъв╪Ъв╓",
+		"ЪвуЪвчЪв╟ЪвиЪвнЪвюЪвїЪв▓Ъв▐Ъв√ЪвцЪв█",
+		"Ъв╒ЪвзЪвгЪвйЪвоЪв╕ЪвўЪв╡Ъв■Ъв°ЪвёЪв▄",
 	};
 
 	char *case_table[2] = {
-		"срфу╒тдежчзхбв╞╟гщшыийъклмноэьяю╕єЄЎїўЇп░▒▓╡╜╛╢╖▐■·∙№√°▀╤╫╪цё¤╧╓█▄Ё", 
-		"┴└─├А┬ДЕЖЗ┼БВГ╔╚╦ИЙ╩КЛМНО═╠Ы╬Ш╙╥ЩаЪ╘ПРСТУ┤ХЦЧ│Ф┌┘ЬЭЮ┐║╗╝ ╣▌Я╨", 
+		"ЪвсЪврЪвфЪвуЪв╒ЪвтЪвдЪвеЪвжЪвчЪвзЪвхЪвбЪввЪв╞Ъв╟ЪвгЪвщЪвшЪвыЪвиЪвйЪвъЪвкЪвлЪвмЪвнЪвоЪвэЪвьЪвяЪвюЪв╕ЪвєЪвЄЪвЎЪвїЪвўЪвЇЪвпЪв░Ъв▒Ъв▓Ъв╡Ъв╜Ъв╛Ъв╢Ъв╖Ъв▐Ъв■Ъв·Ъв∙Ъв№Ъв√Ъв°Ъв▀Ъв╤Ъв╫Ъв╪ЪвцЪвёЪв¤Ъв╧Ъв╓Ъв█Ъв▄ЪвЁ", 
+		"ЪгсЪгрЪгфЪгуЪг╒ЪгтЪгдЪгеЪгжЪгчЪгзЪгхЪгбЪгвЪг╞Ъг╟ЪггЪгщЪгшЪгыЪгиЪгйЪгъЪгкЪглЪгмЪгнЪгоЪгэЪгьЪгяЪгюЪг╕ЪгєЪгЄЪгЎЪгїЪгўЪгЇЪгпЪг░Ъг▒Ъг▓Ъг╡Ъг╜Ъг╛Ъг╢Ъг╖Ъг▐Ъг■Ъг·Ъг∙Ъг№Ъг√Ъг°Ъг▀Ъг╤Ъг╫Ъг╪ЪгцЪгёЪг¤Ъг╧Ъг╓Ъг█Ъг▄ЪгЁ", 
 	};
 
 	char full_case_table[2][256];
@@ -86,9 +86,10 @@ namespace Dictionary {
 	bool syllable_init()
 	{
 		int i,len = strlen(case_table[0]);
+
 		for (i = 0;i < 256;i ++) {
-			full_case_table[0][i] = i >= 'A' && i <= 'Z' ? i+32 : i;
-			full_case_table[1][i] = i >= 'a' && i <= 'z' ? i-32 : i;
+			full_case_table[0][i] = isalpha(i) ? tolower(i) : 0;
+			full_case_table[1][i] = isalpha(i) ? toupper(i) : 0;
 		}
 		for (i = 0;i < len; i ++) {
 			full_case_table[0][(unsigned char)case_table[1][i]] = case_table[0][i];
@@ -131,88 +132,88 @@ namespace Dictionary {
 		confusion_sets.push_back(confusion_set());
 		confusion_sets.back().push_back(Syllable(NULL,NULL,"a","i"));
 		confusion_sets.back().push_back(Syllable(NULL,NULL,"a","y"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"т","y"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъвт","y"));
 
 		confusion_sets.push_back(confusion_set());
 		confusion_sets.back().push_back(Syllable(NULL,NULL,"a","u"));
 		confusion_sets.back().push_back(Syllable(NULL,NULL,"a","o"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"т","u"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъвт","u"));
 
 		confusion_sets.push_back(confusion_set());
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"х","m"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"т","m"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъвх","m"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъвт","m"));
 
 		confusion_sets.push_back(confusion_set());
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"х","p"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"т","p"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъвх","p"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъвт","p"));
 
 		confusion_sets.push_back(confusion_set());
 		confusion_sets.back().push_back(Syllable(NULL,NULL,"i","u"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"iъ","u"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"ъ","u"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"iЪвъ","u"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъвъ","u"));
 
 		confusion_sets.push_back(confusion_set());
 		confusion_sets.back().push_back(Syllable(NULL,NULL,"i","m"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"iъ","m"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"ъ","m"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"iЪвъ","m"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъвъ","m"));
 		confusion_sets.back().push_back(Syllable(NULL,NULL,"e","m"));
 
 		confusion_sets.push_back(confusion_set());
 		confusion_sets.back().push_back(Syllable(NULL,NULL,"i","p"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"iъ","p"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"ъ","p"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"iЪвъ","p"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъвъ","p"));
 		confusion_sets.back().push_back(Syllable(NULL,NULL,"e","p"));
 
 		confusion_sets.push_back(confusion_set());
 		confusion_sets.back().push_back(Syllable(NULL,NULL,"o","i"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ї","i"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"╜","i"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"ЪвЇ","i"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъв╜","i"));
 
 		confusion_sets.push_back(confusion_set());
 		confusion_sets.back().push_back(Syllable(NULL,NULL,"o","m"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ї","m"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"╜","m"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"ЪвЇ","m"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъв╜","m"));
 
 		confusion_sets.push_back(confusion_set());
 		confusion_sets.back().push_back(Syllable(NULL,NULL,"o","p"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ї","p"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"╜","p"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"ЪвЇ","p"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъв╜","p"));
 
 		confusion_sets.push_back(confusion_set());
 		confusion_sets.back().push_back(Syllable(NULL,NULL,"o","ng"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ї","ng"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"ЪвЇ","ng"));
 
 		confusion_sets.push_back(confusion_set());
 		confusion_sets.back().push_back(Syllable(NULL,NULL,"o","c"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ї","c"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"ЪвЇ","c"));
 
 		confusion_sets.push_back(confusion_set());
 		confusion_sets.back().push_back(Syllable(NULL,NULL,"u","i"));
-		confusion_sets.back().push_back(Syllable(NULL,"u","Ї","i"));
+		confusion_sets.back().push_back(Syllable(NULL,"u","ЪвЇ","i"));
 
 		confusion_sets.push_back(confusion_set());
 		confusion_sets.back().push_back(Syllable(NULL,NULL,"u","m"));
-		confusion_sets.back().push_back(Syllable(NULL,"u","Ї","m"));
+		confusion_sets.back().push_back(Syllable(NULL,"u","ЪвЇ","m"));
 
 		confusion_sets.push_back(confusion_set());
 		confusion_sets.back().push_back(Syllable(NULL,NULL,"u","p"));
-		confusion_sets.back().push_back(Syllable(NULL,"u","Ї","p"));
+		confusion_sets.back().push_back(Syllable(NULL,"u","ЪвЇ","p"));
 
 		confusion_sets.push_back(confusion_set());
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"▀","i"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"▀╜","i"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъв▀","i"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъв▀Ъв╜","i"));
 
 		confusion_sets.push_back(confusion_set());
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"▀","u"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"▀╜","u"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъв▀","u"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъв▀Ъв╜","u"));
 
 		confusion_sets.push_back(confusion_set());
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"▀","m"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"▀╜","m"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъв▀","m"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъв▀Ъв╜","m"));
 
 		confusion_sets.push_back(confusion_set());
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"▀","p"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"▀╜","p"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъв▀","p"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъв▀Ъв╜","p"));
 
 		confusion_sets.push_back(confusion_set());
 		confusion_sets.back().push_back(Syllable(NULL,NULL,"a","n"));
@@ -223,20 +224,20 @@ namespace Dictionary {
 		confusion_sets.back().push_back(Syllable(NULL,NULL,"a","c"));
 
 		confusion_sets.push_back(confusion_set());
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"х","n"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"х","ng"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъвх","n"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъвх","ng"));
 
 		confusion_sets.push_back(confusion_set());
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"х","t"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"х","c"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъвх","t"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъвх","c"));
 
 		confusion_sets.push_back(confusion_set());
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"т","n"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"т","ng"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъвт","n"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъвт","ng"));
 
 		confusion_sets.push_back(confusion_set());
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"т","t"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"т","c"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъвт","t"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъвт","c"));
 
 		confusion_sets.push_back(confusion_set());
 		confusion_sets.back().push_back(Syllable(NULL,NULL,"e","n"));
@@ -247,12 +248,12 @@ namespace Dictionary {
 		confusion_sets.back().push_back(Syllable(NULL,NULL,"e","c"));
 
 		confusion_sets.push_back(confusion_set());
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"ъ","n"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"ъ","nh"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъвъ","n"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъвъ","nh"));
 
 		confusion_sets.push_back(confusion_set());
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"ъ","t"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"ъ","c"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъвъ","t"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъвъ","c"));
 
 		confusion_sets.push_back(confusion_set());
 		confusion_sets.back().push_back(Syllable(NULL,NULL,"i","n"));
@@ -263,20 +264,20 @@ namespace Dictionary {
 		confusion_sets.back().push_back(Syllable(NULL,NULL,"i","ch"));
 
 		confusion_sets.push_back(confusion_set());
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"iъ","n"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"iъ","ng"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"iЪвъ","n"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"iЪвъ","ng"));
 
 		confusion_sets.push_back(confusion_set());
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"iъ","t"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"iъ","c"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"iЪвъ","t"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"iЪвъ","c"));
 
 		confusion_sets.push_back(confusion_set());
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"╜","n"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"╜","ng"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъв╜","n"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъв╜","ng"));
 
 		confusion_sets.push_back(confusion_set());
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"╛","n"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"╛","ng"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъв╛","n"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъв╛","ng"));
 
 		confusion_sets.push_back(confusion_set());
 		confusion_sets.back().push_back(Syllable(NULL,NULL,"u","n"));
@@ -287,28 +288,28 @@ namespace Dictionary {
 		confusion_sets.back().push_back(Syllable(NULL,NULL,"u","c"));
 
 		confusion_sets.push_back(confusion_set());
-		confusion_sets.back().push_back(Syllable(NULL,"u","Ї","n"));
-		confusion_sets.back().push_back(Syllable(NULL,"u","Ї","ng"));
+		confusion_sets.back().push_back(Syllable(NULL,"u","ЪвЇ","n"));
+		confusion_sets.back().push_back(Syllable(NULL,"u","ЪвЇ","ng"));
 
 		confusion_sets.push_back(confusion_set());
-		confusion_sets.back().push_back(Syllable(NULL,"u","Ї","t"));
-		confusion_sets.back().push_back(Syllable(NULL,"u","Ї","c"));
+		confusion_sets.back().push_back(Syllable(NULL,"u","ЪвЇ","t"));
+		confusion_sets.back().push_back(Syllable(NULL,"u","ЪвЇ","c"));
 
 		confusion_sets.push_back(confusion_set());
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"▀","n"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"▀","ng"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъв▀","n"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъв▀","ng"));
 
 		confusion_sets.push_back(confusion_set());
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"▀","t"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"▀","c"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъв▀","t"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъв▀","c"));
 
 		confusion_sets.push_back(confusion_set());
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"▀╜","n"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"▀╜","ng"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъв▀Ъв╜","n"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъв▀Ъв╜","ng"));
 		
 		confusion_sets.push_back(confusion_set());
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"▀╜","t"));
-		confusion_sets.back().push_back(Syllable(NULL,NULL,"▀╜","c"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъв▀Ъв╜","t"));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,"Ъв▀Ъв╜","c"));
 		
 		confusion_sets.push_back(confusion_set());
 		confusion_sets.back().push_back(Syllable(NULL,NULL,NULL,NULL,Syllable::Hook));
@@ -631,7 +632,7 @@ namespace Dictionary {
 	/*
 		void Syllable::standardize(std::string syllable)
 		{
-		// We just need to eliminate "Єa", "Єe", "∙a"
+		// We just need to eliminate "ЪвЄa", "ЪвЄe", "Ъв∙a"
 
 		// first, cut the first consonant off
 		int start = 0;

@@ -117,9 +117,9 @@ void WFST::segment_best(const Sentence &_sent,
 	// those leaved unmarked are obviously word-segmented correctly
 	vector<int> marks(_sent.get_syllable_count());
 	int i,ii,n,nn;
-	n = words.size();
+	n = words.get_word_count();
 	for (i = 0;i < n;i ++) {
-		nn = words[i].size();
+		nn = words.get_len(i);
 		if (nn > 1)
 			for (ii = 0;ii < nn;ii ++) 
 				marks[i+ii] = 1;
@@ -145,7 +145,7 @@ void WFST::segment_best(const Sentence &_sent,
 		if (!marks[pos]) {
 			seps.items.push_back(Segmentation::Item());
 			Segmentation::Item &item = seps.items.back();
-			item.state = words[pos][0].fuzzy_match[0].node;
+			item.state = words.get_fuzzy(pos,0,0).node;
 			item.distance = 0/*FIXME*/;
 			item.flags |= SEGM_SEPARATOR;
 			seps.prob += item.state->get_prob();
@@ -208,8 +208,8 @@ void WFST::get_all_words(const Sentence &sent,Words &words)
 	for (i = 0;i < n;i ++) {
 
 		// make a word
-		words.push_back(WordInfos());
-		WordInfos &winfos = words.back();
+		words.push_back(new WordInfos());
+		WordInfos &winfos = *words.back();
 
 		// finding all possible words started by the i-th syllable.
 
@@ -221,8 +221,8 @@ void WFST::get_all_words(const Sentence &sent,Words &words)
 		while (!states.empty() && i+k < n) {
 
 			// make a winfo
-			winfos.push_back(WordInfo());
-			WordInfo &winfo = winfos.back();
+			winfos.push_back(new WordInfo());
+			WordInfo &winfo = *winfos.back();
 
 			// save states
 			old_states = states;
@@ -263,7 +263,7 @@ void WFST::get_all_words(const Sentence &sent,Words &words)
 			k ++;
 		}
 		// remove the last if it is empty
-		while (!winfos.empty() && winfos.back().fuzzy_match.empty())
+		while (!winfos.empty() && winfos.back()->fuzzy_match.empty())
 			winfos.pop_back();
 	}
 
@@ -271,18 +271,18 @@ void WFST::get_all_words(const Sentence &sent,Words &words)
 
 void print_all_words(const Words &words)
 {
-	int i, nn = words.size();
+	int i, nn = words.get_word_count();
 	for (i = 0;i < nn;i ++) {
-		int nnn = words[i].size();
+		int nnn = words.get_len(i);
 		cerr << "From " << i << endl;
 		for (int ii = 0;ii < nnn;ii ++) {
-			int nnnn = words[i][ii].fuzzy_match.size();
+			int nnnn = words.get_fuzzy_count(i,ii);
 			cerr << "Len " << ii << endl;
 			for (int iii = 0;iii < nnnn;iii ++) {
-				cerr << Dictionary::sarch[words[i][ii].fuzzy_match[iii].node->get_id()] << " ";
-				cerr << words[i][ii].fuzzy_match[iii].node->get_syllable_count() << " ";
-				cerr << words[i][ii].fuzzy_match[iii].distance << " ";
-				cerr << words[i][ii].fuzzy_match[iii].node->get_prob() << endl;
+				cerr << Dictionary::sarch[words.get_fuzzy(i,ii,iii).node->get_id()] << " ";
+				cerr << words.get_fuzzy(i,ii,iii).node->get_syllable_count() << " ";
+				cerr << words.get_fuzzy(i,ii,iii).distance << " ";
+				cerr << words.get_fuzzy(i,ii,iii).node->get_prob() << endl;
 			}
 		}
 	}
@@ -357,17 +357,16 @@ void WFST::segment_all1(const Sentence &sent,
 		if (next_syllable == nr_syllables)
 			continue;
 
-		const WordInfos &winfos = words[next_syllable];
-		int nr_size_1 = winfos.size();
+		int nr_size_1 = words.get_len(next_syllable);
 
 		// word with the length of (size_1+1) syllables
 		for (int size_1 = 0;size_1 < nr_size_1; size_1 ++) {
-			const WordInfo &winfo = winfos[size_1];
-			int nr_fuzzy = winfo.fuzzy_match.size();
+			int nr_fuzzy = words.get_fuzzy_count(next_syllable,size_1);
 
 			// number of words
 			for (i = 0;i < nr_fuzzy;i ++) {
-				const WordNode::DistanceNode &next_state = winfo.fuzzy_match[i];
+				const WordNode::DistanceNode &next_state = 
+					words.get_fuzzy(next_syllable,size_1,i);
 
 				// New segmentation for longer incomplete word
 				Trace newseg;
@@ -427,4 +426,15 @@ void Segmentation::print(ostream &os, const Sentence &st)
 		os << " ";
 	}
 	os << prob << endl;
+}
+
+Words::~Words()
+{
+	int pos,nr_pos = get_word_count();
+	for (pos = 0;pos < nr_pos;pos ++) {
+		int len,nr_len = get_len(pos);
+		for (len = 0;len < nr_len;len ++)
+			delete (*(*this)[pos])[len];
+		delete (*this)[pos];
+	}
 }

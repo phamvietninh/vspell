@@ -5,8 +5,10 @@
 #include <sstream>
 #include "config.h"
 #include "spell.h"
+#include "sentence.h"
 
 using namespace std;
+void print_all_words(const Words &words);
 
 static GtkTextTagTable *tagtable_main;
 static GtkTextBuffer *textbuffer_main;
@@ -122,19 +124,72 @@ static void button_reset_callback (GtkWidget *button, gpointer data)
 	gtk_text_buffer_remove_all_tags (textbuffer_main, &start,&end);
 }
 
-void print_all_words(const Words &words);
-static void button_spell_callback (GtkWidget *button, gpointer data)
+void text_show_syllables(const Sentence &st,const Suggestions &sugg)
 {
-  GtkTextIter start,end;
-  gtk_text_buffer_get_start_iter(textbuffer_main,&start);
-  gtk_text_buffer_get_end_iter(textbuffer_main,&end);
+	int cc,ii,nn,i,n = sugg.size();
+	GtkTextIter start,end;
+	for (i = 0;i < n;i ++) {
+		int id = sugg[i].id;
+		int from = st[id].start;
+		int len = strlen(Dictionary::sarch[st[id].id]);
+		printf("Syllable Mispelled: %d (%s) at %d\n",
+					 id,Dictionary::sarch[st[id].id],from);
+		gtk_text_buffer_get_iter_at_offset(textbuffer_main,&start,from);
+		gtk_text_buffer_get_iter_at_offset(textbuffer_main,&end,from+len);
+		gtk_text_buffer_apply_tag_by_name (textbuffer_main, "mispelled",
+																			 &start,&end);
+	}
+}
 
-	button_reset_callback(NULL,NULL);
+void text_show_words(const Sentence &st,const Segmentation &seg)
+{
+	int n,cc,i,nn;
+	GtkTextIter start,end;
 
-  gchar *buffer = gtk_text_buffer_get_text(textbuffer_main,&start,&end,FALSE);
-  int len = g_utf8_strlen(buffer,-1);
-  char *pp = viet_to_viscii(buffer);
+	n = seg.items.size();
+	cc = 0;
+	for (i = 0;i < n;i ++) {
+		nn = seg.items[i].state->get_syllable_count();
+		if (nn == 1) {
+			cc += nn;
+			continue;
+		}
+		int from = st[cc].start;
+		int to = st[cc+nn-1].start+strlen(Dictionary::sarch[st[cc+nn-1].id]);
+		printf("From %d to %d(%d)\n",from,to,n);
+		gtk_text_buffer_get_iter_at_offset(textbuffer_main,&start,from);
+		gtk_text_buffer_get_iter_at_offset(textbuffer_main,&end,to);
+		gtk_text_buffer_apply_tag_by_name (textbuffer_main, "word",
+																			 &start,&end);
+		cc += nn;
+	}
+}
 
+void text_show_wrong_words(const Sentence &st,const Segmentation &seg,const Suggestions &sugg)
+{
+	int n,cc,nn,i,ii;
+	GtkTextIter start,end;
+
+	n = sugg.size();
+	for (i = 0;i < n;i ++) {
+		int id = sugg[i].id;
+		for (cc = ii = 0;ii < id;ii ++)
+			cc += seg.items[ii].state->get_syllable_count();
+
+		nn = seg.items[id].state->get_syllable_count();
+
+		int from = st[cc].start;
+		int to = st[cc+nn-1].start+strlen(Dictionary::sarch[st[cc+nn-1].id]);
+		printf("Mispelled at %d\n",id);
+		gtk_text_buffer_get_iter_at_offset(textbuffer_main,&start,from);
+		gtk_text_buffer_get_iter_at_offset(textbuffer_main,&end,to);
+		gtk_text_buffer_apply_tag_by_name (textbuffer_main, "mispelled",
+																			 &start,&end);
+	}
+}
+
+void sentence_process(const char *pp)
+{
 	// preprocess
 	Sentence st(pp);
 	Segmentation seg;
@@ -147,18 +202,7 @@ static void button_spell_callback (GtkWidget *button, gpointer data)
 	Spell::check1(st,sugg);
 
 	// show mispelled syllables
-	int cc,ii,nn,i,n = sugg.size();
-	for (i = 0;i < n;i ++) {
-		int id = sugg[i].id;
-		int from = st[id].start;
-		int len = strlen(Dictionary::sarch[st[id].id]);
-		printf("Syllable Mispelled: %d (%s) at %d\n",
-					 id,Dictionary::sarch[st[id].id],from);
-		gtk_text_buffer_get_iter_at_offset(textbuffer_main,&start,from);
-		gtk_text_buffer_get_iter_at_offset(textbuffer_main,&end,from+len);
-		gtk_text_buffer_apply_tag_by_name (textbuffer_main, "mispelled",
-																			 &start,&end);
-	}
+	text_show_syllables(st,sugg);
 
 	// try segmentation
 	if (/*n == 0*/1) {
@@ -172,47 +216,34 @@ static void button_spell_callback (GtkWidget *button, gpointer data)
 		seg.print(cerr,st);
 
 		// show segmentation
-		n = seg.items.size();
-		cc = 0;
-		for (i = 0;i < n;i ++) {
-			nn = seg.items[i].state->get_syllable_count();
-			if (nn == 1) {
-				cc += nn;
-				continue;
-			}
-			int from = st[cc].start;
-			int to = st[cc+nn-1].start+strlen(Dictionary::sarch[st[cc+nn-1].id]);
-			printf("From %d to %d(%d)\n",from,to,n);
-			gtk_text_buffer_get_iter_at_offset(textbuffer_main,&start,from);
-			gtk_text_buffer_get_iter_at_offset(textbuffer_main,&end,to);
-			gtk_text_buffer_apply_tag_by_name (textbuffer_main, "word",
-																				 &start,&end);
-			cc += nn;
-		}
+		text_show_words(st,seg);
 
 		// word checking
 		sugg.clear();
 		Spell::check2(st,seg,sugg);
 		
 		// show mispelled words
-		n = sugg.size();
-		for (i = 0;i < n;i ++) {
-			int id = sugg[i].id;
-			for (cc = ii = 0;ii < id;ii ++)
-				cc += seg.items[ii].state->get_syllable_count();
-
-			nn = seg.items[id].state->get_syllable_count();
-
-			int from = st[cc].start;
-			int to = st[cc+nn-1].start+strlen(Dictionary::sarch[st[cc+nn-1].id]);
-			printf("Mispelled at %d\n",id);
-			gtk_text_buffer_get_iter_at_offset(textbuffer_main,&start,from);
-			gtk_text_buffer_get_iter_at_offset(textbuffer_main,&end,to);
-			gtk_text_buffer_apply_tag_by_name (textbuffer_main, "mispelled",
-																				 &start,&end);
-		}
-
+		text_show_wrong_words(st,seg,sugg);
 	}
+}
+
+static void button_spell_callback (GtkWidget *button, gpointer data)
+{
+  GtkTextIter start,end;
+  gtk_text_buffer_get_start_iter(textbuffer_main,&start);
+  gtk_text_buffer_get_end_iter(textbuffer_main,&end);
+
+	button_reset_callback(NULL,NULL);
+
+  gchar *buffer = gtk_text_buffer_get_text(textbuffer_main,&start,&end,FALSE);
+  int len = g_utf8_strlen(buffer,-1);
+  char *pp = viet_to_viscii(buffer);
+
+	vector<string> pps;
+	sentences_split(pp,pps);
+	int pps_i,pps_len = pps.size();
+	for (pps_i = 0;pps_i < pps_len;pps_i ++)
+		sentence_process(pps[pps_i].c_str());
 }
 
 static void button_exit_callback (GtkWidget *button, gpointer data)
@@ -232,7 +263,7 @@ int main(int argc,char **argv)
 {
   gtk_init(&argc,&argv);
 
-  Dictionary::initialize();
+  Dictionary::initialize(new Dictionary::FuzzyWordNode(Dictionary::sarch["<root>"]));
 
   cerr << "Loading dictionary... ";
   Dictionary::get_root()->load("wordlist.wl");

@@ -6,7 +6,7 @@ using namespace std;
 
 int main()
 {
-  Dictionary::initialize();
+  Dictionary::initialize(new WordNode);
 
   cerr << "Loading... ";
   Dictionary::get_root()->load("wordlist.wl");

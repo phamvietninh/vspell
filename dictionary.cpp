@@ -7,9 +7,7 @@
 #include "dictionary.h"
 #include "distance.h"
 #include <stdlib.h>
-#ifdef TRAINING
 #include <math.h>
-#endif
 
 using namespace std;
 
@@ -23,17 +21,15 @@ namespace Dictionary {
 
 	StringArchive sarch;
 	Ngram ngram(sarch.get_dict(),2);
-#ifdef TRAINING
 	NgramStats stats(sarch.get_dict(),2);
-#endif
 
 	bool syllable_init();
 
-	bool initialize()
+	bool initialize(WordNodePtr _root)
 	{
 		syllable_init();
 		ed_init();
-		root = new WordNode(sarch["<-root->"]);
+		root = _root;
 		unk_id = sarch["<UNK>"];	// should be in Dictionary::load
 		// if 
 		return true;
@@ -221,6 +217,16 @@ namespace Dictionary {
 		return ptr;
 	}
 
+	WordNodePtr FuzzyWordNode::create_next(strid str)
+	{
+		WordNodePtr ptr;
+		//  nodes[str].reset(new WordNode);
+		*syllable_dict.insert(str) = 1;
+		ptr = *nodes->insert(str) = new FuzzyWordNode(str);
+		//  ptr->parent = this;
+		return ptr;
+	}
+
 	WordNodePtr WordNode::get_next(strid str) const
 	{
 		WordNodePtr *pnode = nodes->find(str);
@@ -260,10 +266,10 @@ namespace Dictionary {
 		return root;
 	}
 
-	bool WordNode::fuzzy_get_next_with_ed(strid str,
-																				vector<DistanceNode>& _nodes,
-																				const char *str_data,
-																				bool parsable) const
+	bool FuzzyWordNode::fuzzy_get_next_with_ed(strid str,
+																						 vector<DistanceNode>& _nodes,
+																						 const char *str_data,
+																						 bool parsable) const
 	{
 		node_map_iterator iter(*nodes);
 		strid id;
@@ -298,9 +304,9 @@ namespace Dictionary {
 	typedef vector<Syllable> confusion_set;
 	extern vector<confusion_set> confusion_sets;
 
-	bool WordNode::fuzzy_get_next_with_syllable(strid str,
-																							vector<DistanceNode>& _nodes,
-																							const Syllable &syll) const
+	bool FuzzyWordNode::fuzzy_get_next_with_syllable(strid str,
+																									 vector<DistanceNode>& _nodes,
+																									 const Syllable &syll) const
 	{
 		int i,j,m,n = confusion_sets.size();
 		bool ret = false;
@@ -333,16 +339,12 @@ namespace Dictionary {
 	}
 
 
-	bool WordNode::fuzzy_get_next(strid str,vector<DistanceNode>& _nodes) const
+	bool FuzzyWordNode::fuzzy_get_next(strid str,
+																		 vector<DistanceNode>& _nodes) const
 	{
-#ifdef USE_EXACT_MATCH
-		WordNodePtr* pnode = nodes->find(str);
-		if (pnode) {
-			_nodes.push_back(*pnode);
-			return true;
-		} else
-			return false;
-#else
+		if (!fuzzy)
+			return WordNode::fuzzy_get_next(str,_nodes);
+
 		const char *str_data = sarch[str];
 
 		Syllable syll;
@@ -356,10 +358,19 @@ namespace Dictionary {
 			return false;
 		} else
 			return fuzzy_get_next_with_syllable(str,_nodes,syll);
-#endif
 	}
 
-#ifdef TRAINING
+	bool WordNode::fuzzy_get_next(strid str,
+																vector<DistanceNode>& _nodes) const
+	{
+		WordNodePtr* pnode = nodes->find(str);
+		if (pnode) {
+			_nodes.push_back(*pnode);
+			return true;
+		}
+		return false;
+	}
+
 	void WordNode::recalculate()
 	{
 		vector<WordNodePtr> traces;
@@ -386,9 +397,7 @@ namespace Dictionary {
 				trace_ptr->info->a = trace_ptr->info->b = 0;
 			}
 		}
-
 	}
-#endif
 
 	strid StringArchive::operator[] (VocabString s)
 	{

@@ -54,9 +54,6 @@
 \end{titlepage}
 
 \tableofcontents
-\listoffigures
-\listoftables
-\listof{algo}{Danh sách thuật toán}
 
 %% \chapter{Giới thiệu}
 %% \label{cha:intro}
@@ -4159,14 +4156,30 @@ có phải thuộc về từ điển tiếng hay không nhờ hàm
 \subsection{Câu}
 
 Mỗi câu bao gồm danh sách strid của các token, kèm theo vị trí chuỗi
-con của token đó trong câu thật sự.
+con của token đó trong câu thật sự. Lớp \verb@Sentence@ bao gồm một
+mảng các đối tượng \verb@Sentence::Syllable@ (biến \verb@syllables@) đại diện cho các
+tiếng. Mỗi đối tượng \verb@Sentence::Syllable@ bao gồm vị trí bắt đầu
+của tiếng trong câu \verb@start@, mã strid của tiếng đó \verb@id@ và
+mã strid dùng để so sánh \verb@cid@.
 
+Các hàm thường dùng:
+\begin{itemize}
+\item \verb@set()@: đặt chuỗi đại diện cho câu cho đối tượng
+  \verb@Sentence@. 
+\item \verb@tokenize()@: tách câu dựa trên chuỗi đã đặt.
+\item \verb@get_syllable_count()@: trả về số tiếng trong câu.
+\item \verb@operator[]@: Truy cập các tiếng trong câu.
+\end{itemize}
+
+Chuỗi các câu sẽ được hàm \verb@sentences_split()@ tách thành những
+chuỗi con, đại diện cho các câu. Các chuỗi con này sẽ được chuyển cho
+\verb@Sentence@ để phân tích thành từng tiếng.
 
 \subsection{Lưới từ}
 
 Lưới từ bao gồm lưới từ dạng thô \verb@Lattice@ và lưới từ \verb@DAG@.
 
-Lưới từ \verb@Lattice@ không có nút head và tail, cũng không có các
+Lưới từ thô \verb@Lattice@ không có nút head và tail, cũng không có các
 liên kết tường minh giữa các nút với nhau. Cấu trúc này lưu thành danh
 sách các từ theo vị trí bắt đầu của từ. Để biết từ này nối với từ nào,
 ta sử dụng thông tin về vị trí bắt đầu của từ và độ dài của từ để suy
@@ -4176,11 +4189,60 @@ bắt đầu tại vị trí của từ kế tiếp.
 Tất cả các từ của lưới từ được lưu vào danh sách chung (biến
 \verb@Lattice::we@ kiểu \verb@WordEntries@), chứa đựng toàn bộ thông tin
 liên quan đến một từ. Các từ được tham chiếu bằng số thứ tự của từ
-trong WordEntries --- tạm gọi là WordID.
+trong WordEntries --- tạm gọi là WordID. Mỗi từ được lưu trong cấu
+trúc \verb@WordEntry@. Cấu trúc này bao gồm:
+\begin{itemize}
+\item \verb@len@: cho biết số tiếng của từ.
+\item \verb@fuzid@: mỗi bit trong biến này cho biết trạng thái fuzzy
+  của tiếng tương ứng trong từ. Nếu bit là 1 nghĩa là tiếng đó được
+  biến đổi, không phải là tiếng gốc.
+\item \verb@id@: WordID.
+\item \verb@node@: liên kết đến từ trong từ điển, dùng để lấy các
+  thông tin chi tiết hơn về từ.
+\end{itemize}
+
+\verb@Lattice@ chứa một mảng các đối tượng \verb@WordInfos@. Mỗi đối
+tượng \verb@WordInfo@ tương đương với một vị trí tiếng trong
+câu. \verb@WordInfos@ cho ta biết danh sách các từ bắt đầu từ vị trí
+tiếng đó, danh sách các từ fuzzy tại tiếng đó, chiều dài từ không bị
+fuzzy. 
+
+Các hàm thường dùng của \verb@Lattice@:
+\begin{itemize}
+\item \verb@construct()@: xây dựng \verb@Lattice@ từ \verb@Sentence@.
+\item \verb@pre_construct()@, \verb@post_construct()@: các hàm bên
+  trong của \verb@construct()@, được sử dụng trực tiếp khi cần hiệu
+  chỉnh lưới từ ngay trong quá trình xây dựng lưới từ (như phần phục
+  hồi lỗi~\ldots)
+\item \verb@get_word_count()@: trả về số tiếng của câu.
+\item \verb@get_we()@: Lấy danh sách \verb@WordEntry@ của những từ bắt
+  đầu tại vị trí tiếng cho trước.
+\end{itemize}
 
 Lưới từ \verb@DAG@ được dùng để tổng quát hoá các thuật toán hoạt động
-trên cả lưới từ và lưới~2-từ. Lớp dẫn xuất \verb@WordDAG@ hoạt động
-như lưới từ cơ bản, còn lớp \verb@WordDAG2@ hoặt động như lưới~2-từ.
+trên cả lưới từ và lưới~2-từ. So với \verb@Lattice@, lớp này giống một
+lưới từ hơn. Các hàm thường dùng trong \verb@DAG@ gồm:
+\begin{itemize}
+\item \verb@node_id()@ trả về strid của nút có mã id cho trước.
+\item \verb@node_begin()@ trả về id của nút head.
+\item \verb@node_end()@ trả về id của nút tail.
+\item \verb@node_count()@ trả về số nút trong lưới từ. Các nút sẽ được
+  đánh số id từ 0 đến \verb@node_count()-1@.
+\item \verb@get_next()@ lấy danh sách các từ được nối với từ cho
+  trước.
+\item \verb@edge_value()@ trả về giá trị cạnh, cho trước hai nút.
+\end{itemize}
+
+\verb@DAG@ là lớp cơ sở. Lớp dẫn xuất \verb@WordDAG@ hoạt động như
+lưới từ cơ bản, còn lớp \verb@WordDAG2@ hoặt động như lưới~2-từ.
+\verb@WordDAG2@ có thêm một số hàm mới:
+\begin{itemize}
+\item \verb@demangle()@ chuyển cách tách từ trong lưới~2-từ về lưới từ
+  (về cơ bản là loại bỏ hai nút head/tail của lưới~2-từ).
+\item \verb@node_dag_edge()@ trả về giá trị hai nút con nằm trong nút
+  của lưới~2-từ.
+\item \verb@get_dag()@ lấy lưới từ hình thành nên lưới~2-từ.
+\end{itemize}
 
 
 \subsection{Cách tách từ}
@@ -4202,6 +4264,18 @@ lý, nội bộ chương trình sử dụng mã VISCII. Do VISCII không thể b
 quát hết Unicode, những ký tự Unicode không có trong VISCII sẽ được
 thay bằng một ký tự đặc biệt (coi như là ký tự không biết). Sau khi xử
 lý VISCII xong, chuỗi so sánh thật sự sẽ là chuỗi Unicode.
+
+\section{So sánh chuỗi}
+
+Do mọi chuỗi đều được lưu thành strid. Việc so sánh chuỗi không phân biệt 
+hoa thường là không thể thực hiện được. Do vậy, ngoài strid ``id'' tham chiếu
+đến chuỗi gốc, ta sử dụng thêm ``cid'' tham chiếu đến chuỗi được dùng để
+so sánh chuỗi. ``cid'' mặc định trong câu tham chiếu đến chuỗi đã
+chuẩn hoá. Nếu cần, ``cid'' sẽ tham chiếu đến chuỗi chuẩn hoá, viết
+thường.
+
+Khi cần thiết phải so sánh chuỗi thật sự, chương trình sẽ dùng ``id''
+để truy ngược đến chuỗi gốc, sau đó thực hiện phép so sánh chuỗi thông thường.
 
 \section{Tách token}
 \label{sub:preprocess:token}
@@ -4243,50 +4317,163 @@ INVISIBLE [^\040-\176]
   \label{fig:flex-token}
 \end{figure}
 
+
+\section{Tách câu}
+
+% sentence.cpp
+
+\section{Phân tích cấu trúc âm tiết}
+
+Lớp \verb@Syllable@ được dùng để phân tích cú pháp âm tiết. Năm thành
+phần của âm tiết (âm đầu, âm đệm, âm chính, âm cuối, thanh điệu) được
+lưu trong mảng \verb@components@. Hàm \verb@Syllable::parse()@ nhận
+một chuỗi của một âm tiết, sau đó tách âm tiết này ra và điền thông
+tin vào \verb@Syllable::components@.
+
+\section{Tìm các tiếng tương tự cách phát âm}
+
+Việc tìm các tiếng tương tự cách phát âm được cài đặt trong lớp
+\verb@Syllable@ và hàm
+\verb@FuzzyWordNode::fuzzy_get_next_with_syllable()@. Lớp
+\verb@Syllable@ sẽ thực hiện các thao tác cơ bản liên quan đến âm
+tiết, bao gồm hai hàm \verb@match@ và \verb@apply@.
+
+\verb@Syllable::match@ so sánh âm tiết với một mẫu âm tiết. Một mẫu
+âm tiết bao gồm năm thành phần như âm tiết. Mỗi thành phần xác định
+những giá trị được phép đối với thành phần đó. Các thành phần có thể
+cho phép một giá trị, hoặc không quan tâm đến giá trị của nó, hoặc
+không được tồn tại thành phần đó, hoặc phải có thành phần đó. Các
+thành phần được liệt kê lần lượt theo thứ tự: âm đầu, âm đệm, âm
+chính, âm cuối, thanh điệu. Ví dụ, \verb@[?,?,a,i,?]@ sẽ
+khớp với bất cứ âm tiết nào có âm chính là `a' và âm cuối là
+`i'. \verb@[?,?,?,?,Hook]@ sẽ khớp với bất cứ âm nào dùng
+thanh hỏi.
+
+Các mẫu âm tiết này được tập hợp lại để tạo nên tập nhầm nhằng. Một
+tập nhập nhằng bao gồm nhiều mẫu âm tiết. Ví dụ, ta có tập nhập nhằng
+\verb@[?,?,ư,t,?]@ và \verb@[?,?,ư,c,?]@ thể
+hiện sự nhập nhằng giữa những âm tiết ``ưc'' và ``ưt''. Tập nhập nhằng
+có kiểu là \verb@confusion_set@. Tất cả các tập nhập nhằng được lưu
+vào một mảng, được truy cập thông qua hàm \verb@get_confusion_sets()@.
+
+Hàm \verb@Syllable::apply()@ dùng để áp mẫu vào âm tiết đã có. Các
+thành phần tường minh trong mẫu sẽ ghi đè các thành phần tương ứng
+trong âm tiết. Nhưng thành phần quy định không tồn tại trong mẫu sẽ bị
+loại bỏ khỏi âm tiết. Những thành phần không được quy định trong mẫu
+sẽ được giữ nguyên. Các thành phần quy định tồn tại sẽ tạo ra một tập
+các âm tiết khác nhau, mỗi âm tiết tương ứng với một giá trị có thể có
+của thành phần đó.
+
+Sử dụng hai hàm trên, hàm
+\verb@fuzzy_get_next_with_syllable@ làm phần việc còn
+lại là gắn kết \verb@match()@, \verb@apply()@ và tập nhầm lẫn để tìm
+ra các âm tiết phát âm gần giống. Hàm lần lượt duyệt qua các mẫu âm
+tiết trong từng tập nhầm lẫn. Nếu âm tiết đang xét khớp với một mẫu âm
+tiết trong tập nhầm lẫn (\verb@match()@), các âm tiết còn lại của tập
+nhầm lẫn sẽ được áp vào âm tiết đang xét (\verb@apply()@) để tạo ra
+các âm tương tự. Âm tiết mới sẽ lại được duyệt qua tập nhầm lẫn như âm
+tiết đã xét để tạo ra thêm các âm tiết tương tự khác. Quá trình này sẽ
+dừng lại khi không có âm tiết mới nào được phát sinh. Sau đó, các âm
+tiết sẽ được so sánh với từ điển tiếng để lọc bỏ những âm tiết không
+đúng.
+
+\section{Tạo lưới từ}
+\subsection{Tạo lưới từ Lattice}
+Lưới từ \verb@Lattice@ được tạo thông qua hàm
+\verb@Lattice::construct()@. Thực tế, \verb@construct()@ chỉ là vỏ bọc
+gọi đến ba hàm \verb@Lattice::pre_construct()@,
+\verb@mark_proper_name()@ và \verb@post_construct()@.
+
+\verb@pre_construct()@ thực hiện công đoạn đầu tiên để tạo lưới từ:
+phát sinh tất cả các từ có thể có dựa trên từ điển và so sánh mờ. Một
+thuật toán tương tự Viterbi được sử dụng để tạo lưới từ. Chương trình
+lần lượt quét qua các vị trí tiếng, từ một đến hết. Ở mỗi vị trí,
+chương trình cố gắng nối thêm tiếng mới vào danh sách những từ chưa
+hoàn chỉnh nếu được. Nếu từ hoàn chỉnh, từ sẽ được đưa vào danh sách
+(nhưng không bị xóa khỏi danh sách từ chưa hoàn chỉnh, vì có thể có
+những từ dài hơn). Nếu không thể gắn thêm tiếng mới vào từ, từ đó sẽ
+bị loại bỏ khỏi danh sách từ chưa hoàn chỉnh. Đồng thời các tiếng đó
+cũng được đưa vào danh sách từ chưa hoàn chỉnh như là những tiếng bắt
+đầu từ mới. Công việc được thực hiện cho đến khi quét hết chiều dài
+câu. 
+
+Cấu trúc \verb@WordState@ được dùng để lưu một từ chưa hoàn chỉnh
+trong danh sách các từ chưa hoàn chỉnh. Cấu trúc này bao gồm vị trí
+bắt đầu từ, mã \verb@fuzid@ của từ, và con trỏ đến nút của tiếng cuối cùng
+hiện thời của từ trong cây từ điển. Con trỏ này sẽ được chuyển cho
+\verb@WordNode::get_next()@ để tìm ra những tiếng kế tiếp giúp hình
+thành nên từ. Thành phần \verb@fuzid@ được cập nhật sau mỗi khi thêm
+tiếng mới vào từ, cho biết đó là tiếng chính xác trên câu, hay tiếng
+gần giống với tiếng trên câu (phát sinh nhờ so sánh mờ). Mỗi bit trong
+\verb@fuzid@ tượng trưng cho một tiếng trong từ.
+
+Hàm \verb@post_construct()@ thực hiện nốt những gì còn lại để tạo nên
+lưới từ, bao gồm việc duyệt qua lưới từ, thêm các nút (như $UNK$)
+để bảo đảm đồ thị liên thông, đồng thời đưa danh sách toàn bộ các từ
+đã thu được vào lưới từ. Việc này được thực hiện bằng cách duyệt qua
+lưới từ, đánh dấu tất cả các tiếng được bao gồm trong các từ đã được
+tạo. Những tiếng chưa được đánh dấu là những tiếng không nằm trong bất
+cứ từ nào, do đó sẽ phá hủy tính liên thông của đồ thị. Trong trường
+hợp xấu nhất, ta sẽ tạo một từ $UNK$ chứa tiếng này.
+
+Lưới từ lưu danh sách từ trong mảng để đảm bảo hiệu suất, tuy nhiên
+kết quả trả về từ bước \verb@pre_construct()@ 
+lại là một tập hợp \verb@std::set@ chứ không phải một mảng. Mục đích
+của việc sử dụng tập hợp là để có thể truy xuất nhanh đến một phần từ
+trong lưới từ trong quá trình hiệu chỉnh lưới
+từ. \verb@post_construct()@ gọi hàm \verb@construct()@ (hàm override,
+không phải hàm \verb@construct()@ ban đầu) để điền các thông tin về
+\verb@WordInfos@ đảm bảo cho lưới từ có thể hoạt động.
+
+Sau khi hoàn tất tạo lưới từ, lưới từ xem như đã ổn định và sẽ không
+bao giờ thay đổi. Không một hiệu chỉnh nào được phép xảy ra sau khi đã
+hoàn tất tạo lưới từ. Chính vì vậy, việc tạo lưới từ được tách làm hai
+phần để tạo cơ hội can thiệp vào lưới từ ngay trong giai đoạn hình
+thành để có thể thêm các nút khác (phát sinh trong bước phục hồi
+lồi). Như đã nói, \verb@construct()@ gọi đến hàm
+\verb@mark_propername()@ hàm này tạo thêm những nút $PROP$ đại diện
+cho tên riêng. Các hàm khác có thể được gọi ở vị trí của hàm này nếu
+cần thay đổi lưới từ nhiều hơn.
+
+\subsection{Tạo lưới từ DAG}
+
+Lưới từ \verb@DAG@ được hình thành dựa trên lưới từ \verb@Lattice@. Có
+thể coi đây là một vỏ bọc để dễ truy cập đến lưới từ, thêm vào những
+nút head, tail~\ldots{} cho hoàn chỉnh. Các hàm trong \verb@DAG@ chỉ
+là vỏ bọc cho các hàm của \verb@Lattice@. Hai nút giả head, tail được
+tạo ra và thêm vào lưới từ. Đó là trường hợp của lưới từ cơ bản
+\verb@WordDAG@. 
+
+Với lưới~2-từ \verb@WordDAG2@, công việc phức tạp hơn. Thuật toán mở
+rộng lưới từ thành lưới~2-từ được cài đặt trong constructor của
+\verb@WordDAG2@.  Do mỗi nút của \verb@WordDAG2@ bao gồm hai nút của
+lưới từ cơ bản, ta cần lưu trữ mã các nút này trong
+\verb@WordDAG2::Node@ (các biến \verb@n1@ và \verb@n2@). Ngoài ra còn
+có biến \verb@id@ là mã nút của lưới~2-từ. Tất cả các nút của
+lưới~2-từ được lưu trong biến thành phần \verb@WordDAG2::nodes@. Hàm
+\verb@WordDAG2::demange()@ được dùng để chuyển mã từ mã nút trong
+lưới~2-từ thành mã nút trong lưới từ \verb@WordDAG@.
+
+
+\section{Danh từ riêng}
+
+% mark_proper_name
+
+\section{Xử lý tiếng Việt}
+
+% viet_*
+
+\section{Lỗi bàn phím}
+
+
+\section{Bổ sung lưới từ}
+XXX class penalty
+
 \section{Trình bắt lỗi chính tả}
 
+XXX class VSpell
 
-
-\section{Cấu trúc dữ liệu}
-
-
-\subsection{Lưu chuỗi}
-
-Mỗi chuỗi có thể có nhiều id: id gắn với chuỗi gốc ({\em id}), id gắn
-với chuỗi gốc đã chuẩn hoá ({\em sid}), id gắn với chuỗi viết thường
-({\em cid}), id  gắn với chuỗi viết thường đã chuẩn hoá ({\em
-  scid}). Các id này giúp việc so sánh được dễ dàng hơn. 
-
-Trong hầu hết quá trình hoạt động, {\em sid} sẽ được dùng. Tuy nhiên,
-cũng có khi sẽ dùng {\em scid}. Bởi vậy, mỗi chuỗi sẽ có một id khác
-là {\em fid}, hoặc bằng {\em sid}, hoặc bằng {\em scid}~\ldots{}{} {\em
-  fid} sẽ được dùng trong hầu hết các hoạt động, trừ phần tiền xử lý.
-
-Mỗi từ sẽ chỉ lưu id và fid.
-
-\subsection{Lưu từ điển}
-
-Từ điển được lưu thành một cấu trúc dạng cây. Hiện tại từ điển lưu các
-từ gốc đã chuẩn hoá, và các từ viết thường đã chuẩn hoá.
-
-Với bản huấn luyện, lưu thêm id gốc để có thể xuất ra y như cũ ??
-Không cần. Wordlist sẽ lưu theo dạng chuẩn hoá. Như vậy không cần lưu
-id gốc. Quá trình training cần có bước chuyển tiếp để đọc wordlist
-chưa chuẩn hoá, ghi ra wordlist chuẩn hoá.
-
-
-\subsection{Lưu lưới từ}
-
-Các nút trong lưới từ được lưu tập trung vào một mảng
-(WordEntries). Truy cập nút được thực hiện thông qua index của mảng
-này. Mỗi nút chứa các thông tin về từ của nút đó, bao gồm vị trí từ,
-số tiếng, index trong WordEntries~\ldots{}{}
-
-Words là một mảng tương ứng với vị trí từng tiếng trong câu. Vị trí
-của mỗi tiếng sẽ được liên kết với một danh sách các từ bắt đầu tại
-tiếng đó. Ta có thể coi danh sách này như danh sách các cạnh nối từ
-nút đang xét đến các nút kế tiếp.
-
+\section{Trình huấn luyện}
 
 \section{Dữ liệu huấn luyện}
 \label{sec:data-preprocessing}
@@ -4318,15 +4505,15 @@ Việt, mỗi từ một dòng. Các chữ cách bởi một khoảng trắng.
 Bao gồm một loạt các tập tin văn bản tiếng Việt. Mỗi dòng là một đoạn
 văn bản.
 
-\subsection{Danh sách tiếng}
-\label{sub:syllable-list}
+%% \subsection{Danh sách tiếng}
+%% \label{sub:syllable-list}
 
-Danh sách tiếng chứa mọi tiếng thông dụng nhất được sử dụng trong
-tiếng Việt. Danh sách này được rút trích từ danh sách từ, sau đó được
-lưu ở dạng chuẩn hoá.
+%% Danh sách tiếng chứa mọi tiếng thông dụng nhất được sử dụng trong
+%% tiếng Việt. Danh sách này được rút trích từ danh sách từ, sau đó được
+%% lưu ở dạng chuẩn hoá.
 
-Danh sách tiếng được rút trích tự động khi chương trình nạp danh sách
-từ.
+%% Danh sách tiếng được rút trích tự động khi chương trình nạp danh sách
+%% từ.
 
 %Chương trình syllable-extract được dùng để tạo danh sách này. Cách
 %dùng:
@@ -4386,7 +4573,7 @@ xuất là ngram mới.
 
 Chương trình được lặp đi lặp lại nhiều lần.
 
-\section{Giao tiếp với người dùng}
+\section{Giao tiếp người dùng}
 \label{sec:ui}
 
 Cố gắng khai thác tri thức của người sử dụng, nhằm bổ trợ cho trình
@@ -4421,9 +4608,6 @@ tầng bên dưới.
 
 Lưu lại các thông tin của người dùng như thế nào? Các thông tin này là
 ``global'' hay ``local''?
-
-
-
 
 
 \chapter{Đánh giá và kết luận}
@@ -4465,9 +4649,22 @@ Viết lại từ đầu :-D
 \end{itemize}
 
 \appendix
+\eject\addcontentsline{toc}{part}{Phụ lục}
 \chapter{Blah}
 
+\listoffigures
+%\refstepcounter{chapter}\addcontentsline{toc}{chapter}{\protect\numberline{\thechapter}\listfigurename}
+\addcontentsline{toc}{chapter}{\listfigurename}
+\listoftables
+%\refstepcounter{chapter}\addcontentsline{toc}{chapter}{\protect\numberline{\thechapter}\listtablename}
+\addcontentsline{toc}{chapter}{\listtablename}
+\listof{algo}{Danh sách thuật toán}
+%\refstepcounter{chapter}\addcontentsline{toc}{chapter}{\protect\numberline{\thechapter}Danh sách thuật toán}
+\addcontentsline{toc}{chapter}{Danh sách thuật toán}
+
+
 \bibliographystyle{alpha}
+%\addcontentsline{toc}{chapter}{\bibname}
 \bibliography{reference}
 
 %% \begin{thebibliography}{}

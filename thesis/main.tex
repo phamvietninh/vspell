@@ -34,15 +34,8 @@
   \begin{center}
     \Large Lời cảm ơn
   \end{center}
-balh blah blah
-balh blah blah
-balh blah blah
-balh blah blah
-balh blah blah
-balh blah blah
-balh blah blah
-balh blah blah
-
+Xin chân thành cám ơn TS. Đinh Điền và các thành viên trong nhóm VCL
+đã hỗ trợ hoàn thành luận văn này.
 \begin{flushright}
   Nguyễn Thái Ngọc Duy
 \end{flushright}
@@ -328,7 +321,6 @@ Luận văn được chia thành các chương sau:
 \chapter{Cơ sở lý thuyết ngôn ngữ}
 \label{cha:vietnamese}
 \minitoc\newpage
-
 
 
 \section{Âm tiết}
@@ -1546,9 +1538,8 @@ $i$ khi $m$ chạy từ 1 đến số sense tổng cộng trong WordNet. Nhiều
 trị đã được thử cho tham số này và tham số gần $0.20$ là tốt nhất.
 
 
-\paragraph{Thuật toán khử nhập nhằng dựa trên CD}
-
-Cho cửa sổ với kích thước nhất định, chương trình di chuyển cửa sổ mỗi
+Thuật toán khử nhập nhằng dựa trên CD như sau: Cho cửa sổ với kích
+thước nhất định, chương trình di chuyển cửa sổ mỗi 
 danh từ một lần, từ đầu câu cho đến hết, khử nhập nhằng cho danh từ ở
 chính giữa cửa sổ, xem các danh từ còn lại trong cửa sổ là ngữ
 cảnh. Đặt cửa sổ các danh từ là $W$ và danh từ chính giữa cửa sổ là
@@ -1600,10 +1591,101 @@ Việt. Hy vọng có thể áp dụng CD và các giải pháp dựa trên Word
 cho tiếng Việt trong tương lai không xa.
 
 
+\section{Tự động phát hiện và sửa lỗi chính tả}
 
 
+\subsection{Mô hình TBL}
+
+TBL\footnote{Transformation-based Learning} mô hình học có giám sát,
+được Eric Brill đưa ra vào năm 1993. Đây là mô hình học luật dựa trên
+lỗi, tạo ra các luật mới để khắc phục các lỗi còn lại sau khi đã áp
+dụng các luật trước đó. TBL được áp dụng để tự động phát hiện và sửa
+lỗi chính tả. TBL chỉ nhắm vào một tập lỗi thông dụng cho trước, chủ
+yếu là loại lỗi dùng từ sai, loại lỗi rất khó bị phát hiện bởi các
+trình bắt lỗi chính tả thông thường. Những lỗi không phải từ (lỗi nhập
+liệu~\ldots) không được xử lý bởi TBL. Phương pháp này được áp dụng
+bởi Lidia Mangu và Eric Brill~\cite{tbl} cho kết quả rất cao
+(93,15\%).
+
+TBL hoạt động như một bộ luật sửa lỗi. Dữ liệu ban đầu cần được một
+chương trình khác xử lý để phát hiện hiện và sửa lỗi chính tả. Mục
+tiêu của chương trình này phát hiện và sửa đúng lỗi chính tả càng
+nhiều càng tốt. Các lỗi gây ra bởi chương trình ban đầu này sẽ được
+sửa bởi TBL. Các luật học được từ quá trình huấn luyện TBL sẽ được áp
+dụng lần lượt theo thứ tự, sửa chữa các lỗi của do chương trình
+baseline gây ra cũng như các lỗi do chính việc áp dụng luật TBL gây
+ra. Kết quả là số lỗi sai chính tả sẽ giảm đáng kể.
+
+Các luật trong TBL là các luật dạng mẫu-hành
+động\footnote{pattern-action rule} sử dụng nhiều loại thông tin khác
+nhau để xác định ngữ cảnh. Hành động trong luật thường là thay thế
+từ đang xét bằng một từ khác. Các thông được sử dụng trong mẫu bao gồm
+vị trí tương đối của các từ so với từ đang xét, từ loại, từ~\ldots Ba
+loại mẫu được dùng trong~\cite{tbl} là:
+\begin{itemize}
+\item Từ $W$ xuất hiện trong phạm vi $\pm k$ từ chung quanh từ $w$
+  đang xét.
+\item Một mẫu xác định gồm $l$ từ/từ loại liên tiếp nhau xuất hiện
+  chung quanh $w$.
+\item Một mẫu xác định gồm các từ/từ loại không liên tiếp, xuất hiện
+  quanh $w$.
+\end{itemize}
+
+Huấn luyện TBL giống như cách áp dụng luật TBL. Dữ liệu đầu vào là một
+ngữ liệu đã được đánh dấu (từ đúng/từ sai --- nếu từ sai thì đi kèm
+với từ đúng). Thực hiện các bước sau:
+\begin{enumerate}
+\item Gỡ bỏ các đánh dấu trong ngữ liệu, đưa trở về dạng ngữ liệu thô.
+\item Đánh baseline cho ngữ liệu thô.
+\item Dựa vào các mẫu luật, phát sinh các luật. 
+\item Lần lượt áp dụng các luật lên ngữ liệu. 
+\item Tính điểm cho ngữ liệu dựa trên ngữ liệu đã đánh dấu ban đầu,
+  sau khi áp dụng từng luật lên ngữ   liệu. Điểm tăng nghĩa là kết quả
+  đúng nhiều hơn so với khi chưa áp   dụng luật. Điểm âm nghĩa là kết
+  quả sai nhiều hơn. 
+\item Nếu điểm âm, bỏ qua luật này.
+\item Nếu điểm dương, đưa luật vào danh sách luật.
+\item Nếu điểm tăng ít hơn một giới hạn cho trước, dừng thuật toán.
+\item Quay lại bước 4.
+\end{enumerate}
+
+Sau khi chấm dứt thuật toán, ta chọn khoảng $n$ luật đầu tiên. Những
+luật còn lại bị loại bỏ. $n$ luật này chính là những luật kết quả của
+quá trình huấn luyện theo mô hình TBL.
+
+Việc áp dụng TBL đòi hỏi phải có ngữ liệu đã đánh dấu (ngữ liệu vàng),
+một hàm tính điểm (được dùng trong bước 5), trình đánh dấu baseline,
+và các mẫu luật. Ngoài ra còn có một số tham số (ngưỡng dừng thuật
+toán, các tham số $n$, $k$, $l$~\ldots đã nêu trên). Việc chọn mẫu
+luật và các tham số thích hợp ảnh hưởng nhiều đến hiệu quả của TBL.
+
+Ngữ liệu đánh dấu có thể được tạo ra từ tập nhầm
+lẫn\footnote{confusion set}. Tập nhầm lẫn xác định những từ thường bị
+nhầm lẫn (Ví dụ, ``their'' và ``there'' hay ``đã'' và ``đả''~\ldots)
+Từ văn bản đúng chính tả, ta có thể áp dụng tập nhầm lẫn để tạo ra ngữ
+liệu sai chính tả. Để thực hiện đều này cần có tập nhầm lẫn.
+
+Hiệu quả của TBL phụ thuộc vào tập nhầm lẫn. Tập nhầm lẫn càng lớn
+thì khả năng sửa lỗi chính tả bằng TBL càng cao. Tuy nhiên, tập nhầm
+lẫn càng lớn thì khả năng sai sót cũng càng lớn, và chương trình không
+thể tập trung vào các lỗi thường gặp. Để TBL hiệu quả hơn, cần sử dụng
+thông tin từ loại (hoặc phân lớp từ). Tuy nhiên, một khi chưa sửa lỗi
+chính tả/tách từ xong thì việc tìm từ loại bằng các phương pháp thông
+dụng trở nên không an toàn.
+
+
+\subsection{Mô hình n-gram}
 %%% Mays et al 91 -> trigram
+
+
+\subsection{Mô hình Winnow}
+
+
+\subsection{Mô hình Danh sách quyết định}
 %%% Yarowsky 94 -> decision lists
+
+
+\subsection{Mô hình kết hợp Bộ phân lớp Bayes và Danh sách quyết định}
 %%% Golding 96 -> hybrid method
 
 \section{Bắt lỗi chính tả các ngôn ngữ châu Á}
@@ -1723,17 +1805,89 @@ Thuật toán này có nhiều biến thể khác nhau.
 \end{itemize}
 
 
-\subsection{Áp dụng HMM}
+\subsection{Mô hình HHMM}
 
+Mô hình Markov ẩn phân cấp (HHMM)\footnote{Hierarchical Hidden Markov
+  Model} được áp dụng trong~\cite{} để giải quyết bài toán tách từ
+tiếng Trung Quốc.
 
-\subsection{Áp dụng WFST}
+Mô hình HMM\footnote{Hidden Markov Model} (L. R. Rabiner, 1989) là một
+mô hình rất mạnh  để xử lý 
+ngôn ngữ tự nhiên. Tuy nhiên, HMM truyền thống khó áp dụng hiệu quả
+do một số hiện tượng phức tạp trong ngôn ngữ tự nhiên. Do vậy, Shai
+Fine et al (1998) đã đưa ra mô hình HHMM, một mô hình đệ quy, tổng
+quát hoá của HMM.
 
+HHMM bao gồm sáu thành phần ($S$, $O$, $\Pi$, $A$, $B$, $D$). 
+\begin{itemize}
+\item $D$ là số mức sâu. 
+\item $S$ là tập trạng thái hữu hạn. 
+\item $O$ là bảng chữ cái kết quả hoặc kết xuất trung gian. 
+\item $\Pi$ là xác suất trạng thái khởi đầu.
+\item $A$ là xác suất chuyển trạng thái. 
+\item $B$ là xác suất phát sinh các ký hiệu hoặc kết xuất trung gian. 
+\end{itemize}
+Sự khác nhau giữa HHMM và HMM
+là:
+\begin{itemize}
+\item Tập trạng thái $S$ có thể được tách làm nhiều tập con, tùy theo
+  số mức của nó. Một trạng thái trong $S$ được đánh dấu bằng $q_i^d$
+  với $(0<d\le D, 0<i\le|S^d|)$. Trong đó $d$ là chỉ số mức, $i$ là
+  chỉ số trạng thái, $S^d$ là tập trạng thái mức $d$. Khi $d=D$,
+  $q_i^d$ được gọi là trạng thái kết thúc vì its observation is
+  symbols. Ngược lại, nó được gọi là trạng thái nội bộ vì observation
+  của nó là từ HMM con của nó trong mức thứ $(d+1)$.
+\item Mỗi trạng thái nội bộ $q^d$ $(0<d<D)$ có những trạng thái con
+  của nó, hình thành một HMM độc lập. Trong HMM con, xác suất chuyển
+  trạng thái là:
+  $$A(q^d) = (a_{ij}(q^d)) = (P(q_j^{d+1}|q_i^{d+1}))$$
+  Véc tơ phân bố khởi đầu là:
+  $$\Pi(q^d)=(\pi^d(q_i^{d+1}))=(P(q_i^{d+1}|q^d))$$
+  Trong đó $P(q_i^{d+1}|q^d)$ được định nghĩa là xác suất của trạng
+  thái $q^d$ kích hoạt trạng thái con $q_i^{d+1}$ lúc ban đầu.
+\item Chỉ có HMM dưới đáy có thể observe các ký hiệu. Xác suất phát
+  ký hiệu tương ứng là:
+  $$B(q^D)=(b_k(q^D))=(P(o_k|q^D))$$
+  với $o_k$ nằm trong tập ký hiệu. Với mỗi HMM mức $d (d<D)$, chuỗi
+  trạng thái trong các HMM con của nó có thể xem như là
+  observation. Xác suất phát sinh có thể được ước lượng như trên.
+\end{itemize}
 
+HHMM bao gồm $D$ mức HMM mà mỗi mức này là một HMM độc lập. Hơn nữa,
+mỗi HMM chỉ liên kết với cha và con của nó. Toàn bộ tập tham số của
+HHMM được ký hiệu là:
+\begin{align}
+\lambda&=\{(\lambda(q^d))\}_{d\in\{1,\ldots,D\}}\\
+       &=\{\{A(q^d)\}_{d\in\{1,\ldots,D-1\}},\{\Pi(q^d)\}_{d\in\{1,\ldots,D-1\}},\{B(q^D)\}\}
+\end{align}
 
-\subsection{Áp dụng TBL}
+HMM là dạng đặc biệt của HHMM, khi $D=1$.
 
+Khi áp dụng HHMM để tách từ. Các từ chính là tập ký hiệu, còn các
+tiếng chính là các trạng thái. Đến đây, ta quay về bài toán HMM truyền
+thống. 
 
-\subsection{Áp dụng mô hình Source-Channel cải tiến}
+\subsection{Mô hình WFST và mạng nơ-ron}
+
+WFST\footnote{Weighted Finite State Transducer} đã được~\cite{Sproat}
+áp dụng để tách từ tiếng Trung Quốc. Ý tưởng cơ bản là áp dụng WFST
+kết hợp với trọng số là xác suất xuất hiện của mỗi từ trong ngữ
+liệu. Dùng WFST để duyệt qua câu cần xét. Cách duyệt có  trọng số lớn
+nhất sẽ là cách tách từ được chọn. Giải pháp này cũng đã được áp dụng
+trong Luận văn Tách từ tiếng Việt\footnote{Nguyễn Văn Toàn, Nguyễn Thi
+  Minh Hằng -- Khoa Công nghệ thông tin, Khoá 97, Đại học Khoa học Tự
+  nhiên} kèm với mạng nơ-ron để khử nhập nhằng. 
+
+%% \subsection{Mô hình TBL}
+
+%% TBL là mô hình học có thầy được Eric Brill đưa ra vào năm 1990. 
+
+%% Việc áp dụng TBL đòi hỏi phải có một ngữ liệu tách từ sẵn. Tuy lượng
+%% ngữ liệu không cần lớn như trong các cách áp dụng thống kê, nhưng vẫn
+%% là một lượng đáng kể. Việc tạo một ngữ liệu như thế sẽ tốn rất nhiều
+%% công sức. Đây là một điểm yếu (và cũng là điểm mạnh) của TBL.
+
+\subsection{Mô hình Source-Channel cải tiến}
 
 Mô hình này được đề nghị trong~\cite{sc}.
 

@@ -250,9 +250,9 @@ void WFST::segment_best(const Sentence &_sent,
 	vector<int> pos;
 	int len;
 	while (gen.step(pos,len)) {
-		cerr << "POS :";
-		for (int i = 0;i < len;i ++) cerr << pos[i];
-		cerr << endl;
+		//cerr << "POS :";
+		//for (int i = 0;i < len;i ++) cerr << pos[i];
+		//cerr << endl;
 		generate_misspelled_words(pos,len);
 	}
 	gen.done();

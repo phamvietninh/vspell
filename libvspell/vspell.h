@@ -45,6 +45,7 @@ public:
 	bool word_check();
 
 	void replace(unsigned from,unsigned size,const char *utf8_text);
+	std::string substr(unsigned from,unsigned size);
 
 	unsigned pos_from_syllable(const Suggestion &s);
 	unsigned pos_from_word(const Suggestion &s);

@@ -408,6 +408,21 @@ void Text::replace(unsigned from,unsigned size,const char *s)
 	vspell->replace(from+offset,size,s);
 }
 
+string Text::substr(unsigned from,unsigned size)
+{
+	const string &utf8_text = vspell->get_utf8_text();
+	const char *p = utf8_text.c_str();
+	unsigned i;
+	from += offset;
+	for (i = 0;i < from && *p;i ++)
+		p = g_utf8_next_char(p);
+	unsigned from1 = p - utf8_text.c_str();
+	for (i = 0;i < size && *p;i ++)
+		p = g_utf8_next_char(p);
+	unsigned to1 = p - utf8_text.c_str();
+	return utf8_text.substr(from1,to1-from1);
+}
+
 void Text::apply_separators(set<WordEntry> &wes)
 {
 	vector<unsigned> seps;

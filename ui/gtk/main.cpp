@@ -20,7 +20,7 @@ protected:
 
 	void show_wrong_syllables(unsigned p);
 	void show_words();
-	void show_wrong_words();
+	void show_wrong_words(unsigned p);
 
 	void iter_at(GtkTextIter &iter,int pos);
 };
@@ -42,6 +42,14 @@ static GtkWidget *ignore_button,*ignore_all_button,*spell_button,*open_button;
 static MyTextFactory myfactory;
 static VSpell vspell(myfactory);
 
+static void text_reset(GtkTextBuffer *textbuffer_main)
+{
+	GtkTextIter start,end;
+	gtk_text_buffer_get_start_iter(textbuffer_main,&start);
+	gtk_text_buffer_get_end_iter(textbuffer_main,&end);
+	gtk_text_buffer_remove_all_tags (textbuffer_main, &start,&end);
+}
+
 void MyText::iter_at(GtkTextIter &iter,int pos)
 {
 	gtk_text_buffer_get_iter_at_offset(textbuffer_main,&iter,offset+pos);
@@ -51,6 +59,7 @@ void MyText::show_wrong_syllables(unsigned p)
 {
 	Suggestions &sugg = suggestions;
 	int cc,ii,nn,i,n = sugg.size();
+	text_reset(textbuffer_main);
 	GtkTextIter start,end;
 	for (i = 0;i < n;i ++) {
 		int id = sugg[i].id;
@@ -89,12 +98,14 @@ void MyText::show_words()
 	}
 }
 
-void MyText::show_wrong_words()
+void MyText::show_wrong_words(unsigned p)
 {
 	int n,cc,nn,i,ii;
 	GtkTextIter start,end;
 
 	Suggestions &sugg = suggestions;
+	text_reset(textbuffer_main);
+	show_words();
 	n = sugg.size();
 	for (i = 0;i < n;i ++) {
 		int id = sugg[i].id;
@@ -108,21 +119,20 @@ void MyText::show_wrong_words()
 		printf("Mispelled at %d\n",id);
 		iter_at(start,from);
 		iter_at(end,to);
-		gtk_text_buffer_apply_tag_by_name (textbuffer_main, "mispelled",
+		gtk_text_buffer_apply_tag_by_name (textbuffer_main, (i == p ? "mispelled" : "mispelled2"),
 																			 &start,&end);
 	}
 }
 
 static void button_reset_callback (GtkWidget *button, gpointer data)
 {
-	GtkTextIter start,end;
-	gtk_text_buffer_get_start_iter(textbuffer_main,&start);
-	gtk_text_buffer_get_end_iter(textbuffer_main,&end);
-	gtk_text_buffer_remove_all_tags (textbuffer_main, &start,&end);
+	text_reset(textbuffer_main);
 }
 
-bool is_checking = true;
-bool ignore = true;
+static bool is_checking = true;
+static bool ignore = false;
+static bool ignore_all = false;
+static bool processed = false;
 
 static void set_state(bool spellcheck)
 {
@@ -163,10 +173,12 @@ static void button_spell_callback (GtkWidget *button, gpointer data)
 static void button_ignore_all_callback(GtkWidget *button,gpointer data)
 {
 	set_state(false);
+	ignore_all = true;
 }
 
 static void button_spell_accept_callback (GtkWidget *button, gpointer data)
 {
+		processed = true;
 }
 
 static void spell_entry_activate_callback(GtkEntry *entry, gpointer data)
@@ -341,32 +353,76 @@ bool MyText::ui_syllable_check()
 	for (i = 0;i < n;i ++) {
 		show_wrong_syllables(i);
 		// query
-		string s = get_sarch()[st[suggestions[i].id].id];
+		int from,len;
+		from = st[suggestions[i].id].start;
+		len = strlen(get_sarch()[st[suggestions[i].id].id]);
+		string s = substr(from,len);
 		gtk_entry_set_text(GTK_ENTRY(spell_entry),s.c_str());
-		ignore = false;
-		while (!gtk_main_iteration() && !ignore);
-		cerr << "Input: The right one is:" << endl;
+		processed = ignore_all = ignore = false;
+		while (!gtk_main_iteration() && !ignore && !ignore_all && !processed);
 
-		if (s.empty())
+		if (ignore)
 			continue;
-		
-		if (s == "<>")
+
+		if (ignore_all)
 			return true;							// force to exit
 
-		replace(st[suggestions[i].id].start, // from
-						strlen(get_sarch()[st[suggestions[i].id].get_id()]), // size
-						s.c_str());					// text
-		vspell->add(get_sarch()[viet_to_viscii_force(s.c_str())]);
-		return false;								// continue checking
+		if (processed) {
+			cerr << "Input: The right one is:" << endl;
+
+			const gchar *s = gtk_entry_get_text(GTK_ENTRY(spell_entry));
+
+			if (*s == 0)
+				continue;										// i don't accept an empty string
+
+			replace(st[suggestions[i].id].start, // from
+							strlen(get_sarch()[st[suggestions[i].id].get_id()]), // size
+							s);					// text
+			vspell->add(get_sarch()[viet_to_viscii_force(s)]);
+
+			return false;
+		}
+		return true;								// some things went wrong
 	}
 	return !is_checking;
 }
 
 bool MyText::ui_word_check()
 {
-	show_words();
-	show_wrong_words();
-	ignore = false;
-	while (!gtk_main_iteration() && !ignore);
+	unsigned i,n = suggestions.size();
+	for (i = 0;i < n;i ++) {
+		show_wrong_words(i);
+		// query
+		int from,len;
+		from = st[suggestions[i].id].start;
+		len = strlen(get_sarch()[st[suggestions[i].id].id]);
+		string s = substr(from,len);
+		gtk_entry_set_text(GTK_ENTRY(spell_entry),s.c_str());
+		processed = ignore_all = ignore = false;
+		while (!gtk_main_iteration() && !ignore && !ignore_all && !processed);
+
+		if (ignore)
+			continue;
+
+		if (ignore_all)
+			return true;							// force to exit
+
+		if (processed) {
+			cerr << "Input: The right one is:" << endl;
+
+			const gchar *s = gtk_entry_get_text(GTK_ENTRY(spell_entry));
+
+			if (*s == 0)
+				continue;										// i don't accept an empty string
+
+			replace(st[suggestions[i].id].start, // from
+							strlen(get_sarch()[st[suggestions[i].id].get_id()]), // size
+							s);					// text
+			vspell->add(get_sarch()[viet_to_viscii_force(s)]);
+
+			return false;
+		}
+		return true;								// some things went wrong
+	}
 	return !is_checking;
 }

@@ -2430,9 +2430,7 @@ WFST\footnote{Weighted Finite State Transducer} đã được~\cite{Sproat}
 kết hợp với trọng số là xác suất xuất hiện của mỗi từ trong ngữ
 liệu. Dùng WFST để duyệt qua câu cần xét. Cách duyệt có  trọng số lớn
 nhất sẽ là cách tách từ được chọn. Giải pháp này cũng đã được áp dụng
-trong Luận văn Tách từ tiếng Việt\footnote{Nguyễn Văn Toàn, Nguyễn Thi
-  Minh Hằng -- Khoa Công nghệ thông tin, Khoá 97, Đại học Khoa học Tự
-  nhiên} kèm với mạng nơ-ron để khử nhập nhằng. 
+trong~\cite{Tachtu} kèm với mạng nơ-ron để khử nhập nhằng. 
 
 %% \subsection{Mô hình TBL}
 
@@ -2567,7 +2565,7 @@ chuỗi từ. Do âm thanh thường bị nhiễu, nên các âm tiết có th�
 không chính xác hoàn toàn. Ngoài ra, do đặc tính của tiếng Anh nên
 cùng một chuỗi âm tiết có thể suy ra nhiều chuỗi từ khác nhau. Tác giả
 sử dụng lưới từ để tạo ra các chuỗi từ có khả năng từ chuỗi âm tiết,
-sau đó n-gram trên từ để lượng giá các chuỗi từ.
+sau đó ngram trên từ để lượng giá các chuỗi từ.
 
 Một điểm đáng chú ý ở
 đây là sự tương đồng về một mặt nào đó giữa tiếng Anh và tiếng
@@ -2580,7 +2578,7 @@ tách từ lại gặp nhiều khó khăn. Với nhận xét này, có thể th�
 toán nhận dạng tiếng nói tiếng Anh gặp cùng vấn đề với bài toán bắt
 lỗi chính tả tiếng Việt!
 
-\cite{Chang} cũng dùng mô hình ngôn ngữ dạng n-gram để đánh giá các
+\cite{Chang} cũng dùng mô hình ngôn ngữ dạng ngram để đánh giá các
 cách tách từ sau khi đã qua tiền xử lý nhập nhằng chính tả, tuy nhiên
 lại sử dùng nhiều mô hình ngôn ngữ khác nhau như 
 character bigram, word bigram, inter-word character bigram (IWCB), POS
@@ -2664,7 +2662,7 @@ Việc bắt lỗi chính tả của một văn bản được xử lý lần l�
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\textwidth]{diagram}
+  \includegraphics[width=\textwidth]{overall}
   \caption{Mô hình chung}
   \label{fig:overall-model}
 \end{figure}
@@ -2951,6 +2949,7 @@ cách nhau bằng dấu `/' hoặc `--'. Ngày tháng cũng được đánh nhã
 
 
 \subsection{Tìm lỗi chính tả}
+\label{sec:nonword:spelling-checking}
 
 Việc tìm lỗi chính tả đơn giản là duyệt qua từng token, kiểm tra xem
 token đó có trong từ điển hay không. Nếu token không có trong từ điển,
@@ -3270,13 +3269,15 @@ thành phần được thay thế. Thuật toán lỗi phát âm như sau:
 \end{algo}
 
 \subsection{Sắp xếp danh sách từ đề nghị}
+\label{sec:nonword:sort-candidates}
 
 Như đã nói trong phần~\ref{sec:sort-candidates}, có nhiều cách để sắp
 xếp danh sách từ đề nghị. Do không thể sử dụng các thông tin cú pháp,
 ngữ nghĩa, giải pháp được áp dụng là dùng mô hình ngôn ngữ (được dùng
 khi bắt lỗi real-word --- phần~\ref{sec:language-model}) sẽ được dùng
 để đánh giá các từ đề nghị, cùng với việc loại bỏ các chữ không cùng
-chữ hoa/thường với chữ gốc.
+chữ hoa/thường với chữ gốc và áp dụng thống kê tần số sử dụng của mỗi
+từ.
 
 Giải pháp được áp dụng như sau:
 \begin{algo}\caption{Sắp xếp danh sách từ đề nghị (non-word)}
@@ -3290,12 +3291,19 @@ Giải pháp được áp dụng như sau:
 
 \section{Bắt lỗi real-word}
 
+\subsection{Lưới từ}
+\label{sec:wordlattice}
+
 Bắt lỗi real-word đòi hỏi tách từ và lượng giá các cách tách từ bằng
 mô hình ngôn ngữ. Để thuận tiện xử lý, chương trình sử dụng một cấu
 trúc dữ liệu dạng đồ thị để thể hiện các từ --- gọi là lưới
 từ\footnote{word lattice}. Đây là một đồ thị có hướng không chu trình,
 với các nút là các từ trong câu, cạnh là đường nối giữa hai từ kề
-nhau, hướng thể hiện thứ tự của các từ trong câu. 
+nhau, hướng thể hiện thứ tự của các từ trong câu. Ngoài các nút là các
+từ trong câu, lưới từ có hai nút đặc biệt là nút ``head'' và nút
+``tail''. Nút ``head'' nằm ở đầu lưới từ, nối với những nút tương ứng
+với những từ đầu tiên trong câu. Ngược lại, nút ``tail'' nằm ở cuối
+lưới từ, được nối với những từ cuối cùng trong câu.
 Lưới từ chứa tất cả 
 các từ có khả năng xuất hiện trong câu. Các từ được liên kết với nhau
 theo trật tự như trong câu. Khi duyệt từ nút gốc đến nút đích, ta sẽ
@@ -3426,6 +3434,9 @@ trình bày trong phần~\ref{sec:nonword:recover:keyboard}.
 %% xác''. Từ gốc là từ có hệ số chính xác cao hơn so với các từ được phát
 %% sinh. Good or bad? Hmmm... Làm sao để làm? Hmmm Hmmm
 
+
+XXX %các hiệu chỉnh trên lỗi, chuẩn hoá độ dài ...
+
 \subsubsection{Lỗi phát âm}
 \label{sec:realword:recover:sound}
 
@@ -3452,76 +3463,77 @@ Theo~\cite{LoiChinhTa}, lỗi bao gồm các loại sau:
 \end{itemize}
 
 
-\subsubsection{Lỗi không rõ nguyên nhân UNIMPL}
+\subsubsection{Lỗi không rõ nguyên nhân}
+%% Lỗi này dựa vào {\em độ đo khoảng cách hiệu chỉnh} được đề cập
+%% trong \cite{Oflazer}. Các thao tác hiệu chỉnh được đo gồm {\em chèn,
+%% xóa, thay thế một ký tự} hoặc {\em hoán vị hai ký tự kề nhau}, để có
+%% thể chuyển đổi từ này thành từ kia. Đặt $X = x_1, x_2, \ldots{}, x_m$ và
+%% $Y = y_1,y_2,\ldots{},y_n$ là hai chuỗi có độ dài tương ứng là $m$ và
+%% $n$. $X[i]\quad(Y[j])$ biểu diễn chuỗi con ban đầu của X (Y) từ đầu từ
+%% đến ký tự thứ $j$. Cho $X$ và $Y$, độ đo $ed(X[m],Y[n])$ được tính như
+%% sau:
+%% \begin{equation}
+%% \begin{array}{rll}
+%%   ed(X[i+1],Y[j+1]) &= ed(X[i],Y[j]) & \text{nếu $x_{i+1}=y_{j+1}$
+%%   (ký tự cuối như nhau)}\\
+%%                     &= 1+min\{ed(X[i-1],Y[j-1]), & \text{nếu $x_i=y_{j+1}$}\\
+%%                     &\qquad\qquad ed(X[i+1],Y[j]), & \text{và $x_{i+1}=y_j$}\\
+%%                     &\qquad\qquad ed(X[i],Y[j+1])\}\\
+%%                     &= 1+min\{ed(X[i],Y[j]),&\text{trường hợp khác}\\
+%%                     &\qquad\qquad ed(X[i+1],Y[j]),\\
+%%                     &\qquad\qquad ed(X[i],Y[j+1])\}\\
+%%   ed(X[0],Y[j])     &=j & 0 \le j \le n\\
+%%   ed(X[i],Y[j])     &=i & 0 \le i \le n\\\\
+%%   ed(X[-1],Y[j])    &=ed(X[i],Y[-1]) = max(m,n)&\text{Biên}
+%% \end{array}
+%% \end{equation}
 
-\label{algo:ed}
-Lỗi này dựa vào {\em độ đo khoảng cách hiệu chỉnh} được đề cập
-trong \cite{Oflazer}. Các thao tác hiệu chỉnh được đo gồm {\em chèn,
-xóa, thay thế một ký tự} hoặc {\em hoán vị hai ký tự kề nhau}, để có
-thể chuyển đổi từ này thành từ kia. Đặt $X = x_1, x_2, \ldots{}, x_m$ và
-$Y = y_1,y_2,\ldots{},y_n$ là hai chuỗi có độ dài tương ứng là $m$ và
-$n$. $X[i]\quad(Y[j])$ biểu diễn chuỗi con ban đầu của X (Y) từ đầu từ
-đến ký tự thứ $j$. Cho $X$ và $Y$, độ đo $ed(X[m],Y[n])$ được tính như
-sau:
-\begin{equation}
-\begin{array}{rll}
-  ed(X[i+1],Y[j+1]) &= ed(X[i],Y[j]) & \text{nếu $x_{i+1}=y_{j+1}$
-  (ký tự cuối như nhau)}\\
-                    &= 1+min\{ed(X[i-1],Y[j-1]), & \text{nếu $x_i=y_{j+1}$}\\
-                    &\qquad\qquad ed(X[i+1],Y[j]), & \text{và $x_{i+1}=y_j$}\\
-                    &\qquad\qquad ed(X[i],Y[j+1])\}\\
-                    &= 1+min\{ed(X[i],Y[j]),&\text{trường hợp khác}\\
-                    &\qquad\qquad ed(X[i+1],Y[j]),\\
-                    &\qquad\qquad ed(X[i],Y[j+1])\}\\
-  ed(X[0],Y[j])     &=j & 0 \le j \le n\\
-  ed(X[i],Y[j])     &=i & 0 \le i \le n\\\\
-  ed(X[-1],Y[j])    &=ed(X[i],Y[-1]) = max(m,n)&\text{Biên}
-\end{array}
-\end{equation}
+%% Thuật toán có thể được khử đệ quy khi cài đặt bằng quy hoạch
+%% động. Nhận thấy $ed(X[i+1],Y[i+1])$ cần dùng
+%% $ed(X[i],Y[i])$,$ed(X[i-1],Y[i-1])$,$ed(X[i],Y[i+1])$ hoặc
+%% $ed(X[i+1],Y[i])$, ta có thể tính từ lần lượt từ thấp đến cao theo
+%% đường zig-zag bắt đầu từ đỉnh (1,1), sau đó đến đường chéo phụ (1,2),
+%% (2,1), rồi đường chéo (1,3),(2,2),(3,1)~\ldots{}
 
-Thuật toán có thể được khử đệ quy khi cài đặt bằng quy hoạch
-động. Nhận thấy $ed(X[i+1],Y[i+1])$ cần dùng
-$ed(X[i],Y[i])$,$ed(X[i-1],Y[i-1])$,$ed(X[i],Y[i+1])$ hoặc
-$ed(X[i+1],Y[i])$, ta có thể tính từ lần lượt từ thấp đến cao theo
-đường zig-zag bắt đầu từ đỉnh (1,1), sau đó đến đường chéo phụ (1,2),
-(2,1), rồi đường chéo (1,3),(2,2),(3,1)~\ldots{}
+%% \begin{algo}\caption{Tính hàm $ed$}
+%%   \label{algo:ed}
+%%   \begin{enumerate}
+%%   \item Đặt (0,0) là 0 nếu x[0] = y[0] hoặc 1 nếu ngược lại.
+%%   \item Đặt (0,j) là j
+%%   \item Đặt (i,0) là i
+%%   \item (i,j)=(i-1,j-1) nếu x[i]=y[j]
+%%   \item (i,j)=1+min\{(i-2,j-2),(i,j-1),(i-1,j)\} nếu x[i] = y[j-1]
+%%     hoặc x[i-1]=y[j]
+%%   \item (i,j)=1+min\{(i-1,j-1),(i,j-1),(i-1,j)\} trong các trường hợp còn lại
+%%   \end{enumerate}
+%% \end{algo}
 
-\begin{algo}\caption{Tính hàm $ed$}
-  \begin{enumerate}
-  \item Đặt (0,0) là 0 nếu x[0] = y[0] hoặc 1 nếu ngược lại.
-  \item Đặt (0,j) là j
-  \item Đặt (i,0) là i
-  \item (i,j)=(i-1,j-1) nếu x[i]=y[j]
-  \item (i,j)=1+min\{(i-2,j-2),(i,j-1),(i-1,j)\} nếu x[i] = y[j-1]
-    hoặc x[i-1]=y[j]
-  \item (i,j)=1+min\{(i-1,j-1),(i,j-1),(i-1,j)\} trong các trường hợp còn lại
-  \end{enumerate}
-\end{algo}
+%% Ví dụ: tính độ sai khác giữa chữ ``thắng'' và ``tắgn''. Ta tính các
+%% giá trị như bảng~\ref{tab:ed-example}. Vậy có hai khác biệt giữa hai
+%% chữ. Khác biệt thứ nhất là xoá ký tự `h'. Khác biệt thứ hai là hoán vị
+%% hay ký tự `n' và `g'.
 
-Ví dụ: tính độ sai khác giữa chữ ``thắng'' và ``tắgn''. Ta tính các
-giá trị như bảng~\ref{tab:ed-example}. Vậy có hai khác biệt giữa hai
-chữ. Khác biệt thứ nhất là xoá ký tự `h'. Khác biệt thứ hai là hoán vị
-hay ký tự `n' và `g'.
-
-\begin{table}[htbp]
-  \centering
-  \begin{tabular}{|c|c|c|c|c|c|c|}
-    \hline
-    X&-&-&t&ắ&g&n\\\hline
-    -&0&0&0&0&0&0\\\hline
-    -&0&0&1&2&3&4\\\hline
-    t&0&1&\bf 0&\bf 1&\bf 2&\bf 3\\\hline
-    h&0&2&\bf 1&\bf 1&\bf 2&\bf 3\\\hline
-    ắ&0&3&\bf 2&\bf 1&\bf 1&\bf 2\\\hline
-    n&0&4&\bf 3&\bf 2&\bf 2&\bf 1\\\hline
-    g&0&5&\bf 4&\bf 3&\bf 2&\bf 2\\\hline
-  \end{tabular}
-  \caption{Bảng $ed$ của ``thắng'' và ``tắgn''}
-  \label{tab:ed-example}
-\end{table}
+%% \begin{table}[htbp]
+%%   \centering
+%%   \begin{tabular}{|c|c|c|c|c|c|c|}
+%%     \hline
+%%     X&-&-&t&ắ&g&n\\\hline
+%%     -&0&0&0&0&0&0\\\hline
+%%     -&0&0&1&2&3&4\\\hline
+%%     t&0&1&\bf 0&\bf 1&\bf 2&\bf 3\\\hline
+%%     h&0&2&\bf 1&\bf 1&\bf 2&\bf 3\\\hline
+%%     ắ&0&3&\bf 2&\bf 1&\bf 1&\bf 2\\\hline
+%%     n&0&4&\bf 3&\bf 2&\bf 2&\bf 1\\\hline
+%%     g&0&5&\bf 4&\bf 3&\bf 2&\bf 2\\\hline
+%%   \end{tabular}
+%%   \caption{Bảng $ed$ của ``thắng'' và ``tắgn''}
+%%   \label{tab:ed-example}
+%% \end{table}
 
 \subsubsection{Phân tích âm tiết}
 \label{sec:realword:syllable}
+
+XXX% Xem lại phần âm tiết để viết phần này
 
 Để phát sinh từ dựa trên lỗi phát âm, cần phân tích cấu trúc của từng
 tiếng. Một tiếng bao gồm âm đầu, vần và thanh. Vần gồm âm đệm, âm
@@ -3547,8 +3559,6 @@ tiếng. Cài đặt theo tám cách này đơn giản và hiệu quả hơn dù
 tổng quát. Việc sắp xếp thứ tự áp dụng từng cách và một số heuristic
 sẽ giúp loại bỏ nhập nhằng khi phân tích tiếng. 
 
-
-
 \subsection{Hoàn chỉnh lưới từ}
 \label{sec:lattice:competion}
 
@@ -3561,138 +3571,258 @@ thị không còn liên thông. Bước này thêm vào các đỉnh để bảo
 liên thông. Lưới từ sẽ được duyệt lại, tìm những nơi không liên thông,
 thêm vào các đỉnh (mã ``UNK'') để đảm bảo tính liên thông. 
 
-
-
 \subsection{Áp dụng mô hình ngôn ngữ --- Tách từ}
 
 %\section{Tách từ}
-\label{sub:wordseg}
+\label{sec:language-model}
 
-Dùng thuật toán tìm kiếm theo độ ưu tiên PFS\footnote{Priority-First
-Search---PFS} để tìm đường đi ngắn nhất trên đồ thị. Khoảng cách giữa hai
+Phần này sử dụng mô hình ngôn ngữ ngram để đánh giá các cách tách từ,
+từ đó đưa ra cách tách từ tốt nhất. Dựa theo cấu trúc lưới từ, một
+cách tách từ chính là đường đi từ nút head đến nút tail. Ta có thể
+tiến hành việc lượng giá bằng cách duyệt đồ thị theo chiều sâu, tìm
+mọi cách tách từ. Với mỗi cách tách từ tìm được, mô hình ngôn ngữ sẽ
+được áp dụng để tính giá trị của cách tách từ đó.
+
+Cách trên đơn giản, nhưng không hiệu quả. Với bài toán tách từ bình
+thường (không tách từ mờ), số phân nhánh trong đồ thị không nhiều, mô
+hình này có thể áp dụng được. Tuy nhiên, với các câu dài phương pháp
+này trở nên không hiệu quả vì số lượng các cách tách từ tăng rất
+nhanh. Hãy xét một trường hợp cực đoan, một câu dài 86 chữ: ``\textit{Đó là trả
+lời của Bộ Ngoại giao nước ta tại cuộc họp báo thường kỳ ngày hôm qua trước
+câu hỏi của một số phóng viên nước ngoài về phản ứng của Việt Nam đối
+với việc Ủy ban về Tự do Tôn giáo Quốc tế của Hoa Kỳ tổ chức điều trần
+vấn đề tôn giáo Việt Nam và việc một số tổ chức tôn giáo hải ngoại kêu
+gọi trì hoãn việc phê chuẩn Hiệp định Thương mại song phương với Việt
+Nam}''. Đây là một cây trích từ một tin tức thời sự. Khi đọc lướt qua câu
+này, ta không cảm nhận được độ dài của nó. Những câu loài này trong
+các văn bản hành chính không phải hiếm gặp. Câu này có gần XXX cách
+tách từ khác nhau, dẫn đến việc tính giá trị của từng cách tách từ một
+là điều không thực tế.
+
+Thật ra, đối với bài toán tách từ thông thường, ta có thể phân tách
+câu trên thành từng đoạn ngắn hơn, do có một số từ trong câu hoàn toàn
+không nhập nhằng trong tách từ. Những từ như thế được biểu diễn trên
+lưới từ là những điểm thắt nút XXX. Nhờ những điểm này, ta có thể tách
+câu ra thành từng đoạn ngắn hơn và xử lý từng đoạn độc lập. Cách này
+tùy thuộc vào loại mô hình ngôn ngữ được áp dụng. Với mô hình unigram,
+có thể áp dụng cách này. Với mô hình bigram hoặc cao hơn, ta cần tìm
+những nút có điều kiện khắt khe hơn. Cụ thể với bigram, ta cần tìm ra
+một cặp nút thắt thì vì chỉ cần một nút. Như vậy, việc sử dụng mô hình
+bigram hay trigram, để có được mô hình ngôn ngữ hiệu quả hơn,  sẽ làm
+giảm đi số phân đoạn trong câu, làm tăng thời gian xử lý.
+
+Bài toán tách từ mờ lại càng khó khăn hơn. Do kết quả của việc phục
+hồi lỗi, số nút trong lưới từ tăng rất nhiều, hậu quả là các nút có
+thể dùng để phân đoạn giảm đáng kể, hầu như không còn. Do vậy cải tiến
+trên coi nhưng không thể phát huy tác dụng.
+
+Cải tiến trên dùng nguyên tắc quy hoạch động để cải tiến. Điều đó dẫn
+đến suy nghĩ tại sao không tận dụng quy hoạch động triệt để hơn? Thật
+sự, ta có thể áp dụng thuật toán Viterbi để giải quyết bài toán
+này. Thuật toán Viterbi đã được áp dụng thành công trong những bài
+toán tìm kiếm tương tự trong lĩnh vực nhận dạng tiếng nói.
+
+Thuật toán Viterbi có thể hoạt động, nhưng không tận dụng triệt để ưu
+điểm của lưới từ. Do mô hình ngôn ngữ được sử dụng là ngram, ta sẽ
+dùng mô hình bigram. Do mỗi nút đại diện cho một từ, cạnh nối giữa hai
+từ có thể đại diện cho xác suất bigram $logP(w_2|w_1)$, việc tính mô
+hình ngôn ngữ cho một cách tách từ:
+\begin{align}
+  P(w_1\ldots w_n)&= P(w_1|head)\prod_{i=2}^nP(w_i|w_{i-1})P(tail|w_n)\\
+  logP(w_1\ldots w_n)&= log(P(w_1|head)\prod_{i=2}^nP(w_i|w_{i-1})P(tail|w_n)\\
+  &=P(w_1|head)+\sum_{i=2}^nP(w_i|w_{i-1})+P(tail|w_n)
+\end{align}
+
+Với cách tính này, việc tính $logP(w_1\ldots w_n)$ tương đương với giá
+trị đường đi từ head đến tail (cạnh head đến nút của từ đầu tiên là
+$P(w_1|head)$, còn cạnh từ nút của từ cuối cùng đến tail là
+$P(tail|w_n)$). Việc tính $maxP$ tương đương với $minlogP$, cũng là
+tìm đướng đi ngắn nhất từ head đến tail. Bài toán cuối cùng quy về bài
+toán tìm đường đi ngắn nhất trong đồ thị có hướng, có trọng số.
+
+Thuật toán tìm đường đi ngắn nhất được dùng ở đây là thuật toán tìm
+kiếm theo độ ưu tiên PFS\footnote{Priority-First Search---PFS} để tìm
+đường đi ngắn nhất trên đồ thị. Khoảng cách giữa hai 
 điểm trong đồ thị là xác suất 2-gram của hai từ. Bài toán tìm đường
 đi ngắn nhất, có thể áp dụng PFS, Prime, Djisktra. PFS được chọn vì
 lưới từ, qua khảo sát, có thể được coi là một đồ thị thưa.
 
-Để áp dụng 3-gram thay vì 2-gram, ta sẽ sử dụng lưới 2-từ. Sau đó áp
-dụng thuật toán PFS cho đồ thị mới.
+Cách trên được áp dụng cho bigram, không thể áp dụng cho trigram do
+giả định dùng trọng số của cạnh là xác suất bigram, bigram là xác suất
+giữa hai từ liên tiếp, trong khi trigram là xác suất giữa ba từ liên
+tiếp. Để áp dụng trigram thay vì bigram, ta sẽ sử dụng lưới 2-từ. Sau
+đó áp dụng thuật toán PFS cho đồ thị mới vì mỗi nút trong lưới 2-từ
+thực chất bao gồm 3 từ liên tiếp nhau.
 
-Cách làm này không thể thực hiện với n-gram ($n > 3$) vì khi đó số
+Cách làm này không thể thực hiện với ngram ($n > 3$) vì khi đó số
 nút/cạnh trong đồ thị sẽ tăng đáng kể. Ngoài ra, PFS cũng không áp
 dụng được trong trường hợp sử dụng những độ đo như đo số lỗi sai đã
-xảy ra~\ldots{} Trong trường hợp đó ta nên sử dụng thuật toán A*~\cite{Ravishankar}
+xảy ra~\ldots{} Trong trường hợp đó ta nên sử dụng thuật toán
+Viterbi.
 
 %% XXXX. Nếu WFST cộng viterbi, beam pruning \ldots{} thì sao nhỉ?
 
-
-
-
 \subsection{Tìm lỗi chính tả}
+\label{sec:realword:spelling-checking}
 
+Sau khi tách từ xong, việc bắt lỗi chính tả cũng giống như phần bắt
+lỗi chính tả non-word~(\ref{sec:nonword:spelling-checking}).
 
 \subsection{Lập danh sách từ đề nghị}
-%\section{Tìm từ thay thế}
+\label{sec:realword:candidate-list}
 
-Do tiếng Việt đọc sao ghi vậy,
-nên bước chuyển từ từ sang âm có thể bỏ qua. Bước còn lại là áp dụng
-thuật toán đo độ hiệu chỉnh giữa hai từ như đã nêu trong~\ref{algo:ed}
-Ta có thể so sánh từng ký tự, hoặc so sánh theo âm (ví dụ, ``th'' thay
-vì ``t'' và ``h'').
+Việc lập danh sách từ đề nghị tương tự như lập danh sách từ đề nghị
+khi bắt lỗi non-word~(\ref{sec:nonword:candidate-list}). Tuy nhiên, ta
+sẽ sử dụng từ điển thay vì dùng từ điển tiếng.
 
-Chương trình sẽ liệt kê XXXX (chọn theo tiêu chí nào?, 10 từ lớn nhất
-hay sao đây)
+Việc phục hồi lỗi trong bước này là không cần thiết vì đã được thực
+hiện trong phần tách từ.
 
-XXXX. thuật toán tính ed.
+%% Do tiếng Việt đọc sao ghi vậy,
+%% nên bước chuyển từ từ sang âm có thể bỏ qua. Bước còn lại là áp dụng
+%% thuật toán đo độ hiệu chỉnh giữa hai từ như đã nêu trong~\ref{algo:ed}
+%% Ta có thể so sánh từng ký tự, hoặc so sánh theo âm (ví dụ, ``th'' thay
+%% vì ``t'' và ``h'').
+
+%% Chương trình sẽ liệt kê XXXX (chọn theo tiêu chí nào?, 10 từ lớn nhất
+%% hay sao đây)
+
+%% XXXX. thuật toán tính ed.
 
 
 
 \subsection{Sắp xếp danh sách từ đề nghị}
+\label{sec:realword:sort-candidates}
 
-
+Trong phần tách từ, ta đã xác định được cách tách từ đúng nhất nhờ áp
+dụng mô hình ngôn ngữ. Áp dụng mô hình ngôn ngữ giúp ta chọn được câu
+hợp lý nhất trong số các câu có thể hình thành từ lưới từ, việc tìm ra
+ranh giới từ chỉ là hiệu ứng phụ. Do đã chọn được câu hợp lý nhất nên
+từ đúng nhất chính là từ nằm trong câu được chọn này. Do đó, từ nằm
+trên câu được chọn cần được ưu tiên sắp ở đầu danh sách từ đề
+nghị. Những từ còn lại có thể được sắp xếp như trong
+phần~\ref{sec:nonword:sort-candidates}.
 
 \section{Huấn luyện}
 \label{sec:training}
 
-\subsection{Huấn luyện tách từ}
+Do chương trình cần một số tham số như thống kê tần số xuất hiện của
+từ, mô hình ngôn ngữ bigram, trigram~\ldots nên ta cần phải thu thập
+các tham số này. Đối với tiếng Anh, việc này tương đối dễ dàng. Tuy
+nhiên, do không thể xác định ranh giới từ tiếng Việt, ta cần phải sử
+dụng một bộ tách từ trước khi huấn luyện.
 
-\note{Tại sao không xài bộ tách từ đã có?} Hai vấn đề:
+Đối với tiếng Việt, đã có một số nghiên cứu về tách từ tiếng Việt,
+tiêu biểu là~\cite{Tachtu}. Chương trình này không sử dụng bộ tách từ
+hiện có vì các lý do sau:
 \begin{itemize}
-\item Chất lượng của bộ tách từ hiện có. (2-gram tốt hơn unigram~\ldots{}...)
-\item Nếu thống kê trên mọi cách tách từ thì không thể dùng bộ tách từ
-  hiện có vì chỉ tạo ra kết quả sau cùng.
+\item Bộ tách từ trong~\cite{Tachtu} sử dụng unigram. Trên lý thuyết,
+  bigram/trigram tốt hơn unigram do chứa đựng thông tin về ngữ cảnh.
+\item Do bộ tách từ thống kê thường phụ thuộc vào ngữ liệu, nếu sử
+  dụng một bộ tách từ trên lĩnh vực khác với lĩnh vực được huấn luyện
+  cho trình bắt lỗi chính tả, kết quả sẽ không như mong đợi.
+\item Cách tách từ được đề nghị tạo ra mô hình ngôn ngữ tốt hơn so với
+  cách sử dụng bộ tách từ rồi thống kê trên đó (sẽ giải thích chi tiết
+  bên dưới)
 \end{itemize}
 
+\subsection{Huấn luyện mô hình ngôn ngữ}
 
-Có thể huấn luyện dựa trên dữ liệu mẫu, hoặc dữ liệu thô. Do hầu hết
-các phương pháp tách từ đều dựa trên ngram ($n\ge 1$) nên rất cần có
-khối lượng dữ liệu huấn luyện lớn nhằm đạt tính bao quát. Dữ liệu
-mẫu, được tách từ sẵn, thường không đủ để huấn luyện. Giải pháp chủ
-yếu là huấn luyện dựa trên dữ liệu thô, chưa tách từ.
+XXX % đưa cái này lên phần cơ sở tin học/huấn luyện
+%% Có thể huấn luyện dựa trên dữ liệu mẫu, hoặc dữ liệu thô. Do hầu hết
+%% các phương pháp tách từ đều dựa trên ngram ($n\ge 1$) nên rất cần có
+%% khối lượng dữ liệu huấn luyện lớn nhằm đạt tính bao quát. Dữ liệu
+%% mẫu, được tách từ sẵn, thường không đủ để huấn luyện. Giải pháp chủ
+%% yếu là huấn luyện dựa trên dữ liệu thô, chưa tách từ.
 
-Thuật toán thường dùng nhất để huấn luyện trên dữ liệu thô là thuật
-toán EM. Nhiều người đã cố gắng cải tiến EM theo nhiều cách khác nhau
-nhằm nâng cao chất lượng huấn luyện, đồng thời hạn chế những khuyết
-điểm của EM. 
+%% Thuật toán thường dùng nhất để huấn luyện trên dữ liệu thô là thuật
+%% toán EM. Nhiều người đã cố gắng cải tiến EM theo nhiều cách khác nhau
+%% nhằm nâng cao chất lượng huấn luyện, đồng thời hạn chế những khuyết
+%% điểm của EM. 
 
-\cite{self-supervised} đề nghị cách giải quyết hạn chế ``tối ưu cục
-bộ'' của EM, bằng cách phân phối lại từ vựng sau mỗi lần chạy và khởi
-động lại EM với điểm khởi đầu tốt hơn.
+%% \cite{self-supervised} đề nghị cách giải quyết hạn chế ``tối ưu cục
+%% bộ'' của EM, bằng cách phân phối lại từ vựng sau mỗi lần chạy và khởi
+%% động lại EM với điểm khởi đầu tốt hơn.
 
-\cite{text-tiling} sử dụng một lượng nhỏ ngữ liệu huấn luyện có chất
-lượng cao (\textit{seed set}) và một lượng lớn ngữ liệu có chất lượng
-không thật bảo đảm (\textit{training set}), xử lý qua 4 bước:
-\begin{enumerate}
-\item \textbf{Phân đoạn tập huấn luyện}
-\item \textbf{Phân hạng tập huấn luyện}
-\item \textbf{Tổ hợp tập huấn luyện}
-\item \textbf{Language model pruning}
-\end{enumerate}
+%% \cite{text-tiling} sử dụng một lượng nhỏ ngữ liệu huấn luyện có chất
+%% lượng cao (\textit{seed set}) và một lượng lớn ngữ liệu có chất lượng
+%% không thật bảo đảm (\textit{training set}), xử lý qua 4 bước:
+%% \begin{enumerate}
+%% \item \textbf{Phân đoạn tập huấn luyện}
+%% \item \textbf{Phân hạng tập huấn luyện}
+%% \item \textbf{Tổ hợp tập huấn luyện}
+%% \item \textbf{Language model pruning}
+%% \end{enumerate}
 
+Như đã nói, tính toán mô hình ngôn ngữ cần phải tách từ. Trong phần
+bắt lỗi real-word, ta đã thực hiện được phần tách từ mờ. Do dữ liệu
+huấn luyện được xem là chính xác nên chỉ cần tách từ bình thường. Do
+đó ta sẽ bỏ qua phần Tạo lưới từ mở rộng, giữ nguyên lưới từ cơ
+bản, và phần bắt lỗi non-word. Tóm lại, các bước thực hiện gồm khối
+tiền xử lý, theo sau là các bước Tạo lưới từ và Tách từ. Trong phần
+tách từ, ta chỉ cần dùng PFS thay vì Bellman-Ford vì lưới từ không có
+trọng số âm.
 
-\subsection{Tiền xử lý}
-Giống như phần~\ref{sub:preprocess}
-
-
-\subsection{Tạo Lưới từ}
-Giống như phần~\ref{sub:lattice}, nhưng chỉ xét những từ nào thực sự
-có trong câu, sử dụng lưới từ thay vì lưới từ mở rộng.
-
-
-\subsection{Thống kê n-gram}
-\label{sub:wordcount}
+%% Tiền xử lý giống như phần~\ref{sub:preprocess}
+%% Tạo Lưới từ giống như phần~\ref{sub:lattice}, nhưng chỉ xét những từ nào thực sự
+%% có trong câu, sử dụng lưới từ thay vì lưới từ mở rộng.
 
 Nếu dùng PFS để tách từ, ta chỉ có 1 cách tách từ tốt nhất. Việc đếm
-từ sẽ dựa trên cách tách từ này.
+từ sẽ dựa trên cách tách từ này. Cách này cho kết quả tương tự như bộ
+tách từ rời, trừ việc áp dụng bigram/trigram thay cho unigram.
+%XXX Bellman-Ford
 
-Như đã nói, có thể dùng WFST hoặc dùng thuật toán trong
-\cite{softcount} (tạm gọi là thuật toán ``soft-count'') để tách
-từ. WFST phải dùng kèm với beam pruning để tránh bùng nổ số tổ hợp các
-cách tách từ. Sau khi dùng WFST, ta còn n cách tách từ, có thể đếm
-fractional count (được đề cập bên dưới) trên các cách tách từ này.
-
-Trường hợp nhiều cách tách từ, ta có thểm đếm từ trên tất cả các cách
-tách, thay vì chỉ đếm trên cách tách từ tốt nhất. Cách này phản ánh
-tầm ảnh hưởng của các từ tốt hơn. Ví dụ, ta có 3 cách tách từ với xác
+Thay vì chỉ sử dụng một cách tách từ, ta có thể thống kê trên nhiều
+cách tách từ của cùng một câu. Cách này phản ánh
+giá trị của các từ chính xác hơn. Ví dụ, ta có 3 cách tách từ với xác
 suất các cách tách từ tương ứng lần lượt là 0,5, 0,4 và 0,1. Cách chỉ
 dùng cách tách từ tốt nhất sẽ chỉ tính những từ trong cách tách từ
-đầu, với giá trị mỗi từ là 1,0. Cách tính này ``dồn phiếu'' của 2 cách
-sau cho cách đầu. Trường hợp sau, các từ trong cách 2 và 3 vẫn được
+đầu, với giá trị mỗi từ là 1,0. 
+%Cách tính này ``dồn phiếu'' của 2 cách sau cho cách đầu. 
+Trường hợp sau, các từ trong cách 2 và 3 vẫn được
 tính. Số đếm của mỗi từ không còn là 1, mà là xác suất của cách tách
-từ chứa từ đó. Trở lại ví dụ, các từ trong cách một sẽ được cộng thêm
+từ chứa từ đó. Trở lại ví dụ cũ, các từ trong cách một sẽ được cộng thêm
 0,5 thay vì 1. Ngoài ra các từ trong cách 2 và 3 lần lượt được cộng
 0,4 và 0,1. Dễ thấy, các từ trong cách tách từ thấp sẽ không tăng số
-đếm đáng kể, do đó không thể gây ảnh hưởng lớn đến quyết định tách từ.
-Cách cộng dồn số như vậy được gọi là ``fractional count'' (hay trong
-\cite{softcount} gọi là ``soft-count'').
+đếm đáng kể, do đó không thể gây ảnh hưởng lớn đến quyết định tách
+từ.
+Cách cộng dồn số như vậy được gọi là ``fractional count'' (hay
+trong~\cite{softcount} gọi là ``soft-count''). Do bộ tách từ rời chỉ
+trả về cách tách từ tốt nhất, nên ta không thể áp dụng fractional
+count dựa trên bộ tách từ rời. Đó là một trong những lý do không sử
+dụng bộ tách từ rời.
 
-Luận văn này thuật toán soft-count để đếm mọi cách tách từ. Soft-count
-thực tế không kết xuất ra một cách tách từ cụ thể nào (và do vậy nên
-cũng không thể áp dụng để tìm cách tách từ tốt nhất được!). Thay vào
-đó, thuật toán đếm mọi từ thể có. Thuật toán được mô tả trong
-\cite{softcount} không dùng từ điển. Mọi chuỗi con trong câu đều được
+Thay vì tính trên mọi cách tách từ (có thể rất lớn nếu câu dài), ta có
+thể dùng WFST
+% hoặc dùng thuật toán trong~\cite{softcount} (tạm gọi là thuật toán
+% ``soft-count'')
+ để tách  
+từ. WFST phải dùng kèm với beam pruning để tránh bùng nổ số tổ hợp các
+cách tách từ. Sau khi dùng WFST, ta còn n cách tách từ tốt nhất, được
+dùng để đếm fractional count.
+
+
+Tuy nhiên, tốt hơn hết vẫn là tính trên tất cả các cách tách từ, nếu có
+thể. \cite{softcount}~đưa ra một giải pháp (tạm gọi là thuật toán
+``soft-count'') áp dụng quy hoạch động để giải quyết vấn đề này.
+Soft-count thực tế không kết xuất ra một cách tách từ cụ thể nào (và
+do vậy nên 
+cũng không thể áp dụng để tìm cách tách từ tốt nhất được!). Thuật toán
+đếm mọi từ thể có theo cách khác, không cần dựa trên cách tách từ hoàn
+chỉnh. Thuật toán được mô tả trong~\cite{softcount} không dùng từ điển. Mọi chuỗi con trong câu đều được
 cho là từ. Điểm này, vừa là điểm mạnh vì không cần dùng từ
 điển, nhưng cũng là điểm yếu vì yếu tố này làm giảm độ chính xác một
-cách đáng kể (khoảng 20\%, như kết quả trong \cite{softcount}).
+cách đáng kể (khoảng 20\%, như kết quả trong~\cite{softcount}).
+
+
+\subsubsection{Thuật toán Soft-count}
+
+
+\subsubsection{Thuật toán Soft-count mới để áp dụng bigram}
+
+\subsubsection{Thuật toán Soft-count mới để áp dụng trigram}
+
+
 
 Giả sử câu S có $n$ tiếng, $2^{n-1}$ cách tách từ khác nhau, xác suất
 mỗi cách tách từ là $p(1),p(2),\ldots{},p(n)$.
@@ -3772,8 +3902,7 @@ $P^{right}$, vì thuật toán cũng phải duyệt qua tất cả các từ.
 
 Tuy nhiên, thuật toán trên (cũng như thuật toán gốc) sử dụng
 uni-gram, trong khi trình bắt lỗi lại dùng 2-gram. Để cho phép thuật
-toán dùng 2-gram, ta có thể tạo một lưới 2-từ như cách của
-\cite{Ravishankar} khi muốn tách từ dựa trên 3-gram. Tuy nhiên, để áp
+toán dùng 2-gram, ta có thể tạo một lưới 2-từ như cách của~\cite{Ravishankar} khi muốn tách từ dựa trên 3-gram. Tuy nhiên, để áp
 dụng cách này với 3-gram đòi hỏi phải tạo lưới 3-từ! Số lượng nút
 trong lưới 3-từ nhiều hơn nhiều so với lưới từ gốc, làm giảm tính hiệu
 quả của thuật toán. 
@@ -3842,13 +3971,13 @@ sau:
 Với cách tính này, ta có thể dùng lưới từ cùng với 2-gram. Để tính
 3-gram, ta dùng lưới 2-từ. 
 
-\subsection{Tính n-gram}
+%% \subsection{Tính ngram}
 
-N-gram được tính như thông thường. Sử dụng backoff chuẩn. Thư viện
-SRILM được dùng để tính n-gram.
+%% Ngram được tính như thông thường. Sử dụng backoff chuẩn. Thư viện
+%% SRILM được dùng để tính ngram.
 
 
-\section{Lỗi chính tả}
+%\section{Lỗi chính tả}
 
 % \note{Phân loại lỗi, nguyên nhân gây lỗi}
 
@@ -3966,7 +4095,7 @@ Nhiệm vụ:
 \begin{itemize}
 \item Tạo danh sách tiếng, chuẩn hoá danh sách tiếng.
 \item Tiền xử lý ngữ liệu.
-\item Huấn luyện n-gram, tạo ra dữ liệu n-gram.
+\item Huấn luyện ngram, tạo ra dữ liệu ngram.
 \end{itemize}
 
 
@@ -4049,8 +4178,8 @@ liệu sau cùng là các tập tin văn bản, mỗi dòng là một đoạn.
 \label{sub:training-data}
 
 Chương trình \verb#wfst-train# được dùng để huấn luyện dữ liệu. Thông
-tin nhập là danh sách từ, danh sách tiếng, n-gram (nếu có). Thông tin
-xuất là n-gram mới.
+tin nhập là danh sách từ, danh sách tiếng, ngram (nếu có). Thông tin
+xuất là ngram mới.
 
 Chương trình được lặp đi lặp lại nhiều lần.
 

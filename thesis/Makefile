@@ -1,5 +1,5 @@
 EXT = .png
-main$(EXT): main.tex wordlattice$(EXT) wordlattice1$(EXT) wordlattice2$(EXT) syllable$(EXT)
+main$(EXT): main.tex wordlattice$(EXT) wordlattice1$(EXT) wordlattice2$(EXT) syllable$(EXT) overall.png
 	pdflatex $<&& pdflatex $<
 %.png: %.dot
 	DOTFONTPATH=~/.fonts dot -Tpng -o $@ $<

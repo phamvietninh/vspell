@@ -4,8 +4,8 @@
 #include <string.h>
 #include <sstream>
 #include "config.h"
-#include "spell.h"
-#include "sentence.h"
+#include <spell.h>
+#include <sentence.h>
 
 using namespace std;
 void print_all_words(const Words &words);
@@ -131,9 +131,9 @@ void text_show_syllables(const Sentence &st,const Suggestions &sugg)
 	for (i = 0;i < n;i ++) {
 		int id = sugg[i].id;
 		int from = st[id].start;
-		int len = strlen(Dictionary::sarch[st[id].id]);
+		int len = strlen(sarch[st[id].id]);
 		printf("Syllable Mispelled: %d (%s) at %d\n",
-					 id,Dictionary::sarch[st[id].id],from);
+					 id,sarch[st[id].id],from);
 		gtk_text_buffer_get_iter_at_offset(textbuffer_main,&start,from);
 		gtk_text_buffer_get_iter_at_offset(textbuffer_main,&end,from+len);
 		gtk_text_buffer_apply_tag_by_name (textbuffer_main, "mispelled",
@@ -155,7 +155,7 @@ void text_show_words(const Sentence &st,const Segmentation &seg)
 			continue;
 		}
 		int from = st[cc].start;
-		int to = st[cc+nn-1].start+strlen(Dictionary::sarch[st[cc+nn-1].id]);
+		int to = st[cc+nn-1].start+strlen(sarch[st[cc+nn-1].id]);
 		printf("From %d to %d(%d)\n",from,to,n);
 		gtk_text_buffer_get_iter_at_offset(textbuffer_main,&start,from);
 		gtk_text_buffer_get_iter_at_offset(textbuffer_main,&end,to);
@@ -179,7 +179,7 @@ void text_show_wrong_words(const Sentence &st,const Segmentation &seg,const Sugg
 		nn = seg.items[id].state->get_syllable_count();
 
 		int from = st[cc].start;
-		int to = st[cc+nn-1].start+strlen(Dictionary::sarch[st[cc+nn-1].id]);
+		int to = st[cc+nn-1].start+strlen(sarch[st[cc+nn-1].id]);
 		printf("Mispelled at %d\n",id);
 		gtk_text_buffer_get_iter_at_offset(textbuffer_main,&start,from);
 		gtk_text_buffer_get_iter_at_offset(textbuffer_main,&end,to);
@@ -199,7 +199,7 @@ void sentence_process(const char *pp)
 	st.tokenize();
 
 	// syllable checking
-	Spell::check1(st,sugg);
+	spell_check1(st,sugg);
 
 	// show mispelled syllables
 	text_show_syllables(st,sugg);
@@ -208,7 +208,7 @@ void sentence_process(const char *pp)
 	if (/*n == 0*/1) {
 		WFST wfst;
 		wfst.enable_ngram();
-		wfst.set_wordlist(Dictionary::get_root());
+		wfst.set_wordlist(get_root());
 		wfst.get_all_words(st,words);
 		print_all_words(words);
 		wfst.segment_best(st,words,seg);
@@ -220,7 +220,7 @@ void sentence_process(const char *pp)
 
 		// word checking
 		sugg.clear();
-		Spell::check2(st,seg,sugg);
+		spell_check2(st,seg,sugg);
 		
 		// show mispelled words
 		text_show_wrong_words(st,seg,sugg);
@@ -263,16 +263,16 @@ int main(int argc,char **argv)
 {
   gtk_init(&argc,&argv);
 
-  Dictionary::initialize(new Dictionary::FuzzyWordNode(Dictionary::sarch["<root>"]));
+  dic_init(new FuzzyWordNode(sarch["<root>"]));
 
   cerr << "Loading dictionary... ";
-  Dictionary::get_root()->load("wordlist.wl");
+  get_root()->load("wordlist.wl");
   cerr << "done" << endl;
   cerr << "Loading ngram... ";
   File f("ngram","rt");
-  Dictionary::ngram.write(f);
+  ngram.write(f);
   cerr << "done" << endl;
-	Dictionary::sarch.set_blocked(true);
+	sarch.set_blocked(true);
 
   GtkWidget *window_main = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   gtk_window_set_default_size(GTK_WINDOW(window_main),400,200);
@@ -334,7 +334,6 @@ int main(int argc,char **argv)
 
 void button_search_callback(GtkWidget *button, gpointer data)
 {
-	using namespace Dictionary;
 	GtkWidget *entry_search = GTK_WIDGET(data);
 	const char *text = gtk_entry_get_text(GTK_ENTRY(data));
 

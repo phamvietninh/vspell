@@ -6,15 +6,15 @@ using namespace std;
 
 int main()
 {
-  Dictionary::initialize(new WordNode);
+  dic_init(new WordNode::WordNode(sarch["<-root->"]));
 
   cerr << "Loading... ";
-  Dictionary::get_root()->load("wordlist.wl");
+  get_root()->load("wordlist.wl");
   cerr << "done" << endl;
 
   string str;
   while (cin >> str) {
-    cout << str << " -> " << Dictionary::is_syllable_exist(str) << endl;
+    cout << str << " -> " << is_syllable_exist(str) << endl;
   }
   return 0;
 }

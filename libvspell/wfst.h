@@ -16,15 +16,15 @@ public:
 	private:
 	public:
 		int start;
-		Dictionary::strid id,cid;
+		strid id,cid;
 		//std::string::iterator start,end;
 		Sentence *sent_;
 		int category;
 		int span;
-		int sid;
+		int sid;										// faked id
 
-		Dictionary::strid get_id() const { return sid >= 0 ? sid : id; }
-		Dictionary::strid get_cid() const { return sid >= 0 ? sid : cid; }
+		strid get_id() const { return sid >= 0 ? sid : id; }
+		strid get_cid() const { return sid >= 0 ? sid : cid; }
 	};
 
 private:
@@ -54,7 +54,7 @@ struct Segmentation
 	struct Item {
 		int flags;			// Separator mark
 		int distance;		// from ed() or fuzzy syllable
-		Dictionary::WordNodePtr state; // used to get prob.
+		WordNodePtr state; // used to get prob.
 
 		Item():flags(0),distance(0),state(NULL) {}
 	};
@@ -68,8 +68,8 @@ struct Segmentation
 };
 
 struct WordInfo {
-	Dictionary::WordNode::DistanceNode exact_match;
-	std::vector<Dictionary::WordNode::DistanceNode> fuzzy_match;
+	WordNode::DistanceNode exact_match;
+	std::vector<WordNode::DistanceNode> fuzzy_match;
 };
 typedef std::vector<WordInfo*> WordInfos;
 class Words:public std::vector<WordInfos*> {
@@ -79,10 +79,10 @@ public:
 	int get_fuzzy_count(int i,int l) const { 
 		return (*(*this)[i])[l]->fuzzy_match.size();
 	}
-	Dictionary::WordNode::DistanceNode& get_fuzzy(int i,int l,int f) {
+	WordNode::DistanceNode& get_fuzzy(int i,int l,int f) {
 		return (*(*this)[i])[l]->fuzzy_match[f];
 	}
-	const Dictionary::WordNode::DistanceNode& get_fuzzy(int i,int l,int f) const{
+	const WordNode::DistanceNode& get_fuzzy(int i,int l,int f) const{
 		return (*(*this)[i])[l]->fuzzy_match[f];
 	}
 	~Words();											// WARN: destroy all.
@@ -92,13 +92,13 @@ public:
 class WFST
 {
 protected:
-	Dictionary::WordNodePtr wl;  
+	WordNodePtr wl;  
 	bool ngram_enabled;
 
 public:
 	WFST():wl(NULL),ngram_enabled(false) {}
 
-	bool set_wordlist(Dictionary::WordNodePtr _wl) {
+	bool set_wordlist(WordNodePtr _wl) {
 		wl = _wl;
 		return true;
 	}

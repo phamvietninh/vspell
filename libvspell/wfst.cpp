@@ -7,7 +7,6 @@
 #include <fstream>
 
 using namespace std;
-using namespace Dictionary;
 
 
 void Sentence::standardize()
@@ -279,7 +278,7 @@ void print_all_words(const Words &words)
 			int nnnn = words.get_fuzzy_count(i,ii);
 			cerr << "Len " << ii << endl;
 			for (int iii = 0;iii < nnnn;iii ++) {
-				cerr << Dictionary::sarch[words.get_fuzzy(i,ii,iii).node->get_id()] << " ";
+				cerr << sarch[words.get_fuzzy(i,ii,iii).node->get_id()] << " ";
 				cerr << words.get_fuzzy(i,ii,iii).node->get_syllable_count() << " ";
 				cerr << words.get_fuzzy(i,ii,iii).distance << " ";
 				cerr << words.get_fuzzy(i,ii,iii).node->get_prob() << endl;

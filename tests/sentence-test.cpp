@@ -3,13 +3,12 @@
 #include <algorithm>
 
 using namespace std;
-using namespace Dictionary;
 
 int main()
 {
   string str;
 
-  initialize(new WordNode(sarch["<root>"]));
+  dic_init(new WordNode(sarch["<root>"]));
   
   while (getline(cin,str)) {
     vector<string> output;

@@ -6,7 +6,7 @@
 #include <cmath>
 #include <cstdio>
 #include <sstream>
-#include <srilm/NgramStats.h>
+#include <libsrilm/NgramStats.h>
 
 void iterate(ostream &os,int level);
 
@@ -17,13 +17,13 @@ vector<Sentence> sentences;
 
 int main()
 {
-  Dictionary::initialize(new Dictionary::WordNode(Dictionary::sarch["<root>"]));
+  dic_init(new WordNode(sarch["<root>"]));
 
   cerr << "Loading... ";
-  Dictionary::get_root()->load("wordlist.wl");
+  get_root()->load("wordlist.wl");
   cerr << "done" << endl;
 
-  wfst.set_wordlist(Dictionary::get_root());
+  wfst.set_wordlist(get_root());
   ifstream ifs("corpus2");
   if (!ifs.is_open()) {
     cerr << "Can not open corpus\n";
@@ -56,7 +56,7 @@ void print_all_words(const Words &words);
 void iterate(ostream &os,int level)
 {
   int ist,nr_sentences = sentences.size();
-  NgramStats stats(Dictionary::sarch.get_dict(),2);
+  NgramStats stats(sarch.get_dict(),2);
   for (ist = 0;ist < nr_sentences;ist ++) {
     Sentence &st = sentences[ist];
   
@@ -95,18 +95,18 @@ void iterate(ostream &os,int level)
   }
 
   cerr << "Calculating... ";
-  Dictionary::get_root()->get_next(Dictionary::unk_id)->get_b() = 0;
-  Dictionary::get_root()->recalculate();
-  Dictionary::ngram.estimate(stats);
+  get_root()->get_next(unk_id)->get_b() = 0;
+  get_root()->recalculate();
+  ngram.estimate(stats);
   //wfst.enable_ngram(true);
 
   cerr << "Saving... ";
   ostringstream oss;
   oss << "wordlist.wl." << level;
-  Dictionary::get_root()->save(oss.str().c_str());
+  get_root()->save(oss.str().c_str());
   
   ostringstream oss1;
   oss1 << "ngram." << level;
   File f(oss1.str().c_str(),"wt");
-  Dictionary::ngram.write(f);
+  ngram.write(f);
 }

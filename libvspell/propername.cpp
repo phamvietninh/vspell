@@ -1,4 +1,28 @@
+#include "propername.h"
+#include "dictionary.h"
+#include <libsrilm/File.h>
+#include <set>
+
+//using namespace Dictionary;
+using namespace std;
+
 bool find_capital_words(Sentence &st,int start,int &pos,int &len);
+
+set<strid> last_names;
+
+bool proper_name_initialize()
+{
+  File ifs("last-names.lst","rt");
+
+  if (ifs.error())
+    return false;
+
+  char *line;
+  while ((line = ifs.getline()) != NULL) {
+    last_names.insert(sarch[line]);
+  }
+  return true;
+}
 
 void mark_proper_name(Sentence &st)
 {
@@ -9,12 +33,12 @@ void mark_proper_name(Sentence &st)
   // hmm.. these should be treated like other words for spelling checking.
 
   // individual name is easier: Nguyen Thai Ngoc Duy
-  // these are usually started with common sirname like Nguyen, Tran, ...
+  // these are usually started with common last name like Nguyen, Tran, ...
   // there are 2-5 words in a name.
 
   // there are 2 approaches:
   // one try to find contiguous capitalized word then check for proper name
-  // other try to find sirname first and find the rest.
+  // other try to find last name first and find the rest.
   // which one is better?
 
   // if one started with a capital word, then we should check the rest with
@@ -28,8 +52,14 @@ void mark_proper_name(Sentence &st)
     if (!find_capital_words(st,pos+len,npos,nlen))
       break;
 
-    // check for sirname
-    // check for proper name
+    // check for last name
+    if (last_names.find(st[npos].id) != last_names.end()) {
+      // mark as a personal name.
+      st[npos].span = nlen;	// skip next nlen syllables.
+      st[npos].sid = sarch["<propername>"];//proper_name_id;
+    }
+
+    // check for other proper names
     pos = npos;
     len = nlen;
   }

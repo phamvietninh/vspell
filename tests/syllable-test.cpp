@@ -6,7 +6,7 @@ using namespace std;
 
 int main()
 {
-  Dictionary::Syllable i;
+  Syllable i;
   string str;
   
   while (cin >> str) {

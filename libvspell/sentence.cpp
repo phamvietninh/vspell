@@ -1,6 +1,5 @@
 #include "sentence.h"
 using namespace std;
-using namespace Dictionary;
 
 void sentences_split(const string &_input,vector<string> &output)
 {

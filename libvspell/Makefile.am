@@ -8,6 +8,7 @@ libvspell_a_SOURCES = \
 	spell.cpp spell.h\
 	wfst.cpp wfst.h\
 	words.cpp sections.cpp\
+	tokenize.ll\
 	debug.h
 INCLUDES = -I$(top_builddir)/libsrilm
 libvspell_a_LIBADD = $(top_builddir)/libsrilm/libsrilm.a

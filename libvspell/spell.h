@@ -181,6 +181,8 @@ public:
 /**
 	 Sentence is used to store a sequence of syllables.
 	 Sentence and Words will keep all necessary info for a spelling checker.
+	 "Sentence" here is not exactly a sentence. It's just a part of sentence
+	 separated by punctuation.
  */
 
 class Sentence

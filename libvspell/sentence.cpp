@@ -46,6 +46,38 @@ void Sentence::standardize()
  Split punctiations off the token
  \param s input token
  \param ret a sequence of tokens
+
+ Here is summary from SATZ tokenize.l:
+ LN = letters and numbers
+ LNS = letters and numbers and some: .:'$%-\/& and 0x7F
+ A = apostrophe '
+ SC = single characters: LN + #_;!?@*+=~|^&,:$%\ 0x7F ( ) [ ] { } < > "
+ WS = white space (space tab new line)
+ NL = new line
+ INV = invisible (out of 32-127)
+
+ SENTENCE_FINAL			[.?!]
+ HYPHEN				[\-]
+ OPEN_SINGLE_QUOTE		[\`]
+ CLOSE_SINGLE_QUOTE		[\']
+ RIGHT_PAREN                     [\"\)\]\}\>\']
+
+ <p> <s> </p> </s> --> do nothing (**end**)
+ SENTENCE_FINAL+RIGHT_PAREN*               .) ?) !)  ?" . ? !
+ HYPHEN+                                   -  -- ---
+ OPEN_SINGLE_QUOTE+                        `  `` ```
+ CLOSE_SINGLE_QUOTE+                       '  '' '''
+ LNS+LN                                    all end with a letter or a number
+ LN+A                                      he' ll run
+ SC                --> token.              c (fallback)
+ WS|NL             --> ignore.             should be replaced
+ WSNL+             --> token.
+
+ Should we use flex or hand code?
+ Flex is less error-prone, but it's hard to specify Vietnamese letters.
+ Hand code is all right, but hard to extend later.
+
+ Choose flex for i'm lazy ;)
 */
 
 void Sentence::tokenize_punctuation(const string &s,vector<string> &ret)

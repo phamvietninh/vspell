@@ -13,6 +13,23 @@ using namespace std;
 
 int ngram_length = 2;						// for lazy men ;)
 
+/**
+	 Don't know how to name this class. 
+	 It is used to generate a "to hop" ;)
+ */
+
+
+class ZZZ
+{
+private:
+	std::vector<int> limit,iter;
+	int nr_limit,cur;
+
+public:
+	void init(const std::vector<int> &limit);
+	bool step(std::vector<int> &pos);
+	void done();
+};
 
 /*
 	Create a "template" segmentation. Mark all sections in template to sects
@@ -104,6 +121,8 @@ bool Generator::step(vector<int> &_pos,int &_len)
 	return false;
 }
 
+typedef vector<Segmentations> Segmentation2;
+
 /**
 	Generate new Words info based on misspelled position info.
 	Call WFST::get_sections() to split into sections
@@ -138,6 +157,8 @@ void WFST::generate_misspelled_words(const vector<int> &pos,int len)
 	// 5. Call create_base_segmentation
 	//Segmentation base_seg;
 	//create_base_segmentation(words,sects,base_seg);
+	Segmentation2 seg2;
+	seg2.resize(sects.size());
 
 	// 6. Call segment_all1 for each sections.
 	n = sects.size();
@@ -155,18 +176,40 @@ void WFST::generate_misspelled_words(const vector<int> &pos,int len)
 			seg.prob = 0;
 			VocabIndex *vi = new VocabIndex[ngram_length];
 			vi[ngram_length] = Vocab_None;
-			for (int i = ngram_length-1;i < seg.size();i ++) {
+			for (int ii = ngram_length-1;ii < seg.size();ii ++) {
 				for (int j = 0;j < ngram_length-1;j++)
-					vi[j] = seg[i-1-j].node.node->get_id();
-				seg.prob += -ngram.wordProb(seg[i].node.node->get_id(),vi);
+					vi[j] = seg[ii-1-j].node.node->get_id();
+				seg.prob += -ngram.wordProb(seg[ii].node.node->get_id(),vi);
+			}
+
+			seg2[i/*sects[i].segment*/].push_back(seg); // need sort
+
+			//cout << seg << " " << seg.prob << endl;
+		}
+
+		vector<int> limits;
+		vector<int> vals;
+		limits.resize(sects.size());
+		for (int i = 0;i < sects.size();i ++)
+			limits[i] = seg2[i].size();
+		ZZZ z;
+		z.init(limits);
+
+		while (z.step(vals)) {
+			// merge seg to base seg.
+			seg.clear();
+			for (int ii = 0;ii < vals.size();ii ++) {
+				//cerr << ii << " " << vals[ii] << endl;
+				copy(seg2[ii][vals[ii]].begin(),
+						 seg2[ii][vals[ii]].end(),
+						 back_insert_iterator< Segmentation >(seg));
 			}
 
 			cout << seg << " " << seg.prob << endl;
-			// merge seg to base seg.
-		
 			// 6.1. Recompute the score after each section processed. (pruning 2)
 		}
-
+		z.done();
+		
 	}
 
 
@@ -344,3 +387,43 @@ bool Segmentor::step(Segmentation &result)
 void Segmentor::done()
 {
 }
+
+void ZZZ::init(const vector<int> &_limit)
+{
+	limit = _limit;
+	nr_limit = limit.size();
+	iter.resize(nr_limit);
+	cur = 0;
+}
+
+void ZZZ::done()
+{
+}
+
+/**
+	Generate every possible 3-misspelled-positions. 
+	Then call WFST::generate_misspelled_words.
+ */
+
+bool ZZZ::step(vector<int> &_pos)
+{
+	while (cur >= 0) {
+
+		if (cur == nr_limit) {
+			_pos = iter;
+			cur --;
+			return true;
+		}
+
+		if (iter[cur] < limit[cur]-1) {
+			iter[cur] ++;
+			cur ++;
+			iter[cur] = 0;
+			continue;
+		} else {
+			cur --;
+		}
+	}
+	return false;
+}
+

@@ -21,13 +21,13 @@ static gunichar unicode_str[] = {
 	 259,7855,7857,7859,7861,7863,
 	 233, 232,7867,7869,7865,
 	 234,7871,7873,7875,7877,
-  7879, 237, 236,7881, 297,7883,
+	7879, 237, 236,7881, 297,7883,
 	 243, 242,7887, 245,7885,
 	 244,7889,7891,7893,7895,
-  7897, 417,7899,7901,7903,7905,
-  7907, 250, 249,7911, 361,7909,
+	7897, 417,7899,7901,7903,7905,
+	7907, 250, 249,7911, 361,7909,
 	 432,7913,7915,7917,7919,
-  7921, 253,7923,7927,7929,7925,
+	7921, 253,7923,7927,7929,7925,
 	 273,
 	 193, 192,7842, 195,7840,
 	 194,7844,7846,7848,7850,7852,
@@ -37,64 +37,64 @@ static gunichar unicode_str[] = {
 	 205, 204,7880, 296,7882,
 	 211, 210,7886, 213,7884,
 	 212,7888,7890,7892,7894,
-  7896, 416,7898,7900,7902,7904,
-  7906, 218, 217,7910, 360,7908,
+	7896, 416,7898,7900,7902,7904,
+	7906, 218, 217,7910, 360,7908,
 	 431,7912,7914,7916,7918,7920,
 	 221,7922,7926,7928,7924,
 	 272,
-  0
+	0
 };
 
 void viet_utf8_to_viscii(const gchar *in,char *out) // pre-allocated
 {
-  const gchar *p = in;
-  gunichar ch;
-  int i,n = strlen(viscii_str);
-  while ((ch = g_utf8_get_char(p)) != 0) {
-    p = g_utf8_next_char(p);
-    if (ch < 128) {
-      *out++ = ch;
-      continue;
-    }
-    for (i = 0;i < n;i ++)
-      if (unicode_str[i] == ch) {
+	const gchar *p = in;
+	gunichar ch;
+	int i,n = strlen(viscii_str);
+	while ((ch = g_utf8_get_char(p)) != 0) {
+		p = g_utf8_next_char(p);
+		if (ch < 128) {
+			*out++ = ch;
+			continue;
+		}
+		for (i = 0;i < n;i ++)
+			if (unicode_str[i] == ch) {
 				*out++ = viscii_str[i];
 				break;
-      }
+			}
 
-    if (i >= n) {
-      fprintf(stderr,"Warning: unexpected unicode character %d",ch);
-      *out++ = (unsigned char)ch;
-    }
-  }
-  *out = 0;
+		if (i >= n) {
+			fprintf(stderr,"Warning: unexpected unicode character %d",ch);
+			*out++ = (unsigned char)ch;
+		}
+	}
+	*out = 0;
 }
 
 void viet_viscii_to_utf8(const char *in,gchar *out) // pre-allocated
 {
-  unsigned char *p = (unsigned char*)in;
-  unsigned char ch;
-  int i,n = strlen(viscii_str);
-  while ((ch = *p) != 0) {
-    p++;
-    if (ch < 128) {
-      *out++ = ch;
-      continue;
-    }
-    for (i = 0;i < n;i ++)
-      if ((unsigned char)viscii_str[i] == ch) {
+	unsigned char *p = (unsigned char*)in;
+	unsigned char ch;
+	int i,n = strlen(viscii_str);
+	while ((ch = *p) != 0) {
+		p++;
+		if (ch < 128) {
+			*out++ = ch;
+			continue;
+		}
+		for (i = 0;i < n;i ++)
+			if ((unsigned char)viscii_str[i] == ch) {
 				g_unichar_to_utf8(unicode_str[i],out);
 				out = g_utf8_next_char(out);
 				break;
-      }
+			}
 
-    if (i >= n) {
-      fprintf(stderr,"Warning: unexpected viscii character %d",ch);
+		if (i >= n) {
+			fprintf(stderr,"Warning: unexpected viscii character %d",ch);
 			g_unichar_to_utf8(ch,out);
 			out = g_utf8_next_char(out);
-    }
-  }
-  *out = 0;
+		}
+	}
+	*out = 0;
 }
 
 char* viet_to_viscii(const char *in)
@@ -118,9 +118,9 @@ char* viet_to_utf8(const char *in)
 
 static void button_reset_callback (GtkWidget *button, gpointer data)
 {
-  GtkTextIter start,end;
-  gtk_text_buffer_get_start_iter(textbuffer_main,&start);
-  gtk_text_buffer_get_end_iter(textbuffer_main,&end);
+	GtkTextIter start,end;
+	gtk_text_buffer_get_start_iter(textbuffer_main,&start);
+	gtk_text_buffer_get_end_iter(textbuffer_main,&end);
 	gtk_text_buffer_remove_all_tags (textbuffer_main, &start,&end);
 }
 
@@ -234,15 +234,15 @@ void sentence_process(const char *pp)
 static void button_spell_callback (GtkWidget *button, gpointer data)
 {
 
-  GtkTextIter start,end;
-  gtk_text_buffer_get_start_iter(textbuffer_main,&start);
-  gtk_text_buffer_get_end_iter(textbuffer_main,&end);
+	GtkTextIter start,end;
+	gtk_text_buffer_get_start_iter(textbuffer_main,&start);
+	gtk_text_buffer_get_end_iter(textbuffer_main,&end);
 
 	button_reset_callback(NULL,NULL);
 
-  gchar *buffer = gtk_text_buffer_get_text(textbuffer_main,&start,&end,FALSE);
-  int len = g_utf8_strlen(buffer,-1);
-  char *pp = viet_to_viscii(buffer);
+	gchar *buffer = gtk_text_buffer_get_text(textbuffer_main,&start,&end,FALSE);
+	int len = g_utf8_strlen(buffer,-1);
+	char *pp = viet_to_viscii(buffer);
 
 	vector<string> pps;
 	sentences_split(pp,pps);
@@ -253,39 +253,39 @@ static void button_spell_callback (GtkWidget *button, gpointer data)
 
 static void button_exit_callback (GtkWidget *button, gpointer data)
 {
-  exit(0);
+	exit(0);
 }
 
 static void window_destroy_callback (GtkObject *object,
 																		 gpointer user_data)
 {
-  exit(0);
+	exit(0);
 }
 
 static void button_search_callback(GtkWidget *button, gpointer data);
 
 int main(int argc,char **argv)
 {
-  gtk_init(&argc,&argv);
+	gtk_init(&argc,&argv);
 
 	//	sarch["<root>"];
 	dic_init(new FuzzyWordNode(sarch["<root>"]));
 
-  cerr << "Loading dictionary... ";
-  get_root()->load("wordlist.wl");
-  cerr << "done" << endl;
-  cerr << "Loading ngram... ";
-  File f("ngram","rt");
-  ngram.write(f);
-  cerr << "done" << endl;
+	cerr << "Loading dictionary... ";
+	get_root()->load("wordlist.wl");
+	cerr << "done" << endl;
+	cerr << "Loading ngram... ";
+	File f("ngram","rt");
+	ngram.write(f);
+	cerr << "done" << endl;
 	sarch.set_blocked(true);
 
-  GtkWidget *window_main = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-  gtk_window_set_default_size(GTK_WINDOW(window_main),400,200);
-  g_signal_connect(window_main,"destroy",G_CALLBACK(window_destroy_callback),NULL);
+	GtkWidget *window_main = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_default_size(GTK_WINDOW(window_main),400,200);
+	g_signal_connect(window_main,"destroy",G_CALLBACK(window_destroy_callback),NULL);
 
-  GtkWidget *vbox_main = gtk_vbox_new(FALSE,10);
-  gtk_container_add(GTK_CONTAINER(window_main),vbox_main);
+	GtkWidget *vbox_main = gtk_vbox_new(FALSE,10);
+	gtk_container_add(GTK_CONTAINER(window_main),vbox_main);
 
 
 	GtkWidget *hbox_search = gtk_hbox_new(FALSE,10);
@@ -302,12 +302,12 @@ int main(int argc,char **argv)
 	gtk_label_set_line_wrap(GTK_LABEL(log_main),true);
 	gtk_box_pack_start(GTK_BOX(vbox_main),log_main,FALSE,FALSE,10);
 	
-  
+	
 	GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL,NULL);
-  gtk_box_pack_start(GTK_BOX(vbox_main),scrolled_window,TRUE,TRUE,0);
+	gtk_box_pack_start(GTK_BOX(vbox_main),scrolled_window,TRUE,TRUE,0);
 
-  tagtable_main = gtk_text_tag_table_new();
-  textbuffer_main = gtk_text_buffer_new(tagtable_main);
+	tagtable_main = gtk_text_tag_table_new();
+	textbuffer_main = gtk_text_buffer_new(tagtable_main);
 	gtk_text_buffer_create_tag (textbuffer_main, "mispelled",
 															"weight", PANGO_WEIGHT_BOLD,
 															"style", PANGO_STYLE_ITALIC,
@@ -317,25 +317,25 @@ int main(int argc,char **argv)
 															"underline", (gboolean)TRUE,
 															NULL);
 
-  textview_main = gtk_text_view_new_with_buffer(textbuffer_main);
+	textview_main = gtk_text_view_new_with_buffer(textbuffer_main);
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(textview_main),GTK_WRAP_WORD);
 	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window),textview_main);
 
-  GtkWidget *hbox_command = gtk_hbox_new(TRUE,10);
-  gtk_box_pack_start(GTK_BOX(vbox_main),hbox_command,FALSE,TRUE,0);
+	GtkWidget *hbox_command = gtk_hbox_new(TRUE,10);
+	gtk_box_pack_start(GTK_BOX(vbox_main),hbox_command,FALSE,TRUE,0);
 
-  GtkWidget *button_spell = gtk_button_new_with_mnemonic("_Check");
-  g_signal_connect(button_spell,"clicked",G_CALLBACK(button_spell_callback),NULL);
-  GtkWidget *button_reset = gtk_button_new_with_mnemonic("_Reset");
-  g_signal_connect(button_reset,"clicked",G_CALLBACK(button_reset_callback),NULL);
-  GtkWidget *button_exit = gtk_button_new_with_mnemonic("_Exit");
-  g_signal_connect(button_exit,"clicked",G_CALLBACK(button_exit_callback),NULL);
-  gtk_box_pack_start(GTK_BOX(hbox_command),button_spell,FALSE,TRUE,0);
-  gtk_box_pack_start(GTK_BOX(hbox_command),button_reset,FALSE,TRUE,0);
-  gtk_box_pack_start(GTK_BOX(hbox_command),button_exit,FALSE,TRUE,0);
+	GtkWidget *button_spell = gtk_button_new_with_mnemonic("_Check");
+	g_signal_connect(button_spell,"clicked",G_CALLBACK(button_spell_callback),NULL);
+	GtkWidget *button_reset = gtk_button_new_with_mnemonic("_Reset");
+	g_signal_connect(button_reset,"clicked",G_CALLBACK(button_reset_callback),NULL);
+	GtkWidget *button_exit = gtk_button_new_with_mnemonic("_Exit");
+	g_signal_connect(button_exit,"clicked",G_CALLBACK(button_exit_callback),NULL);
+	gtk_box_pack_start(GTK_BOX(hbox_command),button_spell,FALSE,TRUE,0);
+	gtk_box_pack_start(GTK_BOX(hbox_command),button_reset,FALSE,TRUE,0);
+	gtk_box_pack_start(GTK_BOX(hbox_command),button_exit,FALSE,TRUE,0);
 
-  gtk_widget_show_all(window_main);
-  gtk_main();
+	gtk_widget_show_all(window_main);
+	gtk_main();
 }
 
 void button_search_callback(GtkWidget *button, gpointer data)

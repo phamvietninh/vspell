@@ -5,7 +5,10 @@
 #include "spell.h"
 #endif
 
-bool proper_name_initialize();
-void mark_proper_name(Sentence &st);
+#include <set>
+
+bool proper_name_init();
+void mark_proper_name(const Sentence &sent,std::set<WordEntry> &we);
+//void mark_proper_name(Sentence &st);
 
 #endif

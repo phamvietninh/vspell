@@ -7,6 +7,7 @@
 #include <fstream>
 #include <boost/format.hpp>
 #include <set>
+#include "propername.h"
 
 
 using namespace std;
@@ -98,6 +99,8 @@ void Words::construct(const Sentence &sent)
 		
 		states1.swap(states2);
 	}
+
+	mark_proper_name(sent,we);
 
 	// make sure that one can go from source to destination, without gaps.
 	for (i = 0;i < n;i ++)

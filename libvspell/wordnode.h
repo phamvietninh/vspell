@@ -88,8 +88,9 @@ public:
 
 	bool load(const char* filename);
 	bool save(const char* filename);
+	void add_entry(strid id);
+private:
 	void add_entry(std::vector<std::string> toks);
-
 };
 
 class FuzzyWordNode:public WordNode {

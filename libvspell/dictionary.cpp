@@ -8,6 +8,7 @@
 #include "dictionary.h"
 #include "wordnode.h"
 #include "distance.h"
+#include "propername.h"
 #include <math.h>
 #ifndef _SArray_cc_
 #include <libsrilm/SArray.cc>
@@ -38,22 +39,18 @@ bool syllable_init();
 bool dic_init(WordNodePtr _root)
 {
 	syllable_init();
+	proper_name_init();
 	ed_init();
 	myroot = _root;
 	sarch["<unused>"]; // 0, don't use
-	unk_id = sarch[get_dic_syllable("<unk>")];
-	start_id = sarch[get_dic_syllable("<s>")];
-	stop_id = sarch[get_dic_syllable("</s>")];
-	vector<string> toks(3);
-	toks[0] = "<unk>";
-	toks[1] = "N";
-	toks[2] = "0";
-	myroot->add_entry(toks);
-	toks[1] = "<s>";
-	myroot->add_entry(toks);
-	toks[1] = "</s>";
-	myroot->add_entry(toks);
-	// if 
+	unk_id = sarch["<unk>"];
+	start_id = sarch["<s>"];
+	stop_id = sarch["</s>"];
+	proper_name_id = sarch["<prop>"];
+	myroot->add_entry(unk_id);
+	myroot->add_entry(start_id);
+	myroot->add_entry(stop_id);
+	myroot->add_entry(proper_name_id);
 	return true;
 }
 
@@ -224,6 +221,21 @@ void WordNode::add_entry(vector<string> toks)
 		} else
 		cnode->info = node->info;
 	*/
+}
+
+void WordNode::add_entry(strid id)
+{
+	WordNodePtr next = get_next(id);
+	if (!next) {							// create new
+		next = create_next(id);
+	}
+
+	next->info.reset(new WordInfo);
+	next->info->id = id;
+	next->info->syllables.resize(1+1);
+	next->info->syllables[1] = Vocab_None;
+	next->info->syllables[0] = id;
+	next->set_prob(0);
 }
 
 bool WordNode::save(const char* filename)

@@ -18,14 +18,14 @@ namespace Spell {
     for (i = 0;i < n;i ++) {
       strid id = st[i].get_cid();
       if (sarch.in_dict(id))
-	continue;
+				continue;
 
       st[i].sid = unk_id;
 
       VocabString s = sarch[id];
       if (strlen(s) == 1 && viet_isupper(s[0]) && viet_islower(s[0])) {
-	st[i].sid = sarch["<PUNCT>"];
-	continue;
+				st[i].sid = sarch["<PUNCT>"];
+				continue;
       }
 
       Suggestion _s;

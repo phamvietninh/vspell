@@ -305,17 +305,23 @@ namespace Dictionary {
 		confusion_sets.push_back(confusion_set());
 		confusion_sets.back().push_back(Syllable(NULL,NULL,"߽","n"));
 		confusion_sets.back().push_back(Syllable(NULL,NULL,"߽","ng"));
-
+		
 		confusion_sets.push_back(confusion_set());
 		confusion_sets.back().push_back(Syllable(NULL,NULL,"߽","t"));
 		confusion_sets.back().push_back(Syllable(NULL,NULL,"߽","c"));
+		
+		confusion_sets.push_back(confusion_set());
+		confusion_sets.back().push_back(Syllable(NULL,NULL,NULL,NULL,Syllable::Hook));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,NULL,NULL,Syllable::Tilde));
+		confusion_sets.back().push_back(Syllable(NULL,NULL,NULL,NULL,Syllable::Dot));
 		return true;
 	}
 
 	Syllable::Syllable(const char*  _first_consonant,
-				 const char*  _padding_vowel,
-				 const char*  _vowel,
-				 const char*  _last_consonant)
+										 const char*  _padding_vowel,
+										 const char*  _vowel,
+										 const char*  _last_consonant,
+										 int d)
 	{
 		int __first_consonant = -1;
 		int __padding_vowel = -1;
@@ -372,7 +378,7 @@ namespace Dictionary {
 		components[Padding_Vowel] 	= __padding_vowel;
 		components[Vowel] 		= __vowel;
 		components[Last_Consonant] 	= __last_consonant;
-		components[Diacritic] 	= -1;
+		components[Diacritic] 	= d;
 	}
 
 	bool Syllable::match(const Syllable &sample)

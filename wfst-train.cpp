@@ -52,6 +52,7 @@ int main()
   return 0;
 }
 
+void print_all_words(const Words &words);
 void iterate(ostream &os,int level)
 {
   int ist,nr_sentences = sentences.size();
@@ -62,24 +63,7 @@ void iterate(ostream &os,int level)
     Segmentation seg;
     Words words;
     wfst.get_all_words(st,words);
-    /*
-    {
-    int i, nn = words.size();
-    for (i = 0;i < nn;i ++) {
-    int nnn = words[i].size();
-    cerr << "From " << i << endl;
-    for (int ii = 0;ii < nnn;ii ++) {
-    int nnnn = words[i][ii].fuzzy_match.size();
-    cerr << "Len " << ii << endl;
-    for (int iii = 0;iii < nnnn;iii ++) {
-    cerr << Dictionary::sarch[words[i][ii].fuzzy_match[iii].node->get_id()] << " ";
-    cerr << words[i][ii].fuzzy_match[iii].node->get_syllable_count() << " ";
-    cerr << words[i][ii].fuzzy_match[iii].distance << " ";
-    cerr << words[i][ii].fuzzy_match[iii].node->get_prob() << endl;
-    }
-    }
-    }
-    }*/
+    //print_all_words(words);
     wfst.segment_best(st,words,seg);
     seg.print(os,st);
 

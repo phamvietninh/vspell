@@ -20,7 +20,7 @@ void Sentence::tokenize_punctuation(const string &s,vector<string> &ret)
 	int len = s.size();
 	while (start < len) {
 		if (pos < len) {
-			npos = s.find_first_of("!()'\";:.,?/",pos);
+			npos = s.find_first_of("!#()'\";:.,?/",pos);
 			if (npos == string::npos)
 				npos = len;
 			pos = npos+1;
@@ -29,6 +29,15 @@ void Sentence::tokenize_punctuation(const string &s,vector<string> &ret)
 				if ((s[npos] == '.' || s[npos] == ',') &&
 						(npos+1 < len && s[npos+1] >= '0' && s[npos+1] <= '9'))
 					continue;			// skip the dot/comma
+
+				// date
+				if ((s[npos] == '/') &&
+						(npos+1 < len && s[npos+1] >= '0' && s[npos+1] <= '9'))
+					continue;
+
+				// only split dot when it's in the end.
+				if (s[npos] == '.' && npos+1 != len)
+					continue;
 			}
 		} else
 			npos = len;
@@ -170,8 +179,6 @@ void WFST::segment_best(const Sentence &_sent,
 			}
 		}
 	}
-
-
 
 	/*
 		vector<Segmentation>::iterator i;
@@ -342,7 +349,7 @@ void WFST::segment_all1(const Sentence &sent,
 		segs.pop_back();
 		Segmentation seg = trace.s;
 		int next_syllable = trace.next_syllable;
-		cerr << segs.size() << " " << count << endl;
+//		cerr << segs.size() << " " << count << endl;
 
 		// segmentation completed. throw it away
 		// TUNE: do we need these? -> yes we do

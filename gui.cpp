@@ -6,6 +6,8 @@
 #include "config.h"
 #include "spell.h"
 
+using namespace std;
+
 static GtkTextTagTable *tagtable_main;
 static GtkTextBuffer *textbuffer_main;
 static GtkWidget *textview_main;
@@ -161,6 +163,7 @@ static void button_spell_callback (GtkWidget *button, gpointer data)
 	// try segmentation
 	if (/*n == 0*/1) {
 		WFST wfst;
+		wfst.enable_ngram();
 		wfst.set_wordlist(Dictionary::get_root());
 		wfst.get_all_words(st,words);
 		print_all_words(words);
@@ -231,8 +234,12 @@ int main(int argc,char **argv)
 
   Dictionary::initialize();
 
-  cerr << "Loading... ";
+  cerr << "Loading dictionary... ";
   Dictionary::get_root()->load("wordlist.wl");
+  cerr << "done" << endl;
+  cerr << "Loading ngram... ";
+  File f("ngram","rt");
+  Dictionary::ngram.write(f);
   cerr << "done" << endl;
 	Dictionary::sarch.set_blocked(true);
 

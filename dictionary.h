@@ -144,9 +144,10 @@ namespace Dictionary {
 		//    diacritics 	diacritic;
 
 		Syllable(const char*  _first_consonant = NULL,
-			 const char*  _padding_vowel = NULL,
-			 const char*  _vowel = NULL,
-			 const char*  _last_consonant = NULL);
+						 const char*  _padding_vowel = NULL,
+						 const char*  _vowel = NULL,
+						 const char*  _last_consonant = NULL,
+						 int diacritic = -1);
 
 
 		bool match(const Syllable &sample);

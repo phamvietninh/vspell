@@ -9,90 +9,89 @@
 #include <iostream>
 #include "sentence.h"
 #include <libsrilm/NgramStats.h>
+#include <boost/format.hpp>
 
 using namespace std;
 
-void iterate(ostream &os,int level);
-
 WFST wfst;
-vector<Sentence> sentences;
 
 int main(int argc,char **argv)
 {
-  dic_init(argc > 1 ? new WordNode(sarch["<root>"]) : new WordNode(sarch["<root>"]));
+  if (argc < 3) {
+    fprintf(stderr,"Need at least 2 argument.\n");
+    return 0;
+  }
+  
+  char *oldres = argv[1];
+  char *newres = argv[2];
+  bool nofuz = true;
+  bool nofuz2 = true;
+  const char *str;
+
+  dic_init(nofuz ? 
+	   new WordNode(sarch["<root>"]) : 
+	   new FuzzyWordNode(sarch["<root>"]));
 
   cerr << "Loading... ";
-  get_root()->load("wordlist.wl");
+  str = (boost::format("wordlist.wl.%s") % oldres).str().c_str();
+  get_root()->load(str);
+  str = (boost::format("ngram.%s") % oldres).str().c_str();
+  File f(str,"rt",0);
+  if (!f.error())
+    ngram.read(f);
   cerr << "done" << endl;
+
+  sarch.set_blocked(true);
 
   wfst.set_wordlist(get_root());
 
   string s;
+  int i,ii,iii,n,nn,nnn,z;
+  int count = 0;
+  NgramStats stats(sarch.get_dict(),2);
   while (getline(cin,s)) {
     if (s.empty())
       continue;
+    count ++;
+    if (count % 200 == 0)
+      cerr << count << endl;
     vector<string> ss;
     sentences_split(s,ss);
-    for (int i = 0;i < ss.size();i ++) {
-      sentences.push_back(Sentence(ss[i]));
-      Sentence &st = sentences.back();
+    for (z = 0;z < ss.size();z ++) {
+      Sentence st(ss[z]);
       st.standardize();
       st.tokenize();
-    }
-  }
-/*
-  for (int i = 0;i < 50;i ++) {
-    ostringstream oss;
-    oss << "log." << i;
-    ofstream ofs(oss.str().c_str());
-    cerr << "Iteration " << i << "... ";
-    iterate(ofs,i);
-    cerr << "done" << endl;
-  }
-*/
-  return 0;
-}
+      Words words;
+      words.construct(st);
+      Segmentation seg(words.we);
+      if (nofuz2)
+	wfst.segment_best_no_fuzzy(words,seg);
+      else
+	wfst.segment_best(words,seg);
 
-void print_all_words(const Words &words);
-void iterate(ostream &os,int level)
-{
-  int ist,nr_sentences = sentences.size();
-  NgramStats stats(sarch.get_dict(),2);
-  for (ist = 0;ist < nr_sentences;ist ++) {
-    Sentence &st = sentences[ist];
-  
-    Words words;
-    words.construct(st);
-    Segmentation seg(words.we);
-    //print_all_words(words);
-    wfst.segment_best(words,seg);
-    cerr << seg << endl;
+      //seg.pretty_print(cout,st) << endl;
 
-
-#ifdef TRAINING
-    int i,ii,iii,n,nn,nnn;
-    n = seg.items.size();
-    VocabIndex *vi = new VocabIndex[n+1];
-    vi[n] = Vocab_None;
-    for (i = 0;i < n;i ++)
-      vi[i] = seg.items[i].state->get_id();
-    stats.countSentence(vi);
-
-    n = words.size();
-    for (i = 0;i < n;i ++) {
-      nn = words[i].size();
-      for (ii = 0;ii < nn;ii ++) {
-	nnn = words[i][ii].fuzzy_match.size();
-	for (iii = 0;iii < nnn;iii ++) {
-	  words[i][ii].fuzzy_match[iii].node->inc_b();
-	}
+      n = seg.size();
+      VocabIndex *vi = new VocabIndex[n+1];
+      vi[n] = Vocab_None;
+      for (i = 0;i < n;i ++) {
+	vi[i] = seg[i].node.node->get_id();
+	//cerr << "<" << sarch[vi[i]] << "> ";
       }
-    }
+      //cerr << endl;
+      stats.countSentence(vi);
+      delete[] vi;
 
-    n = seg.items.size();
-    for (i = 0;i < n;i ++)
-      seg.items[i].state->inc_a();
-#endif
+      const WordEntries &we = *words.we;
+      n = we.size();
+      for (i = 0;i < n;i ++) {
+	we[i].node.node->inc_b();
+      }
+
+      n = seg.size();
+      for (i = 0;i < n;i ++)
+	seg[i].node.node->inc_a();
+    }
   }
 
   cerr << "Calculating... ";
@@ -102,12 +101,23 @@ void iterate(ostream &os,int level)
   //wfst.enable_ngram(true);
 
   cerr << "Saving... ";
-  ostringstream oss;
-  oss << "wordlist.wl." << level;
-  get_root()->save(oss.str().c_str());
+  str = (boost::format("wordlist.wl.%s") % newres).str().c_str();
+  get_root()->save(str);
   
-  ostringstream oss1;
-  oss1 << "ngram." << level;
-  File f(oss1.str().c_str(),"wt");
-  ngram.write(f);
+  str = (boost::format("ngram.%s") % newres).str().c_str();
+  File ff(str,"wt");
+  ngram.write(ff);
+  cerr << endl;
+  /*
+    for (int i = 0;i < 50;i ++) {
+    ostringstream oss;
+    oss << "log." << i;
+    ofstream ofs(oss.str().c_str());
+    cerr << "Iteration " << i << "... ";
+    iterate(ofs,i);
+    cerr << "done" << endl;
+    }
+  */
+  return 0;
 }
+

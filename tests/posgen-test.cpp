@@ -8,16 +8,12 @@ using namespace std;
 
 int main()
 {
-  Generator gen;
+  PosGen gen;
   string s;
-  while (getline(cin,s)) {
-    if (s.empty()) continue;
-
-    Sentence st(s);
-    st.standardize();
-    st.tokenize();
-    gen.init(st);
-    vector<VocabIndex> pos;
+  uint len,n;
+  while (cin >> len >> n) {
+    gen.init(len,n);
+    vector<uint> pos;
     uint len;
     while (gen.step(pos,len)) {
       for (int i = 0;i < len;i ++)

@@ -29,7 +29,7 @@ int main(int argc,char **argv)
 	const char *str;
 
 	dic_init(nofuz ? 
-		 new WordNode(sarch["<root>"]) : 
+		 new WordNode(get_sarch()["<root>"]) : 
 		 new FuzzyWordNode(sarch["<root>"]));
 
 	cerr << "Loading... ";

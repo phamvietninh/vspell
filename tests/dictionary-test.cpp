@@ -7,7 +7,7 @@ using namespace std;
 
 int main()
 {
-  dic_init(new WordNode::WordNode(sarch["<-root->"]));
+  dic_init(new WordNode::WordNode(get_sarch()["<-root->"]));
 
   cerr << "Loading... ";
   get_root()->load("wordlist.wl");

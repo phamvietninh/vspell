@@ -5,7 +5,7 @@ bin_PROGRAMS = dictionary-test syllable-test wfst-train\
 	distance-test sentence-test wfst-test\
 	section-test all-words-test posgen-test\
 	segm-test tokenize-test shortestpath\
-	std-syllable sc-train
+	std-syllable sc-train keyb-test
 
 std_syllable_SOURCES = std-syllable.cpp
 std_syllable_LDADD = $(LDADD)
@@ -35,3 +35,5 @@ segm_test_SOURCES = segm-test.cpp
 segm_test_LDADD = $(LDADD)
 tokenize_test_SOURCES = tokenize-test.cpp
 tokenize_test_LDADD = $(LDADD)
+keyb_test_SOURCES = keyb-test.cpp
+keyb_test_LDADD = $(LDADD)

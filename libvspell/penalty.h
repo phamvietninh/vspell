@@ -41,6 +41,9 @@ public:
 		dag->get_next(node_id,next_id);
 	}
 	virtual float edge_value(uint node_from,uint node_to) const;
+	virtual bool fill_vi(uint node_from,uint node_to,VocabIndex &v,VocabIndex *vi,int size) const {
+		return dag->fill_vi(node_from,node_to,v,vi,size);
+	}
 };
 
 class Penalty2DAG : public PenaltyDAG {
@@ -53,6 +56,9 @@ public:
 	void set_syllable_weights(const Segmentation &seg);
 
 	virtual float edge_value(uint node_from,uint node_to) const;
+	virtual bool fill_vi(uint node_from,uint node_to,VocabIndex &v,VocabIndex *vi,int size) const {
+		return dag->fill_vi(node_from,node_to,v,vi,size);
+	}
 };
 
 #endif

@@ -21,6 +21,7 @@ public:
 	virtual void get_next(uint node_id,std::vector<uint> &next_id) const = 0;
 	/// the return value is undefined if there is no edge between node_from and node_to
 	virtual float edge_value(uint node_from,uint node_to) const = 0;
+	virtual bool fill_vi(uint node_from,uint node_to,VocabIndex &v,VocabIndex *vi,int size) const = 0;
 };
 
 class WordDAG : public DAG {
@@ -42,6 +43,7 @@ public:
 	virtual const void* node_info(uint node_id) const;
 	virtual void get_next(uint node_id,std::vector<uint> &next_id) const;
 	virtual float edge_value(uint node_from,uint node_to) const;
+	virtual bool fill_vi(uint node_from,uint node_to,VocabIndex &v,VocabIndex *vi,int size) const;
 	
 };
 
@@ -74,6 +76,7 @@ public:
 	virtual const void* node_info(uint node_id) const;
 	virtual void get_next(uint node_id,std::vector<uint> &next_id) const;
 	virtual float edge_value(uint node_from,uint node_to) const;
+	virtual bool fill_vi(uint node_from,uint node_to,VocabIndex &v,VocabIndex *vi,int size) const;
 };
 
 #endif

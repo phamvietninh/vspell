@@ -13,6 +13,9 @@
 #include "spell.h"
 #endif
 
+#ifndef __DAG_H__
+#include "dag.h"
+#endif
 #ifndef __VECTOR__
 #include <vector>
 #endif
@@ -56,6 +59,7 @@ class SoftCounter
 {
 public:
 	void count(const Lattice &words,NgramFractionalStats &stats);
+	void count(const DAG &words,NgramFractionalStats &stats);
 };
 
 #endif

@@ -121,64 +121,76 @@ void SoftCounter::count(const Lattice &w,NgramFractionalStats &stats)
 	}
 }
 
-/*
+
 void SoftCounter::count(const DAG &dag,NgramFractionalStats &stats)
 {
 	vector<float> Sleft,Sright;
 	vector<vector<uint> > prev;
 	int i,n,v,vv;
-	float sum = 0;
-	VocabIndex vi[3];
-	float fc;
+	float add;
 
-	Sleft.resize(dag.node_count());
-	Sright.resize(dag.node_count());
-	prev.resize(dag.node_count());
+	n = dag.node_count();
+	Sleft.resize(n);
+	Sright.resize(n);
+	prev.resize(n);
 
-	deque<uint> traces;
+	vector<uint> traces;
+	uint itrace = 0;
 	dag.get_next(dag.node_begin(),traces);
+	Sleft[dag.node_begin()] = 1;
 	// first pass: Sleft
-	while (!traces.empty()) {
-		v = traces.first();
-		traces.pop_first();
+	while (itrace < traces.size()) {
+		v = traces[itrace++];
 		std::vector<uint> nexts;
 		dag.get_next(v,nexts);
 		n = nexts.size();
 
 		for (i = 0;i < n;i ++) {
 			vv = nexts[i];
-			add = Sleft[v]*dag.edge_value(vv,v);
+			add = Sleft[v]*dag.edge_value(v,vv);
 			Sleft[vv] += add;
 					
+			traces.push_back(vv);
+
 			// init prev references for Sright phase
 			prev[vv].push_back(v);
-			traces.push_back(vv);
 		}
 	}
 
+	float fc;
 	// second pass: Sright
-	Sright[dag.node_count()-1] = 1;
-	dag.push_back(dag.node_end()); // the last v above
-	while (!traces.empty()) {
-		vv = traces.first();
-		traces.pop_first();
+	float sum = Sleft[dag.node_end()];
+	Sright[dag.node_end()] = 1;
+	traces.push_back(dag.node_end()); // the last v above
+	itrace = 0;
+	while (itrace < traces.size()) {
+		vv = traces[itrace++];
 		n = prev[vv].size();
 		for (i = 0;i < n;i ++) {
-			// wers[ii] is the first node (W).
 			v = prev[vv][i];
 			traces.push_back(v);
 
-			add = Sright[v]*dag.edge_value(vv,v);
-			Sright[vv] += add;
+			add = Sright[vv]*dag.edge_value(v,vv);
+			Sright[v] += add;
 
 			// collect fractional counts
-			fc = Sleft[vv]*add/sum; // P(v/vv)
+			fc = Sleft[v]*add/sum; // P(vv/v)
+			/*
 			vi[0] = vv;
 			vi[1] = v;
 			vi[2] = Vocab_None;
-			*stats.insertCount(vi) += fc;
+			*/
+			VocabIndex vi[10];
+			VocabIndex vvv;
+			if (dag.fill_vi(v,vv,vvv,vi,9)) {
+				uint j;
+				for (j = 0;vi[j] != Vocab_None; j ++) {
+					vi[j] = vvv;
+					vi[j++] = Vocab_None;
+					break;
+				}
+				*stats.insertCount(vi) += fc;
+			}
 		}
 	}
 }
-
-*/

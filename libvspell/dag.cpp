@@ -48,8 +48,19 @@ void WordDAG::get_next(uint node_id,vector<uint> &next_id) const
 
 float WordDAG::edge_value(uint node_from,uint node_to) const
 {
-	const	WordEntries& we = *lattice->we;
 	VocabIndex vi[2],v;
+	if (fill_vi(node_from,node_to,v,vi,2))
+		return (-get_ngram().wordProb(v,vi));
+	else
+		return 1000;
+}
+
+bool WordDAG::fill_vi(uint node_from,uint node_to,VocabIndex &v,VocabIndex *vi,int size) const
+{
+	if (size < 2)
+		return false;
+
+	const	WordEntries& we = *lattice->we;
 	vi[1] = Vocab_None;
 	uint n = we.size();
 
@@ -63,8 +74,8 @@ float WordDAG::edge_value(uint node_from,uint node_to) const
 		vi[0] = we[node_from].node.node->get_id();
 		v = get_id(STOP_ID);
 	} else
-		return 1000;
-	return (-get_ngram().wordProb(v,vi));
+		return false;
+	return true;
 }
 
 WordDAG2::WordDAG2(WordDAG *dag_):dag(dag_)
@@ -125,16 +136,18 @@ void WordDAG2::get_next(uint node_id,std::vector<uint> &next_id) const
 		next_id.push_back(i->id);
 }
 
-float WordDAG2::edge_value(uint node_from,uint node_to) const
+bool WordDAG2::fill_vi(uint node_from,uint node_to,VocabIndex &v2,VocabIndex *v,int size) const
 {
+	if (size < 3)
+		return false;
+
 	uint n = nodes.size();
 	WordEntry *we;
-	VocabIndex v[3],v2;
 	v[2] = Vocab_None;
 
 	if (node_from < n && node_to < n) {
 		if (nodes[node_from].n2 != nodes[node_to].n1)
-			return 1000;							// no edge between these nodes
+			return false;							// no edge between these nodes
 		v[1] = dag->node_id(nodes[node_from].n1);
 		v[0] = dag->node_id(nodes[node_from].n2);
 		v2   = dag->node_id(nodes[node_to  ].n2);
@@ -147,16 +160,26 @@ float WordDAG2::edge_value(uint node_from,uint node_to) const
 		v[0] = dag->node_id(nodes[node_from].n2);
 		v2   = get_id(STOP_ID);
 	} else
-		return 1000;
+		return false;
 
 	if (v[0] == v2 && v2 == get_id(STOP_ID)) {
 		v[0] = v[1];
 		v[1] = Vocab_None;
-		return (-get_ngram().wordProb(v2,v));
+		return true;
 	}
 	if (v[0] == v[1] && v[1] == get_id(START_ID))	// back to 2-gram
 		v[1] = Vocab_None;
-	return (-get_ngram().wordProb(v2,v));
+	return true;
+}
+
+float WordDAG2::edge_value(uint node_from,uint node_to) const
+{
+	VocabIndex v[3],v2;
+
+	if (fill_vi(node_from,node_to,v2,v,3))
+		return (-get_ngram().wordProb(v2,v));
+	else
+		return  1000;
 }
 
 const void* WordDAG2::node_info(uint node_id) const

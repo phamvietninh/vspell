@@ -7,6 +7,7 @@
 #include <cstdio>
 #include <sstream>
 #include <iostream>
+#include "sentence.h"
 #include <libsrilm/NgramStats.h>
 
 using namespace std;
@@ -28,14 +29,18 @@ int main()
 
   string s;
   while (getline(cin,s)) {
-    if (!s.empty()) {
-      sentences.push_back(Sentence(s));
+    if (s.empty())
+      continue;
+    vector<string> ss;
+    sentences_split(s,ss);
+    for (int i = 0;i < ss.size();i ++) {
+      sentences.push_back(Sentence(ss[i]));
       Sentence &st = sentences.back();
       st.standardize();
       st.tokenize();
     }
   }
-
+/*
   for (int i = 0;i < 50;i ++) {
     ostringstream oss;
     oss << "log." << i;
@@ -44,7 +49,7 @@ int main()
     iterate(ofs,i);
     cerr << "done" << endl;
   }
-
+*/
   return 0;
 }
 

@@ -7,6 +7,7 @@ libvspell_a_SOURCES = \
 	distance.cpp distance.h\
 	spell.cpp spell.h\
 	wfst.cpp wfst.h\
+	words.cpp sections.cpp\
 	debug.h
 INCLUDES = -I$(top_builddir)/libsrilm
 libvspell_a_LIBADD = $(top_builddir)/libsrilm/libsrilm.a

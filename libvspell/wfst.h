@@ -19,30 +19,48 @@
 
 #define SEGM_SEPARATOR 1
 
-struct WordInfo {
-	WordNode::DistanceNode exact_match;
-	std::vector<WordNode::DistanceNode> fuzzy_match;
+struct Section {
+	int segment;
+	int start;
+	int len;
 };
 
-typedef std::vector<WordInfo*> WordInfos;
-
-class Words:public std::vector<WordInfos*> {
+class Sections: public std::vector<Section> {
 public:
-	int get_word_count() const { return size(); }
-	int get_len(int i) const { return (*this)[i]->size(); }
-	int get_fuzzy_count(int i,int l) const { 
-		return (*(*this)[i])[l]->fuzzy_match.size();
-	}
-	WordNode::DistanceNode& get_fuzzy(int i,int l,int f) {
-		return (*(*this)[i])[l]->fuzzy_match[f];
-	}
-	const WordNode::DistanceNode& get_fuzzy(int i,int l,int f) const{
-		return (*(*this)[i])[l]->fuzzy_match[f];
-	}
-	~Words();											// WARN: destroy all.
-	void print() const;
+	SentenceRef st;
+	void construct(const Words &words);
 };
-// Words[from][len].fuzzy_match[i]
+
+std::ostream& operator << (std::ostream &os,const Sections &s);
+
+/**
+	 Segmentor takes a Sentence, a Words and a range, then try to generate
+	 all possible Segmentation.
+ */
+
+class Segmentor
+{
+private:
+	struct Trace
+	{
+		Segmentation s;
+		int next_syllable;
+		Trace():next_syllable(0) {}
+	};
+	int nr_syllables;
+	std::vector<Trace> segs;
+	SentenceRef _sent;
+	Words *_words;
+	int from,to;
+
+public:
+	void init(const Sentence &sent,
+						Words &words,
+						int from,
+						int to);
+	bool step(Segmentation &seg);
+	void done();
+};
 
 class WFST
 {
@@ -60,19 +78,26 @@ public:
 
 	void enable_ngram(bool enable = true) { ngram_enabled = enable; }
 
-	void get_all_words(const Sentence &sent,
-				 Words &words);
 	void segment_best(const Sentence &sent,
-				const Words &words,
-				Segmentation &seps);
+										const Words &words,
+										Segmentation &seps);
 	void segment_all(const Sentence &sent,
 			 std::vector<Segmentation> &result);
-private:
+
+	//private:
+public:													// for testing purpose
+	void generate_misspelled_words(const std::vector<int> &pos,int len);
 	void segment_all1(const Sentence &sent,
-				const Words &words,
-				int from,int to,
-				std::vector<Segmentation> &result);
-	
+										Words &words,
+										int from,
+										int to,
+										//const Segmentation &base_seg,
+										//int seg_id,
+										std::vector<Segmentation> &result);
+
+	// variables needed when run wfst
+	const Sentence *p_st;
+	const Words *p_words;
 };
 
 #endif

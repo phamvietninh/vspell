@@ -54,12 +54,12 @@ void spell_check1(Sentence &st,Suggestions &sugg)
 
 void spell_check2(Sentence &st,Segmentation &seg,Suggestions &sugg)
 {
-	int i,n = seg.items.size();
+	int i,n = seg.size();
 	int cc = 0;
 
 	for (i = 0;i < n;i ++) {
 		vector<strid> sylls;
-		int len = seg.items[i].state->get_syllable_count();
+		int len = seg[i].node->get_syllable_count();
 		if (len == 1) {
 			cc += len;
 			continue;

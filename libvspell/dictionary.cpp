@@ -1,5 +1,6 @@
 #include "config.h"		// -*- tab-width: 2 -*-
 #include <iostream>
+#include <stdlib.h>
 #include <libsrilm/File.h>
 #include <fstream>
 #include <algorithm>
@@ -7,7 +8,6 @@
 #include "dictionary.h"
 #include "wordnode.h"
 #include "distance.h"
-#include <stdlib.h>
 #include <math.h>
 #ifndef _SArray_cc_
 #include <libsrilm/SArray.cc>
@@ -169,8 +169,12 @@ bool WordNode::load(const char* filename)
 		int i,nr_syllables = syllables.size();
 		node->info->syllables = new VocabIndex[nr_syllables+1];
 		node->info->syllables[nr_syllables] = Vocab_None;
-		for (int i = 0;i < nr_syllables;i ++)
+		//cerr << "Word " << toks[0] << "(" << node->info->id << "| ";
+		for (int i = 0;i < nr_syllables;i ++) {
 			node->info->syllables[i] = syllables[i];
+			//cerr << node->info->syllables[i] << ",";
+		}
+		//cerr << endl;
 		node->set_prob(atof(toks[2].c_str()));
 
 		if (csyllables != syllables) {
@@ -259,7 +263,7 @@ void WordNode::set_prob(float _prob)
 }
 	
 
-int WordNode::get_syllable_count()
+int WordNode::get_syllable_count() const
 {
 	ASSERT(info != NULL);
 	int n;
@@ -267,11 +271,11 @@ int WordNode::get_syllable_count()
 	return n;
 }
 
-void WordNode::get_syllables(vector<strid> &syllables)
+void WordNode::get_syllables(vector<strid> &syllables) const
 {
-	// ASSERT: info != NULL
+	ASSERT(info != NULL);
 	int n;
-	for (n = 0;info->syllables[n] != 0;n ++)
+	for (n = 0;info->syllables[n] != Vocab_None;n ++)
 		syllables.push_back(info->syllables[n]);
 }
 
@@ -358,6 +362,7 @@ bool FuzzyWordNode::fuzzy_get_next_with_syllable(strid str,
 }
 
 
+// the get_next()'s result must be included.
 bool FuzzyWordNode::fuzzy_get_next(strid str,
 																	 vector<DistanceNode>& _nodes) const
 {
@@ -425,8 +430,11 @@ strid StringArchive::operator[] (VocabString s)
 		return vi;
 	if (blocked) {
 		vi = rest->getIndex(s);
-		if (vi == Vocab_None) 
-			return rest->addWord(s)+dict.numWords();
+		if (vi == Vocab_None) {
+			int i = rest->addWord(s)+dict.numWords();
+			cerr << "New word " << s << " as " << i << endl;
+			return i;
+		}
 		return vi+dict.numWords();
 	}
 	return dict.addWord(s);
@@ -477,6 +485,31 @@ strpair make_strpair(strid str)
 	pair.cid = sarch[st];
 	return pair;
 }
+
+void WordNode::dump_next(std::ostream &os) const
+{
+	node_map_iterator iter(*nodes);
+	strid id;
+	WordNodePtr *pnode;
+	while ((pnode = iter.next(id))) {
+		os << (*pnode)->id << " ";
+	}
+}
+
+std::ostream& operator << (std::ostream &os,const WordNode::DistanceNode &dnode)
+{
+	os << *dnode.node;
+	return os;
+}
+std::ostream& operator << (std::ostream &os,const WordNode &node)
+{
+	std::vector<strid> syll;
+  node.get_syllables(syll);
+	for (int i = 0;i < syll.size();i ++)
+		os << sarch[syll[i]] << "(" << syll[i] << ") ";
+	return os;
+}
+
 /*
 	}
 */

@@ -47,7 +47,7 @@ public:
   void standardize(std::string str);
   void print();
   strid to_id();
-  string to_str();
+  std::string to_str();
 };
 
 extern char *vowels[];

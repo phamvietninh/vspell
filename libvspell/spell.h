@@ -5,12 +5,183 @@
 #include "dictionary.h"
 #endif
 
+#ifndef __WORDNODE_H__
+#include "wordnode.h"
+#endif
+
 #ifndef __VECTOR__
 #include <vector>
 #endif
 #ifndef __STRING__
 #include <string>
 #endif
+
+class Sentence;
+
+/**
+	 Store information of a word in a sentence.
+ */
+
+struct WordEntry {
+	int pos;											/// syllable index
+	int len;											/// word len
+	int fuzid; /// to identify different WordEntry with the same pos/len.
+																/// fuzid is a mask of fuzzy/exact match.
+	int id;												/// index in WordEntries
+
+	WordNode::DistanceNode node;	/// Word content
+
+	bool operator < (const WordEntry &we) const {
+		return pos != we.pos ? pos < we.pos :
+			(len != we.len ? len < we.len : 
+			 (fuzid != we.fuzid ? fuzid < we.fuzid : node.node < we.node.node));
+	}
+};
+
+std::ostream& operator << (std::ostream &os,const WordEntry &we);
+
+typedef WordEntry* WordEntryRef;
+typedef std::vector<WordEntry> WordEntries;
+typedef std::vector<WordEntryRef> WordEntryRefs;
+//struct WordEntries:public std::vector<WordEntry> {
+//};
+
+/**
+	 Store all WordEntry pointers which started at a specified pos, 
+	 and have specified len
+ */
+
+struct WordInfo {
+	WordEntry* exact_match;				
+	WordEntryRefs fuzzy_match;	 
+};
+
+/**
+	 Store WordInfo(s) which have a specified length
+ */
+
+class WordInfos : public std::vector<WordInfo*> {
+public:
+	int exact_len;
+	WordEntryRefs fuzzy_map; /// contains all WordEntry which are fuzzy at this position
+	WordEntryRefs we;	/// contains all WordEntry which started at this pos
+};
+
+/**
+	 Store WordInfos(s) started at specified positions.
+ */
+
+class Words:public std::vector<WordInfos*> {
+public:
+
+	WordEntries *we;
+	Sentence *st;
+
+	void construct(const Sentence &st);
+
+	/// Get the number of available positions, from 0 to n-1
+	int get_word_count() const { 
+		return size(); 
+	}
+
+	/**
+		 Get maximal length of words at specified position.
+		 \param i specify a position in sentence
+	*/
+	int get_len(int i) const {
+		return (*this)[i]->size(); 
+	}
+
+	/**
+		 Get the length of the exact words at specified position.
+		 \param i specify a position in sentence
+	*/
+	int get_exact_len(int i) const {
+		return (*this)[i]->exact_len; 
+	}
+
+	/**
+		 Get fuzzy map at specified position.
+		 \param i specify a position
+	 */
+
+	const WordEntryRefs& get_fuzzy_map(int i) const {
+		return (*this)[i]->fuzzy_map; 
+	}
+
+	/**
+		 Get number of fuzzy words at specified (pos,len).
+		 \param i specify pos
+		 \param l specify len
+	 */
+	int get_fuzzy_count(int i,int l) const { 
+		return (*(*this)[i])[l]->fuzzy_match.size();
+	}
+
+	/**
+		 Get the first WordEntry at specified pos.
+		 \param pos specify a position.
+	 */
+
+	WordEntryRefs& get_we(int pos) {
+		return (*this)[pos]->we;
+	}
+
+	const WordEntry& get_we_fuzzy(int i,int l,int f) const {
+		return *(*(*this)[i])[l]->fuzzy_match[f];
+	}
+
+	const WordEntry* get_we_exact(int i,int l) const {
+		return (*(*this)[i])[l]->exact_match;
+	}
+
+	/**
+		 Get the Node of a specified fuzzy match  (pos,len,fuz)
+		 \param i is pos
+		 \param l is len
+		 \param f is fuz
+	 */
+
+	WordNode::DistanceNode& get_fuzzy(int i,int l,int f) {
+		return (*(*this)[i])[l]->fuzzy_match[f]->node;
+	}
+
+	/// a const version of get_fuzzy()
+	const WordNode::DistanceNode& get_fuzzy(int i,int l,int f) const{
+		return (*(*this)[i])[l]->fuzzy_match[f]->node;
+	}
+
+	~Words();											// WARN: destroy all.
+
+	/**
+		 Construct Words based on member we.
+		 we must be valid.
+	 */
+
+	void construct();	
+
+	/**
+		 Construct Words based on another Words.
+		 Only exact matches are copied.
+		 \param w specify the "template" Words
+	 */
+
+	void based_on(const Words &w);
+
+	/**
+		 Add WordEntry w into Words.
+	 */
+
+	void add(WordEntry &w);
+  
+	friend std::ostream& operator << (std::ostream& os,const Words &w);
+}; 
+// Words[from][len].fuzzy_match[i]
+
+/**
+	 Sentence is used to store a sequence of syllables.
+	 Sentence and Words will keep all necessary info for a spelling checker.
+ */
 
 class Sentence
 {
@@ -51,25 +222,30 @@ public:
   //  Syllable& operator[] (int i) { return syllables[i]; }
   bool is_contiguous(int i);		// i & i+1 is contiguous ?
   void merge(int i);
+
 };
 
-struct Segmentation
+typedef Sentence* SentenceRef;
+
+/**
+	 Segmentation store a sequence of WordEntry index.
+	 From WordEntry we can get the real word.
+ */
+
+struct Segmentation : public std::vector<int> 
 {
-  struct Item {
-    int flags;			// Separator mark
-    int distance;		// from ed() or fuzzy syllable
-    WordNodePtr state; // used to get prob.
-
-    Item():flags(0),distance(0),state(NULL) {}
-  };
-
-  std::vector<Item> items;
-  float prob;			// total prob
-  int distance;			// total distance
+	WordEntries *we;							/// WordEntries associated with Segmentation
+  float prob;										/// total prob
+  int distance;									/// total distance
 
   Segmentation():prob(0),distance(0) {}
-  void print(std::ostream &os,const Sentence &st);
+	const WordEntry& operator[] (int id) const {
+		return (*we)[std::vector<int>::operator[](id)];
+	}
+	friend std::ostream& operator <<(std::ostream &os,const Segmentation &seg);
 };
+
+typedef std::vector<Segmentation> Segmentations;
 
 struct Suggestion {
   int id;

@@ -31,6 +31,7 @@ protected:
   typedef SArrayIter<strid,WordNodePtr> node_map_iterator;
   node_map *nodes;
   WordInfo *info;
+	VocabIndex id;
 
 public:
   struct DistanceNode {
@@ -43,16 +44,18 @@ public:
     int operator < (const DistanceNode &dn1) const {
       return (int)node+distance < (int)dn1.node+dn1.distance;
     }
+		WordNode& operator* () const { return *node; }
+		WordNode* operator-> () const { return node; }
   };
 
   void recalculate();
 
 public:
 
-  WordNode(strid _syllable):info(NULL),nodes(new node_map) {}
+  WordNode(strid _syllable):info(NULL),nodes(new node_map),id(_syllable) {}
   //    ~WordNode();
 
-  // strpair get_syllable() const { return syllable; }
+  VocabIndex get_syllable() const { return id; }
   virtual WordNodePtr get_next(strid str) const;
   void inc_a() { ASSERT(info != NULL); info->a++; }
   void inc_b() { ASSERT(info != NULL); info->b++; }
@@ -65,9 +68,11 @@ public:
   float get_prob() const { return info ? info->prob : -1; }
   void set_prob(float _prob);
 
-  int get_syllable_count();
-  void get_syllables(std::vector<strid> &syllables);
+  int get_syllable_count() const;
+  void get_syllables(std::vector<strid> &syllables) const;
   WordNodePtr follow_syllables(const std::vector<strid> &syllables);
+
+	void dump_next(std::ostream &os) const;
 
   bool load(const char* filename);
   bool save(const char* filename);
@@ -92,5 +97,7 @@ public:
 };
 
 WordNodePtr get_root();
+std::ostream& operator << (std::ostream &os,const WordNode::DistanceNode &dnode);
+std::ostream& operator << (std::ostream &os,const WordNode &node);
 
 #endif

@@ -833,6 +833,12 @@ void get_syllable_candidates(const char *input,Candidates &output,float v)
 	set<string> s3;
 	set<string>::iterator s3i;
 
+
+	// bo dau sai vi tri
+	if (syll.parse(input) &&
+			syll.to_str() != string(input))
+		output.insert(syll.to_str(),v+10);
+
 	get_phonetic_syllable_candidates(input,output,v);
 
 	KeyRecover keyr;
@@ -994,16 +1000,22 @@ bool Candidates::CandidateComparator::operator()(const std::string &s1,const std
 
 void Candidates::get_list(std::vector<std::string> &v)
 {
-	uint i,n = candidates.size();
-	v.resize(n);
 	set<Candidate>::iterator iter;
-	n = 0;
-	for (iter = candidates.begin();iter != candidates.end();++iter)
-		if (!get_case_syllable_candidates(iter->candidate.c_str(),*this,iter->priority)) {
-			if (sarch.in_dict(get_std_syllable(get_lowercased_syllable(iter->candidate)))) {
-				v[n++] = iter->candidate;
-			}
-		}
+
+	iter = candidates.begin();
+	while (iter != candidates.end()) {
+		if (!is_valid_word_form(iter->candidate.c_str())) {
+			get_case_syllable_candidates(iter->candidate.c_str(),*this,iter->priority);
+			candidates.erase(iter++);
+		} else
+			++iter;
+	}
+
+	v.resize(candidates.size());
+	uint n = 0;
+	for (iter = candidates.begin();iter != candidates.end(); ++iter)
+		if (sarch.in_dict(get_std_syllable(get_lowercased_syllable(iter->candidate))))
+			v[n++] = iter->candidate;
 	v.resize(n);
 	sort(v.begin(),v.end(),CandidateComparator(*this));
 }

@@ -58,8 +58,10 @@ void ExactWordState::get_next(WordStates &states)
 {
 	uint i = pos+len;
 	BranchNode *branch = dnode.node->get_branch(sent[i].get_cid());
-	if (branch == NULL)
+	if (branch == NULL) {
+		delete this;
 		return;
+	}
 	//cerr << "Exact: " << get_sarch()[sent[i].get_cid()] << endl;
 	states.push_back(this);
 	// change the info
@@ -74,8 +76,10 @@ void LowerWordState::get_next(WordStates &states)
 	s1 = get_sarch()[sent[i].get_cid()];
 	s2 = get_lowercased_syllable(s1);
 	BranchNode *branch = dnode.node->get_branch(get_sarch()[s2]);
-	if (branch == NULL)
+	if (branch == NULL) {
+		delete this;
 		return;
+	}
 	//cerr << "Lower: " << get_lowercased_syllable(get_sarch()[sent[i].get_cid()]) << endl;
 	states.push_back(this);
 	// change the info
@@ -239,53 +243,83 @@ void Lattice::pre_construct(const Sentence &sent,set<WordEntry> &we,const WordSt
 	 The second phase of lattice creation. 
  */
 
+bool we_pos_cmp(const WordEntry &w1,const WordEntry &w2)
+{
+	return w1.pos < w2.pos;
+}
+
 void Lattice::post_construct(set<WordEntry> &we)
 {
 	Lattice &w = *this;
 	unsigned i,n,k;
-	vector<bool> marks;
 
 	n = st->get_syllable_count();
-	marks.resize(n);
-	set<WordEntry>::iterator iter;
-	for (iter = we.begin();iter != we.end(); ++iter) {
-		//cerr << get_sarch()[iter->node.node->get_id()] << " " << iter->pos << " " << iter->len << endl;
-		for (k = 0; k < iter->len;k ++)
-			marks[iter->pos+k] = true;
-	}
 
-	// make sure that one can go from source to destination, without gaps.
-	for (i = 0;i < n;i ++)
-		if (!marks[i]) { 
-			WordEntry e;
-			e.pos = i;
-			e.len = 1;
-			e.fuzid = 0;
-			// if one starts with a cardinal number, then mark it number_id
-			string s = get_sarch()[(*st)[i].get_cid()];
-			//cerr << "Consider " << s;
-			if (strchr("0123456789",s[1]) != NULL)
-				e.node = get_special_node(NUMBER_ID);
-			else {
-				int iiii,nnnn = s.size();
-				for (iiii = 0;iiii < nnnn;iiii ++)
-					if (viet_ispunct(s[i]))
-						break;
-				if (iiii < nnnn)
-					e.node = get_special_node(PUNCT_ID);
-				else
-					e.node = get_special_node(UNK_ID);
+	uint max = 0,len = 0;
+	while (max < n) {
+
+		// find out how far we can go from head (pos -> max, len -> len)
+		set<int> traces;
+		pair<set<WordEntry>::iterator,set<WordEntry>::iterator> pr;
+		set<WordEntry>::iterator iter;
+		traces.insert(max);
+		while (!traces.empty()) {
+			uint ii, nn = 0;
+			WordEntry fake_entry;
+			fake_entry.pos = *traces.begin();
+			traces.erase(traces.begin());
+			pr = equal_range(we.begin(),we.end(),fake_entry,we_pos_cmp);
+			for (iter = pr.first;iter != pr.second; ++iter) {
+				if (iter->pos+iter->len < n)
+					traces.insert(iter->pos+iter->len);
+				pair<set<WordEntry>::iterator,set<WordEntry>::iterator> pr2;
+				set<WordEntry>::iterator iter2;
+				WordEntry fake_entry2;
+				fake_entry2.pos = iter->pos+iter->len;
+				pr2 = equal_range(we.begin(),we.end(),fake_entry2,we_pos_cmp);
+				if (pr2.first == pr2.second && len < iter->pos+iter->len) {
+					max = iter->pos;
+					len = iter->pos+iter->len;
+				}
 			}
-			//cerr << " " << get_sarch()[e.node.node->get_id()] << endl;
-			we.insert(e);
 		}
+
+		// Yee, we're coming tail!
+		if (len >= n)
+			break;
+
+		// make sure that one can go from source to destination, without gaps.
+		WordEntry e;
+		e.pos = len;
+		e.len = 1;
+		e.fuzid = 0;
+		// if one starts with a cardinal number, then mark it number_id
+		string s = get_sarch()[(*st)[max].get_cid()];
+		//cerr << "Consider " << s;
+		if (strchr("0123456789",s[1]) != NULL)
+			e.node = get_special_node(NUMBER_ID);
+		else {
+			int iiii,nnnn = s.size();
+			for (iiii = 0;iiii < nnnn;iiii ++)
+				if (viet_ispunct(s[i]))
+					break;
+			if (iiii < nnnn)
+				e.node = get_special_node(PUNCT_ID);
+			else
+				e.node = get_special_node(UNK_ID);
+		}
+		max = len+1;
+		len = max;
+		//cerr << " " << get_sarch()[e.node.node->get_id()] << endl;
+		we.insert(e);
+	}
 
 	//copy(we.begin(),we.end(),ostream_iterator<WordEntry>(cerr));
 	// copy to real _we
 	n = we.size();
-	w.we = boost::shared_ptr<WordEntries>(new WordEntries);
-	w.we->reserve(n);
-	copy(we.begin(),we.end(),back_insert_iterator<vector<WordEntry> >(*w.we));
+	w.we = boost::shared_ptr<WordEntries>(new WordEntries(n));
+	//w.we->resize(n);
+	copy(we.begin(),we.end(),w.we->begin());
 	for (i = 0;i < n;i ++) {
 		(*w.we)[i].id = i;
 	}

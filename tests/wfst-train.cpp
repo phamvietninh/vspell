@@ -8,6 +8,7 @@
 #include <sstream>
 #include <iostream>
 #include "sentence.h"
+#include "propername.h"
 #include <boost/format.hpp>
 
 using namespace std;
@@ -48,18 +49,20 @@ int main(int argc,char **argv)
 
 	string s;
 	int i,ii,iii,n,nn,nnn,z;
-	int count = 0;
+	int count = 0,ccount = 0;
 	NgramStats stats(get_sarch().get_dict(),3);
-	NgramStats syllable_stats(get_sarch().get_dict(),2);
+	//NgramStats syllable_stats(get_sarch().get_dict(),2);
 	while (getline(cin,s)) {
-		count ++;
-		if (count % 200 == 0)
-			cerr << count << endl;
+		ccount++;
+		//cerr << ">" << ccount << endl;
 		if (s.empty())
 			continue;
 		vector<string> ss;
 		sentences_split(s,ss);
 		for (z = 0;z < ss.size();z ++) {
+			count ++;
+			if (count % 1000 == 0)
+				cerr << count << endl;
 			Sentence st(ss[z]);
 			st.standardize();
 			st.tokenize();
@@ -75,8 +78,8 @@ int main(int argc,char **argv)
 			factories.push_back(&exact);
 			factories.push_back(&lower);
 			//factories.push_back(&fuzzy);
-			words.pre_construct(sent,wes,factories);
-			mark_proper_name(sent,wes);
+			words.pre_construct(st,wes,factories);
+			mark_proper_name(st,wes);
 			words.post_construct(wes);
 			//cerr << words << endl;
 			Segmentation seg(words.we);
@@ -96,13 +99,6 @@ int main(int argc,char **argv)
 			//seg.pretty_print(cout,st) << endl;
 
 			VocabIndex *vi;
-			n = st.get_syllable_count();
-			vi = new VocabIndex[n+1];
-			vi[n] = Vocab_None;
-			for (i = 0;i < n;i ++)
-				vi[i] = st[i].get_cid();
-			syllable_stats.countSentence(vi);
-			delete[] vi;
 			n = path.size();
 			if (n > 3) {
 				vi = new VocabIndex[n+1];
@@ -112,8 +108,11 @@ int main(int argc,char **argv)
 						vi[i] = get_id(START_ID);
 					else if (path[i] == dag.node_end())
 						vi[i] = get_id(STOP_ID);
-					else
+					else {
 						vi[i] = ((WordEntry*)dag.node_info(path[i]))->node.node->get_id();
+						if (!sarch.in_dict(vi[i]))
+							vi[i] = get_id(UNK_ID);
+					}
 					//cerr << "<" << sarch[vi[i]] << "> ";
 				}
 				//cerr << endl;
@@ -141,7 +140,6 @@ int main(int argc,char **argv)
 	//get_root()->get_next(unk_id)->get_b() = 0;
 	//get_root()->recalculate();
 	get_ngram().estimate(stats);
-	get_syngram().estimate(syllable_stats);
 	//wfst.enable_ngram(true);
 
 	cerr << "Saving... ";
@@ -151,9 +149,6 @@ int main(int argc,char **argv)
 	str = (boost::format("ngram.%s") % newres).str().c_str();
 	File ff(str,"wt");
 	get_ngram().write(ff);
-	str = (boost::format("syngram.%s") % newres).str().c_str();
-	File fff(str,"wt");
-	get_syngram().write(fff);
 	cerr << endl;
 	/*
 	  for (int i = 0;i < 50;i ++) {

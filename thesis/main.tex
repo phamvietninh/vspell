@@ -65,12 +65,6 @@
 
 \begin{titlepage}
   \begin{center}
-    \Large Tóm tắt
-  \end{center}
-\end{titlepage}
-
-\begin{titlepage}
-  \begin{center}
     \Large Lời cảm ơn
   \end{center}
 Lời đầu tiên em xin chân thành cảm ơn thầy Đinh Điền, người đã trực tiếp hướng dẫn em hoàn thành luận văn này. Thầy là người đã truyền thụ cho em rất nhiều kiến thức về tin học và ngôn ngữ học, giúp em có được hiểu biết sâu hơn về một trong các ứng dụng có ý nghĩa vô cùng to lớn trong cuộc sống của tin học –-- vấn đề dịch máy.
@@ -203,8 +197,62 @@ Lời đầu tiên em xin chân thành cảm ơn thầy Đinh Điền, người 
 %% May be you - goodnight''
 %%\end{center}
 
-\chapter{Mở đầu}
+\chapter*{Tóm tắt luận văn}
+\addcontentsline{toc}{chapter}{Tóm tắt luận văn}
 \pagestyle{fancy}
+
+
+\paragraph{Vấn đề nghiên cứu}
+
+Xây dựng chương trình bắt lỗi chính tả tiếng Việt nhằm phát hiện và đề nghị
+từ thay thế cho các lỗi chính tả thường gặp.  Đề tài này chỉ giới hạn
+bắt lỗi chính tả trong các văn bản hành chính.
+
+
+\paragraph{Cách tiếp cận}
+
+Sử dụng cách tiếp cận như sau: Phát sinh những câu có khả năng thay
+thế dựa trên các nguyên nhân gây lỗi chính tả, sau đó sử dụng mô hình
+ngôn ngữ dựa trên từ để xác định câu đúng nhất. Dựa trên sự khác biệt
+giữa câu gốc và câu được chọn, ta sẽ có thể biết được từ nào sai chính
+tả, và cách viết đúng chính tả là như thế nào. Mô hình sử dụng ngữ
+liệu thô chưa tách từ, tự huấn luyện để phù hợp với mục đích của mô
+hình. 
+
+Mô hình bắt lỗi chính tả theo hai giai đoạn. Giai đoạn thứ nhất tìm và
+yêu cầu người dùng sửa lỗi tiếng (những tiếng không tồn tại trong
+tiếng Việt). Giai đoạn này chủ yếu sửa những lỗi sai do nhập liệu từ
+bàn phím. Giai đoạn hai được dùng để bắt lỗi từ. Tất cả các cách tách
+từ có thể có của câu nhập vào được xây dựng dựa trên lưới từ. Sau đó
+lưới từ này được mở rộng để thêm vào những câu mới nhờ áp dụng các
+nguyên nhân gây lỗi chính tả, nhằm tạo ra câu đúng từ câu sai chính
+tả. Mô hình ngôn ngữ được áp dụng để đánh giá từng cách tách từ trong
+lưới từ và chọn ra cách tách từ tốt nhất. Dựa vào cách tách từ này và
+câu gốc, ta sẽ xác định từ sai chính tả và đưa ra từ đề nghị. Một số
+heuristic được áp dụng để hiệu chỉnh lưới từ nhằm tạo ra một kết quả
+tốt hơn. 
+
+Mô hình ngôn ngữ được dùng là trigram dựa trên từ. Việc huấn luyện
+trigram dựa trên ngữ liệu đã tách từ sẵn có và tạo thêm ngữ liệu
+mới từ ngữ liệu thô chưa tách từ. Với ngữ liệu thô, mô hình ngôn ngữ
+được huấn luyện để thu thập tất cả cách tách từ có thể có của mỗi câu
+trong ngữ liệu huấn luyện thay vì sử dụng bộ tách từ rồi huấn luyện
+trên cách tách từ tốt nhất đó. Các trigram trong mỗi cách tách từ được
+thu thập dựa theo khả năng của mỗi cách tách từ. Trigram của cách tách
+từ tốt hơn sẽ có trọng số cao hơn các cách tách từ còn lại
+
+\paragraph{Kết quả}
+
+Chương trình hoạt động tốt và đạt được một số kết quả nhất định. Các
+lỗi sai âm tiết được phát hiện hoàn toàn. Lỗi sai từ có thể phát hiện
+đến trên 88\%. Các loại lỗi khác đạt độ chính xác rất cao.
+
+Chương trình có thể được cải tiến thêm bằng cách sử dụng các thông tin
+cao cấp hơn như thông tin từ loại, thông tin cú pháp, ngữ nghĩa~\ldots
+nhằm nâng cao độ chính xác hơn nữa.
+
+
+\chapter{Mở đầu}
 \label{cha:overview}
 %TOC
 \minitoc
@@ -5533,7 +5581,7 @@ Kết quả này cho thấy hiệu suất của chương trình phụ thuộc v�
 bản cần kiểm tra. Với tập dữ liệu 1, xác suất bắt lỗi đúng cao nhất
 chỉ có thể đạt khoảng 53\% trong khi với tập dữ liệu 2 là 88\%. Độ
 chênh lệch này có thể do tập dữ liệu 1 sử dụng văn phong khác so với
-ngữ liệu huấn luyện (báo chí). Ngoài ra do tập dữ liệu 1 được dùng để
+ngữ liệu huấn luyện (văn phong báo chí). Ngoài ra do tập dữ liệu 1 được dùng để
 làm bài tập bắt lỗi chính tả nên đưa ra những trường hợp lỗi tương đối khó.
 
 Việc thay đổi các tham số cũng ảnh hưởng đáng kể đến độ chính

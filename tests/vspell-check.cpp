@@ -78,6 +78,7 @@ struct Test
 static Test* mytest;
 static ostream *os;
 	vector<Test> tests;
+static string prefix("pattern");
 
 void check_pattern(Pattern &pat)
 {
@@ -89,7 +90,7 @@ void check_pattern(Pattern &pat)
 	uint i_corpus,n_corpus = tests.size();
 	cerr << "Pattern " << pat;
 	ostringstream oss;
-	oss << "pattern." << pat;
+	oss << prefix << "." << pat;
 	os = new ofstream(oss.str().c_str());
 	(*os) << "#Pattern " << pat << endl;
 	for (i_corpus = 0;i_corpus < n_corpus;i_corpus ++) {
@@ -228,22 +229,29 @@ int main(int argc,char **argv)
 	}
 	*/
 	Pattern pat;
-	while (cin >> s) {
+	string line;
+	while (getline(cin,line)) {
+		if (line[0] == '#')
+			continue;
+		istringstream is(line);
+		is >> s;
 		if (s == "load") {
 			string filename;
-			cin >> filename;
+			is >> filename;
 			load_corpus(filename.c_str());
 		} else if (s == "empty") {
 			tests.clear();
 		} else if (s == "run" ) {
-			cin >> pat;
+			is >> pat;
 			check_pattern(pat);
 		} else if (s == "save") {
 			string filename;
-			cin >> filename;
+			is >> filename;
 			save_corpus(filename.c_str());
+		} else if (s == "prefix") {
+			is >> prefix;
 		} else
-			cerr << "unknown command.";
+			cerr << "unknown command:" << s << " ";
 		cerr << "done" << endl;
 	}
 }
@@ -329,6 +337,7 @@ bool MyText::ui_word_check()
 			mytest->corrects ++;
 		else  {
 			mytest->candidates ++;
+			(*os) << "# " << mytest->sentence << endl;
 			(*os) << boost::format("#Word2 %d-%d(%d-%d) %s-%s (%s)" ) %
 				utf8_from %
 				utf8_len %

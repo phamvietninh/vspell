@@ -54,6 +54,7 @@ int main(int argc,char **argv)
       //set<strid> nodes;
       int old_pos = -1;
       int cc;
+      int anchor[st.get_syllable_count()];
       for (i = 0;i < n;i ++) {
 	//if (nodes.find(wes[i].node.node->get_id()) == nodes.end()) {
 	//nodes.insert(wes[i].node.node->get_id());
@@ -67,7 +68,8 @@ int main(int argc,char **argv)
 	}
 
 	if (!spare && cc++ == w2.get_we(wes[i].pos).size()/2)
-	  cout << "\tanchor_" << wes[i].pos << " [shape=\"point\"];" << endl;
+	  //cout << "\tanchor_" << wes[i].pos << " [shape=\"point\"];" << endl;
+	  anchor[wes[i].pos] = i; 
 
 	cout << "\tn" << i << " [label=\"";
 	std::vector<strid> syll;
@@ -92,7 +94,8 @@ int main(int argc,char **argv)
 
       if (!spare)
 	for (i = 0;i < st.get_syllable_count()-1;i ++) {
-      	  cout << "anchor_" << i << " -> anchor_" << (i+1) << " [style=invis, weight=10000];" << endl;
+      	  //cout << "anchor_" << i << " -> anchor_" << (i+1) << " [style=invis, weight=10000];" << endl;
+      	  cout << "n" << anchor[i] << " -> n" << anchor[i+1] << " [style=invis, weight=10000];" << endl;
 	}
 
       int ii,nn;
@@ -105,7 +108,7 @@ int main(int argc,char **argv)
 	  cout << "\tn" << we.id << " -> tail;" << endl;
 	else {
 	  if (!spare)
-	    cout << "\tn" << we.id << " -> anchor_" << (we.pos+we.len) << ";" << endl;
+	    cout << "\tn" << we.id << " -> n" << anchor[(we.pos+we.len)] << ";" << endl;
 	  else {
 	    const WordEntryRefs &wers = w2.get_we(we.pos+we.len);
 	    nn = wers.size();

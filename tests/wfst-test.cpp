@@ -31,7 +31,7 @@ int main()
 
   wfst.set_wordlist(get_root());
   vector<Sentence> sentences;
-  ifstream ifs("corpus3");
+  ifstream ifs("corpus-test");
   if (!ifs.is_open()) {
     cerr << "Can not open corpus\n";
     return 0;
@@ -71,8 +71,9 @@ int main()
   while (getline(ifs,s)) {
     if (!s.empty()) {
 
-      sentences.push_back(Sentence(s));
-      Sentence &st = sentences.back();
+      //sentences.push_back(Sentence(s));
+      //Sentence &st = sentences.back();
+      Sentence st(s);
       st.standardize();
       st.tokenize();
       Segmentation seg;

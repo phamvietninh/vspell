@@ -115,6 +115,7 @@ void WFST::segment_best(const Sentence &_sent,
 	// mark all multiple-syllable words
 	// those leaved unmarked are obviously word-segmented correctly
 	vector<int> marks(_sent.get_syllable_count());
+	vector<int> bound(_sent.get_syllable_count());
 	int i,ii,n,nn;
 	n = words.get_word_count();
 	for (i = 0;i < n;i ++) {
@@ -122,7 +123,21 @@ void WFST::segment_best(const Sentence &_sent,
 		if (nn > 1)
 			for (ii = 0;ii < nn;ii ++) 
 				marks[i+ii] = 1;
+		for (ii = 0;ii < nn-1;ii ++)
+			bound[ii+i] = 1;
 	}
+
+	for (i = 0;i < n;i ++) {
+		printf("%s",sarch[_sent[i].id]);
+		if (i+1<n) {
+			if (!bound[i])
+				printf("|");
+			else
+				printf(" ");
+		}
+	}
+	printf("\n");
+	return;
 
 	/*
 		for (i = 0;i < marks.size();i ++)

@@ -6,6 +6,7 @@ Pruning dựa trên tổng xác suất bé hơn một ngưỡng nào đó.
 Thống kê các thông tin liên quan đến DISTANCE_THRESOLD, ED_THRESOLD.
 *done* Cài fuzzy match kiểu mới.
 *done* Chỉnh lại dictionary. Lưu index thay vì string. Tạo index cho string và map từ string sang index
-Thêm ngram
-Tách thành từng đoạn để wordseg
-Xử lý proper name, abbreviation
+*done* Thêm ngram (nên chuyển sang 3-gram)
+*done*Tách thành từng đoạn để wordseg (nên chỉnh lại, tìm ranh giới thay vì từ đứng độc lập)
+Xử lý proper name, abbreviation (đang làm)
+Áp dụng bottom up + top down ??

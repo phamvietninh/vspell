@@ -48,6 +48,7 @@ void Sentence::tokenize()
 	Syllable sy;
 	sy.span = 1;
 	sy.sent_ = this;
+	sy.sid = -1;
 
 	while (pos < len) {
 		if (started) {
@@ -97,7 +98,7 @@ public:
 };
 
 void WFST::segment_best(const Sentence &_sent,
-												const vector<WordInfos> &words,
+												const Words &words,
 												Segmentation &seps)
 {
 	vector<Segmentation> segms;
@@ -182,7 +183,7 @@ void WFST::segment_best(const Sentence &_sent,
 
 // find all possible words
 // words must be cleared before calling this function
-void WFST::get_all_words(const Sentence &sent,vector<WordInfos> &words)
+void WFST::get_all_words(const Sentence &sent,Words &words)
 {
 	int i,n,ii,nn,k;
 	vector<WordNode::DistanceNode> states,old_states;
@@ -194,19 +195,8 @@ void WFST::get_all_words(const Sentence &sent,vector<WordInfos> &words)
 	n = sent.get_syllable_count();
 
 	syll.resize(n);
-	for (i = 0;i < n;i ++) {
+	for (i = 0;i < n;i ++)
 		syll[i] = sent[i].get_cid();
-		// all misspelled words have been fixed already
-		// this should be a foreign word or an abbreviation
-		// marked as <UNK>
-		if (!sarch.in_dict(syll[i])) {
-			VocabString s = sarch[syll[i]];
-			if (strlen(s) == 1 && !viet_isupper(s[0]) && !viet_islower(s[0]))
-				syll[i] = sarch["<PUNCT>"];
-			else
-				syll[i] = unk_id;
-		}
-	}
 
 	for (i = 0;i < n;i ++) {
 
@@ -281,7 +271,7 @@ struct Trace
 
 void WFST::segment_all(const Sentence &sent,vector<Segmentation> &result)
 {
-	vector<WordInfos> words;
+	Words words;
 	get_all_words(sent,words);
 	segment_all1(sent,words,0,sent.get_syllable_count(),result);
 	/*
@@ -303,7 +293,7 @@ void WFST::segment_all(const Sentence &sent,vector<Segmentation> &result)
 }
 
 void WFST::segment_all1(const Sentence &sent,
-												const vector<WordInfos> &words,
+												const Words &words,
 												int from,int to,
 												std::vector<Segmentation> &result)
 {

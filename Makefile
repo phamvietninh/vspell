@@ -3,12 +3,18 @@ SRILM_CXXFLAGS =
 TRAIN_CXXFLAGS = -DTRAINING -Iinclude -Iinclude/srilm #-DUSE_EXACT_MATCH
 CXXFLAGS = -I. -g $(TRAIN_CXXFLAGS) $(SRILM_CXXFLAGS)
 LDFLAGS = -g  -Llib/srilm  $(SRILM_LIBS)
+GTK_CFLAGS = `pkg-config --cflags gtk+-2.0`
+GTK_LDFLAGS = `pkg-config --libs gtk+-2.0`
 
-all: wfst-train wfst syllable-test
+all: wfst-train wfst syllable-test vspell
 
 clean:
 	rm *.o wfst wfst-trin distance-test dictionary-test syllable-test -f
 
+gui.o: gui.cpp config.h wfst.h dictionary.h
+	$(CXX) $(CXXFLAGS) $(GTK_CFLAGS) -c $< -o $@
+spell.o: spell.cpp spell.h wfst.h dictionary.h config.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 syllable.o: syllable.cpp dictionary.h config.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 wfst.o: wfst.cpp wfst.h dictionary.h config.h
@@ -39,3 +45,5 @@ dictionary-test: dictionary-test.o dictionary.o distance.o syllable.o
 	$(CXX) $^ -o $@ $(LDFLAGS)
 syllable-test: syllable-test.o dictionary.o syllable.o distance.o
 	$(CXX) $^ -o $@ $(LDFLAGS)
+vspell: gui.o wfst.o distance.o dictionary.o syllable.o spell.o
+	$(CXX) $^ -o $@ $(LDFLAGS) $(GTK_LDFLAGS)

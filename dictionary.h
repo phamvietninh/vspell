@@ -106,6 +106,7 @@ namespace Dictionary {
 
 		int get_syllable_count();
 		void get_syllables(vector<strid> &syllables);
+		bool check_syllables(const vector<strid> &syllables);
 
 		bool load(const char* filename);
 		bool save(const char* filename);

@@ -21,9 +21,10 @@ public:
 		Sentence *sent_;
 		int category;
 		int span;
+		int sid;
 
-		Dictionary::strid get_id() const { return id; }
-		Dictionary::strid get_cid() const { return cid; }
+		Dictionary::strid get_id() const { return sid >= 0 ? sid : id; }
+		Dictionary::strid get_cid() const { return sid >= 0 ? sid : cid; }
 	};
 
 private:
@@ -63,19 +64,21 @@ struct Segmentation
 	void print(std::ostream &os,const Sentence &st);
 };
 
+struct WordInfo {
+	Dictionary::WordNode::DistanceNode exact_match;
+	vector<Dictionary::WordNode::DistanceNode> fuzzy_match;
+};
+typedef vector<WordInfo> WordInfos;
+typedef vector<WordInfos> Words;
+
 class WFST
 {
 protected:
 	Dictionary::WordNodePtr wl;  
 	bool ngram_enabled;
 
-	struct WordInfo {
-		Dictionary::WordNode::DistanceNode exact_match;
-		vector<Dictionary::WordNode::DistanceNode> fuzzy_match;
-	};
 public:
 	WFST():wl(NULL),ngram_enabled(false) {}
-	typedef vector<WordInfo> WordInfos;
 
 	bool set_wordlist(Dictionary::WordNodePtr _wl) {
 		wl = _wl;
@@ -85,7 +88,7 @@ public:
 	void enable_ngram(bool enable = true) { ngram_enabled = enable; }
 
 	void get_all_words(const Sentence &sent,
-				 vector<WordInfos> &words);
+				 Words &words);
 	void segment_best(const Sentence &sent,
 				const vector<WordInfos> &words,
 				Segmentation &seps);

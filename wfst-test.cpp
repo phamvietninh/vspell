@@ -72,7 +72,7 @@ int main()
       st.standardize();
       st.tokenize();
       Segmentation seg;
-      vector<WFST::WordInfos> words;
+      Words words;
       wfst.get_all_words(st,words);
       wfst.segment_best(st,words,seg);
       seg.print(cerr,st);

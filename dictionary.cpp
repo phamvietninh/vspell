@@ -250,6 +250,16 @@ namespace Dictionary {
 			syllables.push_back(info->syllables[n]);
 	}
 
+	bool WordNode::check_syllables(const vector<strid> &syllables)
+	{
+		int n = syllables.size();
+		int i;
+		WordNodePtr root = this;
+		for (i = 0;i < n && root != NULL;i ++)
+			root = root->get_next(syllables[i]);
+		return root != NULL;
+	}
+
 	bool WordNode::fuzzy_get_next_with_ed(strid str,
 																				vector<DistanceNode>& _nodes,
 																				const char *str_data,
@@ -383,16 +393,15 @@ namespace Dictionary {
 	strid StringArchive::operator[] (VocabString s)
 	{
 		VocabIndex vi = dict.getIndex(s);
-		if (vi == Vocab_None) {
-			if (blocked) {
-				vi = rest->getIndex(s);
-				if (vi == Vocab_None) 
-					return rest->addWord(s)+dict.numWords();
-				return vi+dict.numWords();
-			}
-			return dict.addWord(s);
+		if (vi != Vocab_None)
+			return vi;
+		if (blocked) {
+			vi = rest->getIndex(s);
+			if (vi == Vocab_None) 
+				return rest->addWord(s)+dict.numWords();
+			return vi+dict.numWords();
 		}
-		return vi;
+		return dict.addWord(s);
 	}
 
 	VocabString StringArchive::operator[] (strid i)

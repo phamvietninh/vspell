@@ -442,7 +442,7 @@ void Text::penalty2_construct(Segmentation &seg)
 	seg.resize(path.size()-2);
 	// don't copy head/tail
 	copy(path.begin()+1,path.end()-1,seg.begin());
-	seg.we = w.we;
+	seg.we = lattice.we;
 }
 
 

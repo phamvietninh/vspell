@@ -62,25 +62,25 @@ void Penalty2DAG::set_syllable_weights(const Segmentation &seg)
 	syllable_weights.resize(seg[n-1].pos+seg[n-1].len);
 
 	for (i = 0;i < n;i ++) {
-		v[0] = i - 2 >= 0 ? seg[i-2].node.node->get_id() : get_id(START_ID);
-		v[1] = i - 1 >= 0 ? seg[i-1].node.node->get_id() : get_id(START_ID);
+		v[0] = i >= 2 ? seg[i-2].node.node->get_id() : get_id(START_ID);
+		v[1] = i >= 1 ? seg[i-1].node.node->get_id() : get_id(START_ID);
 		v[2] = seg[i].node.node->get_id();
 		v[3] = i + 1 < n ? seg[i+1].node.node->get_id() : get_id(STOP_ID);
 		v[4] = i + 2 < n ? seg[i+2].node.node->get_id() : get_id(STOP_ID);
 
 		ov = v[2];
 		v[2] = Vocab_None;
-		float v1 = get_ngram().wordProb(ov,v);
+		float v1 = LogPtoProb(get_ngram().wordProb(ov,v));
 		v[2] = ov;
 
 		ov = v[3];
 		v[3] = Vocab_None;
-		float v2 = get_ngram().wordProb(ov,v+1);
+		float v2 = LogPtoProb(get_ngram().wordProb(ov,v+1));
 		v[3] = ov;
 
 		ov = v[4];
 		v[4] = Vocab_None;
-		float v3 = get_ngram().wordProb(ov,v+2);
+		float v3 = LogPtoProb(get_ngram().wordProb(ov,v+2));
 		v[4] = ov;
 
 		for (uint j = seg[i].pos;j < seg[i].pos+seg[i].len;j ++)

@@ -11,7 +11,7 @@
 \usepackage{tabularx}
 \usepackage{footnote}
 \usepackage{tipa}
-\usepackage{fancyvrb}
+%\usepackage{fancyvrb}
 %\usepackage{subfigure}
 %\usepackage{longtable}
 
@@ -2867,6 +2867,8 @@ sau này. Ta cũng có thể phục hồi chữ từ chữ chuẩn hoá bằng c
 tích cấu trúc âm tiết và bỏ dấu thích hợp theo quy tắc bỏ dấu cho
 trước. Việc này sẽ giúp chuẩn hoá cách bỏ dấu cho toàn văn bản.
 
+%% XXX Ngoài ra còn một dạng khác là ``quý'' và ``quí''
+
 \subsection{Chữ viết hoa}
 
 Chữ viết hoa dùng để biểu diễn tên riêng, từ viết tắt hoặc dùng cho
@@ -3560,7 +3562,7 @@ với phần còn lại của đồ thị. Do đó ta có thể tìm đường �
 trong tập con đó mà thôi. Sau khi tìm được đường đi ngắn nhất trong
 tập con này, coi như đường đi đã ổn định và không thay đổi nữa, vì vậy
 việc tính giá trị cạnh kế tiếp sẽ không bị thay đổi sau mỗi lần tính
-toán. Vì lí do nay nên thuật toán sẽ phải duyệt thứ tự các điểm theo
+toán. Vì lí do này nên thuật toán sẽ phải duyệt thứ tự các điểm theo
 thứ tự tôpô chứ không thể duyệt theo một thứ tự ngẫu nhiên.
 
 %%% trường hợp có hai đường đi đến cùng một cạnh và cạnh âm thì sao?
@@ -3592,6 +3594,7 @@ Theo~\cite{LoiChinhTa}, lỗi bao gồm các loại sau:
 
 
 \subsubsection{Lỗi không rõ nguyên nhân}
+XXX
 %% Lỗi này dựa vào {\em độ đo khoảng cách hiệu chỉnh} được đề cập
 %% trong \cite{Oflazer}. Các thao tác hiệu chỉnh được đo gồm {\em chèn,
 %% xóa, thay thế một ký tự} hoặc {\em hoán vị hai ký tự kề nhau}, để có
@@ -3674,24 +3677,6 @@ cấu trúc âm tiếng theo sơ đồ trạng thái như hình~\ref{fig:syllabl
   \label{fig:syllable}
 \end{figure}
 
-Khi phân tích tiếng, có thể có một số nhập nhằng giữa các thành phần
-của tiếng. Vd, ``lúa'' bao gồm âm chính ``ua'' hay âm đệm ``u'' và âm
-chính ``a''~\ldots{}. Các quy luật phân bố âm tiết được sử dụng để
-giải quyết những trường hợp này. Cụ thể ba luật sau được sử dụng:
-\begin{itemize}
-\item Âm cuối i chỉ đứng trước các âm ``ư, ươ, ơ, â, a, ă, u, uô, ô,
-  o''.
-\item Âm cuối u chỉ đứng trước các âm ``i, iê, ê, e, ư, ươ, ơ, â, a,
-  ă''.
-\item Âm đệm không đứng trước các âm ``u, uô, ô, o''.
-\end{itemize}
-Ba luật này được sử dụng để loại bỏ những trường hợp sai.
-
-Nếu chỉ sử dụng những luật này, sẽ có nhiều tiếng phân tích được,
-nhưng thực tế không tồn tại. Ví dụ, ``cỳ'', ``kông''~\ldots{} Tuy
-nhiên cách phân tích này vẫn chấp nhận được. Những tiếng sai như vậy
-sẽ được phát hiện và sửa chữa trong phần bắt lỗi non-word.
-
 Ta có thể phân tích tiếng dùng FST. Tuy nhiên, qua
  hình~\ref{fig:syllable} có thể thấy chỉ có tám cách để hình thành
 tiếng. Cài đặt theo tám cách này đơn giản và hiệu quả hơn dùng FST
@@ -3714,6 +3699,32 @@ tổng quát.
   \item Không thể phân tích âm tiết. Dừng.
   \end{enumerate}
 \end{algo}
+
+Khi phân tích tiếng, có thể có một số nhập nhằng giữa các thành phần
+của tiếng. Ví dụ, ``lúa'' bao gồm âm chính ``ua'' hay âm đệm ``u'' và âm
+chính ``a''. Những âm có thể gây nhập nhằng xuất phát từ việc âm `u'
+và `o' có thể vừa là âm đệm, vừa là âm chính, bao gồm các âm ``uô'',
+``ua''. Ngoài ra còn có nhập nhằng giữa âm chính và âm cuối, bao gồm
+``ui'', ``uy'', ``oi''. Cuối cùng là trường hợp ``qu''. Hầu hết các
+nhập nhằng này được loại bỏ bằng thứ tự áp dụng các mẫu âm tiết (ưu
+tiên xét các trường hợp không có âm đệm trước). Hai
+trường hợp cần được xử lý đặc biệt là ``uy'' và ``qu''.
+
+Nếu chỉ sử dụng những luật này, sẽ có nhiều tiếng phân tích được,
+nhưng thực tế không tồn tại. Ví dụ, ``cỳ'', ``kông''~\ldots{} Tuy
+nhiên cách phân tích này vẫn chấp nhận được. Những tiếng sai như vậy
+sẽ được phát hiện và sửa chữa trong phần bắt lỗi non-word. 
+%% Các quy
+%% luật phân bố âm tiết được sử dụng để giải quyết những trường hợp
+%% này. Cụ thể ba luật sau được sử dụng: 
+%% \begin{itemize}
+%% \item Âm cuối i chỉ đứng trước các âm ``ư, ươ, ơ, â, a, ă, u, uô, ô,
+%%   o''.
+%% \item Âm cuối u chỉ đứng trước các âm ``i, iê, ê, e, ư, ươ, ơ, â, a,
+%%   ă''.
+%% \item Âm đệm không đứng trước các âm ``u, uô, ô, o''.
+%% \end{itemize}
+
 
 \subsection{Hoàn chỉnh lưới từ}
 \label{sec:lattice:competion}
@@ -3749,7 +3760,7 @@ câu hỏi của một số phóng viên nước ngoài về phản ứng của 
 với việc Ủy ban về Tự do Tôn giáo Quốc tế của Hoa Kỳ tổ chức điều trần
 vấn đề tôn giáo Việt Nam và việc một số tổ chức tôn giáo hải ngoại kêu
 gọi trì hoãn việc phê chuẩn Hiệp định Thương mại song phương với Việt
-Nam}''. Đây là một cây trích từ một tin tức thời sự. Khi đọc lướt qua câu
+Nam}''. Đây là một câu trích từ một tin tức thời sự. Khi đọc lướt qua câu
 này, ta không cảm nhận được độ dài của nó. Những câu loại này không
 phải hiếm gặp trong các văn bản hành chính. Câu này có $76101451776 \approx 76\cdot 10^9$ cách
 tách từ khác nhau ($842851528992620544 \approx 842\cdot 10^{15}$ nếu tách từ mờ), dẫn đến
@@ -4264,9 +4275,9 @@ Từ điển từ còn chứa một số ``từ'' đặc biệt, được lấy 
 \item $UNK\_ID$  đại diện cho từ lạ, không biết.
 \item $PUNCT\_ID$ đại diện cho các dấu câu.
 \item $PROPER\_NAME\_ID$ đại diện cho tên riêng.
-\item $START\_ID$ đại diện cho đầu câu. Mỗi đầu câu đề có một ``từ''
+\item $START\_ID$ đại diện cho đầu câu. Mỗi đầu câu đều có một ``từ''
   này (tương đương nút ``head'').
-\item $STOP\_ID$ đại diện cho cuối câu. Mỗi cuối câu đề có một ``từ''
+\item $STOP\_ID$ đại diện cho cuối câu. Mỗi cuối câu đều có một ``từ''
   này (tương đương nút ``tail'').
 \item $POEM\_ID$ đại diện cho từ láy.
 \item $NUMBER\_ID$ đại diện cho các loại số.
@@ -4666,7 +4677,7 @@ các âm tiết khác nhau, mỗi âm tiết tương ứng với một giá tr�
 của thành phần đó.
 
 Sử dụng hai hàm trên, hàm
-\verb@fuzzy_get_next_with_syllable@ làm phần việc còn
+\verb@fuzzy_get_next_with_syllable()@ làm phần việc còn
 lại là gắn kết \verb@match()@, \verb@apply()@ và tập nhầm lẫn để tìm
 ra các âm tiết phát âm gần giống. Hàm lần lượt duyệt qua các mẫu âm
 tiết trong từng tập nhầm lẫn. Nếu âm tiết đang xét khớp với một mẫu âm
@@ -5172,7 +5183,8 @@ Một số hàm được tạo ra để hỗ trợ việc xử lý tiếng Việ
 
 
 \chapter{Đánh giá và kết luận}
-\tolerance=200
+\tolerance=200%reset tolerance because i used infinitive tolerance in
+              %the last chapter
 \label{cha:conclusion}
 \minitoc
 
@@ -5200,18 +5212,35 @@ Sau đây là tóm tắt các đặc điểm mô hình được đề nghị:
   ngữ tốt hơn.
 \end{itemize}
 
-\subsection{Ưu điểm}
+%% \subsection{Ưu điểm}
 
-\begin{itemize}
-\item 
-\end{itemize}
+%% \begin{itemize}
+%% \item 
+%% \end{itemize}
 
 \subsection{Hạn chế}
-\begin{itemize}
-\item Không sử dụng những thông tin cấp cao hơn.
-\item Có khả năng nó tự động sửa từ đúng thành từ sai, do từ sai
-  ``hay'' được dùng trong câu đó hơn là từ đúng :-P
-\end{itemize}
+
+Hạn chế đầu tiên của chương trình chính là lượng thông tin được sử
+dụng để khử nhập nhằng khi tách từ mờ. Do chỉ sử dụng thông tin về xác
+suất xuất hiện của một chuỗi từ liên tục nên kết quả có phần hạn
+chế. Trong nhiều trường hợp ta có thể khử nhập nhằng bằng từ loại,
+bằng thông tin cú pháp, hoặc thông tin về ngữ nghĩa. Thông tin xác
+suất lẽ ra chỉ là giải pháp bổ trợ cho các thông tin trên. Khi những
+thông trên không hoàn chỉnh, không bao quát hết hoặc không thể khử
+nhập nhằng toàn bộ, khi đó ta mới dùng thống kê như một giải pháp dự
+phòng.
+
+Chính vì chỉ sử dụng ngram dựa trên từ, đôi khi chương trình sẽ chọn
+lầm cách tách từ, dẫn đến việc thông báo từ sai chính tả trong khi từ
+đó hoàn toàn đúng. 
+
+Phần kiểm tra viết hoa khá khó khăn.
+
+%% \begin{itemize}
+%% \item Không sử dụng những thông tin cấp cao hơn.
+%% \item Có khả năng nó tự động sửa từ đúng thành từ sai, do từ sai
+%%   ``hay'' được dùng trong câu đó hơn là từ đúng :-P
+%% \end{itemize}
 
 \section{Kết quả thử nghiệm}
 
@@ -5257,8 +5286,8 @@ Sau đây là tóm tắt các đặc điểm mô hình được đề nghị:
 
 \eject\addcontentsline{toc}{chapter}{Danh sách thuật toán}\listof{algo}{Danh sách thuật toán}
 %\refstepcounter{chapter}\addcontentsline{toc}{chapter}{\protect\numberline{\thechapter}Danh sách thuật toán}
+%\eject\addcontentsline{toc}{chapter}{\bibname}
 \bibliographystyle{alpha}
-%\addcontentsline{toc}{chapter}{\bibname}
 \bibliography{reference}
 
 %% \begin{thebibliography}{}

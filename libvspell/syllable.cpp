@@ -241,8 +241,13 @@ bool syllable_init()
 	int i,len = strlen(case_table[0]);
 
 	for (i = 0;i < 256;i ++) {
-		full_case_table[0][i] = tolower(i);
-		full_case_table[1][i] = toupper(i);
+		if (i < 128 && i > 32) {
+			full_case_table[0][i] = tolower(i);
+			full_case_table[1][i] = toupper(i);
+		} else {
+			full_case_table[0][i] = i;
+			full_case_table[1][i] = i;
+		}
 		cat_table[i] = 0;
 		if (isalpha(i)) cat_table[i] |= CAT_ALPHA;
 		if (isspace(i)) cat_table[i] |= CAT_SPACE;
@@ -254,8 +259,8 @@ bool syllable_init()
 	for (i = 0;i < len; i ++) {
 		full_case_table[0][(unsigned char)case_table[1][i]] = case_table[0][i];
 		full_case_table[1][(unsigned char)case_table[0][i]] = case_table[1][i];
-		cat_table[(int)case_table[0][i]] = CAT_ALPHA;
-		cat_table[(int)case_table[1][i]] = CAT_ALPHA;
+		cat_table[(unsigned char)case_table[0][i]] = CAT_ALPHA;
+		cat_table[(unsigned char)case_table[1][i]] = CAT_ALPHA;
 	}
 
 	for (i = 0;i < 6;i ++) {
@@ -654,12 +659,14 @@ bool Syllable::parse(const char *str)
 	//char **pattern;
 	int len;
 	string syllable(viet_tolower(string(str)));
+	string ssyllable(str);
 
 	// fisrt of all, extract diacritic.
 	// because the syllable has been stardardized. just extract the diacritic.
 	if (syllable[0] >= '0' && syllable[0] <= '5') {
 		components[Diacritic] = syllable[0] - '0';
 		syllable.erase(0,1);
+		ssyllable.erase(0,1);
 	}	else {
 		components[Diacritic] = None;
 		len = syllable.size();
@@ -669,10 +676,11 @@ bool Syllable::parse(const char *str)
 				char *pos = strchr(diacritic_table[j],syllable[k]);
 				if (pos) {
 					int ipos = pos - diacritic_table[j];
-					if (viet_toupper(syllable[k]) == syllable[k])
-						syllable[k] = viet_toupper(diacritic_table[0][ipos]);	// remove diacritic
+					syllable[k] = diacritic_table[0][ipos];	// remove diacritic
+					if (viet_toupper(ssyllable[k]) == ssyllable[k])
+						ssyllable[k] = viet_toupper(diacritic_table[0][ipos]);	// remove diacritic
 					else
-						syllable[k] = diacritic_table[0][ipos];	// remove diacritic
+						ssyllable[k] = diacritic_table[0][ipos];	// remove diacritic
 					components[Diacritic] = j;
 					break;
 				}
@@ -693,11 +701,14 @@ bool Syllable::parse(const char *str)
 	};
 
 	string saved_syllable = syllable;
+	string saved_ssyllable = ssyllable;
 
 	for (unsigned z = 0;z < 8;z ++) {
 		bool ok = true;
 		syllable = saved_syllable;
+		ssyllable = saved_ssyllable;
 
+		// parse from the pattern cases[z]
 		for (unsigned zz = 0;ok && zz < 4;zz ++) {	// component
 			components[zz] = -1;
 			if (ok && cases[z][zz] == 0) {
@@ -706,10 +717,10 @@ bool Syllable::parse(const char *str)
 				len = syllable.size();
 				char **p;
 				switch (zz) {
-				case Syllable::First_Consonant: p = first_consonants; break;
-				case Syllable::Last_Consonant: p = last_consonants; break;
-				case Syllable::Padding_Vowel: p = padding_vowels; break;
-				case Syllable::Vowel: p = vowels; break;
+				case First_Consonant: p = first_consonants; break;
+				case Last_Consonant: p = last_consonants; break;
+				case Padding_Vowel: p = padding_vowels; break;
+				case Vowel: p = vowels; break;
 				}
 				for (i = 0;p[i] != 0; i++) {
 					char *pattern = p[i];
@@ -719,7 +730,9 @@ bool Syllable::parse(const char *str)
 							syllable.substr(0,pattern_len) == pattern) {
 						//cerr << "Comp " << zz << " is <" << pattern << ">" << endl;
 						components[zz] = i;
+						scomponents[zz] = ssyllable.substr(0,pattern_len);
 						syllable.erase(0,pattern_len);
+						ssyllable.erase(0,pattern_len);
 						ok = true;
 						break;
 					}
@@ -727,17 +740,19 @@ bool Syllable::parse(const char *str)
 			}
 		}
 
+		// some rules to prevent errors
+		// the last consonant "i" is only followed by u+, u+o+, o+, a^, a, a(, u, uo^, o^, o
+		// the last consonant "u" is only followed by i, ie^, e^, e, u+, u+o+, o+, a^, a, a(
+		// padding vowels don't precede u, uo^, o^, o --> vowel is higher priority than padding vowel
 		// fix some errors
+		// Có các trß¶ng hþp sau: uô ua, ui, uy, oi, qu.
+		// uô, ua, ui, oi ðßþc giäi quyªt b¢ng thÑ tñ cases.
 		if (ok && syllable.empty()) {
-			if (components[Vowel] != -1 &&
-					!strcmp(vowels[components[Vowel]],"ua") &&
-					components[Last_Consonant] != -1)
-				ok = false;
-			else if (components[First_Consonant] != -1 &&
-							 !strcmp(first_consonants[components[First_Consonant]],"q") &&
-							 components[Padding_Vowel] == -1 &&
-							 components[Vowel] != -1 &&
-							 (vowels[components[Vowel]][0] == 'u'))
+			// "q" always precedes 'u' (padding vowel)
+			if (components[First_Consonant] != -1 &&
+					!strcmp(first_consonants[components[First_Consonant]],"q") &&	// first consonant is 'q'
+					(components[Padding_Vowel] == -1 ||
+					 strcmp(padding_vowels[components[Padding_Vowel]],"u"))) // padding not exist or not 'u'
 				ok = false;
 			else if (components[Vowel] != -1 &&
 							 !strcmp(vowels[components[Vowel]],"u") &&
@@ -746,47 +761,8 @@ bool Syllable::parse(const char *str)
 				ok = false;
 		}
 
-
-		if (ok && syllable.empty()) {
-
-
-			// thu?y
-			/*
-			if (components[Vowel] != -1 && !strcmp(vowels[components[Vowel]],"u") &&
-					components[Last_Consonant] != -1 && !strcmp(last_consonants[components[Last_Consonant]],"y")) {
-				components[Padding_Vowel] = 1;
-				components[Vowel] = 18;
-				components[Last_Consonant] = -1;
-			}
-
-			// qui?
-			if (components[First_Consonant] != -1 &&
-					!strcmp(first_consonants[components[First_Consonant]],"q") &&
-					components[Vowel] != -1 &&
-					!strcmp(vowels[components[Vowel]],"u") &&
-					components[Last_Consonant] != -1) {
-				if (!strcmp(last_consonants[components[Last_Consonant]],"i") ||
-						!strcmp(last_consonants[components[Last_Consonant]],"y")) {
-					components[Padding_Vowel] = 1;
-					components[Vowel] = !strcmp(last_consonants[components[Last_Consonant]],"i") ? 17 : 18;
-					components[Last_Consonant] = -1;
-				} else 
-					return false;
-			}
-
-			// qua`
-			if (components[First_Consonant] != -1 &&
-					!strcmp(first_consonants[components[First_Consonant]],"q") &&
-					components[Vowel] != -1 &&
-					!strcmp(vowels[components[Vowel]],"ua")) {
-				components[Padding_Vowel] = 1;
-				components[Vowel] = 7;
-			}
-			*/
-					
-
+		if (ok && syllable.empty())
 			return true;
-		}
 		//else
 		//cerr << "Case " << z << " failed" << endl;
 	}
@@ -809,7 +785,10 @@ std::ostream& operator << (std::ostream &os,const Syllable &sy)
 			case Syllable::Vowel: p = vowels; break;
 			case Syllable::Diacritic: p = diacritics; break;
 			}
-			os << p[sy.components[i]];
+			if (i != Syllable::Diacritic)
+				os << sy.scomponents[i];
+			else
+				os << p[sy.components[i]];
 		}
 		os << " ";
 	}
@@ -828,15 +807,18 @@ string Syllable::to_str() const
 			case Padding_Vowel: p = padding_vowels; break;
 			case Vowel: p = vowels; break;
 			}
-			s += p[components[i]];
+			s += scomponents[i];			// no diacritic because i=0..3
 			if (i == Vowel && components[Diacritic] != None) {
 				int last;
 				if (components[Last_Consonant] == -1)
-					last = s.size() - strlen(p[components[Vowel]]);
+					last = s.size() - strlen(scomponents[Vowel].c_str());
 				else
 					last = s.size()-1;
-				int j = strchr(diacritic_table[0],s[last]) - diacritic_table[0];
-				s[last] = diacritic_table[components[Diacritic]][j];
+				int j = strchr(diacritic_table[0],viet_tolower(s[last])) - diacritic_table[0];
+				if (viet_toupper(s[last]) == s[last])
+					s[last] = viet_toupper(diacritic_table[components[Diacritic]][j]);
+				else
+					s[last] = diacritic_table[components[Diacritic]][j];
 			}
 		}
 	}

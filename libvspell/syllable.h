@@ -28,6 +28,7 @@ public:
   };
 
   int components[5];
+	std::string scomponents[5];
   //    int 	first_consonant;
   //    int 	padding_vowel;
   //    int 	vowel;

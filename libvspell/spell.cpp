@@ -291,6 +291,16 @@ void VSpell::add_separators(const std::vector<unsigned> &seps)
 	copy(seps.begin(),seps.end(),back_inserter(separators));
 }
 
+void VSpell::add_word(const char *s)
+{
+	istringstream is(s);
+	strid_string toks;
+	string ss;
+	while (is >> ss)
+		toks += get_sarch()[get_dic_syllable(ss)];
+	words.insert(toks);
+}
+
 bool Text::sentence_check(const char *pp)
 {
 	// preprocess

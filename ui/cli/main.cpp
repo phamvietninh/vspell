@@ -295,6 +295,7 @@ bool MyText::ui_word_check()
 						s.c_str());					// text
 
 		// add separators after replacing the text, to have old separators removed
+		vspell->add_word(viet_to_viscii_force(s.c_str()));
 		vspell->add_separators(separators);
 		return false;								// continue checking
 	}

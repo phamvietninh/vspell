@@ -59,7 +59,7 @@ void MyText::show_wrong_syllables(unsigned p)
 {
 	Suggestions &sugg = suggestions;
 	int cc,ii,nn,i,n = sugg.size();
-	text_reset(textbuffer_main);
+	gtk_text_buffer_set_text (textbuffer_main, vspell->get_utf8_text().c_str(),strlen(vspell->get_utf8_text().c_str()));
 	GtkTextIter start,end;
 	for (i = 0;i < n;i ++) {
 		int id = sugg[i].id;
@@ -104,7 +104,7 @@ void MyText::show_wrong_words(unsigned p)
 	GtkTextIter start,end;
 
 	Suggestions &sugg = suggestions;
-	text_reset(textbuffer_main);
+	gtk_text_buffer_set_text (textbuffer_main, vspell->get_utf8_text().c_str(),strlen(vspell->get_utf8_text().c_str()));
 	show_words();
 	n = sugg.size();
 	for (i = 0;i < n;i ++) {
@@ -168,7 +168,8 @@ static void button_spell_callback (GtkWidget *button, gpointer data)
 
 	vspell.check(buffer);
 	set_state(false);
-	text_reset(textbuffer_main);
+	gtk_text_buffer_set_text (textbuffer_main, vspell.get_utf8_text().c_str(),strlen(vspell.get_utf8_text().c_str()));
+
 }
 
 static void button_ignore_all_callback(GtkWidget *button,gpointer data)
@@ -435,6 +436,7 @@ bool MyText::ui_word_check()
 							s.c_str());					// text
 			
 			// add separators after replacing the text, to have old separators removed
+			vspell->add_word(viet_to_viscii_force(s.c_str()));
 			vspell->add_separators(separators);
 			return false;								// continue checking
 		}

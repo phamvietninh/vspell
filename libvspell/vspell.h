@@ -89,6 +89,7 @@ public:
 	void add(strid id) {
 		syllables.insert(id);
 	}
+	void add_word(const char *s);
 	void add_separators(const std::vector<unsigned> &seps);
 	const std::vector<unsigned> &get_separators() const { 
 		return separators;

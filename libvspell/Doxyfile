@@ -51,7 +51,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = wfst.cpp dictionary.cpp distance.cpp sentence.cpp spell.cpp debug.h       distance.h    sentence.h  syllable.h  wordnode.h dictionary.h  propername.h  spell.h     wfst.h
+INPUT                  = wfst.cpp dictionary.cpp distance.cpp sentence.cpp spell.cpp debug.h       distance.h    sentence.h  syllable.h  wordnode.h dictionary.h  propername.h  spell.h     wfst.h softcount.h softcount.cpp
 
 
 FILE_PATTERNS          = *.h 

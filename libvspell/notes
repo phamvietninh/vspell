@@ -1,0 +1,77 @@
+-*- coding: vietnamese-utf8 mode: outline -*-
+* Current approach:
+** Word segmentation
+*** PFS cho spelling checking
+*** DCWFUST cho training
+** Training
+DCWFUST
+chưa biết có thể dùng seed/training set hay ko
+** Spelling checking
+Dựa trên Word segmentation
+** Preprocessing
+Tạm thời tách thành phrase để xử lý
+
+* Word segmentation
+** WFST
+0th-order HMM. Sử dụng finite state.
+chạy chậm, đặc biệt với câu dài. Thuật toán (hy vọng) có thể áp dụng viterbi để cải thiện.
+Cho ra *tất cả* các segmentation.
+Lấy segmentation tối ưu nhất để EM.
+
+** Priority-first Search
+Dựa trên ý tưởng đưa "word lattice" thành 1 đồ thị có hướng. Sau đó áp dụng PFS để tìm đường đi ngắn nhất.
+Chỉ có thể áp dụng với 2-gram hoặc 3-gram (modified graph)
+Tốc độ nhanh, ko sợ câu dài.
+Chỉ cho ra *một* kết quả duy nhất, tối ưu nhất.
+*** Thích hợp cho spelling checker?
+Sau khi chọn được segmentation đúng nhất, còn phải tìm candidate words. 
+
+** DCWFUST
+Sử dụng dynammic programming để tính xác suất tất cả các word trong tất cả các segmentation.
+Không cho ra một segmentation cụ thể nào cả -> chỉ xài cho training.
+"soft-counting" hay "fraction count"
+Dùng mọi segmentation để EM.
+*** Thích hợp cho training?
+Cần cái LM nào có thể chơi fraction count được. Hay là chôm trong giza?
+Làm sao để chơi với 2/3-gram thay vì unigram?
+
+** A*
+Giống giống WFST, cần thêm pruning để tránh tăng quá nhiều các hypothesis
+
+* Training
+Chủ yếu dựa trên EM. Theo Integrating Ngram model cand case-based learing for chinese thi chỉ cần iterate khoảng 6 lần.
+
+** EM trên segmentation tối ưu nhất
+Có vẻ không khá lắm.
+
+** EM trên *mọi* segmentation, dựa theo prob của mỗi segmentation
+Hy vọng tốt hơn cái đầu. Tuy cần phải chuẩn hóa để tránh xác suất cao trên câu ngắn.
+
+** Phân corpus thành seed set và training set
+Hai bài: A Unified Approach to SLM for Chinese và Self-supervised
+
+*** Theo cách Self-supervised thì:
+V1=empty
+train -> stable
+chọn N word lớn nhất quăng qua V1, điều chỉnh sao cho xác suất ngang nhau (nghĩa là xác suất của các từ trong V1 được nâng lên -> ảnh hưởng của những từ này lớn hơn)
+tiếp tục train tới khi eval giảm -> quăng 5 word từ V1 sang V2 (N=N-5)
+cứ lặp đi lặp lại tới khi N <= 0
+
+*** Cách của AUATSLMFC hơi bị phức tạp
+đọc hoài ko hiểu
+
+** Case-based learning
+
+Lấy những trường hợp xử lý đúng từ kết quả, rồi đem áp dụng. 
+Sử dụng kết quả của EM, cho vào TBL.
+Cách này giống như lấy EM làm bootstrap, sau đó chỉnh result, đem làm gold corpus :P
+
+* Spelling checking
+** Tạo một loại các từ gần giống dựa trên quy tắc chính tả, dùng word segmentation để chọn cái tốt nhất.
+Nên cho phép tạo confusion set thủ công, ngoài chuyện áp dụng quy tắc tự động.
+Đưa quy tắc ra file, thay vì code thẳng.
+
+** Không tách từ, chơi thẳng luôn??
+Cách bình thường là dựa trên wordlist để biết đâu là từ sai. Nếu không tách từ thì ko có word :P chẳng lẽ ko thèm xài wordlist luôn ?? Dựa vào n-gram 100% ??
+
+* Preprocessing

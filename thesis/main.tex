@@ -1,0 +1,119 @@
+\documentclass[a4paper]{book}
+\usepackage[utf8]{vietnam}
+\title{Luận văn tốt nghiệp}
+\author{Nguyễn Thái Ngọc Duy}
+\begin{document}
+\maketitle
+
+\chapter{Giới thiệu}
+\label{cha:intro}
+
+
+\chapter{Background}
+\label{cha:background}
+
+\section{Tổng quan về lỗi chính tả}
+
+Văn bản nhập vào thường hay bị lỗi. Các nguyên nhân gây ra lỗi là:
+\begin{itemize}
+\item Do quá trình nhập bị sai (gõ nhầm, lỗi OCR ...)
+\item Do lầm lẫn giữa cách đọc và cách viết
+\item Do hiểu sai dẫn đến viết sai.
+\end{itemize}
+
+Luận văn này chỉ giải quyết hai lỗi đầu.
+
+\section{Xử lý lỗi chính tả}
+
+Có hai hướng chính.
+\begin{itemize}
+\item Tìm lỗi, đề nghị cách sửa chữa.
+\item Tự động sửa lỗi.
+\end{itemize}
+
+Tìm lỗi dựa chủ yếu trên từ điển. So từng từ với từ điển, những từ
+không có trong từ điển là những từ có khả năng bị lỗi. Sau đó dựa trên
+một số heuristic hoặc các độ đo để tìm ra từ gần đúng với từ đó, làm
+từ đề nghị.
+
+Tự động sửa lỗi chủ yếu dựa trên một tập các từ hay bị lỗi (then-than,
+there-their \ldots). Sử dụng ngữ cảnh xung quanh để xác định từ đúng
+hay sai. Cách này chỉ áp dụng với nguyên nhân lỗi thứ ba. 
+
+Đối với ngôn ngữ đơn lập như tiếng Việt, vấn đề mới phát sinh là không
+thể xác định rõ ràng ranh giới từ. Với tiếng Anh và các ngôn ngữ biến
+cách, khoảng trắng được dùng để phân cách hai từ. Trong tiếng Việt,
+khoảng trắng được dùng để phân cách hai tiếng. Ngoài ra, việc định
+nghĩa từ trong tiếng Việt vẫn chưa thống nhất. LV này sử dụng ``từ''
+như là ``từ từ điển''.
+
+Để bắt lỗi chính tả trong tiếng Việt, có thể dựa trên nhiều cách khác
+nhau. Cách đầu tiên đơn giản là tìm ranh giới từ cho tiếng Việt, sau
+đó chuyển về bài toán bắt lỗi chính tả của tiếng Anh. Một cách khác
+là bắt lỗi mà không cần tách từ. XXX
+Cách khác dựa trên ý tưởng ``phân tích cú pháp câu, nếu ta không thể
+phân tích cú pháp của câu, nghĩa là câu đó sai chính tả''.
+
+LV này làm theo hướng tách từ, sau đó xác định lỗi chính tả.
+
+\section{Previous works}
+
+Điều hiển nhiên dễ thấy là nếu câu bị sai chính tả thì ta không thể
+tách từ đúng được. Vấn đề ở đây là phải tách từ trong câu bị sai chính
+tả.
+
+Oflazer khi xử lý tách tiếp vĩ ngữ trong tiếng Thổ Nhĩ Kỳ gặp trường
+hợp khá giống với trường hợp này. Tác giả phải tách các tiếp vĩ ngữ
+tiếng Thổ Nhĩ Kỳ trong điều kiện từ đó bị sai chính tả. Do đặc tính
+ngôn ngữ chấp dính (agglunative) nên khó có thể phân biệt đâu là tiếp
+vĩ ngữ, cũng như không thể phân biệt đâu là từ trong một chuỗi tiếng
+trong tiếng Việt. Tác giả dùng một hàm độ đo, tạo ra các tiếp đầu ngữ
+có khả năng thay thế dựa trên độ đo này, sau đó sử dụng WFST để tìm
+chuỗi tiếp vĩ ngữ thích hợp nhất.
+
+Nhận dạng tiếng nói tiếng Anh cũng gặp trường hợp tương tự. Sau công
+đoạn xử lý âm thanh, ta nhận dạng được một chuỗi các âm tiết
+(phoneme). Phải làm cách nào đó để nhóm các âm tiết này thành từ. Do
+âm thanh thường bị nhiễu, nên các âm tiết có thể không chính xác hoàn
+toàn.
+
+Dựa trên hai cái này, có thể thấy giải pháp cho việc tách từ khi bị
+sai chính tả, là phát sinh một loạt các từ có khả năng thay thế, với
+hy vọng trong tập từ này sẽ có từ đúng chính tả, thay thế từ sai chính
+tả ban đầu. Sau đó sử dụng tách từ tìm một cách tách tốt nhất. Sau khi
+tìm được cách tách từ, ta có thể tra từ điển để tìm xem từ nào bi sai.
+
+
+\subsection{Tách từ}
+
+Bài toán tách từ cho ngôn ngữ đơn lập đã được đặt ra từ lâu, chủ yếu
+để giải quyết cho tiếng Hoa, tiếng Nhật. 
+
+Chao-Huang Chang sử dụng WFST để tách từ. Training bằng EM dựa trên
+segmentation đúng nhất.
+
+Mosur K. Ravishankar đề nghị tạo ra ``word lattice'' sau đó sử dụng
+thuật toán tìm đường đi ngắn nhất để giải quyết.
+
+Le An Ha sử dụng ngram để tách từ.
+
+Chuynu Kit kết hợp ngram, lập trình quy hoạch động để tách từ. Xài
+soft-count thay vì ``hard-count'' như Chang. Chunyu còn đề nghị dùng
+case-based learning.
+
+
+\subsection{Training tách từ}
+
+
+
+
+
+\chapter{Cài đặt}
+
+
+\chapter{Kết luận}
+\label{cha:conclusion}
+
+
+
+\end{document}

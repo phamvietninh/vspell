@@ -1,0 +1,5 @@
+.backup
+.deps
+Makefile
+Makefile.in
+

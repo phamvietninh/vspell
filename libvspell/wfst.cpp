@@ -9,6 +9,7 @@
 #include <set>
 #include "posgen.h"
 #include <signal.h>
+#include <unistd.h>
 
 using namespace std;
 
@@ -131,6 +132,8 @@ typedef vector<Segmentations> Segmentation2;
 	\param pos contains possibly misspelled position.
 	\param len specify the actual length pos. Don't use pos.size()
 */
+Words *www;
+
 void WFST::generate_misspelled_words(const vector<int> &pos,int len)
 {
 	const Words &words = *p_words;
@@ -141,15 +144,13 @@ void WFST::generate_misspelled_words(const vector<int> &pos,int len)
 	// 2. Compute the score, jump to 1. if score is too low (pruning 1)
 
 	// create new (more compact) Words structure
-	int i,j,n = p_st->get_syllable_count();
+	int i,j,n = words.get_word_count();
 	for (i = 0;i < len;i ++) {
-		const WordEntryRefs &fmap = words.get_fuzzy_map(pos[i]);
-		WordEntryRefs::const_iterator iter;
-		for (iter = fmap.begin();iter != fmap.end(); ++iter) {
-			if (*iter == 0) kill(0,SIGSTOP);
-			w.add(**iter);
+			const WordEntryRefs &fmap = words.get_fuzzy_map(pos[i]);
+			int ii,nn = fmap.size();
+			for (ii = 0;ii < nn;++ii)
+				w.add(*fmap[ii]);
 		}
-	}
 
 	//cerr << w << endl;
 
@@ -197,6 +198,7 @@ void WFST::generate_misspelled_words(const vector<int> &pos,int len)
 			limits[i] = seg2[i].size();
 		ZZZ z;
 		z.init(limits);
+
 
 		while (z.step(vals)) {
 			// merge seg to base seg.
@@ -421,7 +423,8 @@ bool ZZZ::step(vector<int> &_pos)
 		if (iter[cur] < limit[cur]-1) {
 			iter[cur] ++;
 			cur ++;
-			iter[cur] = 0;
+			if (cur < nr_limit)
+				iter[cur] = 0;
 			continue;
 		} else {
 			cur --;

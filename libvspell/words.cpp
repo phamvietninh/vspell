@@ -39,6 +39,8 @@ void Words::construct(const Sentence &sent)
 	vector<strid> syll;
 	set<WordEntry> we;
 
+	cerr << "construct\n";
+
 	w.st = &(Sentence&)sent;
 
 	vector<WordState> states;
@@ -212,8 +214,7 @@ void Words::based_on(const Words &w)
 		int i_len,n_len = w.get_len(i_pos);
 		me[i_pos] = new WordInfos;
 		for (i_len = 0;i_len < n_len;i_len ++)
-			if ((*w[i_pos])[i_len] && 
-					(*w[i_pos])[i_len]->exact_match)
+			if ((*w[i_pos])[i_len] && (*w[i_pos])[i_len]->exact_match)
 				add(*(*w[i_pos])[i_len]->exact_match);
 	}
 }
@@ -238,11 +239,17 @@ void Words::add(WordEntry &w)
 		wi.fuzzy_match.push_back(&w);
 		for (int j = 0;j < w.len;j ++)
 			if (w.fuzid & (1 << j)) {
-				while (me.size() <= j+w.pos)
+				while (me.size() <= j+w.pos) {
 					me.push_back(new WordInfos);
+					//me[me.size()-1]->fuzzy_map.clear();
+				}
 				me[j+w.pos]->fuzzy_map.push_back(&w);
 			}
 	}
 
 	wis.we.push_back(&w);
+}
+
+WordInfos::WordInfos()
+{
 }

@@ -56,14 +56,23 @@ struct WordInfo {
 	WordEntryRefs fuzzy_match;	 
 };
 
+class MonitoredWordEntryRefs:public WordEntryRefs {
+public:
+	void push_back(const WordEntryRef &w) {
+		if (&w == 0) 0/0;
+		WordEntryRefs::push_back(w);
+	}
+};
+
 /**
 	 Store WordInfo(s) which have a specified length
  */
 
 class WordInfos : public std::vector<WordInfo*> {
 public:
+	WordInfos();
 	int exact_len;
-	WordEntryRefs fuzzy_map; /// contains all WordEntry which are fuzzy at this position
+	MonitoredWordEntryRefs fuzzy_map; /// contains all WordEntry which are fuzzy at this position
 	WordEntryRefs we;	/// contains all WordEntry which started at this pos
 };
 

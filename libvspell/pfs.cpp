@@ -30,14 +30,14 @@ void PFS::segment_best(const Words &w,Segmentation &seps)
 
   int c = 1;
 
-  while (c < n) {
+  while (c <= n) {
     pop_heap(candidates.begin(),candidates.end(),val);
     int v = candidates.back();
     candidates.pop_back();
     if (v == n)
       continue;
     c++;
-    //cerr << "got " << v << " " << n << endl;
+    cerr << "got " << v << " " << val[v] << endl;
 
     const WordEntryRefs &wers = w.get_we(v);
     int vv,ii,nn = wers.size();
@@ -51,14 +51,14 @@ void PFS::segment_best(const Words &w,Segmentation &seps)
       vi[0] = (*w.we)[back_traces[v]].node.node->get_id();
       add = (-ngram.wordProb(wers[ii]->node.node->get_id(),vi));
       value = val[v]+ add;
-      //cerr << "examine " << vv << "(" << wers[ii]->node << ")";
+      cerr << "examine " << vv << "(" << wers[ii]->node << ")";
       if (!seen[vv]) {
 	candidates.push_back(vv);
 	seen[vv] = true;
 	val[vv] = value;
 	push_heap(candidates.begin(),candidates.end(),val);
 	back_traces[vv] = wers[ii]->id;
-	//cerr << " add " << val[vv] << "=" << v << "+"<< add;
+	cerr << " add " << val[vv] << "=" << v << "+"<< add;
       } else {
 	if (val[vv] > value) {
 	  val[vv] = value;
@@ -71,10 +71,10 @@ void PFS::segment_best(const Words &w,Segmentation &seps)
 	      break;
 	  }
 	  back_traces[vv] = wers[ii]->id;
-	  //cerr << " val " << val[vv] << "=" << v << "+"<< add;
+	  cerr << " val " << val[vv] << "=" << v << "+"<< add;
 	}
       }
-      //cerr << endl;
+      cerr << endl;
     }
   }
 
@@ -87,5 +87,5 @@ void PFS::segment_best(const Words &w,Segmentation &seps)
   }
   reverse(seps.begin(),seps.end());
 
-  //cerr << "done" << endl;
+  cerr << "done" << endl;
 }

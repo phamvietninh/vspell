@@ -1,0 +1,7 @@
+-*- coding: vietnamese-utf8 -*-
+Tạo corpus, mỗi dòng một câu tiếng Việt để phân tích và tạo xác suất.
+Xây dựng hàm WordNode::save()
+Xây dựng hàm WordNode::recalculate()
+Pruning dựa trên tổng xác suất bé hơn một ngưỡng nào đó.
+Thống kê các thông tin liên quan đến DISTANCE_THRESOLD, ED_THRESOLD.
+Cài fuzzy match kiểu mới.

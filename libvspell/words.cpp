@@ -338,8 +338,6 @@ void Lattice::add(WordEntry &w)
 	if (me.size() <= w.pos)
 		me.resize(w.pos+1);
 
-	WordInfos &wis = me[w.pos];
-
 	if (w.fuzid) {
 		for (unsigned int j = 0;j < w.len;j ++)
 			if (w.fuzid & (1 << j)) {
@@ -349,6 +347,7 @@ void Lattice::add(WordEntry &w)
 			}
 	}
 
+	WordInfos &wis = me[w.pos];
 	wis.we.push_back(&w);
 }
 

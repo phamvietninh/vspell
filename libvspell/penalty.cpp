@@ -82,6 +82,6 @@ void Penalty2DAG::set_syllable_weights(const Segmentation &seg)
 		v[4] = ov;
 
 		for (uint j = seg[i].pos;j < seg[i].pos+seg[i].len;j ++)
-			syllable_weights[j] = (v1+v2+v3)/3;
+			syllable_weights[j] = 1-(v1+v2+v3)/3;
 	}
 }

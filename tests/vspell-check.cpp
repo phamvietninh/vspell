@@ -107,7 +107,6 @@ void check_pattern(Pattern &pat)
 					<< endl;
 	}
 	delete os;
-	cerr << "done" << endl;
 }
 
 void save_corpus(const char *filename)
@@ -243,6 +242,7 @@ int main(int argc,char **argv)
 			cin >> filename;
 			save_corpus(filename.c_str());
 		}
+		cerr << "done" << endl;
 	}
 }
 

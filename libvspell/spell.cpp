@@ -296,8 +296,9 @@ void VSpell::add_word(const char *s)
 	istringstream is(s);
 	strid_string toks;
 	string ss;
-	while (is >> ss)
-		toks += get_sarch()[get_dic_syllable(ss)];
+	while (is >> ss) {
+		toks += get_sarch()[ss];
+	}
 	words.insert(toks);
 }
 
@@ -387,8 +388,9 @@ bool Text::word_check()
 				ok = false;
 		}
 
-		if (vspell->in_dict(sylls2))
+		if (vspell->in_dict(sylls2)) {
 			ok = true;
+		}
 
 		if (!ok) {
 			Suggestion _s;

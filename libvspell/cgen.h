@@ -1,5 +1,8 @@
 // -*- tab-width: 2 mode: c++ -*-
 
+#ifndef __CGEN_H__
+#define __CGEN_H__
+
 #ifndef __SPELL_H__
 #include "spell.h"
 #endif
@@ -26,3 +29,4 @@ public:
 	void done();
 };
 
+#endif

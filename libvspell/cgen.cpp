@@ -1,4 +1,4 @@
-#include "cgen.h"
+#include "cgen.h"		// -*- tab-width: 2 -*-
 
 using namespace std;
 

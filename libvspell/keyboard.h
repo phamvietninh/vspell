@@ -3,6 +3,14 @@
 #include "spell.h"
 #endif
 
+#ifndef __CGEN_H__
+#include "cgen.h"
+#endif
+
+#ifndef __POSGEN_H__
+#include "posgen.h"
+#endif
+
 #ifndef __STRING__
 #include <string>
 #endif
@@ -15,4 +23,26 @@
 #include <set>
 #endif
 
+class KeyRecover
+{
+private:
+	std::string input;
+	std::vector<uint> vvv;
+	std::vector<const char*> vmap;
+	PosGen posgen;
+	CGen cgen;
+	std::vector<uint> v;
+	uint len;
+	bool inner_loop;
+
+	bool inner_step(std::string &output);
+
+public:
+	void init(const char *input,int N = 2);
+	bool step(std::string &output);
+	void done();
+};
+
 void keyboard_recover(const char *input,std::set<std::string> &output);
+void vni_recover(const char *input,std::set<std::string> &output);
+void telex_recover(const char *input,std::set<std::string> &output);

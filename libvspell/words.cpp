@@ -23,6 +23,7 @@ void WordState::get_first(WordStates &states,uint _pos)
 {
 	dnode.node = get_root();
 	pos = _pos;
+	fuzid = 0;
 	get_next(states,pos);
 }
 
@@ -40,13 +41,18 @@ void ExactWordState::get_next(WordStates &states,uint i)
 void LowerWordState::get_next(WordStates &states,uint i)
 {
 	WordNodePtr exact_node;
-	exact_node = dnode.node->get_next(get_sarch()[get_lowercased_syllable(get_sarch()[sent[i].get_cid()])]);
+	string s1,s2;
+	s1 = get_sarch()[sent[i].get_cid()];
+	s2 = get_lowercased_syllable(s1);
+	exact_node = dnode.node->get_next(get_sarch()[s2]);
 	if (exact_node == NULL)
 		return;
 	cerr << "Lower: " << get_lowercased_syllable(get_sarch()[sent[i].get_cid()]) << endl;
 	states.push_back(this);
 	// change the info
 	dnode = exact_node;
+	if (s1 != s2)
+		fuzid |= 1 << (i-pos);
 }
 
 void FuzzyWordState::get_next(WordStates &states,uint _i)
@@ -56,8 +62,9 @@ void FuzzyWordState::get_next(WordStates &states,uint _i)
 	bool ret = false;
 	set<Syllable> syllset,syllset2;
 	Syllable _syll;
+	string s1 = get_sarch()[sent[_i].get_cid()];
 
-	_syll.parse(get_sarch()[sent[_i].get_cid()]);
+	_syll.parse(s1.c_str());
 
 	syllset2.insert(_syll);
 	while (!syllset2.empty()) {
@@ -103,6 +110,8 @@ void FuzzyWordState::get_next(WordStates &states,uint _i)
 
 			// change the info
 			s->dnode.node = *pnode;
+			if (s1 != str)
+				s->fuzid |= 1 << (_i-s->pos);
 			states.push_back(s);
 			//cerr << nodes[ii] << endl;
 		}

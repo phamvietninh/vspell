@@ -427,9 +427,6 @@ bool Text::word_check()
 		int ii,len = seg[i].node->get_syllable_count();
 		seg[i].node->get_syllables(sylls);
 
-		// in user dict
-		bool ok = vspell->in_dict(sylls2);
-
 		// case-sensitive comparation.
 		sylls2.resize(len);
 		bool subok = true;
@@ -438,20 +435,41 @@ bool Text::word_check()
 			if (subok && st[seg[i].pos+ii].get_cid() != sylls[ii])
 				subok = false;
 		}
-		
- 		strid_string sylls3;
-		sylls3.resize(sylls.size());
-		for (ii = 0;ii < sylls3.size();ii ++)
-			sylls3[ii] = sarch[get_unstd_syllable(sarch[sylls[ii]])];
 
-		// don't care if the "true" word is lower-cased and the original one is valid upper-cased
-		if (!subok &&
-				(is_all_capitalized_word(sylls2) ||
-				 (is_first_capitalized_word(sylls2) && is_lower_cased_word(sylls3))))
-			subok = true;
+		// in user dict
+		bool ok = vspell->in_dict(sylls2);
 
-		if (!ok)
-			ok = subok;
+		if (!ok) {
+			strid_string sylls3;
+			sylls3.resize(sylls.size());
+			for (ii = 0;ii < sylls3.size();ii ++)
+				sylls3[ii] = sarch[get_unstd_syllable(sarch[sylls[ii]])];
+
+			if (vspell->get_strict_word_checking()) {
+				// don't care if the "true" word is lower-cased and the original one is valid upper-cased
+				if (!subok &&
+						(is_all_capitalized_word(sylls2) ||
+						 (is_first_capitalized_word(sylls2) && is_lower_cased_word(sylls3))))
+					subok = true;
+
+				ok = subok;
+			} else {
+				string s;
+				uint ii,nn = sylls.size();
+				for (ii = 0;ii < nn;ii ++) {
+					if (ii)
+						s += "_";
+					s += sarch[sylls[ii]];
+				}
+				ok = sarch.in_dict(s);
+
+				// don't care if the "true" word is lower-cased and the original one is valid upper-cased
+				if (!ok &&
+						(is_all_capitalized_word(sylls2) ||
+						 (is_first_capitalized_word(sylls2) && is_lower_cased_word(sylls3))))
+					ok = true;
+			}
+		}
 
 		if (!ok) {
 			Suggestion _s;

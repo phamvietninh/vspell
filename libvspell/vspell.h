@@ -68,14 +68,15 @@ protected:
 	std::string utf8_text;
 	std::string text;
 	float penalty_weight;
-	bool do_normalization,do_trigram;
+	bool do_normalization,do_trigram,do_strict_word_checking;
 
 public:
 	VSpell(const TextFactory &tf):
 		text_factory(tf),
 		penalty_weight(0),
 		do_normalization(true),
-		do_trigram(false)
+		do_trigram(false),
+		do_strict_word_checking(false)
 	{}
 	virtual ~VSpell() { cleanup(); }
 
@@ -95,6 +96,13 @@ public:
 	}
 	bool get_normalization() const {
 		return do_normalization;
+	}
+
+	void set_strict_word_checking(bool t) {
+		do_strict_word_checking = t;
+	}
+	bool get_strict_word_checking() const {
+		return do_strict_word_checking;
 	}
 
 	void set_trigram(bool t) {

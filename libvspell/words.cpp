@@ -188,7 +188,7 @@ void Lattice::pre_construct(const Sentence &sent,set<WordEntry> &we,const WordSt
 		nn = states2.size();
 		for (ii = 0;ii < nn;ii ++) {
 			std::vector<LeafNode*> leaves;
-			states2[ii]->dnode.node->get_leaves(leaves);
+			states2[ii]->dnode.node->get_leaves(leaves,MAIN_LEAF|CASE_LEAF);
 			nnn = leaves.size();
 			for (iii = 0;iii < nnn;iii ++) {
 				WordEntry e;

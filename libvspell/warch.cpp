@@ -188,7 +188,6 @@ void WordArchive::add_case_entry(vector<string> toks2)
 	leaf->set_mask(CASE_LEAF);
 	branch->add(sarch["<leaf>"],noderef);
 	leaf->set_id(real_syllables);
-
 }
 
 void LeafNode::set_mask(uint maskval,bool mask)

@@ -1,4 +1,5 @@
 #include "dictionary.h"
+#include "wordnode.h"
 #include <iostream>
 #include <string>
 

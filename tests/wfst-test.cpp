@@ -12,15 +12,16 @@ void print_all_words(const Words &words);
 int main()
 {
   WFST wfst;
-  dic_init(new WordNode(sarch["<root>"]));
+  dic_init(new FuzzyWordNode(sarch["<root>"]));
   ed_init();
-  
 
   cerr << "Loading... ";
   get_root()->load("wordlist.wl");
   cerr << "done" << endl;
 
   sarch.set_blocked(true);
+
+  sarch.dump();
 
   /*
     cerr << "Saving...";
@@ -77,7 +78,7 @@ int main()
       Segmentation seg;
       Words words;
       wfst.get_all_words(st,words);
-      print_all_words(words);
+//      print_all_words(words);
       wfst.segment_best(st,words,seg);
       seg.print(cerr,st);
       sarch.clear_rest();

@@ -1,5 +1,6 @@
 #include "sentence.h"
 #include "dictionary.h"
+#include "wordnode.h"
 #include <algorithm>
 
 using namespace std;

@@ -6,9 +6,10 @@
 #include "config.h"
 #include <spell.h>
 #include <sentence.h>
+#include <wordnode.h>
+#include <wfst.h>
 
 using namespace std;
-void print_all_words(const Words &words);
 
 static GtkTextTagTable *tagtable_main;
 static GtkTextBuffer *textbuffer_main;
@@ -210,7 +211,7 @@ void sentence_process(const char *pp)
 		wfst.enable_ngram();
 		wfst.set_wordlist(get_root());
 		wfst.get_all_words(st,words);
-		print_all_words(words);
+		words.print();
 		wfst.segment_best(st,words,seg);
 			
 		seg.print(cerr,st);

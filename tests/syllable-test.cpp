@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include "dictionary.h"
+#include "syllable.h"
 
 using namespace std;
 

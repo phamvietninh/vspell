@@ -29,7 +29,7 @@ public:
 
 private:
 	std::string sent_;
-	vector<Syllable> syllables;
+	std::vector<Syllable> syllables;
 	friend class Syllable;
 
 	void tokenize_punctuation(const std::string &s,std::vector<std::string> &ss);
@@ -66,10 +66,10 @@ struct Segmentation
 
 struct WordInfo {
 	Dictionary::WordNode::DistanceNode exact_match;
-	vector<Dictionary::WordNode::DistanceNode> fuzzy_match;
+	std::vector<Dictionary::WordNode::DistanceNode> fuzzy_match;
 };
-typedef vector<WordInfo> WordInfos;
-typedef vector<WordInfos> Words;
+typedef std::vector<WordInfo> WordInfos;
+typedef std::vector<WordInfos> Words;
 
 class WFST
 {
@@ -90,13 +90,13 @@ public:
 	void get_all_words(const Sentence &sent,
 				 Words &words);
 	void segment_best(const Sentence &sent,
-				const vector<WordInfos> &words,
+				const std::vector<WordInfos> &words,
 				Segmentation &seps);
 	void segment_all(const Sentence &sent,
 			 std::vector<Segmentation> &result);
 private:
 	void segment_all1(const Sentence &sent,
-				const vector<WordInfos> &words,
+				const std::vector<WordInfos> &words,
 				int from,int to,
 				std::vector<Segmentation> &result);
 	

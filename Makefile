@@ -1,10 +1,13 @@
-SRILM_LIBS =  -loolm  -ldstruct -lmisc 
+SRILM_LIBS =  -lsrilm #-loolm  -ldstruct -lmisc 
 SRILM_CXXFLAGS = 
-TRAIN_CXXFLAGS = -DTRAINING -Iinclude -Iinclude/srilm #-DUSE_EXACT_MATCH
+TRAIN_CXXFLAGS = -DTRAINING -Isrilm/include -Isrilm/include/srilm #-DUSE_EXACT_MATCH
 CXXFLAGS = -I. -g $(TRAIN_CXXFLAGS) $(SRILM_CXXFLAGS)
-LDFLAGS = -g  -Llib/srilm  $(SRILM_LIBS)
-GTK_CFLAGS = `pkg-config --cflags gtk+-2.0`
+LDFLAGS = -g -Lsrilm $(SRILM_LIBS)
+GTK_CFLAGS = `pkg-config --cflags gtk+-2.0` 
 GTK_LDFLAGS = `pkg-config --libs gtk+-2.0`
+ifdef WIN32
+GTK_CFLAGS += -mms-bitfields
+endif
 
 all: wfst-train wfst syllable-test vspell
 

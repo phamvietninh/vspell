@@ -78,10 +78,10 @@ namespace Dictionary {
 
 	private:
 		bool fuzzy_get_next_with_syllable(strid str,
-							vector<DistanceNode>& _nodes,
+							std::vector<DistanceNode>& _nodes,
 							const Syllable &syll) const;
 		bool fuzzy_get_next_with_ed(strid str,
-				vector<DistanceNode>& _nodes,
+				std::vector<DistanceNode>& _nodes,
 				const char *str_data,
 				bool parsable) const;
 
@@ -105,8 +105,8 @@ namespace Dictionary {
 		void set_prob(float _prob);
 
 		int get_syllable_count();
-		void get_syllables(vector<strid> &syllables);
-		WordNodePtr follow_syllables(const vector<strid> &syllables);
+		void get_syllables(std::vector<strid> &syllables);
+		WordNodePtr follow_syllables(const std::vector<strid> &syllables);
 
 		bool load(const char* filename);
 		bool save(const char* filename);

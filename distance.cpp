@@ -5,6 +5,10 @@
 #include <stdio.h>
 #include "distance.h"
 
+#ifndef MAXINT
+#define MAXINT 10000000 //2147483647
+#endif
+
 int a[MAX_WIDTH+2][MAX_HEIGHT+2];
 #define A(i,j) a[(i)+2][(j)+2]
 #define min2(a,b) ((a) > (b) ? (b) : (a))

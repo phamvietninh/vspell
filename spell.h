@@ -3,9 +3,9 @@
 
 struct Suggestion {
   int id;
-  vector<Dictionary::strid> suggestions;
+  std::vector<Dictionary::strid> suggestions;
 };
-typedef vector<Suggestion> Suggestions;
+typedef std::vector<Suggestion> Suggestions;
 
 namespace Spell {
   void check1(Sentence &st,Suggestions &s);

@@ -5,6 +5,7 @@
 #include <string>
 #include <map>
 #include <boost/shared_ptr.hpp>
+#include <iostream>
 #include "dictionary.h"
 
 #define SEGM_SEPARATOR 1
@@ -16,15 +17,15 @@ public:
   {
   private:
   public:
-    int start,end;
+    int start;
+    Dictionary::strid id,cid;
     //std::string::iterator start,end;
     Sentence *sent_;
     int category;
     int span;
 
-    std::string operator* () const {
-      return sent_->sent_.substr(start,end-start); 
-    }
+    Dictionary::strid get_id() const { return id; }
+    Dictionary::strid get_cid() const { return cid; }
   };
 
 private:
@@ -49,7 +50,7 @@ struct Segmentation
   struct Item {
     int flags;			// Separator mark
     int distance;		// from ed() or fuzzy syllable
-    Dictionary::WordNodePtr state;		// used to get prob.
+    Dictionary::WordNodePtr state; // used to get prob.
 
     Item():flags(0),distance(0),state(NULL) {}
   };
@@ -59,23 +60,39 @@ struct Segmentation
   int distance;			// total distance
 
   Segmentation():prob(0),distance(0) {}
-  void print(const Sentence &st);
+  void print(std::ostream &os,const Sentence &st);
 };
 
 class WFST
 {
 protected:
   Dictionary::WordNodePtr wl;
-  
+
+  struct WordInfo {
+    Dictionary::WordNode::DistanceNode exact_match;
+    vector<Dictionary::WordNode::DistanceNode> fuzzy_match;
+  };
 public:
+  typedef vector<WordInfo> WordInfos;
+
   bool set_wordlist(Dictionary::WordNodePtr _wl) {
     wl = _wl;
     return true;
   }
 
-  void segment_best(const Sentence &sent,Segmentation &seps);
-  template <class OutputIterator>
-  void segment_all(const Sentence &sent,OutputIterator iter);
+  void get_all_words(const Sentence &sent,
+		     vector<WordInfos> &words);
+  void segment_best(const Sentence &sent,
+		    const vector<WordInfos> &words,
+		    Segmentation &seps);
+  void segment_all(const Sentence &sent,
+		   std::vector<Segmentation> &result);
+private:
+  void segment_all1(const Sentence &sent,
+		    const vector<WordInfos> &words,
+		    int from,int to,
+		    std::vector<Segmentation> &result);
+  
 };
 
 #endif

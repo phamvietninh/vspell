@@ -1,9 +1,11 @@
 -*- coding: vietnamese-utf8 -*-
-Tạo corpus, mỗi dòng một câu tiếng Việt để phân tích và tạo xác suất.
-Xây dựng hàm WordNode::save()
+*done* Tạo corpus, mỗi dòng một câu tiếng Việt để phân tích và tạo xác suất.
+*done* Xây dựng hàm WordNode::save()
 Xây dựng hàm WordNode::recalculate()
 Pruning dựa trên tổng xác suất bé hơn một ngưỡng nào đó.
 Thống kê các thông tin liên quan đến DISTANCE_THRESOLD, ED_THRESOLD.
-Cài fuzzy match kiểu mới.
-Chỉnh lại dictionary. Lưu index thay vì string. Tạo index cho string và map từ string sang index
-Thêm ngram.
+*done* Cài fuzzy match kiểu mới.
+*done* Chỉnh lại dictionary. Lưu index thay vì string. Tạo index cho string và map từ string sang index
+Thêm ngram
+Tách thành từng đoạn để wordseg
+Xử lý proper name, abbreviation

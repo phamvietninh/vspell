@@ -21,8 +21,8 @@
 #endif
 
 #define ALL_LEAVES 0						// all leaves
-#define MAIN_LEAF 1							// normal leaves
-#define CASE_LEAF 2							// lower-to-realcase leaves
+#define MAIN_LEAF  1						// normal leaves
+#define CASE_LEAF  2						// lower-to-realcase leaves
 
 class Node;
 class BranchNode;

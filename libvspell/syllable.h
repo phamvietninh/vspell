@@ -42,6 +42,9 @@ public:
 	   int diacritic = -1);
 	Syllable(const Syllable &sy);
 
+	std::string get_component(int i);
+	bool set_component(int i,const char *s);
+
 
   bool match(const Syllable &sample);
   void apply(const Syllable &sample,std::vector<Syllable> &output);

@@ -883,6 +883,38 @@ strid Syllable::to_std_id() const
 	return get_sarch()[to_std_str()];
 }
 
+std::string Syllable::get_component(int i)
+{
+	switch (i) {
+	case First_Consonant: return first_consonants[i];
+	case Padding_Vowel: return padding_vowels[i];
+	case Vowel: return vowels[i];
+	case Last_Consonant: return last_consonants[i];
+	default: return "";
+	}
+}
+
+bool Syllable::set_component(int pos,const char *s)
+{
+	char **p;
+	switch (pos) {
+	case First_Consonant: p = first_consonants;
+	case Padding_Vowel: p = padding_vowels;
+	case Vowel: p = vowels;
+	case Last_Consonant: p = last_consonants;
+	default: return false;
+	}
+
+	for (int i = 0;p[i];i ++)
+		if (get_lowercased_syllable(s) == p[i]) {
+			components[pos] = i;
+			scomponents[pos] = s;
+			return true;
+		}
+
+	return false;
+}
+
 /*
 	void Syllable::standardize(std::string syllable)
 	{
@@ -964,9 +996,15 @@ string get_std_syllable(const string &str)
 	uint i,n = str.size();
 
 	Syllable sy;
-	if (sy.parse(str.c_str()))
+	if (sy.parse(str.c_str())) {
+		/*
+		if (sy.parse(s.c_str()) &&	// 'y' canonicalization
+				sy.components[Syllable::Padding_Vowel] == -1 &&
+				sy.get_component(Syllable::Vowel) == "y")
+			sy.set_component(Syllable::Vowel,s[s.size()-1] == 'Y' ? "I" : "i");
+		*/
 		return sy.to_std_str();
-	else
+	} else
 		return string("0")+str;
 }
 

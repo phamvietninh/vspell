@@ -2830,6 +2830,9 @@ câu.
 
 \subsection{Chuẩn hoá}
 
+
+\subsubsection{Chuẩn hoá dấu}
+
 Chuẩn hoá là đặt lại vị trí dấu trong các tiếng nhằm đảm bảo thống
 nhất một quy tắc đặt dấu chung. Do tiếng Việt không quy định cụ thể
 quy tắc bỏ dấu nên hình thành nhiều cách bỏ dấu khác nhau (bỏ dấu khoa
@@ -2867,7 +2870,25 @@ sau này. Ta cũng có thể phục hồi chữ từ chữ chuẩn hoá bằng c
 tích cấu trúc âm tiết và bỏ dấu thích hợp theo quy tắc bỏ dấu cho
 trước. Việc này sẽ giúp chuẩn hoá cách bỏ dấu cho toàn văn bản.
 
+\subsubsection{Chuẩn hoá `y' và `i'}
+
 %% XXX Ngoài ra còn một dạng khác là ``quý'' và ``quí''
+Ngoài việc chuẩn hoá cách bỏ dấu, một số chữ trong tiếng Việt kết thúc
+bằng `y' có thể được đổi thành `i'. Ví dụ, ``quý'' và ``quí'' đều hợp
+lệ. Tuy nhiên, không phải chữ nào kết thúc bằng `y' cũng có thể chuyển
+thành `i', ví dụ ``thuý'' và ``thúi''. Nguyên nhân là do khi
+chuyển thành `i', chữ cái này kết hợp với `u' tạo ra âm chính `ui'
+thay vì âm chính `i'. Một số chữ kết thúc bằng `i' cũng không thể
+chuyển sang `y', ví dụ ``bí'', ``chí''~\ldots{} Việc cho phép viết
+một từ ở hai cách sẽ làm giảm hiệu suất của chương trình do chương
+trình coi ``quý'' và ``quí'' là hai chữ hoàn toàn khác nhau. Giải pháp
+là lập danh sách những từ kết thúc bằng `y' có thể chuyển sang `i',
+sau đó chuyển tất cả những từ kết thúc bằng `i' có trong danh sách
+trên sang `y'. Trong quá trình bắt lỗi chính tả, nếu người dùng yêu
+cầu chuẩn hoá thì ta có thể xem việc viết `y' hoặc `i' như là sai
+chính tả. Nếu không, ta sẽ bỏ qua khác biệt `y' và `i' ở bước báo lỗi
+chính tả. Gồm các chữ sau (không xét thanh điệu): ``mi'', ``ti'',
+``thi'', ``qui'', ``ki'', ``hi'', ``li'' ``si'', ``vi''.
 
 \subsection{Chữ viết hoa}
 

@@ -59,6 +59,10 @@ bool WordNode::load(const string &filename)
   if (!ifs.is_open())
     return false;
 
+  char *buffer = new char[10240];
+
+  ifs.rdbuf()->setbuf(buffer,10240);
+
   int nr_lines = 0;
   string line;
   while (getline(ifs,line)) {
@@ -101,6 +105,13 @@ WordNodePtr WordNode::get_next(const string &str) const
 {
   node_map::const_iterator iter = nodes.find(str);
   return iter == nodes.end() ? NULL : iter->second;
+}
+
+void WordNode::fuzzy_get_next(const string &str,vector<WordNodePtr>& _nodes) const
+{
+  node_map::const_iterator iter = nodes.find(str);
+  if (iter != nodes.end())
+    _nodes.push_back(iter->second);
 }
 
 /*
@@ -161,53 +172,78 @@ void WFST::segment_all(const Sentence &sent,OutputIterator iter)
   traces.push_back(start_trace);
 
   while (!traces.empty()) {
-    // get one
-    Trace &trace = traces.back();
+    // examine one
+    Trace trace = traces.back();
 
+    // segmentation completed. throw it away
+    // TUNE: do we need these? -> yes we do
+    // in case of partial segmentations
     if (trace.next == nr_syllables) {
+      cerr << "drop trace" << endl;
       traces.pop_back();
       continue;
     }
 
     Sentence::Syllable syll = sent[trace.next];
-    cerr << *syll << endl;
+    cerr << "<" << *syll << ">" << endl;
 
-    WordNodePtr next_node(trace.node->get_next(*syll));
-    if (!next_node) {
+    // get next node. INFO: fuzzy match here
+    vector<WordNodePtr> next_nodes;
+    trace.node->fuzzy_get_next(*syll,next_nodes);
+    //WordNodePtr next_node(trace.node->get_next(*syll));
+
+    if (next_nodes.empty()/*!next_node*/) {
+      cerr << "cancel trace" << endl;
       traces.pop_back();	// cancel this trace
       continue;
     }
 
-    float prob = next_node->get_prob();
-    if (prob < 0)
-      continue;			// nothing happens, keep going
+    // take it off stack. trace will be just a template for other traces
+    cerr << "pop trace" << endl;
+    traces.pop_back();
+    
+    vector<WordNodePtr>::iterator next_nodes_iter;
+    for (next_nodes_iter = next_nodes.begin();
+	 next_nodes_iter != next_nodes.end();
+	 ++next_nodes_iter) {
+      WordNodePtr next_node(*next_nodes_iter); 
 
-    // Have prob, create a new trace and push back this trace.
-    int cur = trace.next;
-    
-    trace.next ++;		// we have examined this syllable.
-    trace.node = next_node;
-    // we won't call pop_back() to keep the trace
-    
-    // create a new trace
-    Trace new_trace(trace);
-    new_trace.node = wl;
-    Segmentation segm;
-    Separator sep;
-    sep.anchor = cur;
-    sep.prob = prob;
-    new_trace.segm.sep_list.push_back(sep);
-    
-    if (new_trace.next == nr_syllables) {
-      vector<Separator>::iterator sepiter;
-      vector<Separator> &sep_list = new_trace.segm.sep_list;
-      new_trace.segm.prob = 0;
-      for (sepiter = sep_list.begin(); sepiter != sep_list.end(); ++sepiter) {
-	new_trace.segm.prob += sepiter->prob;
+      // start a new trace based on "trace"
+      Trace new_trace = trace;
+      new_trace.node = next_node;
+      new_trace.next ++;
+      traces.push_back(new_trace); // put it into stack
+      cerr << "new trace" << endl;
+
+
+      float prob = next_node->get_prob();
+      if (prob < 0)		// not the final state
+	continue;		// move on
+
+      // got a final state
+      new_trace.node = wl;	// reset node
+      Separator sep;		// create a separator
+      sep.anchor = new_trace.next-1;
+      sep.prob = prob;
+      new_trace.segm.sep_list.push_back(sep); // add a new separator
+
+      // if the new trace is completed, save it
+      if (new_trace.next == nr_syllables) {
+	vector<Separator>::iterator sepiter;
+	vector<Separator>& seplist = new_trace.segm.sep_list;
+	new_trace.segm.prob = 0;
+	// calculate the prob sum
+	for (sepiter = seplist.begin();
+	     sepiter != seplist.end();
+	     ++sepiter) {
+	  new_trace.segm.prob += sepiter->prob;
+	}
+	*iter++ = new_trace.segm;	// save it.
+      } else {
+	traces.push_back(new_trace);
+	cerr << "add new trace" << endl;
       }
-      *iter++ = new_trace.segm;	// save it.
-    } else
-      traces.push_back(new_trace);
+    }
   }
 }
 

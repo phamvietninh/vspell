@@ -103,6 +103,7 @@ private:
 public:
   WordNode():prob(-1) {}
   virtual WordNodePtr get_next(const std::string &str) const;
+  virtual void fuzzy_get_next(const std::string &str,std::vector<WordNodePtr>& _nodes) const;
   virtual WordNodePtr create_next(const std::string &str);
   float get_prob() const { return prob; }
   void set_prob(float _prob) { prob = _prob; }

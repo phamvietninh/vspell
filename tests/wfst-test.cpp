@@ -1,5 +1,5 @@
 // -*- coding: viscii -*-
-#include "wfst.h"
+#include "pfs.h"
 #include "distance.h"
 #include "sentence.h"
 #include <string>
@@ -13,7 +13,7 @@ using namespace std;
 void print_all_words(const Words &words);
 int main(int argc,char **argv)
 {
-  WFST wfst;
+  PFS wfst;
   dic_init(argc > 1 ? new WordNode(sarch["<root>"]) : new FuzzyWordNode(sarch["<root>"]));
   ed_init();
 

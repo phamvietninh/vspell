@@ -1,5 +1,5 @@
 // -*- coding: viscii -*-
-#include "wfst.h"
+#include "pfs.h"
 #include "distance.h"
 #include <string>
 #include <fstream>
@@ -13,7 +13,7 @@
 
 using namespace std;
 
-WFST wfst;
+PFS wfst;
 
 int main(int argc,char **argv)
 {
@@ -72,10 +72,12 @@ int main(int argc,char **argv)
       //seg.pretty_print(cout,st) << endl;
 
       n = seg.size();
-      VocabIndex *vi = new VocabIndex[n+1];
-      vi[n] = Vocab_None;
+      VocabIndex *vi = new VocabIndex[n+3];
+      vi[0] = start_id;
+      vi[n+1] = stop_id;
+      vi[n+2] = Vocab_None;
       for (i = 0;i < n;i ++) {
-	vi[i] = seg[i].node.node->get_id();
+	vi[i+1] = seg[i].node.node->get_id();
 //	cerr << "<" << sarch[vi[i]] << "> ";
       }
       //cerr << endl;

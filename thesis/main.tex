@@ -4,24 +4,25 @@
 \renewcommand{\sfdefault}{uhv}
 \renewcommand{\ttdefault}{ucr}
 
-\usepackage[hmargin={2cm,2cm}]{geometry}
+\usepackage[hmargin={2cm,2.5cm}]{geometry}
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage[vietnam]{minitoc}
-\newcommand{\note}[1]{\underline{#1}}
-\newcommand{\comment}[1]{}
-\usepackage{theorem}
 \usepackage{tabularx}
 \usepackage{footnote}
 \usepackage{tipa}
 \usepackage{subfigure}
 
+\usepackage{theorem}
 \theoremstyle{break}
 \newtheorem{algo}{Thuật toán}
 
-\setlength{\parskip}{1.5ex plus 0.7ex minus 0.6ex}
+\setlength{\parskip}{1.6ex plus 0.7ex minus 0.6ex}
 
 \setcounter{minitocdepth}{4}
+
+\newcommand{\note}[1]{\underline{#1}}
+\newcommand{\comment}[1]{}
 
 \title{Chương trình bắt lỗi chính tả tiếng Việt}
 \author{Nguyễn Thái Ngọc Duy\\0012020}
@@ -30,6 +31,7 @@
 \dominitoc
 %\doparttoc
 \maketitle
+
 \begin{titlepage}
   \begin{center}
     \Large Lời cảm ơn
@@ -40,9 +42,10 @@ Xin chân thành cám ơn TS. Đinh Điền và các thành viên trong nhóm VC
   Nguyễn Thái Ngọc Duy
 \end{flushright}
 \end{titlepage}
+
 \tableofcontents
-\listoffigures
-\listoftables
+%\listoffigures
+%\listoftables
 %\large%
 
 %% \chapter{Giới thiệu}
@@ -315,12 +318,12 @@ Luận văn được chia thành các chương sau:
 \item Chương 6 tóm tắt luận văn, các kết quả đạt được, tìm hiểu các
   đặc điểm của mô hình   cũng như chương trình cài đặt, các hạn chế và
   các hướng giải quyết   trong tương lai.
-\item Phần phụ lục trình bày tùm lum hết.
+\item Phần phụ lục trình bày XXX.
 \end{itemize}
 
 \chapter{Cơ sở lý thuyết ngôn ngữ}
 \label{cha:vietnamese}
-\minitoc\newpage
+\minitoc
 
 
 \section{Âm tiết}
@@ -354,7 +357,7 @@ thường dài hơn nguyên âm không có trọng âm.
 \subsection{Nguyên âm và phụ âm}
 
 Các âm tố có thể chia thành nguyên âm và phụ âm, dựa vào các đặc điểm
-âm học, cấu âm và vai tròn trong cấu tạo âm tiết.
+âm học, cấu âm và vai trò trong cấu tạo âm tiết.
 
 Nguyên âm có đặc điểm cấu tạo:
 \begin{itemize}
@@ -366,7 +369,7 @@ Nguyên âm có đặc điểm cấu tạo:
 Phụ âm có đặc điểm cấu tạo hoàn toàn trái ngược với nguyên âm:
 \begin{itemize}
 \item Luồng hơi bị cản trở do sự xuất hiện chướng ngại trên lối ra của
-  luồng không khí, chương ngại thường xuất hiện ở các khoang trên
+  luồng không khí, chướng ngại thường xuất hiện ở các khoang trên
   thanh hầu do các khí quan tiếp xúc nhau hay nhích gần nhau mà thành,
   điểm có chướng ngại được gọi là vị trí cấu âm của phụ âm.
 \item Bộ máy phát âm không căng thẳng toàn bộ mà sự căng thẳng cơ thịt
@@ -391,7 +394,7 @@ và phân biệt hình thức ngữ âm của những đơn vị có nghĩa củ
 được phân biệt bởi các âm vị \textipa{/t/} và \textipa{/d/}.
 
 Âm vị là đơn vị nhỏ nhất, vì về mặt tuyến tính nó không thể phân chia
-nhỏ hơn nữa. Nếu thay âm vị này bằng âm vị khác trong cùng mọt bối
+nhỏ hơn nữa. Nếu thay âm vị này bằng âm vị khác trong cùng một bối
 cảnh ngữ âm sẽ làm cho từ thay đổi nghĩa hoặc mất nghĩa. Ví dụ, thay
 âm \textipa{/t/} trong từ ``toàn'' bằng âm \textipa{/h/} sẽ được
 ``hoàn'' có nghĩa khác, hoặc nếu thay bằng âm \textipa{/n/} sẽ được
@@ -413,7 +416,7 @@ Chuỗi lời nói của con người được chia ra làm những khúc đoạ
 nhau, từ lớn đến nhỏ. Âm tiết là đơn vị phát âm nhỏ nhất, được phân
 định tự nhiên trong lời nói con người.
 
-Về phương diện phát âm, dụ lời nói chậm đến đâu cũng chỉ phân chia đến
+Về phương diện phát âm, dù lời nói chậm đến đâu cũng chỉ phân chia đến
 giới hạn của âm tiết mà thôi. Nhưng về phương diện thính giác thì âm
 tiết là một tổ hợp âm thanh, có thể gồm nhiều âm tố hoặc đôi khi chỉ
 có một âm tố. Mỗi âm tiết chỉ có một âm tố âm tiết tính (có khả năng
@@ -439,7 +442,7 @@ tạo thành âm tiết, gọi là bán nguyên âm.
 
 Trong các ngôn ngữ âm tiết tính như tiếng Trung Quốc, tiếng Miến Điện,
 tiếng Việt~\ldots nói chung âm tiết trùng với hình vị --- đơn vị cơ
-bản của ngữ pháp. Âm tiết có chức năng là vỏ ngữ âm của hình vì, tạo
+bản của ngữ pháp. Âm tiết có chức năng là vỏ ngữ âm của hình vị, tạo
 nên một đơn vị đặc biệt, gọi là {\em hình tiết}.
 
 Tính chất âm tiết của tiếng Việt đưa đến nhiều hệ quả quan trọng về
@@ -450,7 +453,7 @@ lượng các âm tiết là hữu hạn\footnote{Theo Nguyễn Phan Cảnh ``ti
 khả năng, và chỉ sử dụng hơn 6.900 với tư cách là các âm tiết tồn tại
 thực'' (Nguyễn Phan Cảnh, ``Bản chất cấu trúc âm tiết tính của ngôn
 ngữ: Dẫn luận vào một miêu tả không phân lập đối với âm vị học Việt
-Nam, tạp chí ngôn ngữ, H. 1978, sồ 2)}.
+Nam, tạp chí ngôn ngữ, H. 1978, số 2)}.
 
 Là vỏ ngữ âm của một hình vị hay một từ đơn, mỗi âm tiết Tiếng Việt
 bao giờ cũng tương ứng với một ý nghĩa nhất định, nên việc phá vỡ cấu
@@ -571,7 +574,7 @@ ch--tr,x--s và gi,d với r. Trong tiếng miền Nam, \textipa{/v/} và
 \textipa{/z/} được thay bằng \textipa{/j/}.
 
 Hiện nay, hệ thống phụ âm đầu được sử dụng thực tế trong nhà trường và
-trên các văn bản, chung cho các phương ngữ đó là hệ thống phụ âm đầu
+trên các văn bản, chung cho các phương ngữ, là hệ thống phụ âm đầu
 hình thành trên cơ sở phát âm Hà Nội với sự phân biệt các phụ âm
 ch--tr, x--s, g,gi--r gồm 22 phụ âm sau: \textipa{/b, m, f, v, t,
   t\super{h}, d, n, s, z, l, \:t, \:s, \:z, c, \textltailn, k, N, x,
@@ -593,8 +596,8 @@ Trong các thổ ngữ vùng Bắc Trung Bộ (Nghệ Tĩnh --- Bình Trị Thi�
 giữ loạt các phụ âm cong lưỡi \textipa{/\:t, \:s, \:z/}. Ở một số nơi
 thuộc Nghệ Tĩnh, phụ âm ``ph'' được phát âm như âm mặt lưỡi sau bật
 hơi \textipa{/k\super{h}/}. Vì vậy hệ thống phụ âm đầu những nơi này
-có thêm dãy âm bật hơi \textipa{p\super{j}, \:t\super{h},
-  k\super{h}}. Trong khi đó các thổ ngữ miền Bắc và miền Nam chỉ còn
+có thêm dãy âm bật hơi \textipa{/p\super{j}, \:t\super{h},
+  k\super{h}/}. Trong khi đó các thổ ngữ miền Bắc và miền Nam chỉ còn
 lại một âm bật hơi \textipa{/t\super{h}/} mà thôi. Vùng Bình Trị Thiên
 không có phụ âm ``nh''. Phụ âm này thường được phát âm thành
 \textipa{/j/}. Ví dụ, ``nhà'' được phát âm thành ``dà''. Nếu coi hệ
@@ -604,7 +607,7 @@ hệ thống này có 22 phụ âm đầu.
 Hệ thống phụ âm đầu miền Nam (từ đèo Hải Vân trở vào) không có các phụ
 âm xát hữu thanh \textipa{/v, z/}. Tương ứng với \textipa{/v, z/}
 trong phát âm Hà Nội, phát âm miền Nam có phụ âm mặt lưỡi giữa
-\textipa{/j/}. Đôi khi âm \textipa{/v/} được phát âm thành âm mội-môi,
+\textipa{/j/}. Đôi khi âm \textipa{/v/} được phát âm thành âm môi-môi,
 xát, vang ngạc hoá \textipa{/Bj/}. Hiện nay các âm cong lưỡi đang
 trong quá trình biến đổi trong tiếng miền Nam. Phụ âm \textipa{/\:s/}
 là phụ âm ít bền vững nhất thường được phát âm thành
@@ -644,7 +647,7 @@ rất ít xuất hiện trước âm đệm.
 \subsubsection{Âm đệm}
 
 Trong âm tiết, âm đệm \textipa{/-u-/} đứng sau phụ âm đầu và đứng
-trước âm chính. Nó đóng vai tròn một âm lướt trong kết cấu âm tiết. Về
+trước âm chính. Nó đóng vai trò một âm lướt trong kết cấu âm tiết. Về
 mặt cấu âm, âm đệm \textipa{/-u-/} được phát âm giống như nguyên âm
 \textipa{[u]} nhưng không làm đỉnh âm tiết. Đó là một bán nguyên âm
 môi-ngạc mềm, được phiên âm là \textipa{[-u-]} hay
@@ -728,7 +731,7 @@ hình dáng môi, các nguyên âm đơn được chia ra:
 \item Các nguyên âm giòng sau tròn môi: \textipa{/u, o, O/}.
 \end{itemize}
 
-Căn cứ vào độ mở miệng, co thể chia thành:
+Căn cứ vào độ mở miệng, có thể chia thành:
 \begin{itemize}
 \item Các nguyên âm có độ mở miệng hẹp: \textipa{/i, W, u/}.
 \item Các nguyên âm có độ mở trung bình: \textipa{/e, 7, \v{7}, o/}.
@@ -806,7 +809,7 @@ thể hiện bằng các nguyên âm cùng dòng, độ mở rộng. Ví dụ, `
 
 Hai phụ âm cuối \textipa{/-n, -t/} được thể hiện thành \textipa{/-N,
   -k/} trong phương ngữ Nam Bộ, khi chúng đi sau các nguyên âm đơn và
-đôi, trừ \textipa{/i, e/} là hai nguyên âm giòng trước, độ mở hệp và
+đôi, trừ \textipa{/i, e/} là hai nguyên âm giòng trước, độ mở hẹp và
 trung bình. Ví dụ, ``đen'' -- ``đeng'', ``đét'' --- ``đéc''.
 
 Sau ba nguyên âm giòng trước \textipa{/i, e, E/}, hai phụ âm
@@ -835,7 +838,7 @@ Trong các tiếng địa phương từ Thanh Hoá trở vào Nam thường ch�
 thanh, thanh ngã trùng với thanh hỏi (trong một số vùng Thanh Hoá,
 tiếng Bình Trị Thiên, Nam Trung Bộ và Nam Bộ), hoặc thanh ngã trùng
 với thanh nặng (trong tiếng vùng Nghệ An, Hà Tĩnh). Ngoài ra trong một
-vài thổ ngữ lẻ tẻ ở Nghệ Anh và Quảng Bình chỉ có 4 thanh điệu.
+vài thổ ngữ lẻ tẻ ở Nghệ An và Quảng Bình chỉ có 4 thanh điệu.
 
 
 \subsubsection{Sự phân bố của thanh điệu}
@@ -852,13 +855,13 @@ nhiều định nghĩa về từ được đưa ra. Các định nghĩa đều �
 không hoàn chỉnh. Viện sĩ L. V. Sherba thừa nhận rằng: ``Trong thực
 tế, từ là gì? Thiết nghĩ rằng trong các ngôn ngữ khác nhau, từ sẽ khác
 nhau. Do đó, tất sẽ không có khái niệm từ nói chung''\footnote{Nguyễn
-  Kim Thản, {\em Nguyên cứu ngữ pháp tiếng Việt}. NXB GD, 1997. Trang 28}.
-Chính vì tính đa dạng và phức tạp của từ mà ột số nhà ngôn ngữ học
+  Kim Thản, {\em Nghiên cứu ngữ pháp tiếng Việt}. NXB GD, 1997. Trang 28}.
+Chính vì tính đa dạng và phức tạp của từ mà một số nhà ngôn ngữ học
 chối bỏ khái niệm từ, hoặc né tránh định nghĩa từ một cách chính
 thức. Nhà ngôn ngữ học Ferdinand de Saussure đã nhận xét: ``\ldots
 Ngôn ngữ có tính chất kỳ lạ và đáng kinh ngạc là không có những thực
 thể thoạt nhìn có thể thấy ngay được, thế nhưng người ta vẫn biết chắc
-là nó tồn tại, và chính sự giao lưu giữa những thực thế đó đã làm
+là nó tồn tại, và chính sự giao lưu giữa những thực thể đó đã làm
 thành ngôn ngữ. Trong số những thực thể đó có cái mà ngôn ngữ học vẫn
 gọi là từ.''. Theo ông thì ``\ldots Từ là một đơn vị luôn luôn ám ảnh
 toàn bộ tư tưởng chúng ta như một cái gì đó trọng tâm trong toàn bộ cơ
@@ -869,7 +872,7 @@ cấu ngôn ngữ, mặc dù khái niệm này khó định nghĩa''.
 
 Thời Hy Lạp cổ đại, trường phái ngôn ngữ Alexandri đã định nghĩa: ``\textit{Từ
 là đơn vị nhỏ nhất trong chuỗi lời nói}''. Ngoài ra A. Meillet trong
-``\textit{Ngôn ngữ học lịch sử và ngôn ngữ học đại cương}'' đã định nghĩa: ``\textit{Từ
+\textit{Ngôn ngữ học lịch sử và ngôn ngữ học đại cương} đã định nghĩa: ``\textit{Từ
 là kết quả của sự kết hợp một ý nghĩa nhất định với một tổ hợp các âm
 tố nhất định, có thể có một công dụng ngữ pháp nhất định}''.
 
@@ -909,7 +912,7 @@ M. B. Émeneau thì ``\textit{Từ bao giờ cũng tự do về mặt âm vị h
 có thể miêu tả bằng những danh từ của sự phân phối các âm vị và bằng
 những thanh điệu}''\footnote{Nguyễn Thiện Giáp. {\em Từ và nhận diện từ
   tiếng Việt}. NXB GD, Hà Nội 1996. Trang 17}. Émeneau đã dựa trên mặt
-ngữ âm để định nghĩa từ, xem mỗi từ trước hết là nhữngâm tiết. Với
+ngữ âm để định nghĩa từ, xem mỗi từ trước hết là những âm tiết. Với
 quan niệm như vậy chủ yếu dựa vào tính hoàn chỉnh về mặt âm thanh và
 trong thực tế thì người Việt luôn có khuynh hướng mong đợi mỗi tiếng
 như vậy sẽ mang một nghĩa nào đó và coi đó như ``từ''.
@@ -924,7 +927,7 @@ Lê Văn Lý cho rằng từ tiếng Việt ``\textit{là một tín hiệu ng�
 tạo bằng một âm vị hay sự kết hợp với âm vị, mà sự phát âm chỉ tiến
 hành trong một lần, hoặc là một âm tiết mà chữ viết biểu thị bằng một
 đơn vị tách rời và có một ý nghĩa hiểu được}''\footnote{Nguyễn
-  Kim Thản, {\em Nguyên cứu ngữ pháp tiếng Việt}. NXB GD, 1997. Trang
+  Kim Thản, {\em Nghiên cứu ngữ pháp tiếng Việt}. NXB GD, 1997. Trang
   30}. Định nghĩa này dựa vào cả ba mặt: ngữ âm, chữ viết và ý
 nghĩa. Tuy nhiên định nghĩa này mâu thuẫn với định nghĩa từ ghép của
 chính tác giả, vì tác giả định nghĩa từ ghép dựa trên chức năng ngữ
@@ -1107,7 +1110,7 @@ nhìn chung có thể phân thành hai loại chữ viết sau:
   thể ghi âm tiết hay âm tố.
   \begin{description}
   \item[Chữ ghi âm tiết] Mỗi ký hiệu ghi một âm tiết. Dẫn chứng cho
-  loại chữ viết này là hệ thống chữ Nhật hiragana và katakana.
+  loại chữ viết này là hệ thống chữ Nhật Hiragana và Katakana.
 
   \item[Chữ ghi âm tố] Mỗi ký hiệu ghi một âm tố (hay âm vị). Ví dụ
   như chữ Anh, chữ Pháp, chữ Nga~\ldots
@@ -1219,40 +1222,24 @@ không ghi phụ âm đầu có thể có âm đầu là âm tắt thanh hầu \
 %\end{savenotes}
 
 Âm cuối do các âm vị phụ âm bán nguyên âm đảm nhiệm như trong
-bảng~\ref{tab:phuamcuoi} và bảng~\ref{tab:bannguyenamcuoi}. 
+bảng~\ref{tab:amcuoi}. 
 
-\begin{table}
-  \hfill
-  \begin{minipage}{0.4\textwidth}
-    \centering
+\begin{table}[htbp]
+  \centering
 
-    \begin{tabular}{cc}
-      Âm vị&Chữ cái\\
-      \textipa{/-p/}&p\\
-      \textipa{/-t/}&t\\
-      \textipa{/-k/}&c,ch\\
-      \textipa{/-m/}&m\\
-      \textipa{/-n/}&n\\
-      \textipa{/-N/}&ng,nh\\
-    \end{tabular}
+  \begin{tabular}{cc|cc}
+    \multicolumn{2}{c|}{Phụ âm cuối}&\multicolumn{2}{c}{Bán nguyên âm cuối}\\
+    Âm vị&Chữ cái&Âm vị&Chữ cái\\
+    \textipa{/-p/}&p&\textipa{/-u/}&u,o\\
+    \textipa{/-t/}&t&\textipa{/-i/}&i,y\\
+    \textipa{/-k/}&c,ch\\
+    \textipa{/-m/}&m\\
+    \textipa{/-n/}&n\\
+    \textipa{/-N/}&ng,nh\\
+  \end{tabular}
     
-    \caption{Bảng phụ âm cuối}
-    \label{tab:phuamcuoi}
-  \end{minipage}
-  \hfill
-  \begin{minipage}{0.4\textwidth}
-    \centering
-
-    \begin{tabular}{cc}
-      Âm vị&Chữ cái\\
-      \textipa{/-u/}&u,o\\
-      \textipa{/-i/}&i,y\\
-    \end{tabular}
-    
-    \caption{Bảng bán nguyên âm cuối}
-    \label{tab:bannguyenamcuoi}
-  \end{minipage}
-  \hfill
+  \caption{Bảng phụ âm và bán nguyên âm cuối}
+  \label{tab:amcuoi}
 \end{table}
 
 Trên chữ viết, các âm vị âm đầu được thể hiện như trong bảng~\ref{tab:phuamdau}
@@ -1301,7 +1288,7 @@ nguyên âm dài, 2 nguyên âm ngắn, 3 nguyên âm đôi. Tóm gọn các cá
 biểu diễn nguyên âm chính gồm: i, y, ê, e, a, ư, ơ, a, u, ô, o, â, ă,
 iê, ia, yê, y, uô, y, uô, ươ, ưa.
 
-Các phụ âm cuối được ghi bằng ``ch'' khi đứng sau ca'c nguyên âm i, y,
+Các phụ âm cuối được ghi bằng ``ch'' khi đứng sau các nguyên âm i, y,
 ê, e, a. Ví dụ: {\em minh, mênh, manh}. Trong các trường hợp khác lại
 được ghi bằng ``ng''. Ví dụ: {\em mang, vâng, hồng, xuống}.
 
@@ -1317,9 +1304,11 @@ nguyên âm ngắn ă, a, â. Trong các trường hợp khác nó được ghi 
 Tóm lại, các âm vị cuối được thể hiện bằng những chữ cái: p, t, c, ch,
 m, n, ng, nh, u, o, i, y.
 
-Tiếng Việt có sáu thanh điệu. Có ba nguyên tắc bỏ dấu sau:
+Tiếng Việt có sáu thanh điệu: sắc, huyền, ngã, hỏi, nặng và thanh không dấu. 
+
+Về việc bỏ dấu, có ba nguyên tắc bỏ dấu sau:
 \begin{description}
-\item[Nguyên tắc bỏ đấu khoa học] Dấu thanh được đặt ở âm chính của
+\item[Nguyên tắc bỏ dấu khoa học] Dấu thanh được đặt ở âm chính của
   vần, tức là đặt trên hoặc dưới nguyên âm có vai trò quyết định âm
   sắc chủ yếu của âm tiết.
 \item[Nguyên tắc thẩm mỹ] (nguyên tắc thứ yếu) Dấu thanh được đặt ở vị
@@ -1351,7 +1340,7 @@ Theo~\cite{LoiChinhTa} thì:
 
 \chapter{Cơ sở tin học}
 \label{cha:math}
-\minitoc\newpage
+\minitoc
 
 % typographic errors
 
@@ -1368,18 +1357,152 @@ Theo~\cite{LoiChinhTa} thì:
 
 \section{Bắt lỗi chính tả}
 
-Trình bắt lỗi chính tả có thể được phân loại theo nhiều cách khác
-nhau. Nhưng chủ yếu vấn được phân loại từ quan điểm người dùng: khả
+Trình bắt lỗi chính tả có thể được đánh giá theo nhiều cách khác
+nhau. Nhưng chủ yếu vẫn được phân loại từ quan điểm người dùng: khả
 năng phát hiện lỗi sai, và khả năng đề nghị những từ thay thế cho lỗi
 sai đó.
 
+\subsection{Phát hiện lỗi chính tả}
+
 Giải pháp đơn giản để phát hiện lỗi chính tả là dùng một cấu trúc dữ
-liệu để lưu tất cả các từ đã biết (được lưu trong từ điển). Các dạng
+liệu để lưu tất cả các từ đã biết (được lưu trong từ điển). Nếu từ
+không có trong từ điển nghĩa là từ đó bị sai. Giải pháp này cần thêm
+một số heuristic để tránh không xem các con số, ngày tháng~\ldots là
+lỗi sai.
+
+Đối với trình bắt lỗi chính tả truyền thống thì từ điển là một phần
+rất quan trọng. Từ điển có thể được lưu theo các dạng
 cấu trúc dữ liệu như bảng băm hoặc cấu trúc dữ liệu dạng cây có thể
 được sử dụng~\cite{McIlroy,Peterson}
 
-Có thể chia thành hai loại lỗi chính là ==orthographic và
-lỗi nhập liệu\footnote{typographic error}. Lỗi nhập liệu xảy ra khi gõ không
+Với những lỗi sai dạng lỗi từ vựng, ta phải dùng một số phương pháp
+khác phức tạp hơn để phát hiện (chi tiết trong
+phần~\ref{sec:context-spelling}). 
+
+\subsection{Các sai lầm của trình bắt lỗi chính tả}
+
+Khi bắt lỗi chính tả, trình bắt lỗi không tránh khỏi các sai lầm. Có
+thể phân ra làm hai loại sai lầm: sai lầm tích cực\footnote{false
+  positive} và sai lầm tiêu cực\footnote{false negative}.
+
+Sai lầm tích cực xảy ra khi trình bắt lỗi báo lỗi ở những từ hoàn toàn
+không sai chính tả. Sai lầm tiêu cực xảy ra khi trình bắt lỗi bỏ qua
+những từ bị sai chính tả. Nói cách khác, trình bắt lỗi cho rằng những
+từ sai chính tả này không sai. Sai lầm tích cực có thể tránh được nhờ
+tăng kích thước từ điển. Tuy nhiên đây không phải là giải pháp hoàn
+hảo. Việc tăng kích thước từ điển sẽ tốn kém (về bộ nhớ, CPU, cũng như
+công sức bỏ ra để xây dựng từ điển). Hơn nữa, càng có nhiều
+từ thì việc đề nghị các từ thay thế càng trở nên kém hiệu quả do bị
+phân tán bởi những từ rất ít gặp, không thể tập trung vào những lỗi
+phổ biến. 
+
+Sai lầm tiêu cực có thể xem là lỗi không phát hiện được. Phần nhiều
+những lỗi này thường đòi hỏi phải hiểu văn bản (ít nhất là một phần
+văn bản) để có thể phát hiện lỗi. Những dạng lỗi từ vựng, lỗi cú pháp
+thường rơi vào dạng này. Tuy nhiên vẫn có một số lỗi chính tả rơi vào
+loại này. Những loại lỗi này được phát hiện nhờ những chương trình bắt
+lỗi chính tả cảm ngữ cảnh (xem phần~\ref{sec:context-spelling}
+
+%~\cite{Golding95,Golding96,Golding99}
+
+Trong hai loại sai lầm thì sai lầm tích cực thường gây khó chịu cho
+người sử dụng, dễ gây tâm lý không tin tưởng vào trình bắt lỗi chính
+tả. Ngược lại, sai lầm tiêu cực phản ánh tính hiệu quả của trình bắt
+lỗi chính tả. Sai lầm tiêu cực càng nhiều thì trình bắt lỗi càng kém
+hiệu quả.
+
+\subsection{Vấn đề chữ hoa, chữ thường}
+
+Vấn đề chữ hoa/chữ thường gây nhiều khó khăn cho trình bắt lỗi chính
+tả. Trong từ điển, hầu hết các từ là chữ thường. Tuy nhiên cũng có chữ
+hoa (tên riêng, từ viết tắt~\ldots). Các quy tắc chính tả về viết hoa
+cũng khá phức tạp. Ngoài ra, đôi khi các chữ được viết hoa hoàn toàn
+để nhấn mạnh, để làm tiêu đề~\ldots
+
+Thuật toán để xử lý trường hợp chữ hoa, chữ thường có thể được mô tả
+như sau:
+\begin{algo}[Xử lý chữ hoa, chữ thường]
+\begin{enumerate}
+\item Đặt $w_t$ là chữ viết thường của $w$.
+\item Đặt $c$ là kết quả tìm kiếm $w_t$.
+\item Nếu không tìm được $c$, từ bị sai chính tả.
+\item Nếu $c$ giống $w$, từ đúng.
+\item Đặt $c_c$ là chữ thường, viết hoa chữ cái đầu tiên của $w$. Nếu
+  $c$ giống $c_c$, từ đúng.
+\item Đặt $c_u$ là chữ hoa của $w$. Nếu $c$ giống $c_u$, từ đúng.
+\item Ngược lại, từ $w$ sai.
+\end{enumerate}
+\end{algo}
+
+
+
+\section{Lập danh sách từ đề nghị}
+
+Sau khi phát hiện ra từ bị sai chính tả, ta cần đưa ra một số từ ``gần
+giống'' có khả năng thay thế từ bị sai chính tả. Trong trường hợp lý
+tưởng, ta nên đưa ra {\em duy nhất một từ}, đó chính là từ đúng
+chính tả, lẽ ra cần phải được dùng thay cho từ bị sai chính tả.
+
+Tuy nhiên, việc tìm ra từ đúng của từ bị sai chính tả là một công việc
+không dễ dàng, ngay cả với con người. Khi gặp một từ sai chính tả, ta
+thường phải suy nghĩ nhiều, chọn ra một số từ có khả năng thay thế,
+kiểm nghiệm xem từ nào là từ thích hợp nhất. Quá trình kiểm nghiệm xem
+từ nào là thích hợp thường đòi hỏi phải hiểu về nội dung của văn bản
+đang xem (đối với con người). Đối với máy tính, việc hiểu văn bản, đến
+nay vẫn là một vấn đề khó. Tuy nhiên, máy tính cũng có khả năng tìm ra
+kết quả đối với một số trường hợp lỗi thông dụng (chi tiết trong phần
+\ref{sec:context-spelling}). Việc tìm ra chỉ một kết quả duy nhất đưa
+đến một thuận lợi đáng kể. Bởi vì chỉ có một kết quả, không cần phải lựa
+chọn, nên ta có thể tạo ra chương trình bắt lỗi chính tả (và sửa lỗi
+chính tả) tự động. Việc tạo ra một chương trình bắt lỗi chính tả tự
+động hoàn toàn mở ra một khả năng to lớn khi áp dụng vào thực tế, giúp
+giảm đáng kể công sức của con người.
+
+Trong trường hợp không thể đưa ra duy nhất một đề nghị, ta có thể đưa
+ra một danh sách các từ ``có khả năng'' để người dùng chọn lựa. Yêu
+cầu đặt ra là từ đúng phải nằm trong danh sách từ lựa chọn. Và tốt hơn
+nữa là từ đúng nên được đặt trên cùng danh sách để gây sự chú ý của
+người dùng (chi tiết trong phần \ref{sec:sort-candidates}). Để đảm
+bảo từ đúng nằm trong danh sách, ta cần tìm hiểu nguyên nhân dẫn đến
+lỗi, sau đó cố gắng phục hồi lỗi để tạo lại những từ có khả năng. Do
+có nhiều nguyên nhân khác nhau dẫn đến lỗi chính tả, nên cũng có nhiều
+cách khác nhau để phát sinh danh sách từ đề nghị.
+
+
+\subsection{Lỗi phát âm sai}
+
+Đối với các ngôn ngữ như tiếng Việt --- vốn ``nói sao viết vậy'', giải
+pháp khá đơn giản. Ta có thể phân tích cấu trúc tiếng trong tiếng
+Việt, sau đó dựa vào các cách phát âm giống nhau để tạo ra danh sách
+các tiếng phát âm giống nhau. 
+
+Đối với các ngôn ngữ như tiếng Anh --- cách viết không còn tương ứng
+với cách đọc nữa, thì giải pháp sẽ phức tạp hơn. Cơ bản là ta cần một
+cách nào đó để chuyển từ được viết thành một dạng phiên âm, sau đó áp
+dụng như bình thường. Một số heuristic được đưa ra để giải quyết vấn
+đề này. Thuật toán cơ bản là Soundex~\cite{knuth73}. Nhiều thuật toán
+khác được đưa ra để cải tiến Soundex như Double
+Metaphone\footnote{http://aspell.sourceforge.net/metaphone/}, 
+Phonetex~\cite{phonetex}. Soundex cũng được cải tiến để áp dụng cho
+các ngôn ngữ khác, như tiếng Thái~\cite{tsdx}. Nói chung, các kỹ thuật
+này biến đổi về cơ bản thay thế các ký tự trong từ bằng như ký tự khác
+chung hơn, với mục đích làm cho sau khi biến đổi, các từ có cách đọc
+giống nhau sẽ trở nên giống nhau. Ví dụ như trong Soundex:
+\begin{itemize}
+\item Các ký tự ``aeiouhwy'' được thay bằng ``0''.
+\item ``bpfv'' được thay bằng ``1''.
+\item ``cgjkqsxz'' được thay bằng ``2''.
+\item ``dt'' được thay bằng ``3''.
+\item ``l'' được thay bằng ``4''.
+\item ``mn'' được thay bằng ``5''.
+\item ``r'' được thay bằng ``6''.
+\end{itemize}
+Cách thay thế khác nhau tùy vào từng thuật giải. Ngoài ra, các
+thuật giải có thể giữ lại một số ký tự mà không thay thế.
+
+\subsection{Lỗi nhập sai}
+
+Lỗi nhập liệu xảy ra khi gõ không
 đúng phím cần gõ trên bàn phím. Damerau~\cite{Damerau} xác định bốn thao
 tác có thể gây ra lỗi như sau:
 \begin{itemize}
@@ -1399,57 +1522,26 @@ bị sai chính tả. Những từ được phát sinh, nếu có trong từ đi
 được lưu vào danh sách những từ đề nghị. Kỹ thuật này thường được gọi
 là Đảo ngược lỗi\footnote{Error reversal}.
 
-\subsection{Các sai lầm của trình bắt lỗi chính tả}
+\subsection{Các lỗi khác}
 
-Khi bắt lỗi chính tả, trình bắt lỗi không tránh khỏi các sai lầm. Có
-thể phân ra làm hai loại sai lầm: sai lầm tích cực\footnote{false
-  positive} và sai lầm tiêu cực\footnote{false negative}.
+Ngoài hai loại lỗi trên, còn có nhiều nguyên nhân khác dẫn đến lỗi
+chính tả. Một trong những nguyên nhân đó là lỗi dùng từ sai (do hiểu
+sai, hoặc không hiểu rõ cách dùng từ). Đây thực chất thuộc về lỗi từ
+vựng, nhưng đôi khi người dùng lại đòi hỏi trình bắt lỗi chính tả phải
+tìm ra những lỗi này.
 
-Sai lầm tích cực xảy ra khi trình bắt lỗi báo lỗi ở những từ hoàn toàn
-không sai chính tả. Sai lầm tiêu cực xảy ra khi trình bắt lỗi bỏ qua
-những từ bị sai chính tả. Nói cách khác, trình bắt lỗi cho rằng những
-từ sai chính tả này không sai. Sai lầm tích cực có thể tránh được nhờ
-tăng kích thước từ điển. Tuy nhiên đây không phải là giải pháp hoàn
-hảo. Việc tăng kích thước từ điển sẽ tốn kém. Hơn nữa, càng có nhiều
-từ thì việc đề nghị các từ thay thế càng trở nên kém hiệu quả do bị
-phân tán bởi những từ rất ít gặp, không thể tập trung vào những lỗi
-phổ biến. 
-
-Sai lầm tiêu cực có thể xem là lỗi không phát hiện được. Phần nhiều
-những lỗi này thường đòi hỏi phải hiểu văn bản (ít nhất là một phần
-văn bản) để có thế phát hiện lỗi. Những dạng lỗi từ vựng, lỗi cú pháp
-thường rơi vào dạng này. Tuy nhiên vẫn có một số lỗi chính tả rơi vào
-loại này. Những loại lỗi này được phát hiện nhờ những chương trình bắt
-lỗi chính tả cảm ngữ cảnh~\cite{Golding95,Golding96,Golding99}
-
-Trong hai loại sai lầm thì sai lầm tích cực thường gây khó chịu cho
-người sử dụng, dễ gây tâm lý không tin tưởng vào trình bắt lỗi chính
-tả. Ngược lại, sai lầm tiêu cực phản ánh tính hiệu quả của trình bắt
-lỗi chính tả. Sai lầm tiêu cực càng nhiều thì trình bắt lỗi càng kém
-hiệu quả.
-
-\subsection{Vấn đề chữ hoa/chữ thường}
-
-Vấn đề chữ hoa/chữ thường gây nhiều khó khăn cho trình bắt lỗi chính
-tả. Trong từ điển, hầu hết các từ là chữ thường. Tuy nhiên cũng có chữ
-hoa (tên riêng, từ viết tắt~\ldots). Các quy tắc chính tả về viết hoa
-cũng khá phức tạp. Ngoài ra, đôi khi các chữ được viết hoa hoàn toàn
-để nhấn mạnh, để làm tiêu đề~\ldots
-
-\begin{enumerate}
-\item Đặt $w_t$ là chữ viết thường của $w$.
-\item Đặt $c$ là kết quả tìm kiếm $w_t$.
-\item Nếu không tìm được $c$, từ bị sai chính tả.
-\item Nếu $c$ giống $w$, từ đúng.
-\item Đặt $c_c$ là chữ thường, viết hoa chữ cái đầu tiên của $w$. Nếu
-  $c$ giống $c_c$, từ đúng.
-\item Đặt $c_u$ là chữ hoa của $w$. Nếu $c$ giống $c_u$, từ đúng.
-\item Ngược lại, từ $w$ sai.
-\end{enumerate}
-
-
+Ngoài lỗi dùng từ sai, còn có những lỗi phát sinh do máy móc. Hai công
+cụ liên quan đến xử lý văn bản và dễ gây ra lỗi chính tả là nhận dạng
+tiếng nói và nhận dạng chữ viết. Đối với nhận dạng tiếng nói, lỗi
+thường gặp giống với dạng lỗi phát âm sai. Tuy nhiên, đối với một số
+ngôn ngữ như tiếng Anh --- mỗi từ gồm nhiều âm tiết --- thì có thể gây
+ra lỗi tách từ sai. Đối với nhận dạng văn bản, lỗi chủ yếu do sự giống
+nhau giữa các chữ cái khi viết. Thông thường, bản thân các công cụ này
+cũng được cài đặt một trình bắt lỗi chính tả tự động (dạng đơn giản
+hoặc phức tạp) nhằm giảm thiểu các lỗi chính tả.
 
 \section{Sắp xếp danh sách từ đề nghị}
+\label{sec:sort-candidates}
 
 
 Việc chọn từ tốt nhất trong danh sách từ đề nghị là một công việc không dễ
@@ -1466,6 +1558,9 @@ này, có thể chia làm các nhóm như sau:
   bị loại)
 \end{itemize}
 
+
+Một số kỹ thuật để sắp xếp danh sách từ được chọn sẽ được mô tả ngắn
+gọn bên dưới.
 %%% Giải thích cụ thể hơn.
 
 \subsection{Văn phạm ràng buộc}
@@ -1474,8 +1569,8 @@ này, có thể chia làm các nhóm như sau:
 %-% unrestricted text.
 
 Văn phạm ràng buộc\footnote{Constraint Grammar} (CG) được thiết kế
-độc lập ngôn ngữ và là một công cụ mạnh giúp khữ nhập nhằng các văn
-bản không giới hạn. 
+độc lập ngôn ngữ và là một công cụ mạnh giúp khử nhập nhằng các văn
+bản không giới hạn~\cite{cg}. 
 
 CG có thể được xem như một tập hợp các luật mẫu-hành
 động\footnote{pattern-action rule}, không quá một luật với mỗi tag có nhập
@@ -1499,7 +1594,7 @@ lượng bộ đánh nhãn từ loại tiếng Anh. Văn phạm ràng buộc gi�
 hầu hết các nhập nhằng có thể được.
 
 Việc áp dụng CG để khử nhập nhằng cho trình bắt lỗi chính tả là một
-công việc khó khăn vì hiện nay vẫn CG cho tiếng Việt vẫn chưa được xây
+công việc khó khăn vì hiện nay CG cho tiếng Việt vẫn chưa được xây
 dựng. 
 
 \subsection{Mật độ quan niệm}
@@ -1517,9 +1612,9 @@ quan trọng nhất là hypernym và hyponym. A được xem là hyponym của B
 (và B là hypernym của A) nếu ta có thể nói ``A là một loại đặc biệt
 của B''. WordNet được tổ chức theo đơn vị là các synset. Synset
 (Synonym set) là một nhóm các từ đồng nghĩa có thể dùng thay thế cho
-nhau. Mỗi từ có thể thuộc nhiều synset khác nhau. Đối với mỗi từ, thì
-các synset chứa từ đó được gọi là sense. Phần danh từ trong WordNet có
-thể xem như một đồ thị của các synset và các liên hệ hypernym/hyponym
+nhau. Mỗi từ có thể thuộc nhiều synset khác nhau. Trong trường hợp đó,
+các syset được gọi là sense của từ đó. Phần danh từ trong WordNet có
+thể xem như một đồ thị của các synset và các liên kết hypernym/hyponym
 giữa các synset đó.  
 
 Độ đo khái niệm\footnote{conceptual distance} cung cấp một nền tảng để
@@ -1533,9 +1628,9 @@ nó chứa $m$ sense của từ đó  như sau:
 
 $$CD(c,m)=\frac{\displaystyle\sum^{m-1}_{i=0}nhyp^{i^{0.20}}}{descendants_c}$$
 
-Trong công thức trên, tham số $0.20$ được dùng để làm trơn hệ số mũ
+Trong công thức trên, tham số $0,20$ được dùng để làm trơn hệ số mũ
 $i$ khi $m$ chạy từ 1 đến số sense tổng cộng trong WordNet. Nhiều giá
-trị đã được thử cho tham số này và tham số gần $0.20$ là tốt nhất.
+trị đã được thử cho tham số này và tham số gần $0,20$ là tốt nhất.
 
 
 Thuật toán khử nhập nhằng dựa trên CD như sau: Cho cửa sổ với kích
@@ -1578,7 +1673,9 @@ khác, do có các mối quan hệ phức tạp hơn nhiều so với quan hệ 
 của danh từ nên rất khó áp dụng. CD đôi khi không thể khử nhập nhằng
 tuyệt đối (chỉ chừa lại một kết quả) mà nhiều khi vẫn còn lại vài nhập
 nhằng. Tuy nhiên việc giảm nhập nhằng bằng CD cũng giúp ít rất nhiều
-cho trình bắt lỗi chính tả. Hạn chế quan trọng của CD khi áp dụng cho
+cho trình bắt lỗi chính tả. 
+
+Hạn chế quan trọng của CD khi áp dụng cho
 tiếng Việt là thiếu WordNet dành cho tiếng Việt. Việc xây dựng một
 mạng ngữ nghĩa tiếng Việt có tầm vóc như WordNet sẽ tốn rất nhiều công
 sức, chưa kể các điểm khác biệt giữa tiếng Anh và tiếng Việt đòi hỏi
@@ -1592,13 +1689,15 @@ cho tiếng Việt trong tương lai không xa.
 
 
 \section{Tự động phát hiện và sửa lỗi chính tả}
+\label{sec:context-spelling}
 
+%% intoduce
 
 \subsection{Mô hình TBL}
 \label{sec:tbl-spell}
 
 
-TBL\footnote{Transformation-based Learning} mô hình học có giám sát,
+TBL\footnote{Transformation-based Learning} là mô hình học có giám sát,
 được Eric Brill đưa ra vào năm 1993. Đây là mô hình học luật dựa trên
 lỗi, tạo ra các luật mới để khắc phục các lỗi còn lại sau khi đã áp
 dụng các luật trước đó. TBL được áp dụng để tự động phát hiện và sửa
@@ -1610,7 +1709,7 @@ bởi Lidia Mangu và Eric Brill~\cite{tbl} cho kết quả rất cao
 (93,15\%).
 
 TBL hoạt động như một bộ luật sửa lỗi. Dữ liệu ban đầu cần được một
-chương trình khác xử lý để phát hiện hiện và sửa lỗi chính tả. Mục
+chương trình khác (baseline) xử lý để phát hiện hiện và sửa lỗi chính tả. Mục
 tiêu của chương trình này phát hiện và sửa đúng lỗi chính tả càng
 nhiều càng tốt. Các lỗi gây ra bởi chương trình ban đầu này sẽ được
 sửa bởi TBL. Các luật học được từ quá trình huấn luyện TBL sẽ được áp
@@ -1667,6 +1766,10 @@ nhầm lẫn (Ví dụ, ``their'' và ``there'' hay ``đã'' và ``đả''~\ldot
 Từ văn bản đúng chính tả, ta có thể áp dụng tập nhầm lẫn để tạo ra ngữ
 liệu sai chính tả. Để thực hiện đều này cần có tập nhầm lẫn.
 
+Nếu tập nhầm lẫn không chỉ bao gỗm các nhập nhằng về tiếng (hoặc từ
+đơn) mà cả nhập nhằng về từ (Ví dụ ``bàn quan'' và ``bàng quang'') thì
+cần phải có thêm một bộ tách từ.
+
 Hiệu quả của TBL phụ thuộc vào tập nhầm lẫn. Tập nhầm lẫn càng lớn
 thì khả năng sửa lỗi chính tả bằng TBL càng cao. Tuy nhiên, tập nhầm
 lẫn càng lớn thì khả năng sai sót cũng càng lớn, và chương trình không
@@ -1676,19 +1779,195 @@ chính tả/tách từ xong thì việc tìm từ loại bằng các phương ph
 dụng trở nên không an toàn.
 
 
-\subsection{Mô hình n-gram}
+%\subsection{Mô hình n-gram}
 %%% Mays et al 91 -> trigram
 
 
 \subsection{Mô hình Winnow}
 
+Mô hình này được áp dụng trong~\cite{Golding99}.
+
+Bài toán bắt lỗi chính tả được xem như là bài toán khử nhập nhằng
+từ. Các từ nhập nhằng được tập hợp thành tập nhầm lẫn. Tập nhầm lẫn $C
+= \{W_1,\ldots,W_n\}$ nghĩa là mỗi từ $W_i$ trong tập $C$ có thể bị
+dùng lẫn lộn với các từ còn lại trong $C$.
+Bài toán bao gồm một câu, và một từ cần sửa chữa. Thuật toán thể hiện
+bài toán như là một danh sách các đặc trưng tích cực\footnote{active
+  feature}. Mỗi đặc trưng tích cực thể hiện cho một ngữ cảnh cụ
+thể. Hai loại đặc trưng được dùng là từ ngữ cảnh\footnote{context
+  word} và collocation. Từ ngữ cảnh là một tập các từ nằm xung quanh
+từ đang xét (giới hạn trong khoảng $\pm k$ từ tính từ từ đang
+xét). Collocation là một mẫu $l$ từ/từ loại liên tiếp nhau xung quanh
+từ đang xét.
+
+Một bộ rút trích đặc trưng\footnote{feature extractor} được sử dụng để
+chuyển văn bản gốc thành danh sách các đặc trưng tích cực. Bộ rút
+trích đặc trưng phải được huấn luyện trước, để chỉ lọc ra những đặc
+trưng nhất định (đặc trưng tích cực), thay vì tất cả các đặc trưng.
+
+Để huấn luyện bộ rút trích đặc trưng, ta cho chạy bộ rút trích đặc
+trưng trên ngữ liệu huấn luyện, rút trích tất cả các đặc trưng có thể
+có, đồng thời thống kê số lượng của mỗi đặc trưng. Sau khi chạy xong,
+danh sách đặc trưng này sẽ bị cắt bớt theo một tiêu chí cho trước, chỉ
+chừa lại những đặc trưng được xem là tích cực. Có thể thu gọn danh
+sách đặc trưng theo nhiều tiêu chí khác nhau. Tuy nhiên cách đơn giản
+nhất là dựa vào tần số xuất hiện của các đặc trưng. Nếu các đặc trưng
+xuất hiện ít hơn một ngưỡng nào đó thì đặc trưng đó bị loại bỏ.
+
+Công việc mỗi bộ phân lớp là xác định từ $W_i$ trong tập nhầm lẫn có thuộc
+về câu đang xét hay không. Mỗi bộ phân lớp chạy thuật toán Winnow. Bộ
+phân lớp nhận tập các đặc trưng tích cực (đại diện cho câu đang xét),
+trả về giá trị nhị phân cho biết từ $W_i$ có thuộc về câu đang xét hay
+không. Đặt $F$ là tập các đặc trưng tích cực. Với mỗi $f\in F$, đặt
+$w_f$ là trong số của cung nối $f$ với bộ phân lớp. Thuật toán Winnow
+trả về giá trị 1 khi và chỉ khi $$\sum_{f\in F}w_f > \theta$$ trong đó
+$\theta$ là tham số ngưỡng. 
+
+Khởi đầu, bộ phân lớp không kết nối với bất kỳ đặc trưng nào trong
+mạng. Trong quá trình huấn luyện, các kết nối và trọng số của kết nối
+sẽ được thành lập. Một mẫu huấn luyện bao gồm một câu (tập đặc trưng
+tích cực) cùng với từ $W_c$ trong tập nhầm lẫn. $W_c$ là từ đúng cho
+câu trong mẫu huấn luyện đối với các mẫu khẳng định\footnote{positive
+  example} và là từ sai trong các mẫu phủ định\footnote{negative
+  example}. 
+
+Quá trình huấn luyện được tiến hành theo như sau: lần lượt mỗi mẫu
+được đưa vào hệ thống, các bộ phân lớp được cập nhật, sau đó mẫu bị
+hủy.
+
+Bước đầu tiên huấn luyện bộ phân lớp là thiết lập các liên kết
+giữa bộ phân lớp và các đặc trưng tích cực $F$ trong mẫu. Nếu đặc
+trựng tích cực $f \in F$ chưa được kết nối vào bộ phân lớp, và cầu là
+mẫu khẳng định đối với bộ phân lớp, ta tạo một kết nối giữa đặc trưng
+đó và bộ phân lớp với giá trị trọng số khởi đầu là $0,1$. Chú ý rằng
+không có gì xảy ra với các mẫu phủ định. 
+
+Bước kế tiếp là cập nhật trong số cho các liên kết. Bước này được thực
+hiện nhờ vào luật cập nhật Winnow, chỉ cập nhật trọng số khi xảy ra
+lỗi. Nếu bộ phân lớp dự đoán là 0 đối với một mẫu khẳng định (nghĩa là
+lẽ ra bộ phân lớp phải dự đoán là 1), trong số sẽ được tăng:
+$$\forall f \in F, w_f \leftarrow \alpha \cdot w_f$$
+trong đó $\alpha > 1$ là tham số cho trước. Nếu bộ phân lớp dự đoán 1
+với các mẫu phủ định (mà lẽ ra bộ phân lớp phải dự đoán là 0), trọng
+số sẽ được giảm:
+$$\forall f \in F, w_f \leftarrow \beta \cdot w_f$$
+với $0 < \beta < 1$ là tham số cho trước. \cite{Golding99} đề nghị
+$\alpha$ là $1,5$ và $\beta$ là $0,5$ đến $0,9$. Như vậy, trọng số của
+các đặc trưng không tích cực sẽ giữ nguyên, không thay đổi. Thời gian
+cập nhật của thuật toán phụ thuộc vào số đặc trưng tích cực trong mẫu.
+
+Thay vì xử lý từ $W_i$ dựa trên một bộ phân lớp, ta có thể áp dụng kết
+quả trả về của nhiều bộ phân lớp đồng thời. Mô hình Weighted Majority
+được dùng để kết hợp nhiều bộ phân lớp. Ta cho chạy nhiều bộ phân lớp
+đồng thời. Các bộ phân lớp trả về các giá trị khác nhau. Hiệu suất của
+mỗi bộ phân lớp được theo dõi. Trọng số được tính toán để phản ánh độ
+chính xác của bộ phân lớp. Giá trị sau cùng là tổng của các dự đoán
+của các bộ phân lớp được xét, kèm với trọng số của mỗi bộ phân lớp.
 
 \subsection{Mô hình Danh sách quyết định}
 %%% Yarowsky 94 -> decision lists
 
+Mô hình Danh sách quyết định được Yarowsky đưa ra để giải quyết bài
+toán khử nhập nhằng ngữ nghĩa. Mô hình này dựa trên các đặc trưng quan
+trọng để nhận dạng. Ngoài ra kết xuất của mô hình rất đơn giản, dễ
+hiểu, tạo thuận lợi trong nghiên cứu, cải tiến mô hình. Phương pháp
+này được~\cite{vietdecisionlist} áp dụng để bắt lỗi chính tả tiếng
+Việt.
 
-\subsection{Mô hình kết hợp Bộ phân lớp Bayes và Danh sách quyết định}
-%%% Golding 96 -> hybrid method
+Mô hình có thể sử dụng nhiều loại đặc trưng khác nhau. Hai đặc trưng
+thường được áp dụng là từ ngữ cảnh và collocation. 
+
+Thuật toán của mô hình như sau:
+\begin{enumerate}
+\item Xét mỗi từ trong câu, có tập nhầm lẫn tương ứng là $S$.
+\item Với mỗi từ $w \in S$:
+  \begin{enumerate}
+  \item Xác định tập đặc trưng $C_w$ không chứa các đặc trưng xung đột
+    với các đặc trưng đã được chấp nhận trước đó.
+  \item Tím điểm của từ:$$Score(w)=\underset{f\in C_w}{max}P(w|f)$$
+    và xác định $$f_w = \underset{f\in C_w}{argmax}P(w|f)$$
+  \end{enumerate}
+\item Từ được chọn là $$a=\underset{w\in S}{argmax}Score(w)$$ Ghi nhớ
+  thuộc tính $f_w$ để kiểm tra xung đột ở các vị trí khác.
+\end{enumerate}
+
+Quá trình huấn luyện mô hình như sau. 
+\begin{itemize}
+\item Bộ rút trích đặc trưng (tương tự
+như trong mô hình Winnow) được sử dụng để rút ra các đặc trưng tích
+cực từ các câu trong ngữ liệu huấn luyện.
+\item  Đếm tần số xuất hiện của mỗi
+đặc trưng. 
+\item Loại bỏ các đặc trưng không đáng tin cậy (Ví dụ, tần số
+quá thấp). 
+\item Sắp xếp các đặc trưng theo thứ tự giảm dần khả năng quyết định.
+\end{itemize}
+
+\subsection{Mô hình Trigram và Bayes}
+
+Mô hình sửa lỗi bằng Trigram rất đơn giản. Đối với mỗi câu, các từ
+trong tập nhầm lẫn được thay thế cho từ tương ứng trong câu, sau đó
+tính xác suất trigram của toàn bộ câu. Từ tương ứng với câu có xác
+suất lớn nhất sẽ là từ được chọn. Cho câu $W =
+w_1\ldots w_k\ldots w_n$, $w_k'$ là từ được dùng để thay thế cho
+$w_k$, tạo ra câu mới $W'$. Nếu $P(W') > P(W)$ thì $w_k'$ sẽ được
+chọn, với $P(W)$ và $P(W')$ lần lượt là xác suất trigram của câu $W$
+và $W'$.
+
+Một cải tiến của phương pháp này là
+áp dụng trigram dựa trên từ loại thay vì trigram từ. Từ câu $W$, ta
+tạo ra các chuỗi từ loại. Xác suất cuối cùng là:
+\begin{align}
+P(W)  &=\sum_T P(W,T)\\
+P(W,T)&=P(W|T)P(T)\\
+      &=\prod_i P(w_i|t_i)\prod_i P(t_i|t_{i-2}t_{i-1})
+\end{align}
+với $T$ là một chuỗi từ loại của $W$, $T=t_1\ldots t_n$ và
+$P(t_i|t_{i-2}t_{i-1})$ là xác suất trigram từ loại.
+
+Một mô hình khác để tìm và sửa lỗi chính tả là áp dụng bộ phân lớp
+Bayes. Có thể xem đây là bài toán phân lớp từ dựa vào một tập các đặc
+trưng. Từ cần xét là từ nằm trong tập nhầm lẫn, ta sẽ xét từ này và
+các từ khác trong tập nhầm lẫn trong cùng ngữ cảnh. Tập đặc trưng
+chính là ngữ cảnh của từ cần xét. Tập đặc trưng được rút trích từ câu
+đang xét. Các đặc trưng và cách rút trích đặc trưng tương tự như trong
+mô hình Winnow.
+
+Mô hình Trigram và Bayes, mỗi cái có điểm mạnh riêng. Mô hình trigram
+hoạt động tốt nếu những từ trong tập nhầm lẫn không cùng từ
+loại. Ngược lại, khi không thể phân biệt dựa trên từ loại, mô hình
+Bayes sẽ hoạt động tốt hơn do dựa vào các thông tin về cú pháp, ngữ
+cảnh xung quanh. Do đó, giải pháp tốt nhất là kết hợp hai mô hình này
+với nhau. Đầu tiên ta áp dụng mô hình Trigram. Trong quá trình xử lý,
+nếu thấy mọi từ trong tập nhầm lẫn đều cùng từ loại, ta áp dụng mô
+hình Bayes. Ngược lại, ta sẽ chấp nhận kết quả của mô hình
+Trigram. Giải pháp này được áp dụng trong~\cite{Golding96}, tạo ra mô
+hình Tribayes.
+
+
+\subsection{Mô hình Bayes và Danh sách quyết định}
+%%% Golding 95 -> hybrid method
+Mô hình Danh sách quyết định là một mô hình mạnh. Tuy nhiên, có một
+điểm cần lưu ý là mô hình này chỉ sử dụng {\em một} đặc trưng tốt nhất
+để phân loại. Có lẽ tốt hơn là nên sử dụng {\em tất cả} các đặc trưng
+để phân loại. Không có lý do gì để chỉ sử dụng một đặc trưng, trong
+khi ta vẫn có thể khai thác các đặc trưng khác. Đây là nơi có thể cải
+tiến bằng cách sử dụng bộ phân lớp Bayes.
+
+Bộ phân lớp Bayes cũng sử
+dụng một tập các đặc trưng, sắp theo thứ tự giảm dần hiệu quả. Bộ phân
+lớp Bayes phân loại từ đang xét bằng cách sử dụng các đặc trưng. Tuy
+nhiên, thay vì dừng lại sau khi áp dụng đặc trưng đầu tiên có thể sử
+dụng, Bayes duyệt qua tất cả các đặc trưng, kết hợp tất cả các đặc
+trưng, và giải quyết các xung đột giữa các đặc trưng nếu có, để đưa ra
+kết quả sau cùng. Ta giả sử chỉ sử dụng các đặc trưng loại từ ngữ cảnh
+và collocation. Nếu hai đặc trưng cần xét đều là từ ngữ cảnh,
+ vậy sẽ không có xung đột. Nếu hai đặc trung đang xét đều
+là collocation và chồng lên nhau, nghĩa là có xung đột. Đặc trưng xung
+đột với đặc trưng đã xét trước đó sẽ bị bỏ qua, không được xem
+xét.
+
+Phương pháp này được đề nghị bởi~\cite{Golding95}.
 
 \section{Bắt lỗi chính tả các ngôn ngữ châu Á}
 
@@ -1702,15 +1981,31 @@ châu Á, đặc biệt là tiếng Việt, công việc phức tạp hơn nhi�
 một ``từ'' như quan niệm châu Âu chỉ là một phần từ (một âm tiết trong
 tiếng Việt) trong các ngôn ngữ châu Á. Điều này đặt ra một vấn đề mà
 các chương trình bắt lỗi chính tả các thứ tiếng châu Âu chưa từng gặp
-phải: phân ranh giới từ. Bài toán tìm ranh giới từ vốn đã phức tạp
+phải: phân ranh giới từ. 
+
+Do các phương pháp dựa trên tiếng Anh đều ngầm định có thể tìm được
+ranh giới từ ngay tức thì, nên khi áp dụng cho tiếng Trung Quốc,
+tiếng Việt~\ldots{} không dễ dàng. Điểm khó khăn ở đây là nếu ta thay
+một từ bằng một từ khác (trong tập nhầm lẫn) có độ dài không giống từ
+trước đó, thì toàn bộ ranh giới từ phía sau sẽ bị thay đổi. Nói cách
+khác, câu đã bị biến thành một câu khác (xét trên quan điểm câu là một
+chuỗi các từ) khi thay đổi một từ trong câu.
+
+Nếu không giải trực tiếp bài toán mà thực hiện tách từ trước, sau đó
+mới bắt lỗi chính tả, thì khó khăn lại đè nặng lên phần tách từ.
+Bài toán tìm ranh giới từ vốn đã phức tạp
 (trong một số trường hợp, nếu không dựa vào thông tin ngữ nghĩa thì
 không thể nào tách từ), lại càng phức tạp hơn khi áp dụng trong bài
 toán bắt lỗi chính tả, vì khi đó ta phải tìm ranh giới từ khi {\em các
 từ/tiếng đầu vào có thể không đúng}. Nói cách khác, ta phải thực hiện
 tách từ trong điều kiện dữ liệu đầu vào không hoàn toàn chính xác:
-tách từ mờ. Sau khi tách từ xong, bài toán bắt lỗi chính tả trở nên
-đơn giản. Ta có thể áp dụng các kỹ thuật đã được áp dụng trên bắt lỗi
-chính tả các ngôn ngữ châu Âu dễ dàng.
+tách từ mờ. Các kỹ thuật tách từ, nếu bỏ qua
+yếu tố này sẽ dễ dẫn đến sai lầm, vì mọi phương pháp tách từ đều ngầm
+định là dữ liệu đầu vào là chính xác. Sau khi tách từ xong, bài toán bắt
+lỗi chính tả trở nên đơn giản. Ta có thể áp dụng các kỹ thuật đã được
+áp dụng trên bắt lỗi chính tả các ngôn ngữ châu Âu dễ dàng.
+
+
 
 %%% Bắt lỗi chính tả không tách từ, có không?
 
@@ -1736,10 +2031,10 @@ Bài toán tách từ cho ngôn ngữ đơn lập đã được đặt ra từ l
     (đặc biệt khi các ngôn ngữ vẫn còn được tiếp tục phát triển hằng
     ngày trong thời đại ngày nay). Mô hình này tùy thuộc nhiều vào từ
     điển. 
-    \begin{itemize}
-    \item Thai, Sornlertlamvanich (1993).
-    \item Chinese, Chih-Hao Tsai (1996), MMSeg 2000.
-    \end{itemize}
+%%     \begin{itemize}
+%%     \item Thai, Sornlertlamvanich (1993).
+%%     \item Chinese, Chih-Hao Tsai (1996), MMSeg 2000.
+%%     \end{itemize}
   \end{itemize}
 \item[Dùng thống kê]
   Giải pháp này dựa vào ngữ cảnh từ xung quanh để đưa ra quyết định
@@ -1753,11 +2048,11 @@ Bài toán tách từ cho ngôn ngữ đơn lập đã được đặt ra từ l
   thể áp dụng trên các tài liệu văn học và ngược lại. Thêm vào đó, có
   những từ có xác suất rất cao, nhưng chỉ có chứng năng về mặt ngữ
   pháp, làm giảm vai trò của xác suất.
-  \begin{itemize}
-  \item HMM, based on Viterbi algorithm. (Asanee Kawtraku, 1995;
-    Surapant,1995).
-  \item EM. Xianping, 1996.
-  \end{itemize}
+%%   \begin{itemize}
+%%   \item HMM dựa trên thuật toán Viterbi. (Asanee Kawtraku, 1995;
+%%     Surapant,1995).
+%%   \item EM. Xianping, 1996.
+%%  \end{itemize}
 \item[Các cách khác]
   Hầu hết các giải pháp khác là sự lai tạo giữa các mô hình trên và
   các mô hình ngôn ngữ học như WFST, TBL. Thời gian xử lý
@@ -1782,7 +2077,7 @@ Thuật toán này có nhiều biến thể khác nhau.
 
 \begin{itemize}
 \item Dạng đơn giản, được dùng để giải quyết nhập nhằng từ đơn. Giả sử
-  có một chuỗi ký tự (tương đương với chuối tiếng trong tiếng Việt)
+  có một chuỗi ký tự (tương đương với chuỗi tiếng trong tiếng Việt)
   $C_1, C_2, \ldots C_n$. Ta bắt đầu từ đầu   chuỗi. Đầu tiên, kiểm
   tra xem $C_1$ có phải là từ hay không, sau đó kiểm tra xem $C_1C_2$
   có phải là từ hay không. Tiếp tục tìm cho đến khi tìm được từ dài
@@ -1807,67 +2102,81 @@ Thuật toán này có nhiều biến thể khác nhau.
 \end{itemize}
 
 
-\subsection{Mô hình HHMM}
 
-Mô hình Markov ẩn phân cấp (HHMM)\footnote{Hierarchical Hidden Markov
-  Model} được áp dụng trong~\cite{} để giải quyết bài toán tách từ
-tiếng Trung Quốc.
+\subsection{Mô hình HMM}
 
-Mô hình HMM\footnote{Hidden Markov Model} (L. R. Rabiner, 1989) là một
-mô hình rất mạnh  để xử lý 
-ngôn ngữ tự nhiên. Tuy nhiên, HMM truyền thống khó áp dụng hiệu quả
-do một số hiện tượng phức tạp trong ngôn ngữ tự nhiên. Do vậy, Shai
-Fine et al (1998) đã đưa ra mô hình HHMM, một mô hình đệ quy, tổng
-quát hoá của HMM.
+Trong cách áp dụng này, các trạng thái ẩn là các lớp từ, giả định rằng
+mỗi từ có thể thuộc mọi lớp với một xác suất nhất định. Bài toán được
+xem như tìm kiếm chuỗi lớp từ $C=c_1,\ldots,c_n$ từ một chuỗi từ
+$W=w_1,\ldots,w_n$. Mục tiêu là tìm $W$ và $C$ từ câu $S$ cho trước,
+sao cho tối đại xác suất$$\underset{W,C}{argmax}P(W|C)P(C)$$
+Giả định rằng xác suất $P(W|C)$ chỉ phụ thuộc vào lớp từ của nó, và
+xác suất lớp $P(C)$ chỉ phụ thuộc vào lớp của từ đứng trước. Những xác
+suất này có thể được ước lượng bằng thuật toán Baum-Welch dùng ngữ
+liệu huấn luyện. Tiến trình học dựa trên thuật toán Baum-Welch và
+giống với bài toán đánh nhãn từ loại bằng HMM, trừ việc số trạng thái
+được xác định trước và xác suất khởi đầu được gán ngẫu nhiên.
 
-HHMM bao gồm sáu thành phần ($S$, $O$, $\Pi$, $A$, $B$, $D$). 
-\begin{itemize}
-\item $D$ là số mức sâu. 
-\item $S$ là tập trạng thái hữu hạn. 
-\item $O$ là bảng chữ cái kết quả hoặc kết xuất trung gian. 
-\item $\Pi$ là xác suất trạng thái khởi đầu.
-\item $A$ là xác suất chuyển trạng thái. 
-\item $B$ là xác suất phát sinh các ký hiệu hoặc kết xuất trung gian. 
-\end{itemize}
-Sự khác nhau giữa HHMM và HMM
-là:
-\begin{itemize}
-\item Tập trạng thái $S$ có thể được tách làm nhiều tập con, tùy theo
-  số mức của nó. Một trạng thái trong $S$ được đánh dấu bằng $q_i^d$
-  với $(0<d\le D, 0<i\le|S^d|)$. Trong đó $d$ là chỉ số mức, $i$ là
-  chỉ số trạng thái, $S^d$ là tập trạng thái mức $d$. Khi $d=D$,
-  $q_i^d$ được gọi là trạng thái kết thúc vì its observation is
-  symbols. Ngược lại, nó được gọi là trạng thái nội bộ vì observation
-  của nó là từ HMM con của nó trong mức thứ $(d+1)$.
-\item Mỗi trạng thái nội bộ $q^d$ $(0<d<D)$ có những trạng thái con
-  của nó, hình thành một HMM độc lập. Trong HMM con, xác suất chuyển
-  trạng thái là:
-  $$A(q^d) = (a_{ij}(q^d)) = (P(q_j^{d+1}|q_i^{d+1}))$$
-  Véc tơ phân bố khởi đầu là:
-  $$\Pi(q^d)=(\pi^d(q_i^{d+1}))=(P(q_i^{d+1}|q^d))$$
-  Trong đó $P(q_i^{d+1}|q^d)$ được định nghĩa là xác suất của trạng
-  thái $q^d$ kích hoạt trạng thái con $q_i^{d+1}$ lúc ban đầu.
-\item Chỉ có HMM dưới đáy có thể observe các ký hiệu. Xác suất phát
-  ký hiệu tương ứng là:
-  $$B(q^D)=(b_k(q^D))=(P(o_k|q^D))$$
-  với $o_k$ nằm trong tập ký hiệu. Với mỗi HMM mức $d (d<D)$, chuỗi
-  trạng thái trong các HMM con của nó có thể xem như là
-  observation. Xác suất phát sinh có thể được ước lượng như trên.
-\end{itemize}
+%% \subsection{Mô hình HHMM}
 
-HHMM bao gồm $D$ mức HMM mà mỗi mức này là một HMM độc lập. Hơn nữa,
-mỗi HMM chỉ liên kết với cha và con của nó. Toàn bộ tập tham số của
-HHMM được ký hiệu là:
-\begin{align}
-\lambda&=\{(\lambda(q^d))\}_{d\in\{1,\ldots,D\}}\\
-       &=\{\{A(q^d)\}_{d\in\{1,\ldots,D-1\}},\{\Pi(q^d)\}_{d\in\{1,\ldots,D-1\}},\{B(q^D)\}\}
-\end{align}
+%% Mô hình Markov ẩn phân cấp (HHMM)\footnote{Hierarchical Hidden Markov
+%%   Model}~\cite{hhmm} được áp dụng trong~\cite{hhmm2} để giải quyết bài toán tách từ
+%% tiếng Trung Quốc.
 
-HMM là dạng đặc biệt của HHMM, khi $D=1$.
+%% Mô hình HMM\footnote{Hidden Markov Model} (L. R. Rabiner, 1989) là một
+%% mô hình rất mạnh  để xử lý 
+%% ngôn ngữ tự nhiên. Tuy nhiên, HMM truyền thống khó áp dụng hiệu quả
+%% do một số hiện tượng phức tạp trong ngôn ngữ tự nhiên. Do vậy, Shai
+%% Fine et al (1998) đã đưa ra mô hình HHMM, một mô hình đệ quy, tổng
+%% quát hoá của HMM.
 
-Khi áp dụng HHMM để tách từ. Các từ chính là tập ký hiệu, còn các
-tiếng chính là các trạng thái. Đến đây, ta quay về bài toán HMM truyền
-thống. 
+%% HHMM bao gồm sáu thành phần ($S$, $O$, $\Pi$, $A$, $B$, $D$). 
+%% \begin{itemize}
+%% \item $D$ là số mức sâu. 
+%% \item $S$ là tập trạng thái hữu hạn. 
+%% \item $O$ là bảng chữ cái kết quả hoặc kết xuất trung gian. 
+%% \item $\Pi$ là xác suất trạng thái khởi đầu.
+%% \item $A$ là xác suất chuyển trạng thái. 
+%% \item $B$ là xác suất phát sinh các ký hiệu hoặc kết xuất trung gian. 
+%% \end{itemize}
+%% Sự khác nhau giữa HHMM và HMM là:
+%% \begin{itemize}
+%% \item Tập trạng thái $S$ có thể được tách làm nhiều tập con, tùy theo
+%%   số mức của nó. Một trạng thái trong $S$ được đánh dấu bằng $q_i^d$
+%%   với $(0<d\le D, 0<i\le|S^d|)$. Trong đó $d$ là chỉ số mức, $i$ là
+%%   chỉ số trạng thái, $S^d$ là tập trạng thái mức $d$. Khi $d=D$,
+%%   $q_i^d$ được gọi là trạng thái kết thúc vì its observation is
+%%   symbols. Ngược lại, nó được gọi là trạng thái nội bộ vì observation
+%%   của nó là từ HMM con của nó trong mức thứ $(d+1)$.
+%% \item Mỗi trạng thái nội bộ $q^d$ $(0<d<D)$ có những trạng thái con
+%%   của nó, hình thành một HMM độc lập. Trong HMM con, xác suất chuyển
+%%   trạng thái là:
+%%   $$A(q^d) = (a_{ij}(q^d)) = (P(q_j^{d+1}|q_i^{d+1}))$$
+%%   Véc tơ phân bố khởi đầu là:
+%%   $$\Pi(q^d)=(\pi^d(q_i^{d+1}))=(P(q_i^{d+1}|q^d))$$
+%%   Trong đó $P(q_i^{d+1}|q^d)$ được định nghĩa là xác suất của trạng
+%%   thái $q^d$ kích hoạt trạng thái con $q_i^{d+1}$ lúc ban đầu.
+%% \item Chỉ có HMM dưới đáy có thể observe các ký hiệu. Xác suất phát
+%%   ký hiệu tương ứng là:
+%%   $$B(q^D)=(b_k(q^D))=(P(o_k|q^D))$$
+%%   với $o_k$ nằm trong tập ký hiệu. Với mỗi HMM mức $d (d<D)$, chuỗi
+%%   trạng thái trong các HMM con của nó có thể xem như là
+%%   observation. Xác suất phát sinh có thể được ước lượng như trên.
+%% \end{itemize}
+
+%% HHMM bao gồm $D$ mức HMM mà mỗi mức này là một HMM độc lập. Hơn nữa,
+%% mỗi HMM chỉ liên kết với cha và con của nó. Toàn bộ tập tham số của
+%% HHMM được ký hiệu là:
+%% \begin{align}
+%% \lambda&=\{(\lambda(q^d))\}_{d\in\{1,\ldots,D\}}\\
+%%        &=\{\{A(q^d)\}_{d\in\{1,\ldots,D-1\}},\{\Pi(q^d)\}_{d\in\{1,\ldots,D-1\}},\{B(q^D)\}\}
+%% \end{align}
+
+%% HMM là dạng đặc biệt của HHMM, khi $D=1$.
+
+%% Khi áp dụng HHMM để tách từ. Các từ chính là tập ký hiệu, còn các
+%% tiếng chính là các trạng thái. Đến đây, ta quay về bài toán HMM truyền
+%% thống. 
 
 \subsection{Mô hình WFST và mạng nơ-ron}
 
@@ -1905,7 +2214,7 @@ Ta định nghĩa lớp từ $C$ như sau:
 \begin{itemize}
 \item Mỗi từ được định nghĩa như một lớp.
 \item Mỗi từ dẫn xuất hình thái được định nghĩa như một lớp.
-\item Mỗi loại factoids được định nghĩa như một lớp. Ví dụ, các biểu
+\item Mỗi loại ký hiệu khác nhau được định nghĩa như một lớp. Ví dụ, các biểu
   thức thời gian thuộc về lớp TIME.
 \item Mỗi loại tên riêng thuộc về một lớp. Ví dụ, tên người thuộc lớp PN.
 \end{itemize}
@@ -1990,14 +2299,13 @@ Trình tách từ baseline, có thể áp dụng cách khớp tối đa.
 Như đã nói trên, bài toán tách từ không đơn thuần là tách từ đúng như
 nghĩa ban đầu, mà là tách từ trong điều kiện dữ liệu đầu vào có khả
 năng bị sai. Nói cách khác, đây là bài toán tách từ có khả năng chịu
-lỗi\footnote{error-tolerant word segmentation}.
+lỗi\footnote{error-tolerant word segmentation}. Các phương pháp tách
+từ được nêu, thông thường không thể áp dụng trực tiếp mà phải có một
+số cải tiến nhất định nếu có thể. Ngoài ra cũng có thể áp dụng một số
+giải pháp khác, tuy không trực tiếp áp dụng cho tách từ mờ, nhưng phần
+nào có thể gợi ý cho một giải thuật tách từ mờ hiệu quả.
 
-Điều hiển nhiên dễ thấy là nếu câu bị sai chính tả thì ta không thể
-tách từ đúng được. Vấn đề ở đây là phải tách từ trong câu bị sai chính
-tả. Do đó không thể áp dụng trực tiếp các thuật toán tách từ thông
-thường.
-
-\cite{Oflazer} khi xử lý hình thái trong tiếng Thổ Nhĩ Kỳ gặp trường
+Kemal Oflazer~\cite{Oflazer} khi xử lý hình thái trong tiếng Thổ Nhĩ Kỳ gặp trường
 hợp khá giống với trường hợp này. Tác giả phải tách hình thái từ
 trong điều kiện từ đó bị sai chính tả. Do đặc tính
 ngôn ngữ chắp dính\footnote{agglunative language}, số tiếp vĩ ngữ
@@ -2005,35 +2313,36 @@ nhiều, liên tiếp nhau, gây khó khăn cho việc nhận dạng tiếp vĩ 
 cũng như không thể phân biệt những tiếng nào hợp thành một từ trong
 một chuỗi tiếng trong tiếng Việt. Tác giả dùng một hàm độ đo, tạo ra
 các tiếp đầu ngữ có khả năng thay thế dựa trên độ đo này, sau đó sử
-dụng WFST\footnote{Weighted Finite State Transducer} để tìm chuỗi tiếp
-vĩ ngữ thích hợp nhất.
+dụng WFST để tìm chuỗi tiếp vĩ ngữ thích hợp nhất.
 
 Bài toán nhận dạng tiếng nói trong tiếng Anh cũng gặp trường hợp tương
 tự~\cite{Ravishankar}. Sau công đoạn xử lý âm thanh, ta nhận được 
-một chuỗi các âm tiết (phoneme). Ta phải chuyển nhóm âm tiết này thành
+một chuỗi các âm tiết. Ta phải chuyển nhóm âm tiết này thành
 chuỗi từ. Do âm thanh thường bị nhiễu, nên các âm tiết có thể
 không chính xác hoàn toàn. Ngoài ra, do đặc tính của tiếng Anh nên
 cùng một chuỗi âm tiết có thể suy ra nhiều chuỗi từ khác nhau. Tác giả
 sử dụng lưới từ để tạo ra các chuỗi từ có khả năng từ chuỗi âm tiết,
 sau đó n-gram trên từ để lượng giá các chuỗi từ.
 
-Theo~\cite{Chang}, có thể dùng nhiều Language Model khác nhau như
-character bigram, word bigram, inter-word character bigram (IWCB), POS
-bigram, word class bigram. Các bước thực hiện:
-\begin{enumerate}
-\item Tách đoạn. Dùng cách ký tự như \fbox{?} \fbox{!} \fbox{,}
-  \fbox{:} \fbox{.}~\ldots{} để tách.
-\item Thay thế các ký tự nhập nhằng. 
-\item Lượng giá Mô hình Ngôn ngữ. Tác giả sử dụng một phiên bản của
-  IWCB và SA-class bigram. IWCB là, những từ cùng ký tự đầu tiên được
-  nhóm thành 1 class, những từ cùng ký tự cuối cùng được nhóm thành
-  class. Bigram dựa trên hai nhóm này. ``Modified'' là tính luôn word
-  freq. SA-class bigram dùng SA algorithm để nhóm.
-\item So sánh và sửa chữa.
-\item Kết xuất.
-\end{enumerate}
+Một điểm đáng chú ý ở
+đây là sự tương đồng về một mặt nào đó giữa tiếng Anh và tiếng
+Việt. Với tiếng Anh, từ có thể tách dễ dàng, nhưng từ bao gồm nhiều âm
+tiết. Việc phân ranh giới âm tiết trong tiếng Anh là một điều khá khó
+khăn. Với tiếng Việt, các âm tiết được tách rất dễ dàng vì mỗi âm tiết
+là một ``tiếng'' tương đương với một ``từ'' trong câu --- cách nhau
+bởi khoảng trắng. Từ của tiếng Việt lại bao gồm nhiều tiếng, và việc
+tách từ lại gặp nhiều khó khăn. Với nhận xét này, có thể thấy các bài
+toán nhận dạng tiếng nói tiếng Anh gặp cùng vấn đề với bài toán bắt
+lỗi chính tả tiếng Việt!
 
-Dựa trên những nghiên cứu này, có thể thấy giải pháp cho việc tách từ khi bị
+\cite{Chang} cũng dùng mô hình ngôn ngữ dạng n-gram để đánh giá các
+cách tách từ sau khi đã qua tiền xử lý nhập nhằng chính tả, tuy nhiên
+lại sử dùng nhiều mô hình ngôn ngữ khác nhau như 
+character bigram, word bigram, inter-word character bigram (IWCB), POS
+bigram, word class bigram. 
+
+Dựa trên những nghiên cứu này, có thể thấy giải pháp khả thi cho việc
+tách từ khi bị 
 sai chính tả, là phát sinh một loạt các từ có khả năng thay thế, với
 giả định trong tập từ này sẽ có từ đúng chính tả, thay thế từ sai chính
 tả ban đầu. Sau đó sử dụng tách từ tìm một cách tách tốt nhất. Sau khi
@@ -2048,35 +2357,46 @@ Nếu có dữ liệu đã được đánh dấu sẵn các ranh giới từ, c�
 giản chỉ là áp dụng các công thức thống kê để tính ra các giá trị cần
 thiết.
 
-Tuy nhiên, với điều kiện hiện tại, khó có thể tìm được một khối lượng
-ngữ liệu lớn đã được tác từ sẵn, do đó cần phải tìm giải pháp tính
-được các tham số cần thiết từ ngữ liệu chưa được tách từ (nói cách
-khác là ngữ liệu thô).
+Đối với việc huấn luyện các thuật toán tách từ truyền thống, ta có thể
+sử dụng bộ tách từ tiếng Việt sẵn có để tạo ngữ liệu. Chất lượng của
+bộ tách từ sẽ ảnh hưởng đến chất lượng của thuật toán.
 
-Thuật toán EM\footnote{Estimation Maximum} thường được áp dụng để vượt
-qua khó khăn này~\cite{softcount,((()))}. Trên lý thuyết, áp dụng
+Với các thuật toán tách từ mờ, đôi khi không thể áp dụng bộ tách từ
+sẵn có. Với điều kiện hiện tại, khó có thể tìm được một khối lượng
+ngữ liệu lớn đã được tách từ sẵn, do đó cần phải tìm giải pháp tính
+được các tham số cần thiết từ ngữ liệu chưa được tách từ (ngữ liệu thô).
+
+Thuật toán EM\footnote{Estimation Maximization} thường được áp dụng để vượt
+qua khó khăn này~\cite{softcount,Sproat}. Trên lý thuyết, áp dụng
 thuật toán EM đảm bảo kết quả sẽ hội tụ, và kết quả ở mỗi vòng lặp sau
-sẽ tốt hơn hoặc bằng kết quả của vòng lặp trước. Theo \cite{xxx}, ta
-chỉ cần lặp khoảng 5-7 vòng lặp là đủ.
+sẽ tốt hơn hoặc bằng kết quả của vòng lặp trước. 
+%Theo \cite{xxx}, ta chỉ cần lặp khoảng 5-7 vòng lặp là đủ.
 
 Do thuật toán EM cũng có nhiều hạn chế (đặc biệt là hạn chế tối ưu cục
-bộ), nhiều giải pháo đã được đưa ra để khắc phụ các hạn chế
-này~\cite{xxx}. 
+bộ), nhiều giải pháp đã được đưa ra để khắc phục các hạn chế
+này~\cite{text-tiling,self-supervised}. 
 
-Một giải pháp khác là áp dụng HMM\footnote{Mô hình Markov ẩn ---
-Hidden Markov Model} để tìm ra ranh giới từ, sau đó áp dụng các công
-thức thống kê thông thường. Giải pháp này gặp hạn chế bởi chính
-HMM, vì HMM không phát huy được một số đặc trưng của tách từ mà chỉ
-áp dụng như một mô hình HMM nói chung, do đó phần nào hạn chế kết
-quả cuối cùng. 
-
-
+Một giải pháp khác là áp dụng HMM để tìm ra ranh giới từ, sau đó áp
+dụng các công thức thống kê thông thường. Giải pháp này gặp hạn chế
+bởi chính HMM, vì HMM là mô hình thống kê thuần tuý, không phát huy
+được một số đặc trưng của tách từ, cũng không sử dụng các tri thức về
+ngôn ngữ học, do đó phần nào hạn chế kết quả cuối cùng. 
 
 \chapter{Mô hình}
 \label{cha:model}
-\minitoc\newpage
+\minitoc
 
 % \note{Phân loại lỗi, nguyên nhân gây lỗi}
+
+%%% cut it out, move it to somewhere
+Ngoài ra, phải nói thêm là, do tiếng Việt là loại ngôn ngữ ``nói sao
+viết vậy'', lại có sự phân hoá trong hệ thống âm vị của các miền, nên
+khi viết thường rất dễ sai. Mức độ ``nhầm lẫn'' trong tiếng Việt cao
+hơn hiều so với các thứ tiếng khác (như tiếng Anh). Với tiếng Anh,
+thông thường mỗi tập nhầm lẫn chỉ gồm hai từ. Với tiếng Việt, đó có
+thể là năm từ, thậm chí mười từ. Sự gia tăng kích thước của tập nhầm
+lẫn làm hạn chế khả năng của các thuật toán bắt lỗi chính tả dựa trên
+tập nhầm lẫn.
 
 
  \section{Lỗi chính tả}
@@ -2686,12 +3006,7 @@ xảy ra~\ldots Trong trường hợp đó ta nên sử dụng thuật toán A*~
 
 \section{Tìm từ thay thế}
 
-Đối với tiếng Anh, bước này dùng thuật toán như metaphone,
-Soundex~\cite{soundex},
-Phonetex~\cite{phonetex}. Ý tưởng 
-là dựa vào heuristic, thay thế các nhóm ký tự trong từ thành một ký
-hiệu tương trưng cho một âm. Sau đó so sánh độ hiệu chỉnh giữa âm của
-từ sai và các âm của từ trong từ điển. Do tiếng Việt đọc sao ghi vậy,
+Do tiếng Việt đọc sao ghi vậy,
 nên bước chuyển từ từ sang âm có thể bỏ qua. Bước còn lại là áp dụng
 thuật toán đo độ hiệu chỉnh giữa hai từ như đã nêu trong~\ref{algo:ed}
 Ta có thể so sánh từng ký tự, hoặc so sánh theo âm (ví dụ, ``th'' thay
@@ -2765,14 +3080,14 @@ fractional count (được đề cập bên dưới) trên các cách tách từ
 Trường hợp nhiều cách tách từ, ta có thểm đếm từ trên tất cả các cách
 tách, thay vì chỉ đếm trên cách tách từ tốt nhất. Cách này phản ánh
 tầm ảnh hưởng của các từ tốt hơn. Ví dụ, ta có 3 cách tách từ với xác
-suất các cách tách từ tương ứng lần lượt là 0.5, 0.4 và 0.1. Cách chỉ
+suất các cách tách từ tương ứng lần lượt là 0,5, 0,4 và 0,1. Cách chỉ
 dùng cách tách từ tốt nhất sẽ chỉ tính những từ trong cách tách từ
-đầu, với giá trị mỗi từ là 1.0. Cách tính này ``dồn phiếu'' của 2 cách
+đầu, với giá trị mỗi từ là 1,0. Cách tính này ``dồn phiếu'' của 2 cách
 sau cho cách đầu. Trường hợp sau, các từ trong cách 2 và 3 vẫn được
 tính. Số đếm của mỗi từ không còn là 1, mà là xác suất của cách tách
 từ chứa từ đó. Trở lại ví dụ, các từ trong cách một sẽ được cộng thêm
-0.5 thay vì 1. Ngoài ra các từ trong cách 2 và 3 lần lượt được cộng
-0.4 và 0.1. Dễ thấy, các từ trong cách tách từ thấp sẽ không tăng số
+0,5 thay vì 1. Ngoài ra các từ trong cách 2 và 3 lần lượt được cộng
+0,4 và 0,1. Dễ thấy, các từ trong cách tách từ thấp sẽ không tăng số
 đếm đáng kể, do đó không thể gây ảnh hưởng lớn đến quyết định tách từ.
 Cách cộng dồn số như vậy được gọi là ``fractional count'' (hay trong
 \cite{softcount} gọi là ``soft-count'').
@@ -2944,7 +3259,7 @@ SRILM được dùng để tính n-gram.
 
 \chapter{Cài đặt}
 \label{cha:implementation}
-\minitoc\newpage
+\minitoc
 
 Chương trình gồm hai phần: phần bắt lỗi chính tả và phần huấn luyện.
 
@@ -3090,7 +3405,7 @@ Chương trình được lặp đi lặp lại nhiều lần.
 
 \chapter{Đánh giá và kết luận}
 \label{cha:conclusion}
-\minitoc\newpage
+\minitoc
 
 \section{Hạn chế}
 \begin{itemize}

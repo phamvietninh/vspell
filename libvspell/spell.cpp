@@ -702,6 +702,19 @@ void get_syllable_candidates(const char *input,std::set<std::string> &output)
 	}
 	keyr.done();
 
+	// SpaceInserter
+	uint i,n = strlen(input);
+	for (i = 1;i < n;i ++) {
+		s = string(input).substr(0,i);
+		s2 = string(input).substr(i);
+		if (syll.parse(s.c_str())) {
+			s = syll.to_str();
+			if (syll.parse(s2.c_str())) {
+				output.insert(s + string(" ") + syll.to_str());
+			}
+		}
+	}
+
 	CharInserter inserter;
 	inserter.init(input);
 	while (inserter.step(s)) {

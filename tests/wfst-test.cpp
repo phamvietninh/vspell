@@ -21,12 +21,14 @@ int main(int argc,char **argv)
   bool bellman = false;
   bool trigram = false;
   bool dot = false;
+  bool edge_value = false;
 
   for (int i = 1;i < argc;i ++) {
     if (!strcmp(argv[i],"nofuzzy")) fuzzy = false;
     else if (!strcmp(argv[i],"bellman")) bellman = true;
     else if (!strcmp(argv[i],"trigram")) trigram = true;
     else if (!strcmp(argv[i],"dot")) dot = true;
+    else if (!strcmp(argv[i],"edge")) edge_value = true;
   }
   dic_init(!fuzzy ? 
 	   new WordNode(get_sarch()["<root>"]) : 
@@ -86,9 +88,9 @@ int main(int argc,char **argv)
 	}
 	if (dot) {
 	  if (trigram)
-	    dag2_to_dot(cout,words,*dagw2,false);
+	    dag2_to_dot(cout,words,*dagw2,edge_value);
 	  else
-	    dag_to_dot(cout,words,*dag,false);
+	    dag_to_dot(cout,words,*dag,edge_value);
 	} else {
 	  if (bellman) {
 	    Bellman wfst;
@@ -125,8 +127,7 @@ void dag_to_dot(ostream &os,Lattice &w2,DAG &dag,bool edge_value)
 
   for (i = 0;i < n;i ++) {
     string label;
-    if (dag.node_id(i)) {
-      label = get_sarch()[dag.node_id(i)];
+    label = get_sarch()[dag.node_id(i)];
       /*
 	wes[i].node.node->get_syllables(syll);
 	for (std::vector<strid>::size_type ii = 0;ii < syll.size();ii ++) {
@@ -139,10 +140,6 @@ void dag_to_dot(ostream &os,Lattice &w2,DAG &dag,bool edge_value)
 	os << get_sarch()[syll[ii]];
 	}
       */
-    } else if (i == dag.node_begin())
-      label = "head";
-    else
-      label = "end";
     os << "\tn" << i << "[label=\"" << label << ";" << i << "\"];" << endl;
     
   }
@@ -163,7 +160,10 @@ void dag_to_dot(ostream &os,Lattice &w2,DAG &dag,bool edge_value)
     dag.get_next(v,nexts);
     nn = nexts.size();
     for (ii = l;ii < nn;ii ++) {
-      os << "\tn" << v << " -> n" << nexts[ii] << endl;
+      if (edge_value)
+	os << "\tn" << v << " -> n" << nexts[ii] << "[label=\"" << dag.edge_value(v,nexts[ii]) << "\"];" << endl;
+      else
+	os << "\tn" << v << " -> n" << nexts[ii] << ";" << endl;
     }
   }
   done.clear();
@@ -184,28 +184,16 @@ void dag2_to_dot(ostream &os,Lattice &w2,WordDAG2 &dag,bool edge_value)
 
   for (i = 0;i < n;i ++) {
     string label;
-    if (dag.node_id(i)) {
-      uint n1,n2;
+    uint n1,n2;
+    if (i == dag.node_begin() || i == dag.node_end())
+      label = get_sarch()[dag.node_id(i)];
+    else {
       dag.node_dag_edge(i,n1,n2);
-      if (wdag->node_id(n1))
-	label = get_sarch()[wdag->node_id(n1)];
-      else if (n1 == wdag->node_begin())
-	label = "head";
-      else
-	label = "tail";
+      label = get_sarch()[wdag->node_id(n1)];
       label += string(" ");
-      if (wdag->node_id(n2))
-	label += get_sarch()[wdag->node_id(n2)];
-      else if (n2 == wdag->node_begin())
-	label += "head";
-      else
-	label += "tail";
-    } else if (i == dag.node_begin())
-      label = "head";
-    else
-      label = "end";
+      label += get_sarch()[wdag->node_id(n2)];
+    }
     os << "\tn" << i << "[label=\"" << label << ";" << i << "\"];" << endl;
-    
   }
 
   vector<uint> nexts;
@@ -224,7 +212,10 @@ void dag2_to_dot(ostream &os,Lattice &w2,WordDAG2 &dag,bool edge_value)
     dag.get_next(v,nexts);
     nn = nexts.size();
     for (ii = l;ii < nn;ii ++) {
-      os << "\tn" << v << " -> n" << nexts[ii] << endl;
+      if (edge_value)
+	os << "\tn" << v << " -> n" << nexts[ii] << "[label=\"" << dag.edge_value(v,nexts[ii]) << "\"];" << endl;
+      else
+	os << "\tn" << v << " -> n" << nexts[ii] << ";" << endl;
     }
   }
   done.clear();

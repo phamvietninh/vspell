@@ -17,10 +17,7 @@ void sentences_split(const string &_input,vector<string> &output)
 	for (i = 0;i < n;i ++) {
 		if (tokens[i].is_token) {
 			int jj,nn = tokens[i].value.size();
-			for (jj = 0;jj < nn;jj ++)
-				if (viet_isalpha(tokens[i].value[jj]))
-					break;
-			if (jj == nn)
+			if (nn == 1 && strchr("?!()[];:.,",tokens[i].value[0]))
 				flush = true;
 			else if (flush) {
 				output.push_back(str);

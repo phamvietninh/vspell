@@ -145,7 +145,7 @@ float WordDAG2::edge_value(uint node_from,uint node_to) const
 	} else if (node_to == node_end() && node_from < n) {
 		v[1] = dag->node_id(nodes[node_from].n1);
 		v[0] = dag->node_id(nodes[node_from].n2);
-		v2   = get_id(START_ID);
+		v2   = get_id(STOP_ID);
 	} else
 		return 1000;
 

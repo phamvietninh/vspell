@@ -7,6 +7,8 @@
 \renewcommand{\sfdefault}{uhv}
 \renewcommand{\ttdefault}{ucr}
 \usepackage[utf8]{vietnam}
+\newcommand{\note}[1]{\underline{#1}}
+\newcommand{\comment}[1]{}
 
 \newtheorem{algo}{Thuật toán}
 
@@ -61,7 +63,7 @@ dụng ``từ'' như là ``từ từ điển''.
 Để bắt lỗi chính tả trong tiếng Việt, có thể dựa trên nhiều cách khác
 nhau. Cách đầu tiên đơn giản là tìm ranh giới từ cho tiếng Việt, sau
 đó chuyển về bài toán bắt lỗi chính tả của tiếng Anh. Cách khác
-là bắt lỗi mà không cần tách từ. XXX
+là bắt lỗi mà không cần tách từ. XXX \cite{Tuoi}
 Cách nữa dựa trên ý tưởng ``phân tích cú pháp câu, nếu ta không thể
 phân tích cú pháp của câu, nghĩa là câu đó sai chính tả'' \cite{iccc}.
 
@@ -84,11 +86,10 @@ các tiếp đầu ngữ có khả năng thay thế dựa trên độ đo này, 
 dụng WFST để tìm chuỗi tiếp vĩ ngữ thích hợp nhất.
 
 Nhận dạng tiếng nói tiếng Anh cũng gặp trường hợp tương tự
-\cite{Ravishankar}. Sau công 
-đoạn xử lý âm thanh, ta nhận dạng được một chuỗi các âm tiết
-(phoneme). Phải làm cách nào đó để nhóm các âm tiết này thành từ. Do
-âm thanh thường bị nhiễu, nên các âm tiết có thể không chính xác hoàn
-toàn.
+(\cite{Ravishankar}). Sau công đoạn xử lý âm thanh, ta nhận dạng được
+một chuỗi các âm tiết (phoneme). Phải làm cách nào đó để nhóm các âm
+tiết này thành từ. Do âm thanh thường bị nhiễu, nên các âm tiết có thể
+không chính xác hoàn toàn.
 
 \cite{Chang} Có thể dùng nhiều LM khác nhau như character
 bigram, word bigram, inter-word character bigram (IWCB), POS bigram,
@@ -116,6 +117,8 @@ tìm được cách tách từ, ta có thể tra từ điển để tìm xem t�
 
 \subsection{Tách từ}
 
+\note{Liệt kê các phương pháp tách từ}
+
 Bài toán tách từ cho ngôn ngữ đơn lập đã được đặt ra từ lâu, chủ yếu
 để giải quyết cho tiếng Hoa, tiếng Nhật. 
 
@@ -135,7 +138,6 @@ nhất dựa trên 2-gram hoặc 3-gram.
 không dùng từ điển. Giải pháp này tương tự như \cite{softcount}, tuy
 nhiên chỉ tính xác suất cách tách từ tốt nhất thay vì tính tổng xác
 suất mọi cách tách từ như trong \cite{softcount}.
-
 
 \cite{Chunyu} kết hợp ngram, lập trình quy hoạch động để tách từ. Xài
 soft-count thay vì ``hard-count'' như \cite{Chang}. \cite{Chunyu} còn
@@ -238,19 +240,19 @@ chữ bắt đầu tên riêng hay không. Ngoài ra, cần xác định tên ri
 tìm được chữ viết hoa bắt đầu tên riêng. Các văn bản tiếng Việt chưa
 hoàn toàn thống nhất về quy tắc viết hoa. Ví dụ, có tài liệu dùng
 ``Cộng hoà Xã hội Chủ nghĩa Việt Nam'', nhưng có tài liệu lại dùng
-``Cộng Hoà Xã Hội Chủ Nghĩa Việt Nam''. HELPME.
+``Cộng Hoà Xã Hội Chủ Nghĩa Việt Nam''. \note{HELPME.}
 Có thể dùng heuristic như sau: Nếu bắt đầu bằng chữ viết hoa, và chữ
 đầu được viết thường cùng những từ kế tiếp của nó là một từ trong từ
 điển, thì xem như đó là một từ. Nếu một chuỗi từ viết hoa liên tục
 (hai từ trở lên) thì xem như đó là một từ (một tên riêng), và được
 đánh dấu từ lạ ``Unknown word''.
 
-Cách tiếp cận này không hoàn hảo. Lỗi sai của heuristic này
+\note{Cách tiếp cận này không hoàn hảo.} Lỗi sai của heuristic này
 có thể ảnh hưởng nặng nề đến chất lượng tách từ và bắt lỗi. Nên đánh
-dấu theo kiểu ``80\verb#%# UNK, 10\verb#%# là tổ hợp từ \ldots''. Cần
+dấu theo kiểu ``0.80 UNK, 0.10 là tổ hợp từ \ldots''. Cần
 nghiên cứu sâu hơn về vấn đề này.
 
-Cần tham khảo thêm các tài liệu về vấn đề này.
+\note{Cần tham khảo thêm các tài liệu về vấn đề này.}
 
 Đối với tên người Việt, lập danh sách tên, xử lý riêng, không đưa vào
 phần Phát sinh từ thay thế.
@@ -280,7 +282,7 @@ Phần này được thực hiện bên trong phần \textbf{Phát sinh từ tha
 
 Phần này được thực hiện bên trong phần \textbf{Phát sinh từ thay thế}.
 
-Hổng thèm làm :-) Vấn đề từ láy cũng tương tự như  tên riêng. Giải
+\note{Hổng thèm làm :-)} Vấn đề từ láy cũng tương tự như  tên riêng. Giải
 pháp có thể áp dụng như của LV anh Toàn. Nhưng những ``từ láy''
 ``nhưng những'' có thể giết chết module tách từ một cách êm dịu. Chắc
 nên áp dụng giải pháp ``80 từ láy, 20 từ thường''. Không biết được hay
@@ -297,7 +299,7 @@ không, phiêu quá \ldots
 \end{algo}
 
 Có lẽ nên lọc ra danh sách từ láy bằng tay, đánh nhãn toàn bộ là
-$POEN$, hoặc dùng nhãn riêng. Heuristic này không đáng tin lắm.
+$POEM$, hoặc dùng nhãn riêng. Heuristic này không đáng tin lắm.
 Cách hình thành từ láy của con người như thế nào ?? Từ láy thường gắn
 liền với hình tượng, cảm giác gì đó. Làm sao người ta có thể cảm nhận
 được một từ có phải là từ láy hay không??
@@ -332,7 +334,7 @@ nguyên nhân gây ra lỗi chính tả:
   bàn phím. Độ đo là khoảng cách từ phím tạo ra ký tự trong từ cho
   trước và những từ chung quanh. Thông thường lỗi này chỉ xảy ra một
   lần trong mỗi từ.
-\item Lỗi OCR. XXXX. ko thèm xử lý, kêu OCR tự xử đi :-D
+\item Lỗi OCR. \note{XXXX. ko thèm xử lý, kêu OCR tự xử đi :-D}
 \item Lỗi sai về mặt ngữ nghĩa, cú pháp. Lỗi này không xử lý.
 \item Lỗi không rõ nguyên nhân. Với dạng lỗi này, ta dùng hàm độ đo,
   tính số lần thêm/xóa/thay đổi/hoán vị mỗi ký tự giữa hai từ. Hàm độ đo
@@ -585,6 +587,23 @@ biết'' cho người dùng.
 Sau mỗi lần sữa lỗi, cần chạy lại thuật toán để loại tác động của lỗi
 sai.
 
+Văn bản xử lý được phân thành nhiều tầng:
+\begin{enumerate}
+\item Văn bản thô toàn bộ. Chuỗi các ký tự.
+\item Văn bản thô (câu).
+\item Dạng token. Tách ra từng chuỗi con.
+\item Dạng sentence. Một số token sẽ được gán id. Một số khác bị bỏ
+  qua. 
+\item Dạng lattice. Đồ thị các id (có thể giống hoặc khác với id ở cấp
+  sentence) và các liên kết. 
+\item Dạng segmentation. chuỗi id nhất định.
+\end{enumerate}
+
+Hiện tại, việc thay đổi thông tin ở tầng trên sẽ hủy mọi thông tin ở
+tầng bên dưới.
+
+Lưu lại các thông tin của người dùng như thế nào? Các thông tin này là
+``global'' hay ``local''?
 
 \section{Trình huấn luyện}
 \label{sec:training}
@@ -835,7 +854,7 @@ chưa chuẩn hoá, ghi ra wordlist chuẩn hoá.
 \label{sec:data-preprocessing}
 
 Dữ liệu gốc bao gồm: danh sách từ và các văn bản tiếng Việt thu thập
-từ mạng vnexpress\footnote{http://www.vnexpress.net}.
+từ mạng VnExpress\footnote{http://www.vnexpress.net}.
 
 Nhiệm vụ:
 \begin{itemize}
@@ -868,21 +887,24 @@ Danh sách tiếng chứa mọi tiếng thông dụng nhất được sử dụn
 tiếng Việt. Danh sách này được rút trích từ danh sách từ, sau đó được
 lưu ở dạng chuẩn hoá.
 
-Chương trình syllable-extract được dùng để tạo danh sách này. Cách
-dùng:
-\begin{verbatim}
-$syllable-extract < word-list > syllable-list
-\end{verbatim}
+Danh sách tiếng được rút trích tự động khi chương trình nạp danh sách
+từ.
+
+%Chương trình syllable-extract được dùng để tạo danh sách này. Cách
+%dùng:
+%\begin{verbatim}
+%$syllable-extract < word-list > syllable-list
+%\end{verbatim}
 
 
 \subsection{Tiền xử lý ngữ liệu huấn luyện}
 \label{sec:training-data-preprocessing}
 
-Dữ liệu thu được từ vnexpress bao gồm một loạt các file html, chia
+Dữ liệu thu được từ VnExpress bao gồm một loạt các file html, chia
 thành nhiều thư mục.
 
 htmltidy được sử dụng để chuyển dữ liệu html về dạng xhtml. Các file
-html của vnexpress không hoàn toàn tuân theo chuẩn html, bao gồm hai
+html của VnExpress không hoàn toàn tuân theo chuẩn html, bao gồm hai
 trường hợp:
 
 \begin{itemize}
@@ -908,9 +930,9 @@ $convert.sh < input  > output
 Sau bước này, ta cần lọc bỏ các tag, loại bỏ các entity \ldots{} để
 đưa dữ liệu về dạng văn bản thuần túy. Do số lượng tag được định nghĩa
 html rất nhiều nên chỉ xử lý những tag nào được sử dụng trong
-vnexpress (thông qua chương trình \verb#gettags.pl#). Các tag này được loại
-bỏ bằng \verb#html2text.pl#. Các mả utf-8 được sử dụng trong
-vnexpress (thông qua chương trình \verb#z.c#) được chuyển về mã VISCII
+VnExpress (thông qua chương trình \verb#gettags.pl#). Các tag này được loại
+bỏ bằng \verb#html2text.pl#. Các mã utf-8 được sử dụng trong
+VnExpress (thông qua chương trình \verb#z.c#) được chuyển về mã VISCII
 qua \verb#z.cpp#. Các entity còn lại (lấy bằng \verb#list-entity.pl#)
 được xử lý trong \verb#html2text.pl#.
 
@@ -966,11 +988,11 @@ Viết lại từ đầu :-D
 
 
 \begin{thebibliography}{}
-\bibitem{Ravishankar}Mosur K. Ravishankar. Efficient Algorithms for
-  Speech Recognition, PhD thesis, 1996.
-\bibitem{Oflazer}Kemal Oflazer. Error-tolerant Finite State
+\bibitem{Ravishankar}Mosur K. Ravishankar. 1996. Efficient Algorithms for
+  Speech Recognition. PhD thesis.
+\bibitem{Oflazer}Kemal Oflazer. 1996. Error-tolerant Finite State
   Recognition with Applications to Morphological Analysis and Spelling
-  Correction, 1996.
+  Correction.
 \bibitem{LAH}Le An Ha. A method for word segmentation in
   Vietnamese.
 \bibitem{Chang}Chao-Huang Chang. A New Approach for
@@ -991,8 +1013,8 @@ Viết lại từ đầu :-D
   Word Segmentation.
 \bibitem{phonetex}Victoria J. Hodge, Jim Austin, An Evaluation of
   Phonetic Spell Checkers
-\bibitem{soundex}K. Kukich. Techniques for Automatically Correcting
-  Words in Text, 1992.
+\bibitem{soundex}K. Kukich. 1992. Techniques for Automatically Correcting
+  Words in Text.
 \bibitem{}Cláudio L. Lucchesi and Tomasz Kowaltowski. Applications of
   Finite Automata Representing Large Vocabularies.
 \bibitem{}Bo-Hyun Yun, Min-Jeung Cho, Hae-Chang Rim. Segmenting Korean
@@ -1022,6 +1044,13 @@ Viết lại từ đầu :-D
   Haralick. Statistical-based Approach to Word Segmentation.
 \bibitem{}Combining Syntactical And Statistical Language Constraints
   in Context-dependent Language Models for Interactive Speech Applications.
+\bibitem{}TS. Lê Trung Hoa. 2002. Lỗi chính tả và cách khắc phục. NXB Khoa
+  học Xã hội. 
+\bibitem{}PGS. Hồ Lê, TS. Trần Thị Ngọc Lang, Tô Đình Nghĩa. 2002. Lỗi từ
+  vựng và cách khắc phục. NXB Khoa học Xã hội.
+\bibitem{Tuoi}PTS. Phan Thị Tươi, KS. Nguyễn Hứa Phùng, KS. Huỳnh Vụ
+  Như Liên, KS. Phạm Quyết Thắng. 1998. Bắt lỗi chinh tả tự động cho
+  tiếng Việt bằng máy tính.
 \end{thebibliography}
 
 \end{document}

@@ -9,7 +9,7 @@ ifdef WIN32
 GTK_CFLAGS += -mms-bitfields
 endif
 
-all: wfst-train wfst syllable-test vspell
+all: wfst-train wfst syllable-test vspell syllable-valid
 
 clean:
 	rm *.o wfst wfst-trin distance-test dictionary-test syllable-test -f
@@ -41,6 +41,8 @@ dictionary-test.o: dictionary-test.cpp dictionary.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 syllable-test.o: syllable-test.cpp dictionary.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
+syllable-valid.o: syllable-valid.cpp dictionary.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 wfst: wfst.o distance.o wfst-test.o dictionary.o syllable.o
 	$(CXX) $^ -o $@ $(LDFLAGS) 
@@ -51,6 +53,8 @@ distance-test: distance-test.o distance.o
 dictionary-test: dictionary-test.o dictionary.o distance.o syllable.o
 	$(CXX) $^ -o $@ $(LDFLAGS)
 syllable-test: syllable-test.o dictionary.o syllable.o distance.o
+	$(CXX) $^ -o $@ $(LDFLAGS)
+syllable-valid: syllable-valid.o dictionary.o syllable.o distance.o
 	$(CXX) $^ -o $@ $(LDFLAGS)
 sentence-test: sentence-test.o sentence.o dictionary.o syllable.o distance.o
 	$(CXX) $^ -o $@ $(LDFLAGS)

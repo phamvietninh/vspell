@@ -156,6 +156,7 @@ namespace Dictionary {
 		void standardize(std::string str);
 		void print();
 		strid to_id();
+		string to_str();
 	};
 
 	int viet_toupper(int ch);

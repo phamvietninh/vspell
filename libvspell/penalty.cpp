@@ -34,7 +34,6 @@ float Penalty2DAG::edge_value(uint node_from,uint node_to) const
 
 	WordEntry *we = (WordEntry*)dag->node_info(node_to);
 	if (we) {
-		uint count = 0;
 		float myweight = 0;
 		for (uint i = 0;i < we->len;i ++)
 			if (we->fuzid & (1 << i))
@@ -44,12 +43,11 @@ float Penalty2DAG::edge_value(uint node_from,uint node_to) const
 
 	we = (WordEntry*)dag->node_info(node_from);
 	if (we) {
-		uint count = 0;
 		float myweight = 0;
 		for (uint i = 0;i < we->len;i ++)
 			if (we->fuzid & (1 << i))
 				myweight += weight*syllable_weights[we->pos+i];
-		value -= (float)count*weight*value;
+		value -= (float)myweight*value;
 	}
 	return value > 0 ? value : 0;
 }

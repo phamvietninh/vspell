@@ -1,6 +1,6 @@
-\documentclass[a4paper]{book} % -*- mode: latex auto-fill:t -*-
+\documentclass[a4paper]{book} % -*- coding: vietnamese-utf8 mode: latex auto-fill:t -*-
 
-%\usepackage[hmargin={2cm,2cm}]{geometry}
+\usepackage[hmargin={2cm,2cm}]{geometry}
 \usepackage{graphicx}
 \usepackage{amsmath}
 \renewcommand{\rmdefault}{utm}
@@ -309,9 +309,10 @@ nhưng cũng có thể là một
 phần của câu. Luận văn này sẽ dùng từ ``câu'' để ám chỉ ``đoạn''. Nếu
 các thông tin ở mức cao hơn được sử dụng (như thông tin cú pháp, ngữ
 nghĩa \ldots) thì phải thật sự xử lý trên câu chứ không phải trên
-đoạn. Các đoạn được phân cách bởi các dấu câu (\verb#.# \verb#,# \verb#;# \verb#(# \verb#)# \ldots)
+đoạn. Các đoạn được phân cách bởi các dấu câu \verb#.# \verb#,#
+\verb#;# \verb#(# \verb#)# \ldots 
 
-\subsubsection{Chuẩn hóa NOTIMPL}
+\subsubsection{Chuẩn hóa}
 
 Do trong tiếng Việt có nhiều từ có thể viết theo các
 cách khác nhau về vị trí dấu thanh điệu, ví dụ, ``hoà'' và
@@ -321,6 +322,8 @@ từ, biểu diễn dấu thanh điệu bằng ký tự đầu tiên trong từ.
 ``hoà'' và ``hòa'' đều có cùng cách biểu diễn là ``2hoa'', trong khi
 đó ``hoa'' được biểu diễn là ``0hoa'', ``hồng'' được biểu diễn là
 ``2hông''.
+
+Bước này sẽ gán $fid$ là $sid$.
 
 \subsubsection{Tên riêng NOTIMPL}
 
@@ -344,13 +347,51 @@ nghiên cứu sâu hơn về vấn đề này.
 
 Cần tham khảo thêm các tài liệu về vấn đề này.
 
+Đối với tên người Việt, lập danh sách tên, xử lý riêng, không đưa vào
+phần Phát sinh từ thay thế.
+
+Phần này được thực hiện bên trong phần \textbf{Phát sinh từ thay thế}.
+
+\begin{algo}
+  \begin{enumerate}
+  \item Lấy 1 chữ. Kiểm tra ký tự đầu tiên xem có phải ký tự hoa hay
+    không.
+  \item Nếu đây là chữ đầu câu, phát sinh bình thường dựa theo bản
+    viết thường của chữ này. Ngoài ra tiếp tục thực hiện các bước
+    dưới.
+  \item Duyệt từ chữ đó trở đi, lấy chuỗi dài nhất có thể dựa trên
+    $sid$. Phát sinh từ mới dựa trên từ lấy được. Đặt xác suất 0.80.
+  \item Nếu không tìm được từ nào, duyệt lại như bước trên, dùng
+    $scid$.
+  \item Nếu chữ kế tiếp cũng là chữ hoa, duyệt từ đó trở đi để lấy
+    chuỗi chữ hoa dài nhất ($scid$). Phát sinh từ mới
+    mã $PROP$. 
+  \end{enumerate}
+\end{algo}
+
 \subsubsection{Từ láy NOTIMPL}
+
+Phần này được thực hiện bên trong phần \textbf{Phát sinh từ thay thế}.
 
 Hổng thèm làm :-) Vấn đề từ láy cũng tương tự như  tên riêng. Giải
 pháp có thể áp dụng như của LV anh Toàn. Nhưng những ``từ láy''
 ``nhưng những'' có thể giết chết module tách từ một cách êm dịu. Chắc
 nên áp dụng giải pháp ``80 từ láy, 20 từ thường''. Không biết được hay
 không, phiêu quá \ldots
+
+\begin{algo}
+  \begin{enumerate}
+  \item Lấy 2 chữ liên tiếp.
+  \item Kiểm tra quy tắt từ láy.
+  \item Nếu đúng, phát sinh thêm từ láy mới, mã $POEM$.
+  \end{enumerate}
+\end{algo}
+
+Có lẽ nên lọc ra danh sách từ láy bằng tay, đánh nhãn toàn bộ là
+$POEN$, hoặc dùng nhãn riêng. Heuristic này không đáng tin lắm.
+Cách hình thành từ láy của con người như thế nào ?? Từ láy thường gắn
+liền với hình tượng, cảm giác gì đó. Làm sao người ta có thể cảm nhận
+được một từ có phải là từ láy hay không??
 
 \subsubsection{Từ nước ngoài, các ký hiệu, \ldots NOTIMPL}
 
@@ -393,7 +434,9 @@ nguyên nhân gây ra lỗi chính tả:
 
 Hmm.. có lẽ nên gắng thêm vào các từ phát sinh một ``hệ số chính
 xác''. Từ gốc là từ có hệ số chính xác cao hơn so với các từ được phát
-sinh. Good or bad? Hmmm
+sinh. Good or bad? Hmmm... Làm sao để làm? Hmmm Hmmm
+
+
 
 
 \subsubsection{Lỗi phát âm}
@@ -404,8 +447,7 @@ sinh. Good or bad? Hmmm
 
 Sơ đồ bố trí của bàn phím EN-US được dùng. Do thông thường chỉ gặp một
 lỗi này mỗi từ, nên chương trình chỉ lưu danh sách những phím lân cận
-với từng phím, dựa trên bàn phím EN-US. Ví dụ: \texttt{A} $\rightarrow$
-(\texttt{S},\texttt{Q},\texttt{W},\texttt{X},\texttt{Z}).
+với từng phím, dựa trên bàn phím EN-US. Ví dụ: $A \rightarrow (S,Q,W,X,Z)$.
 
 \subsubsection{Lỗi không rõ nguyên nhân NOTIMPL}
 
@@ -772,6 +814,44 @@ Với cách tính này, ta có thể dùng lưới từ cùng với 2-gram. Đ�
 
 N-gram được tính như thông thường. Sử dụng backoff chuẩn. Thư viện
 SRILM được dùng để tính n-gram.
+
+
+
+\section{Cấu trúc dữ liệu}
+
+
+\subsection{Lưu chuỗi}
+
+Để giảm thiểu không gian bộ nhớ, chương trình không thao tác trực tiếp
+trên các chuỗi mà lưu tập trung các chuỗi lại, sau đó dùng mã id để
+đánh số từng chuỗi một. Các thao tác so sánh sẽ dựa trên id này. Khi
+cần thao tác trên chuỗi, ta sẽ thông qua id để lấy chuỗi gốc.
+
+Các chuỗi được lưu trong một associative array và một array. Một dùng
+để ánh xạ chuỗi sang id. Một để ánh xạ id sang chuỗi.
+
+Có thể dùng lexical tree để giảm thiểu không gian lưu chuỗi (NOTIMPL)
+
+Mỗi chuỗi có thể có nhiều id: id gắn với chuỗi gốc ({\em id}), id gắn
+với chuỗi gốc đã chuẩn hóa ({\em sid}), id gắn với chuỗi viết thường
+({\em cid}), id  gắn với chuỗi viết thường đã chuẩn hoá ({\em
+  scid}). Các id này giúp việc so sánh được dễ dàng hơn. 
+
+Trong hầu hết quá trình hoạt động, {\em sid} sẽ được dùng. Tuy nhiên,
+cũng có khi sẽ dùng {\em scid}. Bởi vậy, mỗi chuỗi sẽ có một id khác
+là {\em fid}, hoặc bằng {\em sid}, hoặc bằng {\em scid} \ldots{} {\em
+  fid} sẽ được dùng trong hầu hết các hoạt động, trừ phần tiền xử lý.
+
+Mỗi từ sẽ chỉ lưu id và fid.
+
+\subsection{Lưu từ điển}
+
+Từ điển được lưu thành một cấu trúc dạng cây. Hiện tại từ điển lưu các
+từ gốc đã chuẩn hoá, và các từ viết thường đã chuẩn hoá.
+
+Với bản huấn luyện, lưu thêm id gốc để có thể xuất ra y như cũ ??
+Không cần. Wordlist sẽ lưu theo dạng chuẩn hoá. Như vậy không cần lưu
+id gốc.
 
 \chapter{Kết luận}
 \label{cha:conclusion}

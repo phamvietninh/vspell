@@ -30,39 +30,52 @@ struct WordState {
 };
 
 /**
-	Find all possible words
+	Find all possible words. The whole process is divided into two
+	phases. The first one is pre_construct(), which creates base words
+	and store in set<WordEntry>. The second one is post_construct(),
+	which does the rest. Using pre_construct(),post_construct() directly
+	give chances to modify the lattice creation.
+
 	\param sent specify the input sentence
 	\param w must be cleared before calling this function
 */
 void Lattice::construct(const Sentence &sent)
 {
+	set<WordEntry> wes;
+	pre_construct(sent,wes);
+	mark_proper_name(sent,wes);
+	post_construct(wes);
+}
+
+/**
+	The first phase of lattice creation. Create all possible words to we.
+ */
+
+void Lattice::pre_construct(const Sentence &sent,set<WordEntry> &we)
+{
 	Lattice &w = *this;
 	int i,n,ii,nn,k,nnn,iii;
-	vector<bool> marks;
-	set<WordEntry> we;
 
 	//cerr << "construct\n";
 
 	w.st = &sent;
 
-	boost::scoped_ptr<vector<WordState> > states1(new vector<WordState>);
-	boost::scoped_ptr<vector<WordState> > states2(new vector<WordState>);
-	states1->reserve(10);
-	states2->reserve(10);
+	vector<WordState> states1;
+	vector<WordState> states2;
+	states1.reserve(10);
+	states2.reserve(10);
 
 	n = sent.get_syllable_count();
-	marks.resize(n);
 
 	for (i = 0;i < n;i ++) {
 
-		states1->push_back(WordNode::DistanceNode(get_root()));
-		states1->back().pos = i;
-		states2->clear();
+		states1.push_back(WordNode::DistanceNode(get_root()));
+		states1.back().pos = i;
+		states2.clear();
 
-		nn = states1->size();
-		bool has_words = false;
+		nn = states1.size();
 		for (ii = 0;ii < nn;ii ++) {
-			const WordState &ws = (*states1)[ii];
+			const WordState &ws = states1[ii];
 
 			WordNodePtr exact_node = ws.dnode.node->get_next(sent[i].get_cid());
 			WordNodePtr lowercase_node = ws.dnode.node->get_next(sarch[get_lowercased_syllable(sarch[sent[i].get_cid()])]);
@@ -77,8 +90,8 @@ void Lattice::construct(const Sentence &sent)
 
 			nnn = nodes.size();
 			for (iii = 0;iii < nnn;iii ++) {
-				states2->push_back(ws);	// inherit from the current state
-				WordState &ws2 = states2->back();
+				states2.push_back(ws);	// inherit from the current state
+				WordState &ws2 = states2.back();
 				ws2.dnode = nodes[iii];
 				if (nodes[iii].node != exact_node && nodes[iii].node != lowercase_node)
 					ws2.fuzid |=  1 << k;
@@ -91,16 +104,30 @@ void Lattice::construct(const Sentence &sent)
 					e.fuzid = ws2.fuzid;
 					e.node = ws2.dnode;
 					we.insert(e);
-					for (int k = ws2.pos; k <= i;k ++)
-						marks[k] = true;
 				}
 			}
 		}
 		
 		states1.swap(states2);
 	}
+}
 
-	mark_proper_name(sent,we);
+/**
+	 The second phase of lattice creation. 
+ */
+
+void Lattice::post_construct(set<WordEntry> &we)
+{
+	Lattice &w = *this;
+	unsigned i,n,k;
+	vector<bool> marks;
+
+	n = st->get_syllable_count();
+	marks.resize(n);
+	set<WordEntry>::iterator iter;
+	for (iter = we.begin();iter != we.end(); ++iter)
+		for (k = 0; k < iter->len;k ++)
+			marks[iter->pos+k] = true;
 
 	// make sure that one can go from source to destination, without gaps.
 	for (i = 0;i < n;i ++)
@@ -110,7 +137,7 @@ void Lattice::construct(const Sentence &sent)
 			e.len = 1;
 			e.fuzid = 0;
 			// if one starts with a cardinal number, then mark it number_id
-			string s = sarch[sent[i].get_cid()];
+			string s = sarch[(*st)[i].get_cid()];
 			if (strchr("0123456789",s[0]) != NULL)
 				e.node = get_root()->get_next(number_id);
 			else
@@ -147,6 +174,10 @@ void Lattice::construct()
  */
 ostream& operator << (ostream &os, const Lattice &w)
 {
+	int i,n = w.we->size();
+	for (i = 0;i < n;i ++)
+		os << (*w.we)[i] << endl;
+	/*
 	int i, nn = w.get_word_count();
 	for (i = 0;i < nn;i ++) {
 		int nnn = w.get_len(i);
@@ -158,11 +189,13 @@ ostream& operator << (ostream &os, const Lattice &w)
 				os << w.get_we_fuzzy(i,ii,iii) << endl;
 		}
 	}
+	*/
 	return os;
 }
 
 Lattice::~Lattice()
 {
+	/*
 	int pos,nr_pos = get_word_count();
 	for (pos = 0;pos < nr_pos;pos ++) {
 		int len,nr_len = get_len(pos);
@@ -170,6 +203,7 @@ Lattice::~Lattice()
 			delete (*(*this)[pos])[len];
 		delete (*this)[pos];
 	}
+	*/
 }
 
 std::ostream& operator << (std::ostream &os,const WordEntry &we)
@@ -187,48 +221,31 @@ std::ostream& operator << (std::ostream &os,const WordEntry &we)
 
 void Lattice::based_on(const Lattice &w)
 {
-	Lattice &me = *this;
+	vector<WordInfos> &me = wi;
 	we = w.we;
-	me.st = w.st;
+	st = w.st;
 
-	int i_pos,n_pos = w.get_word_count();
-
-	me.resize(n_pos);
-
-	for (i_pos = 0;i_pos < n_pos;i_pos ++) {
-		int i_len,n_len = w.get_len(i_pos);
-		me[i_pos] = new WordInfos;
-		for (i_len = 0;i_len < n_len;i_len ++)
-			if ((*w[i_pos])[i_len] && (*w[i_pos])[i_len]->exact_match)
-				add(*(*w[i_pos])[i_len]->exact_match);
-	}
+	me.resize(w.get_word_count());
+	int i,n = we->size();
+	for (i = 0;i < n;i ++)
+		if ((*we)[i].fuzid == 0)
+			add((*we)[i]);
 }
 
 void Lattice::add(WordEntry &w)
 {
-	Lattice &me = *this;
-	while (me.size() <= w.pos)
-		me.push_back(new WordInfos);
+	vector<WordInfos> &me = wi;
+	if (me.size() <= w.pos)
+		me.resize(w.pos+1);
 
-	WordInfos &wis = *me[w.pos];
+	WordInfos &wis = me[w.pos];
 
-	while (wis.size() <= w.len) {
-		wis.push_back(new WordInfo);
-		wis.back()->exact_match = NULL;
-	}
-
-	WordInfo &wi = *wis[w.len];
-	if (!w.fuzid)								// exact match
-		wi.exact_match = &w;
-	else {
-		wi.fuzzy_match.push_back(&w);
+	if (w.fuzid) {
 		for (unsigned int j = 0;j < w.len;j ++)
 			if (w.fuzid & (1 << j)) {
-				while (me.size() <= j+w.pos) {
-					me.push_back(new WordInfos);
-					//me[me.size()-1]->fuzzy_map.clear();
-				}
-				me[j+w.pos]->fuzzy_map.push_back(&w);
+				if (me.size() <= j+w.pos)
+					me.resize(j+w.pos+1);
+				me[j+w.pos].fuzzy_map.push_back(&w);
 			}
 	}
 
@@ -237,4 +254,26 @@ void Lattice::add(WordEntry &w)
 
 WordInfos::WordInfos()
 {
+}
+
+unsigned int Lattice::get_len(unsigned int p) const
+{
+	const WordEntryRefs &we = get_we(p);
+	return we.size();
+}
+
+void apply_separator(std::set<WordEntry> &wes,int i)
+{
+	set<WordEntry>::iterator iter;
+	//cerr << "Separator applying after " << i << endl;
+	for (iter = wes.begin();iter != wes.end(); ++iter) {
+		//cerr << *iter << endl;
+		if (iter->pos <= i) {
+			if (iter->pos+iter->len-1 >= i+1)	{ // a word that across the separator
+				//cerr << "Remove " << *iter << endl;
+				wes.erase(iter);
+			}
+		} else
+				break;								// because it's sorted, we don't need  to go farther
+	}
 }

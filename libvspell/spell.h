@@ -12,6 +12,9 @@
 #ifndef __VECTOR__
 #include <vector>
 #endif
+#ifndef __SET__
+#include <set>
+#endif
 #ifndef __STRING__
 #include <string>
 #endif
@@ -49,33 +52,12 @@ std::ostream& operator << (std::ostream &os,const WordEntry &we);
 typedef WordEntry* WordEntryRef;
 typedef std::vector<WordEntry> WordEntries;
 typedef std::vector<WordEntryRef> WordEntryRefs;
-//struct WordEntries:public std::vector<WordEntry> {
-//};
 
-/**
-	 Store all WordEntry pointers which started at a specified pos, 
-	 and have specified len
- */
-
-struct WordInfo {
-	WordEntry* exact_match;				
-	WordEntryRefs fuzzy_match;	 
-};
-
-/*
-class MonitoredWordEntryRefs:public WordEntryRefs {
-public:
-	void push_back(const WordEntryRef &w) {
-		if (&w == 0) 0/0;
-		WordEntryRefs::push_back(w);
-	}
-};
-*/
 /**
 	 Store WordInfo(s) which have a specified length
  */
 
-class WordInfos : public std::vector<WordInfo*> {
+class WordInfos {
 public:
 	WordInfos();
 	unsigned int exact_len;
@@ -87,33 +69,36 @@ public:
 	 Store WordInfos(s) started at specified positions.
  */
 
-class Lattice:public std::vector<WordInfos*> {
+class Lattice {
+protected:
+	std::vector<WordInfos> wi;
+
 public:
 
 	boost::shared_ptr<WordEntries> we;
 	Sentence const * st;
 
 	void construct(const Sentence &st);
+	void pre_construct(const Sentence &st,std::set<WordEntry> &wes);
+	void post_construct(std::set<WordEntry> &wes);
 
 	/// Get the number of available positions, from 0 to n-1
 	unsigned int get_word_count() const { 
-		return size(); 
+		return wi.size(); 
 	}
 
 	/**
 		 Get maximal length of words at specified position.
 		 \param i specify a position in sentence
 	*/
-	unsigned int get_len(unsigned int i) const {
-		return (*this)[i]->size(); 
-	}
+	unsigned int get_len(unsigned int i) const;
 
 	/**
 		 Get the length of the exact words at specified position.
 		 \param i specify a position in sentence
 	*/
 	unsigned int get_exact_len(unsigned int i) const {
-		return (*this)[i]->exact_len; 
+		return wi[i].exact_len; 
 	}
 
 	/**
@@ -122,49 +107,16 @@ public:
 	 */
 
 	const WordEntryRefs& get_fuzzy_map(unsigned int i) const {
-		return (*this)[i]->fuzzy_map; 
+		return wi[i].fuzzy_map; 
 	}
 
 	/**
-		 Get number of fuzzy words at specified (pos,len).
-		 \param i specify pos
-		 \param l specify len
-	 */
-	unsigned int get_fuzzy_count(unsigned int i,unsigned int l) const { 
-		return (*(*this)[i])[l]->fuzzy_match.size();
-	}
-
-	/**
-		 Get the first WordEntry at specified pos.
+		 Get the all WordEntry(s) at specified pos.
 		 \param pos specify a position.
 	 */
 
-	WordEntryRefs& get_we(unsigned int pos) const {
-		return (*this)[pos]->we;
-	}
-
-	const WordEntry& get_we_fuzzy(unsigned int i,unsigned int l,unsigned int f) const {
-		return *(*(*this)[i])[l]->fuzzy_match[f];
-	}
-
-	const WordEntry* get_we_exact(unsigned int i,unsigned int l) const {
-		return (*(*this)[i])[l]->exact_match;
-	}
-
-	/**
-		 Get the Node of a specified fuzzy match  (pos,len,fuz)
-		 \param i is pos
-		 \param l is len
-		 \param f is fuz
-	 */
-
-	WordNode::DistanceNode& get_fuzzy(int i,int l,int f) {
-		return (*(*this)[i])[l]->fuzzy_match[f]->node;
-	}
-
-	/// a const version of get_fuzzy()
-	const WordNode::DistanceNode& get_fuzzy(int i,int l,int f) const{
-		return (*(*this)[i])[l]->fuzzy_match[f]->node;
+	const WordEntryRefs& get_we(unsigned int pos) const {
+		return wi[pos].we;
 	}
 
 	~Lattice();											// WARN: destroy all.
@@ -192,7 +144,6 @@ public:
   
 	friend std::ostream& operator << (std::ostream& os,const Lattice &w);
 }; 
-// Lattice[from][len].fuzzy_match[i]
 
 /**
 	 Sentence is used to store a sequence of syllables.
@@ -285,6 +236,8 @@ struct Suggestion {
 };
 
 typedef std::vector<Suggestion> Suggestions;
+
+void apply_separator(std::set<WordEntry> &wes,int p);
 
 //namespace Spell {
 //void spell_check1(Sentence &st,Suggestions &s);

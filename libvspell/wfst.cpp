@@ -305,7 +305,7 @@ bool Segmentor::step(Segmentation &result)
 			continue;
 
 		//WordEntries::iterator i_entry;
-		WordEntryRefs &wes = words.get_we(next_syllable);
+		const WordEntryRefs &wes = words.get_we(next_syllable);
 		int ii,nn = wes.size();
 		for (ii = 0;ii < nn;ii ++) {
 			WordEntryRef i_entry = wes[ii];

@@ -8,6 +8,7 @@
 #include "sentence.h"
 #include "pfs.h"
 #include <map>
+#include "propername.h"
 
 // stolen from glib
 typedef unsigned int guint32;
@@ -245,6 +246,7 @@ bool VSpell::check(const char *utf8_pp)
 		for (pps_i = 0;pps_i < pps_len;pps_i ++) {
 			Text *t = text_factory.create(this);
 			t->offset = offset;
+			t->length = pps[pps_i].size();
 			run = !t->sentence_check(pps[pps_i].c_str());
 			delete t;
 			if (run)
@@ -258,7 +260,7 @@ bool VSpell::check(const char *utf8_pp)
 void VSpell::replace(unsigned from,unsigned size,const char *s)
 {
 	const char *p = utf8_text.c_str();
-	int i;
+	unsigned i;
 	for (i = 0;i < from && *p;i ++)
 		p = g_utf8_next_char(p);
 	unsigned from1 = p - utf8_text.c_str();
@@ -266,6 +268,27 @@ void VSpell::replace(unsigned from,unsigned size,const char *s)
 		p = g_utf8_next_char(p);
 	unsigned to1 = p - utf8_text.c_str();
 	utf8_text.replace(from1,to1-from1,s);
+
+	// remove separators in the range, adjust other seps
+	int n = separators.size();
+	if (n) {
+		int newsize = g_utf8_strlen(s,-1);
+		i = n;
+		do {
+			i --;
+			if (separators[i] >= from) {
+				if (separators[i] < from+size)
+					separators.erase(separators.begin()+i);
+				else
+					separators[i] += newsize-size;
+			}
+		} while (i > 0);
+	}
+}
+
+void VSpell::add_separators(const std::vector<unsigned> &seps)
+{
+	copy(seps.begin(),seps.end(),back_inserter(separators));
 }
 
 bool Text::sentence_check(const char *pp)
@@ -282,7 +305,12 @@ bool Text::sentence_check(const char *pp)
 	if (!syllable_check() && !ui_syllable_check())
 		return false;
 
-	w.construct(st);
+	//w.construct(st);
+	set<WordEntry> wes;
+	w.pre_construct(st,wes);
+	mark_proper_name(st,wes);
+	apply_separators(wes);
+	w.post_construct(wes);
 	//cerr << w << endl;
 
 	PFS pfs;
@@ -296,6 +324,22 @@ bool Text::sentence_check(const char *pp)
 	return true;									// done
 }
 
+bool Text::syllable_check(int i)
+{
+	if (vspell->in_dict(st[i].get_id()))
+		return true;
+	
+	if (sarch.in_dict(st[i].get_cid())) {
+		Syllable syl;							// diacritic check
+		if (syl.parse(sarch[st[i].get_cid()])) {
+			string s = get_lowercased_syllable(syl.to_str());
+			if (get_lowercased_syllable(sarch[st[i].get_id()]) == s)
+				return true;
+		}
+	}
+	return false;
+}
+
 bool Text::syllable_check()
 {
 	int i,n = st.get_syllable_count();
@@ -303,17 +347,8 @@ bool Text::syllable_check()
 	suggestions.clear();
 
 	for (i = 0;i < n;i ++) {
-		if (vspell->in_dict(st[i].get_id()))
+		if (syllable_check(i))
 			continue;
-
-		if (sarch.in_dict(st[i].get_cid())) {
-			Syllable syl;							// diacritic check
-			if (syl.parse(sarch[st[i].get_cid()])) {
-				string s = get_lowercased_syllable(syl.to_str());
-				if (get_lowercased_syllable(sarch[st[i].get_id()]) == s)
-					continue;
-			}
-		}
 		
 		Suggestion _s;
 		_s.id = i;
@@ -325,29 +360,34 @@ bool Text::syllable_check()
 bool Text::word_check()
 {
 	int i,n = seg.size();
-	int cc = 0;
 
 	suggestions.clear();
 
 	for (i = 0;i < n;i ++) {
 		vector<strid> sylls;
-		int len = seg[i].node->get_syllable_count();
-		if (len == 1) {
-			cc += len;
-			continue;
-		} 
+		strid_string sylls2;
+		int ii,len = seg[i].node->get_syllable_count();
+		seg[i].node->get_syllables(sylls);
 
-		int start;
-		WordNodePtr node(get_root());
-		for (start = 0;start < len && node != NULL; start ++)
-			node = node->get_next(st[start+cc].cid);
+		bool ok = true;
+		sylls2.resize(len);
+		for (ii = 0;ii < len;ii ++) {
+			sylls2[ii] = st[seg[i].pos+ii].get_cid();
+			if (ok && st[seg[i].pos+ii].get_cid() != sylls[ii])
+				ok = false;
+		}
 
-		cc += len;
-		if (node == NULL) {
+		if (vspell->in_dict(sylls2))
+			ok = true;
+
+		if (!ok) {
 			Suggestion _s;
 			_s.id = i;
 			suggestions.push_back(_s);
+			continue;
 		}
+
+		// all syllable are syntatically valid
 	}
 	return suggestions.empty();
 }
@@ -368,6 +408,35 @@ void Text::replace(unsigned from,unsigned size,const char *s)
 	vspell->replace(from+offset,size,s);
 }
 
+void Text::apply_separators(set<WordEntry> &wes)
+{
+	vector<unsigned> seps;
+	//set<unsigned> seps;
+
+	get_separators(seps);
+	sort(seps.begin(),seps.end());
+	//copy(seps1.begin(),seps1.end(),inserter(seps,seps.begin()));
+	int sep = 0;
+	int i,n = st.get_syllable_count();
+
+	for (i = 0;i < n-1 && sep < seps.size();i ++) {
+		int p = offset+st[i].start+strlen(sarch[st[i].get_id()]);
+		if (p <= seps[sep] && seps[sep] <= offset+st[i+1].start) {
+			apply_separator(wes,i);
+			sep ++;
+		}
+	}
+}
+
+void Text::get_separators(vector<unsigned> &v)
+{
+	const vector<unsigned> &vv = vspell->get_separators();
+
+	int i,n = vv.size();
+	for (i = 0;i < n;i ++)
+		if (vv[i] >= offset && vv[i] < offset+length)
+			v.push_back(vv[i]);
+}
 /*
 	}
 */
@@ -541,3 +610,14 @@ char* viet_to_utf8(const char *in)
 	viet_viscii_to_utf8(in,buffer);
 	return buffer;
 }
+
+/*
+static char_traits_strid::char_type* 
+char_traits_strid::copy(char_traits_strid::char_type* __s1, 
+		 const char_traits_strid::char_type* __s2,
+		 size_t __n)
+{ 
+	return static_cast<char_type*>(memcpy(__s1, __s2, __n*sizeof(char_type)));
+}
+
+*/

@@ -160,7 +160,7 @@ bool WordNode::load(const char* filename)
 
 void WordNode::add_entry(vector<string> toks)
 {
-	int start,len,pos;
+	unsigned start,len,pos;
 	start = 0;
 	len = toks[0].size();
 	WordNodePtr node(this);//,cnode(this);

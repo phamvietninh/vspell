@@ -46,6 +46,54 @@ static const char utf8_skip_data[256] = {
 };
 
 static const char * const g_utf8_skip = utf8_skip_data;
+typedef unsigned int guint32;
+typedef unsigned int guint;
+typedef guint32 gunichar;
+typedef char gchar;
+typedef unsigned char guchar;
+typedef long glong;
+typedef signed int gssize;
+static glong
+g_utf8_strlen (const gchar *p,
+               gssize       max)
+{
+  glong len = 0;
+  const gchar *start = p;
+  //g_return_val_if_fail (p != NULL || max == 0, 0);
+	if (!(p != NULL || max == 0))
+		return 0;
+
+  if (max < 0)
+    {
+      while (*p)
+        {
+          p = g_utf8_next_char (p);
+          ++len;
+        }
+    }
+  else
+    {
+      if (max == 0 || !*p)
+        return 0;
+      
+      p = g_utf8_next_char (p);          
+
+      while (p - start < max && *p)
+        {
+          ++len;
+          p = g_utf8_next_char (p);          
+        }
+
+      /* only do the last len increment if we got a complete
+       * char (don't count partial chars)
+       */
+      if (p - start == max)
+        ++len;
+    }
+
+  return len;
+}
+
 
 static MyTextFactory myfactory;
 static VSpell vspell(myfactory);
@@ -235,10 +283,19 @@ bool MyText::ui_word_check()
 		int pos = (*seg.we)[seg[suggestions[i].id].id].pos;
 		int pos2 = pos+count-1;
 
+		string::size_type p;
+		vector<unsigned> separators;
+		while ((p = s.find('|')) != string::npos) {
+			separators.push_back(st[pos].start+g_utf8_strlen(s.substr(0,p).c_str(),-1)+offset);
+			s.erase(p,1);
+		}
+
 		replace(st[pos].start, // from
 						st[pos2].start+strlen(sarch[st[pos2].get_id()])-st[pos].start, // size
 						s.c_str());					// text
 
+		// add separators after replacing the text, to have old separators removed
+		vspell->add_separators(separators);
 		return false;								// continue checking
 	}
 }

@@ -4,8 +4,25 @@
 #include <algorithm>
 #include <iterator>
 #include <set>
+#include "propername.h"
 
 using namespace std;
+
+void apply_separators(const Sentence &st,set<WordEntry> &wes,vector<unsigned> &seps)
+{
+  sort(seps.begin(),seps.end());
+  //copy(seps1.begin(),seps1.end(),inserter(seps,seps.begin()));
+  int sep = 0,offset=0;
+  int i,n = st.get_syllable_count();
+
+  for (i = 0;i < n-1 && sep < seps.size();i ++) {
+    int p = offset+st[i].start+strlen(sarch[st[i].get_id()]);
+    if (p <= seps[sep] && seps[sep] <= offset+st[i+1].start) {
+      apply_separator(wes,i);
+      sep ++;
+    }
+  }
+}
 
 int main(int argc,char **argv)
 {
@@ -13,12 +30,15 @@ int main(int argc,char **argv)
   bool fuzzy = true;
   bool dot = false;
   bool spare = false;
+  bool has_seps = false;
   int i,n;
+  vector<unsigned> seps;
 
   for (i = 1;i < argc;i ++) {
     if (!strcmp(argv[i],"nofuzzy")) fuzzy = false;
     if (!strcmp(argv[i],"dot")) dot = true;
     if (!strcmp(argv[i],"spare")) spare = true;
+    if (!strcmp(argv[i],"seps")) has_seps = true;
   }
 
   dic_init(fuzzy ? new FuzzyWordNode(sarch["<root>"]) : new WordNode(sarch["<root>"]));
@@ -35,11 +55,24 @@ int main(int argc,char **argv)
   while (getline(cin,s)) {
     if (s.empty()) continue;
 
+    if (has_seps) {
+      string::size_type p;
+      while ((p = s.find('|')) != string::npos) {
+	seps.push_back(p);
+	s.erase(p,1);
+      }
+    }
+
     Sentence st(s);
     st.standardize();
     st.tokenize();
     Lattice words,w2;
-    w2.construct(st);
+    set<WordEntry> wes;
+    w2.pre_construct(st,wes);
+    mark_proper_name(st,wes);
+    if (has_seps)
+      apply_separators(st,wes,seps);
+    w2.post_construct(wes);
     //w2.based_on(words);
     if (!dot)
       cout << w2;

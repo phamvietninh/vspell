@@ -86,7 +86,7 @@ void Sections::construct(const Lattice &words)
 		sect.len = pos - sect.start + 1;
 		is_section = words.get_len(sect.start) > 2 || 
 			(words.get_len(sect.start) >= 2 && 
-			 words.get_fuzzy_count(sect.start,1) > 0);
+			 !words.get_fuzzy_map(sect.start).empty());
 
 		if (is_section) {
 			// now merge two sections (this and the previous) if needed

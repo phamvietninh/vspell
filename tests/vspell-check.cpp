@@ -71,7 +71,7 @@ struct Test
 	vector<uint> pos;
 	vector<uint> len;
 	set<uint> error;
-	int corrects,positives;
+	int corrects,positives,candidates;
 	bool syllable_checked,word_checked;
 };
 
@@ -94,17 +94,18 @@ void check_pattern(Pattern &pat)
 	(*os) << "#Pattern " << pat << endl;
 	for (i_corpus = 0;i_corpus < n_corpus;i_corpus ++) {
 		mytest = &tests[i_corpus];
-		mytest->corrects = mytest->positives = 0;
+		mytest->corrects = mytest->positives = mytest->candidates = 0;
 		mytest->syllable_checked = mytest->word_checked = false;
 		//(*os) << "#Sentence: " << mytest->sentence << endl;
 		vspell.check(tests[i_corpus].sentence.c_str());
-		(*os) << boost::format("%d %d %d %d %d") %
+		(*os) << boost::format("%d %d %d %d %d %d") %
 			mytest->syllable_checked %
 			mytest->word_checked %
 			mytest->corrects %
 			mytest->error.size() %
-			mytest->positives
-					<< endl;
+			mytest->positives %
+			mytest->candidates
+			<< endl;
 	}
 	delete os;
 }
@@ -241,7 +242,8 @@ int main(int argc,char **argv)
 			string filename;
 			cin >> filename;
 			save_corpus(filename.c_str());
-		}
+		} else
+			cerr << "unknown command.";
 		cerr << "done" << endl;
 	}
 }
@@ -307,8 +309,8 @@ bool MyText::ui_word_check()
 		nn = mytest->items.size();
 		for (ii = 0;ii < nn;ii ++)
 			if (mytest->error.find(ii) != mytest->error.end() &&
-					utf8_from == mytest->pos[ii] &&
-					utf8_len == mytest->len[ii])
+					utf8_from <= mytest->pos[ii] &&
+					utf8_from + utf8_len >= mytest->pos[ii] + mytest->len[ii])
 				break;
 		if (ii == nn) {
 			mytest->positives ++;
@@ -320,14 +322,23 @@ bool MyText::ui_word_check()
 			continue;
 		}
 
-		if (mytest->items[ii].candidates[0] == word_to_utf8(suggestions[i].id).c_str())
+		string s = mytest->sentence.substr(utf8_from,utf8_len);
+		s.replace(mytest->pos[ii]-utf8_from,mytest->len[ii],mytest->items[ii].candidates[0]);
+
+		if (s == word_to_utf8(suggestions[i].id).c_str())
 			mytest->corrects ++;
-		else 
-			(*os) << "#Word2 " << utf8_from << "-" << utf8_len 
-					 << "(" << from << "-" << len << ")"
-					 << mytest->items[ii].candidates[0] << "-"
-					 << word_to_utf8(suggestions[i].id) 
-					 << endl;
+		else  {
+			mytest->candidates ++;
+			(*os) << boost::format("#Word2 %d-%d(%d-%d) %s-%s (%s)" ) %
+				utf8_from %
+				utf8_len %
+				from %
+				len %
+				mytest->items[ii].candidates[0] %
+				word_to_utf8(suggestions[i].id) %
+				s
+						<< endl;
+		}
 	}
 	mytest->word_checked = true;
 	return true;

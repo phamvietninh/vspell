@@ -3509,94 +3509,6 @@ trình bày trong phần~\vref{sec:nonword:recover:keyboard}.
 %% xác''. Từ gốc là từ có hệ số chính xác cao hơn so với các từ được phát
 %% sinh. Good or bad? Hmmm... Làm sao để làm? Hmmm Hmmm
 
-Lưới từ sau khi mở rộng có hai đặc điểm sau:
-\begin{itemize}
-\item Không phân biệt giữa từ gốc và các từ được phát sinh. Nói cách
-  khác, nhìn vào lưới từ ta không thể biết được đâu là từ gốc, đâu là
-  từ phát sinh. Không có ưu tiên cho từ gốc.
-\item Do mô hình ngôn ngữ được tính toán dựa trên tổng giá trị của các
-  cạnh, nên các câu có ít từ hơn (ít cạnh hơn) thường có xu hướng được
-  chọn vì tổng giá trị sẽ nhỏ hơn.
-\end{itemize}
-
-Đối với vấn đề đầu tiên, ta có thể thay đổi giá trị các cạnh nối đến
-từ đó để phản ánh sự khác biệt. Ví dụ, trong
-hình~\vref{fig:wordlattice1}, ta có thể biến đổi giá trị các cạnh nối
-đến từ ``xinh'' bằng cách giảm 0,2\% giá trị của các cạnh nối đến từ
-``xinh'' đó. Vậy, bất cứ cách tách từ nào chứa từ xinh cũng sẽ bị giảm
-một khoảng giá trị nhất định, so với các cách tách từ chứa từ ``sinh''
-vẫn giữa nguyên giá trị gốc. Nhờ vậy, từ gốc sẽ được ưu tiên hơn các
-từ phát sinh.
-
-Trên nguyên tắc, độ giảm của các cạnh nên phụ thuộc vào khả năng xuất
-hiện của các từ phát sinh. Những từ phát sinh có khả năng nhất sẽ ít
-bị giảm nhất, những từ hiếm gặp nhất sẽ bị giảm nhiều nhất. Việc này
-sẽ giúp hạn chế lỗi chọn sai từ của mô hình ngôn ngữ. Tuy nhiên các
-thông số về khả năng xuất hiện của các từ phát sinh đòi hỏi phải có ngữ
-liệu sai trong thực tế và ngữ liệu đúng tương ứng để rút trích thông
-tin này. Đây là một hướng phát triển trong tương lai.
-
-Vấn đề thứ hai phức tạp hơn. Nếu ta sử dụng Viterbi hay
-WFST thì chỉ cần chuẩn hoá giá trị mỗi lần duyệt nút kế. Khi áp dụng
-đồ thị để giải quyết, ta không thể làm như vậy vì giá trị các cạnh
-được ngầm định là không thay đổi, và công thức tính độ dài đường đi là
-tổng các cạnh, cũng không thay đổi. Tuy nhiên ta có thể khắc phục bằng
-cách thay đổi giá trị của các cạnh {\em chưa được xét}. Việc thay đổi
-giá trị các cạnh chưa được xét sẽ không ảnh hưởng đến tính đúng đắn
-của thuật toán, vì thuật toán tính toán đường đi ngắn nhất dựa vào các
-cạnh đã xét. Nếu ta không thay đổi giá trị các cạnh đã xét, thuật toán
-vẫn không đổi.
-
-Giả sử có một đường đi qua $n$ cạnh $e_1,e_2,\ldots,e_n$, giá trị
-đường đi qua các cạnh đó là $\sum_{i=1}^{n}e_i$. Nếu được chuẩn hóa,
-giá trị mới sẽ là $\frac{1}{n}\sum_{i=1}^{n}e_i$. 
-%% \begin{align*}
-%%   \Delta&=\sum_{i=1}^{n}e_i-\frac{1}{n}\sum_{i=1}^{n}e_i\\
-%%         &=\frac{n-1}{n}\sum_{i=1}^{n}e_i\\
-%%   \frac{1}{n}\sum_{i=1}^{n}e_i&=\sum_{i=1}^{n}e_i-\Delta\\
-%%                              &=\sum_{i=1}^{n}e_i-\frac{n-1}{n}\sum_{i=1}^{n}e_i\\
-%%                              &=\sum_{i=1}^{n}(e_i-\frac{n-1}{n}e_i)\\
-%%                              &=\sum_{i=1}^{n}\frac{1}{n}e_i
-%% \end{align*}
-Do $$\frac{1}{n}\sum_{i=1}^{n}e_i=\sum_{i=1}^{n}\frac{1}{n}e_i$$ ta
-thấy mỗi cạnh cần phải ``co'' lại còn một khoảng $\frac{1}{n}$ (hay
-nói cách khác, mất đi $\frac{n-1}{n}$) giá trị
-thực của chính nó. Các cạnh cứ co lại từ từ mỗi khi thêm vào một cạnh
-mới. Tuy nhiên, do các cạnh đã xét sẽ không thể thay đổi, nên ta sẽ
-gom tất cả các khoảng giá trị mất đi này trừ vào cạnh sẽ được xét.
-
-Giả sử đã có $n$ cạnh, ta cần thêm cạnh $e_{n+1}$ vào. Độ dài $n$ cạnh
-trước đó là $N$ (đã chuẩn hoá). Ta cần tính $N'$ là độ dài $n+1$ cạnh đã
-chuẩn hoá
-\begin{align*}
-\Delta&=N'-N\\
-      &=\frac{Nn+e_{n+1}}{n+1}-N\\
-      &=\frac{e_{n+1}-N}{n+1}\\
-N'&=N+\Delta
-\end{align*}
-
-Ta có thể coi cạnh mới, cần được thêm vào là cạnh có giá trị là
-$\Delta=\frac{e_{n+1}-N}{n+1}$ thay vì $e_{n+1}$ như ban đầu. Tuy
-nhiên, do $\Delta$ có thể âm, cần dùng những thuật toán có thể tìm
-đường đi trên đồ thị có trọng số âm như Bellman-Ford thay vì dùng
-PFS. Có thể hình dung đồ thị mới là một loại đồ thị động, các cạnh
-phía sau càng ngày càng bị thu ngắn lại.
-
-Một vấn đề cần quan tâm là, liệu thuật toán Bellman-Ford có còn đúng
-với một đồ thị động như vậy hay không? Giả sử ta tính được giá trị
-cạnh khi dựa trên đường đi ngắn nhất phía trước nó là A1. Sau đó, vì
-một lí do nào đó, đường đi ngắn nhất tới điểm đó bị đổi sang A2, dẫn
-đến giá trị cạnh đã tính không còn hợp lệ. Với một đồ thị tổng quát, thuật
-toán có thể không còn chính xác. Tuy nhiên với đồ thị DAG của lưới từ,
-điều này vẫn còn đúng. Trong DAG, ta có thể xác định được tập các nút
-cha của một nút nào đó (những nút nối đến nút đó), tách rời hoàn toàn
-với phần còn lại của đồ thị. Do đó ta có thể tìm đường đi lớn nhất chỉ
-trong tập con đó mà thôi. Sau khi tìm được đường đi ngắn nhất trong
-tập con này, coi như đường đi đã ổn định và không thay đổi nữa, vì vậy
-việc tính giá trị cạnh kế tiếp sẽ không bị thay đổi sau mỗi lần tính
-toán. Vì lí do này nên thuật toán sẽ phải duyệt thứ tự các điểm theo
-thứ tự tôpô chứ không thể duyệt theo một thứ tự ngẫu nhiên.
-
 %%% trường hợp có hai đường đi đến cùng một cạnh và cạnh âm thì sao?
 
 \subsubsection{Lỗi phát âm}
@@ -3625,8 +3537,8 @@ Theo~\cite{LoiChinhTa}, lỗi bao gồm các loại sau:
 \end{itemize}
 
 
-\subsubsection{Lỗi không rõ nguyên nhân}
-XXX
+%%\subsubsection{Lỗi không rõ nguyên nhân}
+%%XXX
 %% Lỗi này dựa vào {\em độ đo khoảng cách hiệu chỉnh} được đề cập
 %% trong \cite{Oflazer}. Các thao tác hiệu chỉnh được đo gồm {\em chèn,
 %% xóa, thay thế một ký tự} hoặc {\em hoán vị hai ký tự kề nhau}, để có
@@ -3901,6 +3813,143 @@ từ đúng nhất chính là từ nằm trong câu được chọn này. Do đ�
 trên câu được chọn cần được ưu tiên sắp ở đầu danh sách từ đề
 nghị. Những từ còn lại có thể được sắp xếp như trong
 phần~\vref{sec:nonword:sort-candidates}.
+
+\subsection{Các heuristic để cải thiện độ chính xác}
+
+\subsubsection{Phân biệt từ gốc và từ phát sinh}
+
+Với lưới từ hiện có, ta coi từ gốc và những từ phát sinh là như
+nhau. Tuy nhiên, trên thực tế ta thường ưu tiên chọn từ gốc hơn là các
+từ phát sinh, do số lỗi trong câu chỉ chiếm một tỉ lệ nhỏ, phần còn
+lại là các từ đúng. Việc đánh đồng hai loại từ này làm cho chương
+trình dễ có khuynh hướng sử dụng từ phát sinh không giới hạn chừng
+nào những từ này còn tạo ra một câu hợp lý. Tiếng Việt có số lượng
+từ hạn chế hơn so với tiếng Anh (do đặc điểm ngôn ngữ đơn lập, hình
+thái từ nằm ngoài từ, nên số lượng từ giảm xuống), những câu phát sinh
+nghe có vẻ hợp lý cũng nhiều hơn. Nếu không khống chế số lượng từ phát
+sinh được sử dụng thì khả năng chọn nhầm câu đúng sẽ cao hơn.
+
+Vấn đề đầu tiên có thể được giải quyết bằng cách tăng giá trị các
+cạnh nối đến từ phát sinh một tỉ lệ nhất định để phản ánh sự khác
+biệt. Ví dụ, trong hình~\vref{fig:wordlattice1}, ta có thể biến đổi
+giá trị các cạnh nối đến từ ``xinh'' bằng cách tăng 0,2\% giá trị của
+các cạnh nối đến từ ``xinh'' đó. Vậy, bất cứ cách tách từ nào chứa từ
+xinh cũng sẽ bị tăng một khoảng giá trị nhất định, so với các cách
+tách từ chứa từ ``sinh'' vẫn giữa nguyên giá trị gốc. Nhờ vậy, từ gốc
+sẽ được ưu tiên hơn các từ phát sinh.
+
+Cách này nói chung hạn chế việc sử dụng từ phát sinh, tăng khả năng sử
+dụng từ gốc. Việc điều chỉnh tỉ lệ tăng cho từ phát sinh cần phải được
+xem xét cẩn thận. Việc tăng quá nhiều sẽ làm cho chương trình bám lấy
+từ gốc, giảm khả năng phát hiện lỗi. Nhưng nếu không tăng thì chương
+trình có khả năng tìm nhầm câu đúng, dẫn đến sai lầm dây chuyền trong
+các bước tiếp theo.
+
+Trên nguyên tắc, độ giảm của các cạnh nên phụ thuộc vào khả năng xuất
+hiện của các từ phát sinh. Những từ phát sinh có khả năng nhất sẽ ít
+bị giảm nhất, những từ hiếm gặp nhất sẽ bị giảm nhiều nhất. Việc này
+sẽ giúp hạn chế lỗi chọn sai từ của mô hình ngôn ngữ. Tuy nhiên các
+thông số về khả năng xuất hiện của các từ phát sinh đòi hỏi phải có ngữ
+liệu sai trong thực tế và ngữ liệu đúng tương ứng để rút trích thông
+tin này. Đây là một hướng phát triển trong tương lai.
+
+
+\subsubsection{Chuẩn hoá độ dài câu}
+
+Do mô hình ngôn ngữ được tính toán dựa trên tổng giá trị của các
+cạnh, nên các câu có ít từ hơn (ít cạnh hơn) thường có xu hướng được
+chọn vì tổng giá trị sẽ nhỏ hơn. Do đó cần có một cách để chuẩn hoá độ
+dài câu, loại bỏ sự ảnh hưởng về số lượng từ trong câu lên giá trị của
+câu. 
+
+Việc chuẩn hóa có thể được thực hiện bằng cách lấy giá trị của câu
+chia cho số lượng từ trong câu.
+Nếu ta sử dụng Viterbi hay
+WFST thì chỉ cần chuẩn hoá giá trị mỗi lần duyệt nút kế. Khi áp dụng
+đồ thị để giải quyết, ta không thể làm như vậy vì giá trị các cạnh
+được ngầm định là không thay đổi, và công thức tính độ dài đường đi là
+tổng các cạnh, cũng không thay đổi. Tuy nhiên ta có thể khắc phục bằng
+cách thay đổi giá trị của các cạnh {\em chưa được xét}. Việc thay đổi
+giá trị các cạnh chưa được xét sẽ không ảnh hưởng đến tính đúng đắn
+của thuật toán, vì thuật toán tính toán đường đi ngắn nhất dựa vào các
+cạnh đã xét. Nếu ta không thay đổi giá trị các cạnh đã xét, thuật toán
+vẫn không đổi.
+
+Giả sử có một đường đi qua $n$ cạnh $e_1,e_2,\ldots,e_n$, giá trị
+đường đi qua các cạnh đó là $\sum_{i=1}^{n}e_i$. Nếu được chuẩn hóa,
+giá trị mới sẽ là $\frac{1}{n}\sum_{i=1}^{n}e_i$. 
+%% \begin{align*}
+%%   \Delta&=\sum_{i=1}^{n}e_i-\frac{1}{n}\sum_{i=1}^{n}e_i\\
+%%         &=\frac{n-1}{n}\sum_{i=1}^{n}e_i\\
+%%   \frac{1}{n}\sum_{i=1}^{n}e_i&=\sum_{i=1}^{n}e_i-\Delta\\
+%%                              &=\sum_{i=1}^{n}e_i-\frac{n-1}{n}\sum_{i=1}^{n}e_i\\
+%%                              &=\sum_{i=1}^{n}(e_i-\frac{n-1}{n}e_i)\\
+%%                              &=\sum_{i=1}^{n}\frac{1}{n}e_i
+%% \end{align*}
+Do $$\frac{1}{n}\sum_{i=1}^{n}e_i=\sum_{i=1}^{n}\frac{1}{n}e_i$$ ta
+thấy mỗi cạnh cần phải ``co'' lại còn một khoảng $\frac{1}{n}$ (hay
+nói cách khác, mất đi $\frac{n-1}{n}$) giá trị
+thực của chính nó. Các cạnh cứ co lại từ từ mỗi khi thêm vào một cạnh
+mới. Tuy nhiên, do các cạnh đã xét sẽ không thể thay đổi, nên ta sẽ
+gom tất cả các khoảng giá trị mất đi này trừ vào cạnh sẽ được xét.
+
+Giả sử đã có $n$ cạnh, ta cần thêm cạnh $e_{n+1}$ vào. Độ dài $n$ cạnh
+trước đó là $N$ (đã chuẩn hoá). Ta cần tính $N'$ là độ dài $n+1$ cạnh đã
+chuẩn hoá
+\begin{align*}
+\Delta&=N'-N\\
+      &=\frac{Nn+e_{n+1}}{n+1}-N\\
+      &=\frac{e_{n+1}-N}{n+1}\\
+N'&=N+\Delta
+\end{align*}
+
+Ta có thể coi cạnh mới, cần được thêm vào là cạnh có giá trị là
+$\Delta=\frac{e_{n+1}-N}{n+1}$ thay vì $e_{n+1}$ như ban đầu. Tuy
+nhiên, do $\Delta$ có thể âm, cần dùng những thuật toán có thể tìm
+đường đi trên đồ thị có trọng số âm như Bellman-Ford thay vì dùng
+PFS. Có thể hình dung đồ thị mới là một loại đồ thị động, các cạnh
+phía sau càng ngày càng bị thu ngắn lại.
+
+Một vấn đề cần quan tâm là, liệu thuật toán Bellman-Ford có còn đúng
+với một đồ thị động như vậy hay không? Giả sử ta tính được giá trị
+cạnh khi dựa trên đường đi ngắn nhất phía trước nó là A1. Sau đó, vì
+một lí do nào đó, đường đi ngắn nhất tới điểm đó bị đổi sang A2, dẫn
+đến giá trị cạnh đã tính không còn hợp lệ. Với một đồ thị tổng quát, thuật
+toán có thể không còn chính xác. Tuy nhiên với đồ thị DAG của lưới từ,
+điều này vẫn còn đúng. Trong DAG, ta có thể xác định được tập các nút
+cha của một nút nào đó (những nút nối đến nút đó), tách rời hoàn toàn
+với phần còn lại của đồ thị. Do đó ta có thể tìm đường đi lớn nhất chỉ
+trong tập con đó mà thôi. Sau khi tìm được đường đi ngắn nhất trong
+tập con này, coi như đường đi đã ổn định và không thay đổi nữa, vì vậy
+việc tính giá trị cạnh kế tiếp sẽ không bị thay đổi sau mỗi lần tính
+toán. Vì lí do này nên thuật toán sẽ phải duyệt thứ tự các điểm theo
+thứ tự tôpô chứ không thể duyệt theo một thứ tự ngẫu nhiên.
+
+
+
+\subsubsection{Từ phát sinh phụ thuộc ngữ cảnh từ gốc}
+
+Mô hình hiện tại phát sinh từ cho mọi từ trong câu. Thực tế khi đọc
+một câu, ta thường coi như mọi từ đều đúng. Ta chỉ ``phát sinh từ'' ở
+những chỗ có vấn đề trong câu (thường là do từ không phù hợp với ý
+nghĩa của câu hoặc của đoạn văn). Ta có thể áp dụng ý tưởng này để
+biến đổi lưới từ nhằm hạn chế những lỗi tìm nhầm câu đúng.
+
+Cách tiếp cận ở đây là tăng giá trị cạnh nối đến những từ phát sinh từ
+những từ gốc ``có vấn đề''. Từ gốc càng có vấn đề thì tỉ lệ tăng càng
+thấp. Từ gốc càng ít có vấn đề thì tỉ lệ tăng càng cao nhằm giảm khả
+năng sử dụng từ phát sinh của từ này. Độ đo vấn đề là ngram của liên
+quan đến các tiếng của từ gốc trong câu. Với bigram, độ đo này là
+trung bình xác suất của hai bigram nối với tiếng. Với trigram, độ đo
+này là trung  bình xác suất của ba trigram nối với tiếng đó. Độ đo vấn
+đề của từ là tổng độ đo của các tiếng thuộc từ đó.
+
+Với cách làm này, các từ phát sinh sẽ không được đánh giá ngang nhau
+nữa. Những từ phát sinh từ những từ gốc có ít khả năng gặp lỗi sẽ bị
+tăng với một tỉ lệ nhất định, so với những từ phát sinh từ từ gốc có
+nhiều khả năng xảy ra lỗi. Việc này giúp giảm khả năng tìm nhầm câu
+đúng.
+
 
 \section{Huấn luyện}
 \label{sec:training}
@@ -4287,30 +4336,30 @@ thường, nhưng lá là từ viết hoa).
 Lớp \verb@WordArchive@ chứa nút gốc của cây và một số hàm linh tinh để
 thao tác trên cây.
 
-Một số hàm thường dùng trong \verb@BranchNode@ bao gồm:
-\begin{itemize}
-\item \verb@get_leaf()@: lấy nút lá với id của nút lá cho trước
-  (\verb@<mainleaf>@ hoặc \verb@<caseleaf>@~\ldots)
-\item \verb@get_leaves()@: lấy tất cả các nút lá (các nút lá phải được
-  đăng ký bằng \verb@WordArchive::register_leaf()@)
-\item \verb@get_branch()@: lấy nhánh dựa trên id cho trước.
-\end{itemize}
+%% Một số hàm thường dùng trong \verb@BranchNode@ bao gồm:
+%% \begin{itemize}
+%% \item \verb@get_leaf()@: lấy nút lá với id của nút lá cho trước
+%%   (\verb@<mainleaf>@ hoặc \verb@<caseleaf>@~\ldots)
+%% \item \verb@get_leaves()@: lấy tất cả các nút lá (các nút lá phải được
+%%   đăng ký bằng \verb@WordArchive::register_leaf()@)
+%% \item \verb@get_branch()@: lấy nhánh dựa trên id cho trước.
+%% \end{itemize}
 
-Một số hàm thường dùng trong \verb@LeafNode@ bao gồm:
-\begin{itemize}
-\item \verb@get_id()@: Strid của từ.
-\item \verb@get_syllables()@: Danh sách strid của các tiếng hình thành
-  nên từ.
-\item \verb@get_syllable_count()@: Số strid hình thành nên từ.
-\item \verb@set_id()@: đặt strid cho nút.
-\end{itemize}
+%% Một số hàm thường dùng trong \verb@LeafNode@ bao gồm:
+%% \begin{itemize}
+%% \item \verb@get_id()@: Strid của từ.
+%% \item \verb@get_syllables()@: Danh sách strid của các tiếng hình thành
+%%   nên từ.
+%% \item \verb@get_syllable_count()@: Số strid hình thành nên từ.
+%% \item \verb@set_id()@: đặt strid cho nút.
+%% \end{itemize}
 
-Các hàm thường dùng trong \verb@WordArchive@ bao gồm:
-\begin{itemize}
-\item \verb@get_root()@: Lấy \verb@BranchNode@ của nút gốc.
-\item \verb@load()@: Xây dựng cây từ điển từ tập tin.
-\item \verb@save()@: Lưu cây từ điển vào tập tin.
-\end{itemize}
+%% Các hàm thường dùng trong \verb@WordArchive@ bao gồm:
+%% \begin{itemize}
+%% \item \verb@get_root()@: Lấy \verb@BranchNode@ của nút gốc.
+%% \item \verb@load()@: Xây dựng cây từ điển từ tập tin.
+%% \item \verb@save()@: Lưu cây từ điển vào tập tin.
+%% \end{itemize}
 
 Từ điển tiếng không được lưu trực tiếp vào tập tin mà sẽ được phát
 sinh tự động khi nạp từ điển từ. Thực ra, hàm \verb@WordArchive@::load()@
@@ -4319,19 +4368,19 @@ dấu tiếng đó thuộc từ điển tiếng. Sau đó, ta có thể xác đ�
 có phải thuộc về từ điển tiếng hay không nhờ hàm
 \verb@StringArchive::in_dict()@.
 
-Từ điển từ còn chứa một số ``từ'' đặc biệt, được lấy thông qua hàm
-\verb@get_id()@. Những từ này bao gồm:
-\begin{itemize}
-\item $UNK\_ID$  đại diện cho từ lạ, không biết.
-\item $PUNCT\_ID$ đại diện cho các dấu câu.
-\item $PROPER\_NAME\_ID$ đại diện cho tên riêng.
-\item $START\_ID$ đại diện cho đầu câu. Mỗi đầu câu đều có một ``từ''
-  này (tương đương nút ``head'').
-\item $STOP\_ID$ đại diện cho cuối câu. Mỗi cuối câu đều có một ``từ''
-  này (tương đương nút ``tail'').
-\item $POEM\_ID$ đại diện cho từ láy.
-\item $NUMBER\_ID$ đại diện cho các loại số.
-\end{itemize}
+%% Từ điển từ còn chứa một số ``từ'' đặc biệt, được lấy thông qua hàm
+%% \verb@get_id()@. Những từ này bao gồm:
+%% \begin{itemize}
+%% \item $UNK\_ID$  đại diện cho từ lạ, không biết.
+%% \item $PUNCT\_ID$ đại diện cho các dấu câu.
+%% \item $PROPER\_NAME\_ID$ đại diện cho tên riêng.
+%% \item $START\_ID$ đại diện cho đầu câu. Mỗi đầu câu đều có một ``từ''
+%%   này (tương đương nút ``head'').
+%% \item $STOP\_ID$ đại diện cho cuối câu. Mỗi cuối câu đều có một ``từ''
+%%   này (tương đương nút ``tail'').
+%% \item $POEM\_ID$ đại diện cho từ láy.
+%% \item $NUMBER\_ID$ đại diện cho các loại số.
+%% \end{itemize}
 
 \subsection{Câu}
 
@@ -4342,14 +4391,14 @@ tiếng. Mỗi đối tượng \verb@Sentence::Syllable@ bao gồm vị trí b�
 của tiếng trong câu \verb@start@, mã strid của tiếng đó \verb@id@ và
 mã strid dùng để so sánh \verb@cid@.
 
-Các hàm thường dùng:
-\begin{itemize}
-\item \verb@set()@: đặt chuỗi đại diện cho câu cho đối tượng
-  \verb@Sentence@. 
-\item \verb@tokenize()@: tách câu dựa trên chuỗi đã đặt.
-\item \verb@get_syllable_count()@: trả về số tiếng trong câu.
-\item \verb@operator[]@: Truy cập các tiếng trong câu.
-\end{itemize}
+%% Các hàm thường dùng:
+%% \begin{itemize}
+%% \item \verb@set()@: đặt chuỗi đại diện cho câu cho đối tượng
+%%   \verb@Sentence@. 
+%% \item \verb@tokenize()@: tách câu dựa trên chuỗi đã đặt.
+%% \item \verb@get_syllable_count()@: trả về số tiếng trong câu.
+%% \item \verb@operator[]@: Truy cập các tiếng trong câu.
+%% \end{itemize}
 
 Chuỗi các câu sẽ được hàm \verb@sentences_split()@ tách thành những
 chuỗi con, đại diện cho các câu. Các chuỗi con này sẽ được chuyển cho
@@ -4387,42 +4436,43 @@ câu. \verb@WordInfos@ cho ta biết danh sách các từ bắt đầu từ vị
 tiếng đó, danh sách các từ fuzzy tại tiếng đó, chiều dài từ không bị
 fuzzy. 
 
-Các hàm thường dùng của \verb@Lattice@:
-\begin{itemize}
-\item \verb@construct()@: xây dựng \verb@Lattice@ từ \verb@Sentence@.
-\item \verb@pre_construct()@, \verb@post_construct()@: các hàm bên
-  trong của \verb@construct()@, được sử dụng trực tiếp khi cần hiệu
-  chỉnh lưới từ ngay trong quá trình xây dựng lưới từ (như phần phục
-  hồi lỗi~\ldots)
-\item \verb@get_word_count()@: trả về số tiếng của câu.
-\item \verb@get_we()@: Lấy danh sách \verb@WordEntry@ của những từ bắt
-  đầu tại vị trí tiếng cho trước.
-\end{itemize}
+%% Các hàm thường dùng của \verb@Lattice@:
+%% \begin{itemize}
+%% \item \verb@construct()@: xây dựng \verb@Lattice@ từ \verb@Sentence@.
+%% \item \verb@pre_construct()@, \verb@post_construct()@: các hàm bên
+%%   trong của \verb@construct()@, được sử dụng trực tiếp khi cần hiệu
+%%   chỉnh lưới từ ngay trong quá trình xây dựng lưới từ (như phần phục
+%%   hồi lỗi~\ldots)
+%% \item \verb@get_word_count()@: trả về số tiếng của câu.
+%% \item \verb@get_we()@: Lấy danh sách \verb@WordEntry@ của những từ bắt
+%%   đầu tại vị trí tiếng cho trước.
+%% \end{itemize}
 
 Lưới từ \verb@DAG@ được dùng để tổng quát hoá các thuật toán hoạt động
 trên cả lưới từ và lưới~2-từ. So với \verb@Lattice@, lớp này giống một
-lưới từ hơn. Các hàm thường dùng trong \verb@DAG@ gồm:
-\begin{itemize}
-\item \verb@node_id()@ trả về strid của nút có mã id cho trước.
-\item \verb@node_begin()@ trả về id của nút head.
-\item \verb@node_end()@ trả về id của nút tail.
-\item \verb@node_count()@ trả về số nút trong lưới từ. Các nút sẽ được
-  đánh số id từ 0 đến \verb@node_count()-1@.
-\item \verb@get_next()@ lấy danh sách các từ được nối với từ cho
-  trước.
-\item \verb@edge_value()@ trả về giá trị cạnh, cho trước hai nút.
-\end{itemize}
+lưới từ hơn. 
+%% Các hàm thường dùng trong \verb@DAG@ gồm:
+%% \begin{itemize}
+%% \item \verb@node_id()@ trả về strid của nút có mã id cho trước.
+%% \item \verb@node_begin()@ trả về id của nút head.
+%% \item \verb@node_end()@ trả về id của nút tail.
+%% \item \verb@node_count()@ trả về số nút trong lưới từ. Các nút sẽ được
+%%   đánh số id từ 0 đến \verb@node_count()-1@.
+%% \item \verb@get_next()@ lấy danh sách các từ được nối với từ cho
+%%   trước.
+%% \item \verb@edge_value()@ trả về giá trị cạnh, cho trước hai nút.
+%% \end{itemize}
 
 \verb@DAG@ là lớp cơ sở. Lớp dẫn xuất \verb@WordDAG@ hoạt động như
 lưới từ cơ bản, còn lớp \verb@WordDAG2@ hoặt động như lưới~2-từ.
-\verb@WordDAG2@ có thêm một số hàm mới:
-\begin{itemize}
-\item \verb@demangle()@ chuyển cách tách từ trong lưới~2-từ về lưới từ
-  (về cơ bản là loại bỏ hai nút head/tail của lưới~2-từ).
-\item \verb@node_dag_edge()@ trả về giá trị hai nút con nằm trong nút
-  của lưới~2-từ.
-\item \verb@get_dag()@ lấy lưới từ hình thành nên lưới~2-từ.
-\end{itemize}
+%% \verb@WordDAG2@ có thêm một số hàm mới:
+%% \begin{itemize}
+%% \item \verb@demangle()@ chuyển cách tách từ trong lưới~2-từ về lưới từ
+%%   (về cơ bản là loại bỏ hai nút head/tail của lưới~2-từ).
+%% \item \verb@node_dag_edge()@ trả về giá trị hai nút con nằm trong nút
+%%   của lưới~2-từ.
+%% \item \verb@get_dag()@ lấy lưới từ hình thành nên lưới~2-từ.
+%% \end{itemize}
 
 
 \subsection{Cách tách từ}
@@ -4654,11 +4704,11 @@ một tỉ lệ tương ứng. Nếu có $n$ tiếng sai, giá trị cạnh sẽ
 một khoảng $nwV$
 với $V$ là giá trị ban đầu, $w$ là trọng số.
 
-Các hàm mới trong \verb@PenaltyDAG@:
-\begin{itemize}
-\item \verb@PenaltyDAG::set_weight()@: Đặt trọng số $w$ cho đối tượng.
-\item \verb@PenaltyDAG::get_weight()@: Lấy trọng số $w$ của đối tượng.
-\end{itemize}
+%% Các hàm mới trong \verb@PenaltyDAG@:
+%% \begin{itemize}
+%% \item \verb@PenaltyDAG::set_weight()@: Đặt trọng số $w$ cho đối tượng.
+%% \item \verb@PenaltyDAG::get_weight()@: Lấy trọng số $w$ của đối tượng.
+%% \end{itemize}
 
 Giá trị $w$ được sử dụng trong chương trình minh hoạ là $0.05$. 
 
@@ -4830,15 +4880,15 @@ Lỗi bàn phím được cài đặt thông qua các lớp \verb@KeyRecover@,
 \verb@CharInserter@, \verb@CharEraser@, \verb@CharTransposer@ và
 hàm \verb@im_recover()@.
 
-Lớp \verb@KeyRecover@, cũng như các lớp Char\ldots{} khác, bao gồm ba hàm:
-\begin{itemize}
-\item \verb@init()@: khởi động đối tượng, nhận một chuỗi và số lỗi có
-  thể có.
-\item \verb@step()@: trả về một chuỗi phát sinh từ lỗi bàn phím. Trả
-  về \verb@false@ nếu không còn chuỗi nào nữa.
-\item \verb@done()@: hoàn tất sử dụng đối tượng, giải phóng các tài
-  nguyên.
-\end{itemize}
+%% Lớp \verb@KeyRecover@, cũng như các lớp Char\ldots{} khác, bao gồm ba hàm:
+%% \begin{itemize}
+%% \item \verb@init()@: khởi động đối tượng, nhận một chuỗi và số lỗi có
+%%   thể có.
+%% \item \verb@step()@: trả về một chuỗi phát sinh từ lỗi bàn phím. Trả
+%%   về \verb@false@ nếu không còn chuỗi nào nữa.
+%% \item \verb@done()@: hoàn tất sử dụng đối tượng, giải phóng các tài
+%%   nguyên.
+%% \end{itemize}
 
 Hàm \verb@im_recover()@, gọi đến hai hàm \verb@vni_recover()@ và
 \verb@telex_recover()@ dùng để phục hồi phím từ hai kiểu gõ trên.
@@ -4861,28 +4911,34 @@ Các biến quan trọng trong lớp \verb@Text@:
   do đối tượng này xử lý, xét trong toàn bộ văn bản của \verb@vspell@.
 \end{itemize}
 
-Các hàm quan trọng trong lớp \verb@Text@:
-\begin{itemize}
-\item \verb@ui_syllable_check()@: Hàm ảo, được gọi khi đối tượng cần
-  người dùng kiểm tra tính đúng sai của một tiếng.
-\item \verb@ui_word_check()@: Hàm ảo, được gọi khi đối tượng cần người
-  dùng kiểm tra tính đúng sai của một từ.
-\item \verb@syllabel_check@: cho biết tiếng tại vị trí cho trước có
-  đúng chính tả hay không.
-\item \verb@apply_separators()@: Áp dụng separator cho câu.
-\item \verb@get_separators()@: Lấy danh sách separator.
-\item \verb@sentence_check()@: Tiến hành kiểm tra chính tả một
-  câu. Trả về \verb@true@ nếu không còn lỗi. Hàm này thực hiện hầu như
-  toàn bộ công đoạn bắt lỗi chính tả, mô tả trong thuật
-  toán~\vref{algo:Text::sentence_check}.
-\item \verb@syllable_check()@: Kiểm lỗi tiếng. Trả về \verb@true@ nếu
-  không còn lỗi~(thuật toán~\vref{algo:Text::syllable_check}).
-\item \verb@word_check()@: Kiểm lỗi từ. Trả về \verb@true@ nếu
-  không còn lỗi~(thuật toán~\vref{algo:Text::word_check}).
-\item \verb@replace()@: Thay thế một chuỗi con trong đoạn văn bản đang
-  xét.
-\item \verb@substr()@: Lấy một chuỗi con trong đoạn văn bản đang xét.
-\end{itemize}
+Trong lớp \verb@Text@, hàm \verb@sentence_check()@  tiến hành kiểm
+tra chính tả một   câu. Hàm này thực hiện hầu như toàn bộ công đoạn
+bắt lỗi chính tả, mô tả trong thuật toán~\vref{algo:Text::sentence_check}.
+Hàm \verb@syllable_check()@ kiểm lỗi tiếng~(thuật toán~\vref{algo:Text::syllable_check}).
+Hàm \verb@word_check()@ kiểm lỗi từ~(thuật toán~\vref{algo:Text::word_check}).
+
+%% Các hàm quan trọng trong lớp \verb@Text@:
+%% \begin{itemize}
+%% \item \verb@ui_syllable_check()@: Hàm ảo, được gọi khi đối tượng cần
+%%   người dùng kiểm tra tính đúng sai của một tiếng.
+%% \item \verb@ui_word_check()@: Hàm ảo, được gọi khi đối tượng cần người
+%%   dùng kiểm tra tính đúng sai của một từ.
+%% \item \verb@syllabel_check@: cho biết tiếng tại vị trí cho trước có
+%%   đúng chính tả hay không.
+%% \item \verb@apply_separators()@: Áp dụng separator cho câu.
+%% \item \verb@get_separators()@: Lấy danh sách separator.
+%% \item \verb@sentence_check()@: Tiến hành kiểm tra chính tả một
+%%   câu. Trả về \verb@true@ nếu không còn lỗi. Hàm này thực hiện hầu như
+%%   toàn bộ công đoạn bắt lỗi chính tả, mô tả trong thuật
+%%   toán~\vref{algo:Text::sentence_check}.
+%% \item \verb@syllable_check()@: Kiểm lỗi tiếng. Trả về \verb@true@ nếu
+%%   không còn lỗi~(thuật toán~\vref{algo:Text::syllable_check}).
+%% \item \verb@word_check()@: Kiểm lỗi từ. Trả về \verb@true@ nếu
+%%   không còn lỗi~(thuật toán~\vref{algo:Text::word_check}).
+%% \item \verb@replace()@: Thay thế một chuỗi con trong đoạn văn bản đang
+%%   xét.
+%% \item \verb@substr()@: Lấy một chuỗi con trong đoạn văn bản đang xét.
+%% \end{itemize}
 
 \begin{algo}
 \caption{Text::sentence\_check()}
@@ -4972,27 +5028,28 @@ từ điển: từ điển từ (\verb@VSpell:words@) và từ điển tiếng
 (\verb@VSpell::syllables@).
 
 Ngoài ra \verb@VSpell@ còn duy trì một danh sách các separator
-(\verb@VSpell::sepaparators@). 
+(\verb@VSpell::sepaparators@).  Hàm \verb@check()@ tiến hành kiểm lỗi chính tả cho một đoạn văn
+bản~(thuật toán~\vref{algo:VSpell::check}). 
 
-Các hàm thường dùng trong \verb@VSpell@:
-\begin{itemize}
-\item \verb@init()@: Khởi động cơ chế bắt lỗi chính tả, nạp các tập
-  tin liên quan~\ldots (bao gồm việc nạp từ điển, n\-gram, danh sách tên
-  riêng). 
-\item \verb@cleanup()@: Hủy bỏ toàn bộ dữ liệu của đối tượng, chuẩn bị để
-  hủy bỏ đối tượng.
-\item \verb@check()@: tiến hành kiểm lỗi chính tả cho một đoạn văn
-  bản~(thuật toán~\vref{algo:VSpell::check}). Văn bản được dùng ở dạng
-  UTF-8. 
-\item \verb@set_penalty()@: Đặt trọng số $w$ cho lớp \verb@PenaltyDAG@.
-\item \verb@get_penalty()@: Lấy trọng số $w$ của lớp
-  \verb@PenaltyDAG@.
-\item \verb@set_normalization()@: Cho biết có áp dụng chuẩn hoá cách
-  tách từ hay không.
-\item \verb@get_normalization()@: Như trên.
-\item \verb@set_trigram()@: Cho biết có áp dụng tri\-gram hay không.
-\item \verb@get_trigram()@: Như trên.
-\end{itemize}
+%% Các hàm thường dùng trong \verb@VSpell@:
+%% \begin{itemize}
+%% \item \verb@init()@: Khởi động cơ chế bắt lỗi chính tả, nạp các tập
+%%   tin liên quan~\ldots (bao gồm việc nạp từ điển, n\-gram, danh sách tên
+%%   riêng). 
+%% \item \verb@cleanup()@: Hủy bỏ toàn bộ dữ liệu của đối tượng, chuẩn bị để
+%%   hủy bỏ đối tượng.
+%% \item \verb@check()@: tiến hành kiểm lỗi chính tả cho một đoạn văn
+%%   bản~(thuật toán~\vref{algo:VSpell::check}). Văn bản được dùng ở dạng
+%%   UTF-8. 
+%% \item \verb@set_penalty()@: Đặt trọng số $w$ cho lớp \verb@PenaltyDAG@.
+%% \item \verb@get_penalty()@: Lấy trọng số $w$ của lớp
+%%   \verb@PenaltyDAG@.
+%% \item \verb@set_normalization()@: Cho biết có áp dụng chuẩn hoá cách
+%%   tách từ hay không.
+%% \item \verb@get_normalization()@: Như trên.
+%% \item \verb@set_trigram()@: Cho biết có áp dụng tri\-gram hay không.
+%% \item \verb@get_trigram()@: Như trên.
+%% \end{itemize}
 
 \begin{algo}
 \caption{VSpell::check()}
@@ -5347,7 +5404,7 @@ Sau đây là tóm tắt các đặc điểm mô hình được đề nghị:
 %% \item 
 %% \end{itemize}
 
-\subsection{Hạn chế}
+\section{Đánh giá}
 
 Hạn chế đầu tiên của chương trình chính là lượng thông tin được sử
 dụng để khử nhập nhằng khi tách từ mờ. Do chỉ sử dụng thông tin về xác
@@ -5363,7 +5420,9 @@ Chính vì chỉ sử dụng n\-gram dựa trên từ, đôi khi chương trình
 lầm cách tách từ, dẫn đến việc thông báo từ sai chính tả trong khi từ
 đó hoàn toàn đúng. 
 
-Phần kiểm tra viết hoa khá khó khăn.
+Phần kiểm tra từ viết hoa  vẫn còn là một vấn đề chưa thể giải quyết
+trọn vẹn do viết hoa đúng quy cách đôi khi đòi hỏi ta phải hiểu ý
+nghĩa của từ viết hoa. Điều này hiện tại không thể thực hiện được.
 
 %% \begin{itemize}
 %% \item Không sử dụng những thông tin cấp cao hơn.
@@ -5386,132 +5445,168 @@ hình ngôn ngữ n\-gram-tiếng bao gồm 76224 uni\-gram và 324326 bi\-gram
 liệu tên riêng bao gồm 790 tiếng tạo thành tên người, rút trích từ
 7567 tên. Từ điển từ bao gồm 73940 từ, bao gồm 12332 tiếng.
 
-\section{Đánh giá}
-
-
 \section{Hướng phát triển}
 \label{sec:todo}
 
-Do số lượng từ ít, từ ngắn nên lỗi real-word nhiều hơn lỗi non-word --> CSS quan trọng! 
 
-\begin{itemize}
-\item Loại bỏ SRILM.
-\item Các hướng cải tiến EM.
-\item Tư tưởng cơ bản hiện thời là phát sinh mọi trường hợp tương tự
-  với trường hợp đang xét và hy vọng giải pháp đúng cũng nằm trong
-  đó. Cách này có hai điểm cần bàn:
-  \begin{itemize}
-  \item Khi nào nên phát sinh, khi nào không? Nói cách khác, khi nào
-    ta ``cảm thấy'' chỗ đó có thể bị sai? Statistic/Genetic approach?
-  \item Khi phát sinh, nên đánh giá tầm quan trọng của các cách phát
-    sinh  cho hợp lý, không nên đánh đồng như hiện nay. How can i do
-    that?
-  \end{itemize}
+Việc áp dụng mô hình ngôn ngữ để bắt lỗi chính tả không phải là lựa
+chọn duy nhất. Ta có thể áp dụng các mô hình khác để bắt lỗi chính
+tả. Tuy nhiên, phần này sẽ chỉ đề cập đến những hướng phát triển dự
+trên việc áp dụng mô hình ngôn ngữ.
 
-  Tách từ không đúng thì bắt lỗi sai. Mà phát sinh quá nhiều thì có
-  thể tách từ sẽ sai do có nhiều câu đúng trong đó (giả sử LM hoàn
-  hảo). 
+Việc đầu tiên có thể nghĩ đến để cải thiện chất lượng bắt lỗi chính tả
+là làm giàu nguồn tri thức được sử dụng. Trình bắt lỗi chính tả hiện
+thời chỉ sử dụng dữ liệu thô. Đây là một trong yếu tố làm giảm chất
+lượng chương trình. Ta có thể sử dụng mô hình ngôn ngữ dựa trên từ
+loại, đồng thời áp dụng mạng ngữ nghĩa hoặc thông tin cú pháp (được
+dùng trong các phương pháp Mật độ ngữ nghĩa và Văn phạm ràng
+buộc). Đây là một hướng phát triển lâu dài, đòi hỏi rất nhiều công
+sức.
 
-  Chuyện phát sinh là chuyện hơi kẹt. Do hiện thời chỉ dựa trên lỗi
-  phát âm nên số lượng ít. Nếu áp dụng thêm các lỗi khác (đặc biệt là
-  lỗi bàn phím) thì số lượng sẽ tăng đáng kể và {\em xuất hiện những
-  câu đúng mới} (giống như việc loại bỏ dấu, sau đó thêm dấu vô sẽ có
-  nhiều câu hợp lý). 
-  \begin{itemize}
-  \item Cách đầu tiên là chỉ phát sinh khi cần thiết ---
-    khá khó vì làm sao biết chỗ nào cần phát sinh?
-  \item Cách khác là lợi dụng đặc điểm của bắt lỗi chính tả. Khác với
-    tách từ thuần túy, lưới từ bắt lỗi chính tả chứa nhiều từ cùng độ
-    dài (cùng một ``khuôn''). Làm cách nào đó để nhóm những từ này
-    lại, tránh lãng phí khi truy tìm nhiều cách trên cùng một khuôn. 
-  \end{itemize}
-\item Ngoài cách đang làm, còn hướng nào khác không? Liệu speech
-  recognition/OCR có ý kiến nào hay không? Cần tìm hiểu mọi thứ liên
-  quan đến ``error tolerance''
-\end{itemize}
+Ta có thể cải thiện tốc độ bằng cách cải tiến các heuristic được dùng
+để hiệu chỉnh lưới từ. Hai heuristic quan trọng là heuristic phân biệt
+từ gốc và từ phát sinh, và heuristic phân biệt các từ phát sinh với
+nhau (dựa vào ngữ cảnh từ gốc). Heuristic chỉ có thể được cải thiện
+bằng cách rút trích thông tin thực tế để biết được từ nào thường được
+phát sinh hơn từ nào (nói cách khác, những từ nào là lỗi sai thông
+dùng của từ nào). Heuristic phản ánh cách tìm lỗi chính tả của con
+người. Ở đây việc đánh giá những từ có khả năng sai chính tả dựa trên
+chuỗi n\-gram của các tiếng không phải là một giải pháp hoàn hảo. Ta
+cần tìm ra những phương pháp khác nhằm phát hiện từ có khả năng sai
+chính tả tốt hơn. Những giải pháp bắt lỗi chính tả cảm ngữ cảnh của
+tiếng Anh có thể là một khởi đầu để tìm cách giải quyết.
 
-
-\section{Độ chính xác của tách từ}
-
-Tách từ dựa trên tư tưởng ``tìm ra câu đúng nhất''. Nếu ``câu đúng
-nhất'' được tìm ra không phải là câu đúng nhất thì dẫn đến tách từ
-sai. Vấn đề ở chỗ câu mà tách từ tìm ra và câu thực tế sai khác như
-thế nào. Do các từ thường ngăn (1--2 chữ) nên khả năng trùng nhau là
-rất lớn. Có mối quan hệ nào giữa việc tìm câu đúng sai và cho ra cách
-tách từ đúng hay không? $\rightarrow$ không biết.
-
-Giả định LM hoàn hảo. Nếu Lattice càng rộng thì khả năng tìm lộn sang
-câu khác càng lớn. Nên dùng Winnow để thêm dần các từ mới. Một trường
-hợp nữa là dùng Winnow để loại bỏ các từ không hợp lý, được không??
-Một Lattice lí tưởng sẽ cho ra kết quả lí tưởng.
-
-Giải pháp khác là áp dụng Winnow để sửa chữa cách tách từ sau
-cùng. Nghe hơi hoang tưởng?
-
-Sau khi chọn được cách tách từ thì nên dùng những từ trong cách tách
-từ đúng hay lại áp dụng Winnow? Rõ ràng hiện thời LM vẫn còn sai
-nhiều. Tuy nhiên, ``dường như'' các lỗi phát âm thường có chiều dài từ
-ngang nhau. Nghĩa là trong trường hợp tìm sai, khả năng tách từ đúng
-vẫn lớn. Vậy tốt hơn nên dùng Winnow?
-
-Ok. Winnow và loại bỏ các nút đáng ngờ trong lưới từ.
+Ngoài ra bắt lỗi chính tả cảm ngữ cảnh cũng là một cách tiếp cận. Vấn
+đề của bắt lỗi chính tả cảm ngữ cảnh là áp dụng trên một cách tách từ
+biết trước, không thay đổi. Hướng phát triển có thể là hiệu chỉnh để
+áp dụng bắt lỗi chính tả cảm ngữ cảnh trên lưới từ, thay vì trên một
+cách tách từ cố định. Một cách khác đơn giản hơn là áp dụng bắt lỗi
+chính tả cảm ngữ cảnh trên từng cách tách từ có thể có trên lưới từ
+rồi định lượng để phát hiện lỗi. Do số lượng cách tách từ trên lưới từ
+là rất lớn, có thể ta chỉ cần xét n cách tách từ tốt nhất mà thôi.
 
 
-\section{Khi nào cần phát sinh}
 
-Cách đầu tiên là dựa trên thông tin thống kê, tìm xem giá trị trung
-bình của liên kết giữa các từ là bao nhiêu. Nếu liên kết trong lưới từ
-thấp hơn ngưỡng này thì phát sinh từ mới.
+%% Do số lượng từ ít, từ ngắn nên lỗi real-word nhiều hơn lỗi non-word --> CSS quan trọng! 
 
-Áp dụng CSS để phát sinh thêm từ ???
+%% \begin{itemize}
+%% \item Loại bỏ SRILM.
+%% \item Các hướng cải tiến EM.
+%% \item Tư tưởng cơ bản hiện thời là phát sinh mọi trường hợp tương tự
+%%   với trường hợp đang xét và hy vọng giải pháp đúng cũng nằm trong
+%%   đó. Cách này có hai điểm cần bàn:
+%%   \begin{itemize}
+%%   \item Khi nào nên phát sinh, khi nào không? Nói cách khác, khi nào
+%%     ta ``cảm thấy'' chỗ đó có thể bị sai? Statistic/Genetic approach?
+%%   \item Khi phát sinh, nên đánh giá tầm quan trọng của các cách phát
+%%     sinh  cho hợp lý, không nên đánh đồng như hiện nay. How can i do
+%%     that?
+%%   \end{itemize}
 
-Trước hết, tạo lưới từ cơ sở. Sau đó duyệt qua từng cách tách từ, áp
-dụng CSS để tạo thêm một số từ liên quan.
-\begin{itemize}
-\item Thay thế từ bằng từ do CSS đề nghị --> ảnh hưởng đến CSS ở các
-  chỗ khác. Giải pháp genetic hay phân nhánh. Tách làm hai lưới từ
-  (một cũ, một mới) sau đó lại áp dụng CSS trên các cách khác ???
-\item Thêm vào thay vì thay thế --> ``càng rộng thì càng dễ sai''
-\end{itemize}
+%%   Tách từ không đúng thì bắt lỗi sai. Mà phát sinh quá nhiều thì có
+%%   thể tách từ sẽ sai do có nhiều câu đúng trong đó (giả sử LM hoàn
+%%   hảo). 
 
-Chọn đại một cách tách từ, sau đó giao cho CSS. CSS được mở rộng để không
-chỉ thay từ, mà thay cả ranh giới từ.
+%%   Chuyện phát sinh là chuyện hơi kẹt. Do hiện thời chỉ dựa trên lỗi
+%%   phát âm nên số lượng ít. Nếu áp dụng thêm các lỗi khác (đặc biệt là
+%%   lỗi bàn phím) thì số lượng sẽ tăng đáng kể và {\em xuất hiện những
+%%   câu đúng mới} (giống như việc loại bỏ dấu, sau đó thêm dấu vô sẽ có
+%%   nhiều câu hợp lý). 
+%%   \begin{itemize}
+%%   \item Cách đầu tiên là chỉ phát sinh khi cần thiết ---
+%%     khá khó vì làm sao biết chỗ nào cần phát sinh?
+%%   \item Cách khác là lợi dụng đặc điểm của bắt lỗi chính tả. Khác với
+%%     tách từ thuần túy, lưới từ bắt lỗi chính tả chứa nhiều từ cùng độ
+%%     dài (cùng một ``khuôn''). Làm cách nào đó để nhóm những từ này
+%%     lại, tránh lãng phí khi truy tìm nhiều cách trên cùng một khuôn. 
+%%   \end{itemize}
+%% \item Ngoài cách đang làm, còn hướng nào khác không? Liệu speech
+%%   recognition/OCR có ý kiến nào hay không? Cần tìm hiểu mọi thứ liên
+%%   quan đến ``error tolerance''
+%% \end{itemize}
 
-\section{Áp dụng context-sensitive spelling checking}
 
-Các giải pháp spelling checking đều dựa trên câu tách từ sẵn. Xét theo
-quan điểm của lưới từ là chọn một đường đi, sau đó áp dụng spelling
-checking. Để áp dụng CSS ta có thể đưa nó vô lưới từ thay vì chỉ nằm
-trên một đường đi duy nhất trên lưới từ. Nói cách khác, ta chuyển từ
-đồ thì ``một đường'' thành một đồ thị đúng nghĩa.
+%% \section{Độ chính xác của tách từ}
 
-Với các phương pháp sử dụng từ ngữ cảnh, thay vì chỉ xét những từ nằm
-trên đường đi, ta xét những từ nằm trên các đường đi khác nhau --
-trong một phạm vi nhất định. Khi chọn được một từ thì cũng đồng nghĩa
-giới hạn số lưới từ có khả năng lại.
+%% Tách từ dựa trên tư tưởng ``tìm ra câu đúng nhất''. Nếu ``câu đúng
+%% nhất'' được tìm ra không phải là câu đúng nhất thì dẫn đến tách từ
+%% sai. Vấn đề ở chỗ câu mà tách từ tìm ra và câu thực tế sai khác như
+%% thế nào. Do các từ thường ngăn (1--2 chữ) nên khả năng trùng nhau là
+%% rất lớn. Có mối quan hệ nào giữa việc tìm câu đúng sai và cho ra cách
+%% tách từ đúng hay không? $\rightarrow$ không biết.
 
-Với các phương pháp dùng collocation, ta cũng có thể mở rộng ra lưới
-từ, tìm trên nhiều đường thay vì chỉ một đường.
+%% Giả định LM hoàn hảo. Nếu Lattice càng rộng thì khả năng tìm lộn sang
+%% câu khác càng lớn. Nên dùng Winnow để thêm dần các từ mới. Một trường
+%% hợp nữa là dùng Winnow để loại bỏ các từ không hợp lý, được không??
+%% Một Lattice lí tưởng sẽ cho ra kết quả lí tưởng.
 
-Vấn đề đối với việc áp dụng những phương pháp này là khả năng ``đoán
-sai''. Ví dụ, có một từ trong lưới từ có ảnh hưởng lớn đến quyết định
-chọn từ khác. Khi từ đó được sử dụng, nó sẽ loại bỏ các cách tách từ
-không chứ nó. Nếu từ đó {\em không} phải là từ đúng thì coi như ta đã
-suy luận dựa trên những chứng cớ không đáng tin cậy (độ tin cậy?).
+%% Giải pháp khác là áp dụng Winnow để sửa chữa cách tách từ sau
+%% cùng. Nghe hơi hoang tưởng?
 
-Có thể duyệt từng cách tách từ, áp dụng CSS. Sau đó làm sao biết nên
-dùng cách tách từ nào ??? Lại dùng n\-gram?
+%% Sau khi chọn được cách tách từ thì nên dùng những từ trong cách tách
+%% từ đúng hay lại áp dụng Winnow? Rõ ràng hiện thời LM vẫn còn sai
+%% nhiều. Tuy nhiên, ``dường như'' các lỗi phát âm thường có chiều dài từ
+%% ngang nhau. Nghĩa là trong trường hợp tìm sai, khả năng tách từ đúng
+%% vẫn lớn. Vậy tốt hơn nên dùng Winnow?
 
-Túm lại có ba vấn đề:
-\begin{itemize}
-\item Nếu duyệt từng cách tách từ, số lượng sẽ rất lớn. Cần có cách
-  loại bớt những cách tách từ nhảm nhí.
-\item Nếu duyệt toàn bộ thì đối với mỗi cách tách từ sẽ có những phát
-  hiện lỗi khác nhau. Cần LM hay cái gì đó khác để biết được nên dùng
-  cách tách từ nào (hoặc dùng hết :)
-\item Cải tiến CSS bằng cách áp dụng lưới từ nhiều hơn, không bị buộc
-  trên một đường đi nhất định.
-\end{itemize}
+%% Ok. Winnow và loại bỏ các nút đáng ngờ trong lưới từ.
+
+
+%% \section{Khi nào cần phát sinh}
+
+%% Cách đầu tiên là dựa trên thông tin thống kê, tìm xem giá trị trung
+%% bình của liên kết giữa các từ là bao nhiêu. Nếu liên kết trong lưới từ
+%% thấp hơn ngưỡng này thì phát sinh từ mới.
+
+%% Áp dụng CSS để phát sinh thêm từ ???
+
+%% Trước hết, tạo lưới từ cơ sở. Sau đó duyệt qua từng cách tách từ, áp
+%% dụng CSS để tạo thêm một số từ liên quan.
+%% \begin{itemize}
+%% \item Thay thế từ bằng từ do CSS đề nghị --> ảnh hưởng đến CSS ở các
+%%   chỗ khác. Giải pháp genetic hay phân nhánh. Tách làm hai lưới từ
+%%   (một cũ, một mới) sau đó lại áp dụng CSS trên các cách khác ???
+%% \item Thêm vào thay vì thay thế --> ``càng rộng thì càng dễ sai''
+%% \end{itemize}
+
+%% Chọn đại một cách tách từ, sau đó giao cho CSS. CSS được mở rộng để không
+%% chỉ thay từ, mà thay cả ranh giới từ.
+
+%% \section{Áp dụng context-sensitive spelling checking}
+
+%% Các giải pháp spelling checking đều dựa trên câu tách từ sẵn. Xét theo
+%% quan điểm của lưới từ là chọn một đường đi, sau đó áp dụng spelling
+%% checking. Để áp dụng CSS ta có thể đưa nó vô lưới từ thay vì chỉ nằm
+%% trên một đường đi duy nhất trên lưới từ. Nói cách khác, ta chuyển từ
+%% đồ thì ``một đường'' thành một đồ thị đúng nghĩa.
+
+%% Với các phương pháp sử dụng từ ngữ cảnh, thay vì chỉ xét những từ nằm
+%% trên đường đi, ta xét những từ nằm trên các đường đi khác nhau --
+%% trong một phạm vi nhất định. Khi chọn được một từ thì cũng đồng nghĩa
+%% giới hạn số lưới từ có khả năng lại.
+
+%% Với các phương pháp dùng collocation, ta cũng có thể mở rộng ra lưới
+%% từ, tìm trên nhiều đường thay vì chỉ một đường.
+
+%% Vấn đề đối với việc áp dụng những phương pháp này là khả năng ``đoán
+%% sai''. Ví dụ, có một từ trong lưới từ có ảnh hưởng lớn đến quyết định
+%% chọn từ khác. Khi từ đó được sử dụng, nó sẽ loại bỏ các cách tách từ
+%% không chứ nó. Nếu từ đó {\em không} phải là từ đúng thì coi như ta đã
+%% suy luận dựa trên những chứng cớ không đáng tin cậy (độ tin cậy?).
+
+%% Có thể duyệt từng cách tách từ, áp dụng CSS. Sau đó làm sao biết nên
+%% dùng cách tách từ nào ??? Lại dùng n\-gram?
+
+%% Túm lại có ba vấn đề:
+%% \begin{itemize}
+%% \item Nếu duyệt từng cách tách từ, số lượng sẽ rất lớn. Cần có cách
+%%   loại bớt những cách tách từ nhảm nhí.
+%% \item Nếu duyệt toàn bộ thì đối với mỗi cách tách từ sẽ có những phát
+%%   hiện lỗi khác nhau. Cần LM hay cái gì đó khác để biết được nên dùng
+%%   cách tách từ nào (hoặc dùng hết :)
+%% \item Cải tiến CSS bằng cách áp dụng lưới từ nhiều hơn, không bị buộc
+%%   trên một đường đi nhất định.
+%% \end{itemize}
 
 \appendix\eject\addcontentsline{toc}{part}{Phụ lục}
 \chapter{Dữ liệu kiểm tra}

@@ -50,11 +50,11 @@ int main(int argc,char **argv)
   int count = 0;
   NgramStats stats(sarch.get_dict(),2);
   while (getline(cin,s)) {
-    if (s.empty())
-      continue;
     count ++;
     if (count % 200 == 0)
       cerr << count << endl;
+    if (s.empty())
+      continue;
     vector<string> ss;
     sentences_split(s,ss);
     for (z = 0;z < ss.size();z ++) {
@@ -76,7 +76,7 @@ int main(int argc,char **argv)
       vi[n] = Vocab_None;
       for (i = 0;i < n;i ++) {
 	vi[i] = seg[i].node.node->get_id();
-	//cerr << "<" << sarch[vi[i]] << "> ";
+//	cerr << "<" << sarch[vi[i]] << "> ";
       }
       //cerr << endl;
       stats.countSentence(vi);

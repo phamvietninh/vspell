@@ -19,8 +19,9 @@ int main(int argc,char **argv)
 
   cerr << "Loading... ";
   get_root()->load("wordlist.wl");
-  File f("ngram","rt");
-  ngram.read(f);
+  File f("ngram","rt",0);
+  if (!f.error())
+	  ngram.read(f);
   cerr << "done" << endl;
 
   sarch.set_blocked(true);

@@ -6,6 +6,7 @@
 #include <fstream>
 #include <cmath>
 #include <cstdio>
+#include <../libvspell/boost/format.hpp>
 
 using namespace std;
 
@@ -81,8 +82,8 @@ int main()
 	Words words;
 	words.construct(st);
 	wfst.segment_best(st,words,seg);
-	cerr << seg << endl;
-	sarch.clear_rest();
+	cout << seg << endl;
+	//	sarch.clear_rest();
       }
     }
   }

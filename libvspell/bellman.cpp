@@ -61,7 +61,7 @@ void Bellman::search(const DAG &dag,Path &seps)
 				length[v] = val;
 				last[v] = i;
 				node_count[v] = node_count[i]+1;
-				cerr << val << " " << node_count[v] << " " << v << " " << length[v] << " " << last[v] << " (" << endl;
+				//cerr << val << " " << node_count[v] << " " << v << " " << length[v] << " " << last[v] << " (" << endl;
 				cont = true;
 			}
 		}

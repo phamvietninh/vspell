@@ -86,7 +86,7 @@ static int
 g_unichar_to_utf8 (gunichar c,
 		   gchar   *outbuf)
 {
-  guint len = 0;    
+  guint len = 0;
   int first;
   int i;
 
@@ -171,13 +171,13 @@ g_utf8_strlen (const gchar *p,
     {
       if (max == 0 || !*p)
         return 0;
-      
-      p = g_utf8_next_char (p);          
+
+      p = g_utf8_next_char (p);
 
       while (p - start < max && *p)
         {
           ++len;
-          p = g_utf8_next_char (p);          
+          p = g_utf8_next_char (p);
         }
 
       /* only do the last len increment if we got a complete
@@ -347,7 +347,7 @@ bool Text::sentence_check(const char *pp)
 	copy(path.begin()+1,path.end()-1,seg.begin());
 	seg.we = w.we;
 	//cerr << seg << endl;
-	
+
 	// word checking
 	if (!word_check() && !ui_word_check())
 		return false;
@@ -359,7 +359,7 @@ bool Text::syllable_check(int i)
 {
 	if (vspell->in_dict(st[i].get_id()))
 		return true;
-	
+
 	if (get_sarch().in_dict(st[i].get_cid())) {
 		Syllable syl;							// diacritic check
 		if (syl.parse(get_sarch()[st[i].get_cid()])) {
@@ -380,7 +380,7 @@ bool Text::syllable_check()
 	for (i = 0;i < n;i ++) {
 		if (syllable_check(i))
 			continue;
-		
+
 		Suggestion _s;
 		_s.id = i;
 		suggestions.push_back(_s);
@@ -660,11 +660,11 @@ char* viet_to_utf8(const char *in)
 }
 
 /*
-static char_traits_strid::char_type* 
-char_traits_strid::copy(char_traits_strid::char_type* __s1, 
+static char_traits_strid::char_type*
+char_traits_strid::copy(char_traits_strid::char_type* __s1,
 		 const char_traits_strid::char_type* __s2,
 		 size_t __n)
-{ 
+{
 	return static_cast<char_type*>(memcpy(__s1, __s2, __n*sizeof(char_type)));
 }
 

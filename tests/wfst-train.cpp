@@ -17,9 +17,9 @@ void iterate(ostream &os,int level);
 WFST wfst;
 vector<Sentence> sentences;
 
-int main()
+int main(int argc,char **argv)
 {
-  dic_init(new WordNode(sarch["<root>"]));
+  dic_init(argc > 1 ? new WordNode(sarch["<root>"]) : new WordNode(sarch["<root>"]));
 
   cerr << "Loading... ";
   get_root()->load("wordlist.wl");

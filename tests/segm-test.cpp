@@ -6,9 +6,9 @@
 
 using namespace std;
 
-int main()
+int main(int argc,char **argv)
 {
-  dic_init(new FuzzyWordNode(sarch["<root>"]));
+  dic_init(argc > 1 ? new WordNode(sarch["<root>"]) : new FuzzyWordNode(sarch["<root>"]));
 
   cerr << "Loading... ";
   get_root()->load("wordlist.wl");

@@ -11,10 +11,10 @@
 using namespace std;
 
 void print_all_words(const Words &words);
-int main()
+int main(int argc,char **argv)
 {
   WFST wfst;
-  dic_init(new FuzzyWordNode(sarch["<root>"]));
+  dic_init(argc > 1 ? new WordNode(sarch["<root>"]) : new FuzzyWordNode(sarch["<root>"]));
   ed_init();
 
   cerr << "Loading... ";

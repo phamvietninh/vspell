@@ -454,7 +454,7 @@ bool Text::syllable_check(int i)
 	string lcid = get_lowercased_syllable(sarch[st[i].get_cid()]);
 	if (sarch.in_dict(lcid)) {
 		Syllable syl;							// diacritic check
-		if (syl.parse(sarch[st[i].get_cid()]) && syl.to_str() == lcid)
+		if (syl.parse(lcid.c_str()) && syl.to_std_str() == lcid)
 			return true;
 		if (is_first_capitalized_word(sarch[st[i].get_id()]))
 			return true;
@@ -513,7 +513,8 @@ bool Text::word_check()
 				// don't care if the "true" word is lower-cased and the original one is valid upper-cased
 				if (!subok &&
 						(is_all_capitalized_word(sylls2) ||
-						 (is_first_capitalized_word(sylls2) && is_lower_cased_word(sylls3))))
+						 (is_first_capitalized_word(sylls2) && 
+						  is_lower_cased_word(sylls3))))
 					subok = true;
 
 				ok = subok;
@@ -537,7 +538,8 @@ bool Text::word_check()
 					// don't care if the "true" word is lower-cased and the original one is valid upper-cased
 					if (!ok &&
 							(is_all_capitalized_word(sylls2) ||
-							 (is_first_capitalized_word(sylls2) && is_lower_cased_word(sylls3))))
+							 (is_first_capitalized_word(sylls2) &&
+							  is_lower_cased_word(sylls3))))
 						ok = true;
 				}
 			}

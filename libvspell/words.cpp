@@ -143,8 +143,16 @@ void Lattice::post_construct(set<WordEntry> &we)
 			//cerr << "Consider " << s;
 			if (strchr("0123456789",s[1]) != NULL)
 				e.node = get_root()->get_next(get_id(NUMBER_ID));
-			else
-				e.node = get_root()->get_next(get_id(UNK_ID));
+			else {
+				int iiii,nnnn = s.size();
+				for (iiii = 0;iiii < nnnn;iiii ++)
+					if (viet_ispunct(s[i]))
+						break;
+				if (iiii < nnnn)
+					e.node = get_root()->get_next(get_id(PUNCT_ID));
+				else
+					e.node = get_root()->get_next(get_id(UNK_ID));
+			}
 			//cerr << " " << get_sarch()[e.node.node->get_id()] << endl;
 			we.insert(e);
 		}

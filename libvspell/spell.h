@@ -89,7 +89,7 @@ class Words:public std::vector<WordInfos*> {
 public:
 
 	boost::shared_ptr<WordEntries> we;
-	Sentence *st;
+	Sentence const * st;
 
 	void construct(const Sentence &st);
 
@@ -137,7 +137,7 @@ public:
 		 \param pos specify a position.
 	 */
 
-	WordEntryRefs& get_we(int pos) {
+	WordEntryRefs& get_we(int pos) const {
 		return (*this)[pos]->we;
 	}
 
@@ -238,7 +238,7 @@ public:
   //  Syllable& operator[] (int i) { return syllables[i]; }
   bool is_contiguous(int i);		// i & i+1 is contiguous ?
   void merge(int i);
-
+	
 };
 
 typedef Sentence* SentenceRef;
@@ -254,11 +254,23 @@ struct Segmentation : public std::vector<int>
   float prob;										/// total prob
   int distance;									/// total distance
 
-  Segmentation():prob(0),distance(0) {}
+  Segmentation(boost::shared_ptr<WordEntries> _we = boost::shared_ptr<WordEntries>()):
+		prob(0),
+		distance(0),
+		we(_we)
+	{}
+	Segmentation(const Segmentation&seg):std::vector<int>(seg) {
+		prob = seg.prob;
+		distance = seg.distance;
+		we = seg.we;
+	}
+
 	const WordEntry& operator[] (int id) const {
 		return (*we)[std::vector<int>::operator[](id)];
 	}
 	friend std::ostream& operator <<(std::ostream &os,const Segmentation &seg);
+	std::ostream& pretty_print(std::ostream &os,const Sentence &st);
+
 };
 
 typedef std::vector<Segmentation> Segmentations;

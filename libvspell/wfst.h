@@ -17,21 +17,26 @@
 #include <vector>
 #endif
 
+#ifndef BOOST_SHARED_PTR_HPP_INCLUDED
+#include <boost/shared_ptr.hpp>
+#endif
+
 #define SEGM_SEPARATOR 1
 
 struct Section {
 	int segment;
 	int start;
 	int len;
+	void segment_best(const Words&,Segmentation &final_seg);
 };
 
 class Sections: public std::vector<Section> {
 public:
-	SentenceRef st;
+	Sentence const * st;					/// This is used for operator<< only
 	void construct(const Words &words);
+	friend std::ostream& operator << (std::ostream &os,const Sections &s);
 };
 
-std::ostream& operator << (std::ostream &os,const Sections &s);
 
 /**
 	 Segmentor takes a Sentence, a Words and a range, then try to generate
@@ -45,17 +50,15 @@ private:
 	{
 		Segmentation s;
 		int next_syllable;
-		Trace():next_syllable(0) {}
+		Trace(boost::shared_ptr<WordEntries> _we):next_syllable(0),s(_we) {}
 	};
 	int nr_syllables;
 	std::vector<Trace> segs;
-	SentenceRef _sent;
-	Words *_words;
+	Words const *_words;
 	int from,to;
 
 public:
-	void init(const Sentence &sent,
-						Words &words,
+	void init(const Words &words,
 						int from,
 						int to);
 	bool step(Segmentation &seg);
@@ -78,26 +81,17 @@ public:
 
 	void enable_ngram(bool enable = true) { ngram_enabled = enable; }
 
-	void segment_best(const Sentence &sent,
-										const Words &words,
-										Segmentation &seps);
-	void segment_all(const Sentence &sent,
-			 std::vector<Segmentation> &result);
+	void segment_best(const Words &words,Segmentation &seps);
+	void segment_best_no_fuzzy(const Words &words,Segmentation &seps);
+	void segment_all(const Sentence &sent,std::vector<Segmentation> &result);
 
 	//private:
 public:													// for testing purpose
-	void generate_misspelled_words(const std::vector<int> &pos,int len);
-	void segment_all1(const Sentence &sent,
-										Words &words,
-										int from,
-										int to,
-										//const Segmentation &base_seg,
-										//int seg_id,
-										std::vector<Segmentation> &result);
-
+	void generate_misspelled_words(const std::vector<int> &pos,
+																 int len,
+																 Segmentation& final_seg);
 	// variables needed when run wfst
-	const Sentence *p_st;
-	const Words *p_words;
+	Words const *p_words;
 };
 
 #endif

@@ -29,7 +29,7 @@ std::ostream& operator << (std::ostream &os,const Sections &me)
 			os << "[";
 		os << format("%s") % sarch[_sent[i].id];
 		if (ii < nn && me[ii].start+me[ii].len-1 == i) {
-			os << "]";
+			os << "]" << me[ii].len;
 			ii ++;
 		}
 		os << " ";
@@ -115,4 +115,49 @@ std::ostream& operator <<(std::ostream &os,const Segmentation &seg)
 	for (i = 0;i < n;i ++)
 		os << "[" << seg[i].node << "] ";
 	return os;
+}
+
+std::ostream& Segmentation::pretty_print(std::ostream &os,const Sentence &st)
+{
+	int i,n = size();
+	VocabIndex id;
+	for (i = 0;i < n;i ++) {
+		if (i)
+			os << " ";
+		id = (*this)[i].node.node->get_id();
+		if (id == unk_id)
+			id = st[(*this)[i].pos].id;
+		os << sarch[id];
+	}
+	return os;
+}
+
+void Section::segment_best(const Words &w,Segmentation &final_seg)
+{
+	Segmentation seg(w.we);
+	Segmentor segtor;
+	final_seg.prob = 1000000;
+
+	segtor.init(w,								// Words
+							start,						// from
+							start+len-1);			// to
+
+	VocabIndex *vi = new VocabIndex[ngram_length];
+	while (segtor.step(seg)) {
+		// compute ngram. take the best seg.
+		seg.prob = 0;
+		vi[ngram_length] = Vocab_None;
+		for (int ii = ngram_length-1;ii < seg.size();ii ++) {
+			for (int j = 0;j < ngram_length-1;j++)
+				vi[j] = seg[ii-1-j].node.node->get_id();
+			seg.prob += -ngram.wordProb(seg[ii].node.node->get_id(),vi);
+		}
+		
+		if (seg.prob < final_seg.prob)
+			final_seg = seg;
+		
+		//cerr << seg << " " << seg.prob << endl;
+	}
+
+	delete[] vi;
 }

@@ -4,7 +4,6 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
-#include "wfst.h"
 #include "spell.h"
 
 using namespace std;

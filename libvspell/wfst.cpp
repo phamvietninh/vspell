@@ -33,33 +33,7 @@ public:
 	void done();
 };
 
-/*
-	Create a "template" segmentation. Mark all sections in template to sects
- */
-/*
-void WFST::create_base_segmentation(const Words &words,
-																		Sections &sects,
-																		Segmentation &seg)
-{
-	int i,ii,n,nn;
-	i = ii = 0;
-	n = words.get_word_count();
-	nn = sects.size();
 
-	while (i < n)
-		if (ii < nn && sects[ii].start == i) {
-			seg.items.push_back(Segmentation::Item());
-			sects[ii].segment = seg.items.size()-1;
-			ii ++;
-			i += sects[ii].len;
-		} else {
-			// only word(i,0,0) exists
-			seg.items.push_back(Segmentation::Item());
-			seg.items.back().pos = i;
-			i ++;
-		}
-}
-*/
 
 void Generator::init(const Sentence &_st)
 {
@@ -132,9 +106,8 @@ typedef vector<Segmentations> Segmentation2;
 	\param pos contains possibly misspelled position.
 	\param len specify the actual length pos. Don't use pos.size()
 */
-Words *www;
 
-void WFST::generate_misspelled_words(const vector<int> &pos,int len)
+void WFST::generate_misspelled_words(const vector<int> &pos,int len,Segmentation &final_seg)
 {
 	const Words &words = *p_words;
 	Words w;
@@ -146,99 +119,59 @@ void WFST::generate_misspelled_words(const vector<int> &pos,int len)
 	// create new (more compact) Words structure
 	int i,j,n = words.get_word_count();
 	for (i = 0;i < len;i ++) {
-			const WordEntryRefs &fmap = words.get_fuzzy_map(pos[i]);
-			int ii,nn = fmap.size();
-			for (ii = 0;ii < nn;++ii)
-				w.add(*fmap[ii]);
-		}
+		const WordEntryRefs &fmap = words.get_fuzzy_map(pos[i]);
+		int ii,nn = fmap.size();
+		for (ii = 0;ii < nn;++ii)
+			w.add(*fmap[ii]);
+	}
 
 	//cerr << w << endl;
 
-	// 4. Call get_sections
+	// 4. Create sections
 	Sections sects;
 	sects.construct(words);
 
 	// 5. Call create_base_segmentation
-	//Segmentation base_seg;
+	//Segmentation base_seg(words.we);
 	//create_base_segmentation(words,sects,base_seg);
-	Segmentation2 seg2;
-	seg2.resize(sects.size());
 
-	// 6. Call segment_all1 for each sections.
+
+	// 6. Get the best segmentation of each section, 
+	// then merge to one big segment.
 	n = sects.size();
-	for (i = 0;i < n;i ++) {
-		Segmentation seg;
-		Segmentor segtor;
 
-		segtor.init(*p_st,					// Sentence
-								w,							// Words
-								sects[i].start, // from
-								sects[i].start+sects[i].len-1);	// to
+	int ii,nn;
 
-		while (segtor.step(seg)) {
-			// compute ngram. take the best seg.
-			seg.prob = 0;
-			VocabIndex *vi = new VocabIndex[ngram_length];
-			vi[ngram_length] = Vocab_None;
-			for (int ii = ngram_length-1;ii < seg.size();ii ++) {
-				for (int j = 0;j < ngram_length-1;j++)
-					vi[j] = seg[ii-1-j].node.node->get_id();
-				seg.prob += -ngram.wordProb(seg[ii].node.node->get_id(),vi);
-			}
-			delete[] vi;
-
-			seg2[i/*sects[i].segment*/].push_back(seg); // need sort
-
-			//cout << seg << " " << seg.prob << endl;
+	i = ii = 0;
+	nn = words.get_word_count();
+	
+	final_seg.clear();
+	while (ii < nn)
+		if (i < n && sects[i].start == ii) {
+			Segmentation seg;
+			sects[i].segment_best(words,seg);
+			copy(seg.begin(),
+					 seg.end(),
+					 back_insert_iterator< Segmentation >(final_seg));
+			ii += sects[i].len;
+			i ++;
+		} else {
+			// only word(i,*,0) exists
+			final_seg.push_back(words.get_we(ii)[0]->id);
+			ii += words.get_we(ii)[0]->len;
 		}
-
-		vector<int> limits;
-		vector<int> vals;
-		limits.resize(sects.size());
-		for (int i = 0;i < sects.size();i ++)
-			limits[i] = seg2[i].size();
-		ZZZ z;
-		z.init(limits);
-
-
-		while (z.step(vals)) {
-			// merge seg to base seg.
-			seg.clear();
-			seg.prob = 0;
-			for (int ii = 0;ii < vals.size();ii ++) {
-				//cerr << ii << " " << vals[ii] << endl;
-				int iii,nnn = seg2[ii][vals[ii]].size();
-				
-				copy(seg2[ii][vals[ii]].begin(),
-						 seg2[ii][vals[ii]].end(),
-						 back_insert_iterator< Segmentation >(seg));
-				seg.prob += seg2[ii][vals[ii]].prob;
-			}
-
-			//cout << seg << " " << seg.prob << endl;
-			// 6.1. Recompute the score after each section processed. (pruning 2)
-		}
-		z.done();
-		
-	}
-
-
 }
 
 /**
 	Create the best segmentation for a sentence.
-	\param _sent specify the sentence
 	\param words store Words info
 	\param seps return the best segmentation
  */
 
-void WFST::segment_best(const Sentence &_sent,
-												const Words &words,
-												Segmentation &seps)
+void WFST::segment_best(const Words &words,Segmentation &seps)
 {
 	int i,ii,n,nn;
 
-	p_st = &_sent;
 	p_words = &words;
 
 	// in test mode, generate all positions where misspelled can appear, 
@@ -256,17 +189,37 @@ void WFST::segment_best(const Sentence &_sent,
 	// 1. Bai toan hoan vi, tinh chap C(k,n) with modification. C(1,n)+C(2,n)+...+C(k,n)
 	Generator gen;
 
-	gen.init(_sent);
+	gen.init(*words.st);
 	vector<int> pos;
 	int len;
+	seps.prob = 100;
 	while (gen.step(pos,len)) {
+		Segmentation seg;
 		//cerr << "POS :";
 		//for (int i = 0;i < len;i ++) cerr << pos[i];
 		//cerr << endl;
-		generate_misspelled_words(pos,len);
+		generate_misspelled_words(pos,len,seg);
+		if (seg.prob < seps.prob)
+			seps = seg;
 	}
 	gen.done();
 
+}
+
+/**
+	Create the best segmentation for a sentence. The biggest difference between
+	segment_best and segment_best_no_fuzzy is that segment_best_no_fuzzy don't
+	use Generator. It assumes there is no misspelled position at all.
+	\param words store Words info
+	\param seps return the best segmentation
+ */
+
+void WFST::segment_best_no_fuzzy(const Words &words,Segmentation &seps)
+{
+	p_words = &words;
+
+	vector<int> pos;
+	generate_misspelled_words(pos,0,seps);
 }
 
 // WFST (Weighted Finite State Transducer) implementation
@@ -319,8 +272,7 @@ public:
 
 
 
-void Segmentor::init(const Sentence &sent,
-										 Words &words,
+void Segmentor::init(const Words &words,
 										 int from,
 										 int to)
 {
@@ -329,19 +281,17 @@ void Segmentor::init(const Sentence &sent,
 	segs.clear();
 	segs.reserve(100);
 
-	Trace trace;
+	Trace trace(words.we);
 	trace.next_syllable = from;
-	trace.s.we = words.we;
 	segs.push_back(trace);	// empty seg
 
-	_sent = &(Sentence&)sent;
 	_words = &words;
 }
 
 bool Segmentor::step(Segmentation &result)
 {
-	Sentence &sent = *_sent;
-	Words &words = *_words;
+	const Words &words = *_words;
+	const Sentence &sent = *_words->st;
 	while (!segs.empty()) {
 		// get one
 		Trace trace = segs.back();
@@ -361,7 +311,7 @@ bool Segmentor::step(Segmentation &result)
 			WordEntryRef i_entry = wes[ii];
 
 			// New segmentation for longer incomplete word
-			Trace newtrace;
+			Trace newtrace(words.we);
 			newtrace = trace;
 			newtrace.s.push_back(i_entry->id);
 			newtrace.s.prob += i_entry->node.node->get_prob();
@@ -419,21 +369,18 @@ bool ZZZ::step(vector<int> &_pos)
 {
 	while (cur >= 0) {
 
-		if (cur == nr_limit) {
+		if (cur == nr_limit-1) {
 			_pos = iter;
-			cur --;
+			while (cur >= 0 && iter[cur] == limit[cur]-1)
+				cur --;
+			if (cur >= 0)
+				iter[cur]++;
 			return true;
 		}
 
-		if (iter[cur] < limit[cur]-1) {
-			iter[cur] ++;
-			cur ++;
-			if (cur < nr_limit)
-				iter[cur] = 0;
-			continue;
-		} else {
-			cur --;
-		}
+		cur ++;
+		if (cur < nr_limit)
+			iter[cur] = 0;
 	}
 	return false;
 }

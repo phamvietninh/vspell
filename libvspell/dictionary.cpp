@@ -505,8 +505,11 @@ std::ostream& operator << (std::ostream &os,const WordNode &node)
 {
 	std::vector<strid> syll;
   node.get_syllables(syll);
-	for (int i = 0;i < syll.size();i ++)
-		os << sarch[syll[i]] << "(" << syll[i] << ") ";
+	for (int i = 0;i < syll.size();i ++) {
+		if (i)
+			os << " ";
+		os << sarch[syll[i]];// << "(" << syll[i] << ") ";
+	}
 	return os;
 }
 

@@ -41,7 +41,7 @@ void Words::construct(const Sentence &sent)
 
 	//cerr << "construct\n";
 
-	w.st = &(Sentence&)sent;
+	w.st = &sent;
 
 	vector<WordState> states;
 	vector<WordState> old_states(states);

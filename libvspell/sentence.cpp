@@ -11,20 +11,24 @@ void sentences_split(const string &_input,vector<string> &output)
 	int i,n = tokens.size();
 
 	string str;
+	bool flush = false;
 	
 	for (i = 0;i < n;i ++) {
-		str += tokens[i].value;
-
 		if (tokens[i].is_token) {
 			int jj,nn = tokens[i].value.size();
 			for (jj = 0;jj < nn;jj ++)
 				if (viet_isalpha(tokens[i].value[jj]))
 					break;
-			if (jj == nn) {
+			if (jj == nn)
+				flush = true;
+			else if (flush) {
 				output.push_back(str);
 				str = "";
+				flush = false;
+				
 			}
 		}
+		str += tokens[i].value;
 	}
 
 	if (!str.empty())

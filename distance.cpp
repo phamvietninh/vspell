@@ -3,7 +3,6 @@
 #include <string>
 #include <values.h>
 #include <stdio.h>
-#include <map>
 #include "distance.h"
 
 int a[MAX_WIDTH+2][MAX_HEIGHT+2];
@@ -13,6 +12,7 @@ int a[MAX_WIDTH+2][MAX_HEIGHT+2];
 
 using namespace std;
 #ifdef USE_CACHE
+#include <map>
 typedef map<pair<string,string>,int> ed_cache_type; 
 static ed_cache_type ed_cache;
 #endif

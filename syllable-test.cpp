@@ -11,10 +11,7 @@ int main()
   
   while (cin >> str) {
     cout << i.parse(str.c_str()) << ": ";
-    cout << Dictionary::first_consonants[i.first_consonant] << " ";
-    cout << Dictionary::padding_vowels[i.padding_vowel] << " ";
-    cout << Dictionary::vowels[i.vowel] << " "; 
-    cout << Dictionary::last_consonants[i.last_consonant] << endl;
+    i.print();
   }
   return 0;
 }

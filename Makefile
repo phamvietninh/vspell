@@ -1,8 +1,10 @@
-TRAIN_CXXFLAGS = -DUSE_EXACT_MATCH -DTRAINING
-CXXFLAGS = -I. -g $(TRAIN_CXXFLAGS) -pg
-LDFLAGS = -g -pg
+SRILM_LIBS =  -loolm  -ldstruct -lmisc 
+SRILM_CXXFLAGS = 
+TRAIN_CXXFLAGS = -DTRAINING -Iinclude -Iinclude/srilm #-DUSE_EXACT_MATCH
+CXXFLAGS = -I. -g $(TRAIN_CXXFLAGS) $(SRILM_CXXFLAGS)
+LDFLAGS = -g  -Llib/srilm  $(SRILM_LIBS)
 
-all: wfst-train
+all: wfst-train wfst syllable-test
 
 clean:
 	rm *.o wfst wfst-trin distance-test dictionary-test syllable-test -f
@@ -28,12 +30,12 @@ syllable-test.o: syllable-test.cpp dictionary.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 wfst: wfst.o distance.o wfst-test.o dictionary.o syllable.o
-	$(CXX) $(LDFLAGS) $^ -o $@
+	$(CXX) $^ -o $@ $(LDFLAGS) 
 wfst-train: wfst-train.o distance.o wfst.o dictionary.o syllable.o
-	$(CXX) $(LDFLAGS) $^ -o $@
+	$(CXX) -o $@ $^ $(LDFLAGS)
 distance-test: distance-test.o distance.o
-	$(CXX) $(LDFLAGS) $^ -o $@
+	$(CXX) $^ -o $@ $(LDFLAGS)
 dictionary-test: dictionary-test.o dictionary.o distance.o syllable.o
-	$(CXX) $(LDFLAGS) $^ -o $@
+	$(CXX) $^ -o $@ $(LDFLAGS)
 syllable-test: syllable-test.o dictionary.o syllable.o distance.o
-	$(CXX) $(LDFLAGS) $^ -o $@
+	$(CXX) $^ -o $@ $(LDFLAGS)

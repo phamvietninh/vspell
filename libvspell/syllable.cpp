@@ -726,8 +726,66 @@ bool Syllable::parse(const char *str)
 			}
 		}
 
-		if (ok && syllable.empty())
+		// fix some errors
+		if (ok && syllable.empty()) {
+			if (components[Vowel] != -1 &&
+					!strcmp(vowels[components[Vowel]],"ua") &&
+					components[Last_Consonant] != -1)
+				ok = false;
+			else if (components[First_Consonant] != -1 &&
+							 !strcmp(first_consonants[components[First_Consonant]],"q") &&
+							 components[Padding_Vowel] == -1 &&
+							 components[Vowel] != -1 &&
+							 (vowels[components[Vowel]][0] == 'u'))
+				ok = false;
+			else if (components[Vowel] != -1 &&
+							 !strcmp(vowels[components[Vowel]],"u") &&
+							 components[Last_Consonant] != -1 &&
+							 !strcmp(last_consonants[components[Last_Consonant]],"y"))
+				ok = false;
+		}
+
+
+		if (ok && syllable.empty()) {
+
+
+			// thu?y
+			/*
+			if (components[Vowel] != -1 && !strcmp(vowels[components[Vowel]],"u") &&
+					components[Last_Consonant] != -1 && !strcmp(last_consonants[components[Last_Consonant]],"y")) {
+				components[Padding_Vowel] = 1;
+				components[Vowel] = 18;
+				components[Last_Consonant] = -1;
+			}
+
+			// qui?
+			if (components[First_Consonant] != -1 &&
+					!strcmp(first_consonants[components[First_Consonant]],"q") &&
+					components[Vowel] != -1 &&
+					!strcmp(vowels[components[Vowel]],"u") &&
+					components[Last_Consonant] != -1) {
+				if (!strcmp(last_consonants[components[Last_Consonant]],"i") ||
+						!strcmp(last_consonants[components[Last_Consonant]],"y")) {
+					components[Padding_Vowel] = 1;
+					components[Vowel] = !strcmp(last_consonants[components[Last_Consonant]],"i") ? 17 : 18;
+					components[Last_Consonant] = -1;
+				} else 
+					return false;
+			}
+
+			// qua`
+			if (components[First_Consonant] != -1 &&
+					!strcmp(first_consonants[components[First_Consonant]],"q") &&
+					components[Vowel] != -1 &&
+					!strcmp(vowels[components[Vowel]],"ua")) {
+				components[Padding_Vowel] = 1;
+				components[Vowel] = 7;
+			}
+			*/
+					
+
 			return true;
+		}
 		//else
 		//cerr << "Case " << z << " failed" << endl;
 	}

@@ -382,7 +382,7 @@ bool Text::word_check()
 		bool ok = true;
 		sylls2.resize(len);
 		for (ii = 0;ii < len;ii ++) {
-			sylls2[ii] = st[seg[i].pos+ii].get_cid();
+			sylls2[ii] = st[seg[i].pos+ii].get_id();
 			if (ok && st[seg[i].pos+ii].get_cid() != sylls[ii])
 				ok = false;
 		}

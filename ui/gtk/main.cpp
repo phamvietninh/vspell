@@ -23,6 +23,7 @@ protected:
 	void show_wrong_words(unsigned p);
 
 	void iter_at(GtkTextIter &iter,int pos);
+	string word_to_utf8(unsigned seg_id);
 };
 
 class MyTextFactory : public TextFactory
@@ -39,6 +40,7 @@ static GtkWidget *textview_main;
 static GtkWidget *log_main;
 static GtkWidget *spell_entry;
 static GtkWidget *ignore_button,*ignore_all_button,*spell_button,*open_button;
+static GtkListStore *list_store;
 static MyTextFactory myfactory;
 static VSpell vspell(myfactory);
 
@@ -283,6 +285,14 @@ int main(int argc,char **argv)
 	gtk_box_pack_start(GTK_BOX(spell_entry_hbox),spell_entry_button,FALSE,FALSE,0);
 
 	GtkWidget *w = gtk_tree_view_new();
+	list_store = gtk_list_store_new(1,G_TYPE_STRING);
+	gtk_tree_view_set_model(GTK_TREE_VIEW(w),GTK_TREE_MODEL(list_store));
+	gtk_tree_view_append_column(GTK_TREE_VIEW(w),
+															gtk_tree_view_column_new_with_attributes("Candidates",
+																																			 gtk_cell_renderer_text_new(),
+																																			 "text",
+																																			 0,
+																																			 NULL));
 	gtk_box_pack_start(GTK_BOX(spell_vbox),w,TRUE,TRUE,0);
 
 	// Commands
@@ -389,6 +399,36 @@ bool MyText::ui_syllable_check()
 	return !is_checking;
 }
 
+void candidates_reset()
+{
+	gtk_list_store_clear(list_store);
+}
+
+void candidates_add(const gchar *s)
+{
+	GtkTreeIter iter;
+	gtk_list_store_append(list_store,&iter);
+	gtk_list_store_set(list_store,&iter,
+										 0,s,
+										 -1);
+}
+
+string MyText::word_to_utf8(unsigned seg_id)
+{
+	vector<strid> sylls;
+	string s;
+	seg[seg_id].node->get_syllables(sylls);
+	int i,n = sylls.size();
+	for (i = 0;i < n;i ++) {
+		if (i)
+			s += " ";
+		Syllable syll;
+		syll.parse(get_sarch()[sylls[i]]);
+		s += viet_to_utf8(syll.to_str().c_str());
+	}
+	return s;
+}
+
 bool MyText::ui_word_check()
 {
 	unsigned i,n = suggestions.size();
@@ -405,6 +445,8 @@ bool MyText::ui_word_check()
 		len = st[pos2].start+strlen(get_sarch()[st[pos2].id])-from;
 		string s = substr(from,len);
 		gtk_entry_set_text(GTK_ENTRY(spell_entry),s.c_str());
+		candidates_reset();
+		candidates_add(word_to_utf8(suggestions[i].id).c_str());
 		processed = ignore_all = ignore = false;
 		while (!gtk_main_iteration() && !ignore && !ignore_all && !processed);
 

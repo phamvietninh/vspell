@@ -18,7 +18,7 @@
 %\theoremstyle{break}
 %\newtheorem{algo}{Thuật toán}
 
-%\setlength{\parskip}{1.6ex plus 0.7ex minus 0.6ex}
+\setlength{\parskip}{1.2ex plus 0.7ex minus 0.6ex}
 
 \setcounter{minitocdepth}{4}
 
@@ -2509,7 +2509,7 @@ sau:
   Maximum matching~\ldots{})
 \item Sử dụng mô hình đề nghị để tách từ ngữ liệu huấn luyện.
 \item Tái huấn luyện mô hình dựa trên kết quả tách từ có được ở bước
-  2. Bước 2-3 có thể được lặp lại nhiều lần  cho đến khi hiệu suất của
+  2. Bước 2--3 có thể được lặp lại nhiều lần  cho đến khi hiệu suất của
   mô hình ngừng tăng.
 \end{enumerate}
 
@@ -3329,7 +3329,7 @@ rộng (hình~\ref{fig:wordlattice1}).
   \label{fig:wordlattice1}
 \end{figure}
 
-Một dạng khác của lưới từ, gọi là lưới 2-từ  (xem
+Một dạng khác của lưới từ, gọi là lưới~2-từ  (xem
 hình~\ref{fig:wordlattice2}). Trong loại lưới từ này, 
 mỗi nút không phải là một từ mà là hai từ đứng liền nhau. Hai nút nối
 liền nhau thì từ bên phải của nút bên trái và từ bên trái của nút bên
@@ -3342,7 +3342,7 @@ nhiên những lưới từ này thường không hiệu quả.
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\textwidth]{wordlattice2}
-  \caption{Lưới 2-từ của câu ``Học sinh học sinh học''}
+  \caption{Lưới~2-từ của câu ``Học sinh học sinh học''}
   \label{fig:wordlattice2}
 \end{figure}
 
@@ -3364,7 +3364,7 @@ lần lượt qua các cạnh để tìm  ra các từ. Duyệt i từ 1 đến 
 \end{itemize}
 \end{algo}
 
-Thuật toán tạo lưới 2-từ được nêu trong \cite{Ravishankar}. Thuật toán
+Thuật toán tạo lưới~2-từ được nêu trong \cite{Ravishankar}. Thuật toán
 sẽ tạo ra lưới $n$-từ từ lưới $n-1$-từ. Lưới từ cơ bản nên trên được
 xem như là lưới 1-từ. Thuật toán được tóm tắt lại như sau: 
 
@@ -3671,15 +3671,15 @@ toán tìm đường đi ngắn nhất trong đồ thị có hướng, có trọ
 Thuật toán tìm đường đi ngắn nhất được dùng ở đây là thuật toán tìm
 kiếm theo độ ưu tiên PFS\footnote{Priority-First Search---PFS} để tìm
 đường đi ngắn nhất trên đồ thị. Khoảng cách giữa hai 
-điểm trong đồ thị là xác suất 2-gram của hai từ. Bài toán tìm đường
+điểm trong đồ thị là xác suất bigram của hai từ. Bài toán tìm đường
 đi ngắn nhất, có thể áp dụng PFS, Prime, Djisktra. PFS được chọn vì
 lưới từ, qua khảo sát, có thể được coi là một đồ thị thưa.
 
 Cách trên được áp dụng cho bigram, không thể áp dụng cho trigram do
 giả định dùng trọng số của cạnh là xác suất bigram, bigram là xác suất
 giữa hai từ liên tiếp, trong khi trigram là xác suất giữa ba từ liên
-tiếp. Để áp dụng trigram thay vì bigram, ta sẽ sử dụng lưới 2-từ. Sau
-đó áp dụng thuật toán PFS cho đồ thị mới vì mỗi nút trong lưới 2-từ
+tiếp. Để áp dụng trigram thay vì bigram, ta sẽ sử dụng lưới~2-từ. Sau
+đó áp dụng thuật toán PFS cho đồ thị mới vì mỗi nút trong lưới~2-từ
 thực chất bao gồm 3 từ liên tiếp nhau.
 
 Cách làm này không thể thực hiện với ngram ($n > 3$) vì khi đó số
@@ -3846,27 +3846,76 @@ cách đáng kể (khoảng 20\%, như kết quả trong~\cite{softcount}).
 
 \subsubsection{Thuật toán Soft-count}
 
+Cho một cây dài $n$ chữ. Có $2^{n-1}$ cách để tách câu. Giả sử chúng
+ta biết xác suất $p_i$ của mỗi cách tách từ. Mỗi cách tách từ trong
+câu sẽ góp phần vào việc đếm từ, dựa trên xác suất của các cách tách
+từ đó. Ví dụ, với cách tách từ có xác suất $p_i$, ta tăng số đếm cho
+mỗi từ trong cách tách từ đó một khoảng
+$\frac{p_i}{\sum_{j=1}^{2^{n-1}}p_j}$. Cách đếm từ kiểu
+này được gọi là ``soft-count'' vì mọi cách tác từ đều được đếm. 
 
-\subsubsection{Thuật toán Soft-count mới để áp dụng bigram}
+Câu cho trước bao gồm các chữ $C_1C_2C_3\ldots C_n$. Mỗi từ
+$C_{j_1}\ldots C_{j_2}$ trong câu sẽ được tăng một khoảng
+$\frac{S_{j_1}^{left}p(C_{j_1}\ldots
+  C_{j_2})S_{j_2}^{right}}{\alpha}$, trong đó
+\begin{itemize}
+\item $S_{j_1}^{left}$ là tổng xác suất mọi cách tách từ có thể có của
+  chuỗi con từ đầu câu đến $C_{j_1}$.
+\item $p(C_{j_1}\ldots C_{j_2})$ là xác suất của cách tách từ
+  $C_{j_1}\ldots C_{j_2}$ hiện có.
+\item $\alpha$ là hằng số chuẩn hoá, bằng tổng xác suất mọi cách tách
+  từ của câu --- $S_{n+1}^{left}$.
+\end{itemize}
 
-\subsubsection{Thuật toán Soft-count mới để áp dụng trigram}
+$S_{j_1}^{left}$ và $S_{j_2}^{right}$ được tính bằng quy hoạch động. 
+
+\begin{align}
+S_i^{left} &= \left\{
+    \begin{array}{ll}
+      1&i=1\\
+      p(C_1)&i=2\\
+      \sum_{j=1}^{i-1}p(C_j\ldots C_{i-1})S_j^{left}&2<i\le n+1
+    \end{array}
+  \right.\\
+S_i^{right} &= \left\{
+    \begin{array}{ll}
+      1& i=n\\
+      p(C_n)& i=n-1\\
+      \sum_{j=i+1}^{n}p(C_{i+1}\ldots C_j)S_j^{right}&1\le i<n-1
+    \end{array}
+  \right.
+\end{align}
+
+$S_i^{left}$ được tính lần lượt với $i=1,2,\ldots,n+1$ từ trái sang
+phải. Sau khi kết thúc, ta được $\alpha=S_{n+1}^{left}$. Sau đó tính
+$S_i^{right}$ với $i=n,n-1,\ldots,3,2,1$ từ phải sang trái, vừa tính
+$S_i^{right}$ vừa đếm từ.
+
+Độ phức tạp của thuật toán là $O(kIN)$ với $k$ là độ dài tối đa của
+từ, $I$ là số lần duyệt (khoảng $5-10$ lần) và $N$ là kích thước ngữ
+liệu.
+
+\subsubsection{Thuật toán Soft-count áp dụng trên bigram}
+
+Như đã nói, thuật toán Soft-count có hai hạn chế là không dùng từ
+điển, và tính toán dựa trên unigram. Thuật toán cải tiến được đưa ra
+để khắc phục hai hạn chế này.
 
 
+\paragraph{Sử dụng từ điển và lưới từ}
 
-Giả sử câu S có $n$ tiếng, $2^{n-1}$ cách tách từ khác nhau, xác suất
-mỗi cách tách từ là $p(1),p(2),\ldots{},p(n)$.
-Với mỗi từ trong một cách tách từ, ta cộng thêm một khoảng
-$\displaystyle\frac{p(i)}{\sum_{i=1}^n{p(i)}}$ cho từ đó. Soft-count dùng
-lập trình quy hoạch động để thực hiện quá trình này.
+Với hạn chế không dùng từ điển, khắc phục hạn chế này khá đơn
+giản. Với xác suất $P(C_i\ldots C_j)$, nếu từ $C_i\ldots C_j$ không
+tồn tại, ta cho xác suất này về $0$. Tuy nhiên, thuật toán sẽ được
+thay đổi để tận dụng lưới từ khi tính toán, tránh việc tìm tất cả các
+chuỗi con rồi lại xét xem chuỗi con đó có phải là một từ hay không.
 
-Thuật toán được dùng ở đây là thuật toán soft-count, được hiệu chỉnh
-sử dụng từ điển và lưới từ để hạn chế những từ không phải là từ.
-
-Cho lưới từ của câu S. Gọi $L(W)$ là tập những từ nối đến nút
+Cho lưới từ của câu $S$. Gọi $L(W)$ là tập những từ nối đến nút
 $W$. Tương tự, $R(W)$ là tập những từ được nối đến từ nút $W$.
-Với mỗi nút $W$ trong S, tổng xác suất các cách tách từ có chứa nút
+Với mỗi nút $W$ trong $S$, tổng xác suất các cách tách từ có chứa nút
 $W$ là:
 $$P(W)=P^{left}(W)p(W)P^{right}(W)$$
+
 Trong đó:
 \begin{itemize}
 \item $P^{left}(W)$ là tổng xác suất các cách tách từ tính từ đầu câu
@@ -3896,6 +3945,7 @@ P^{right}(W) = \left\{
 $$
 
 \begin{algo}\caption{Tính $P^{left}$}
+\label{algo:sc1:pleft}
 \begin{enumerate}
 \item Đặt $P^{left}(head) = p(head)$
 \item Đặt $P^{left}(W) = 0$ với mọi $W$ còn lại.
@@ -3905,15 +3955,17 @@ $$
 \end{enumerate}
 \end{algo}
 
-Thuật toán tương tự được áp dụng để tính $P^{right}$.
-
-Sau khi tính được $P^{left}$ và $P^{right}$, ta có thể tính fractional
+Thuật toán~\ref{algo:sc1:pleft} được dùng để tính $P^{left}$. Thuật
+toán tương tự được áp dụng để tính $P^{right}$.  Sau khi tính được
+$P^{left}$ và $P^{right}$, ta có thể tính fractional 
 count cho các từ trong câu bằng cách duyệt tất cả các nút trong lưới từ,
 cộng thêm vào $\displaystyle\frac{P(W)}{P^{left}(tail)}$ cho từ
 $C$. Thực tế, ta sẽ lồng bước này vào trong thuật toán tính
-$P^{right}$, vì thuật toán cũng phải duyệt qua tất cả các từ.
+$P^{right}$, vì thuật toán cũng phải duyệt qua tất cả các từ (thuật
+toán~\ref{algo:sc1:pright}). 
 
 \begin{algo}\caption{Tính $P^{right}$}
+\label{algo:sc1:pright}
 \begin{enumerate}
 \item Đặt $P^{right}(tail) = p(tail)$
 \item Đặt $P^{right}(W) = 0$ với mọi nút còn lại.
@@ -3928,17 +3980,24 @@ $P^{right}$, vì thuật toán cũng phải duyệt qua tất cả các từ.
 \end{enumerate}
 \end{algo}
 
+\paragraph{Áp dụng bigram}
 
-Tuy nhiên, thuật toán trên (cũng như thuật toán gốc) sử dụng
-uni-gram, trong khi trình bắt lỗi lại dùng 2-gram. Để cho phép thuật
-toán dùng 2-gram, ta có thể tạo một lưới 2-từ như cách của~\cite{Ravishankar} khi muốn tách từ dựa trên 3-gram. Tuy nhiên, để áp
-dụng cách này với 3-gram đòi hỏi phải tạo lưới 3-từ! Số lượng nút
-trong lưới 3-từ nhiều hơn nhiều so với lưới từ gốc, làm giảm tính hiệu
-quả của thuật toán. 
+Để áp dụng bigram thay vì
+unigram, giải pháp đầu tiên là sử dụng lưới~2-từ thay vì lưới từ. Với
+lưới~2-từ, mỗi nút tương đương hai từ liên tiếp nhau, do đó
+$P(C_i\ldots C_j)$ tương ứng với $P(W_k|W_{k-1})$ (với $W_k$ là từ thứ
+$k$). Tuy nhiên, để áp dụng với trigram, ta lại phải sử dụng
+lưới~3-từ. Điều này không hiệu quả vì lưới từ cấp càng cao càng
+to, xử lý kém hiệu quả.
 
-Thay vì vậy, thuật toán được hiệu chỉnh để áp dụng 2-gram với lưới từ
+Ta có thể áp dụng trực tiếp lưới từ cơ bản cho thuật toán Soft-count
+mà không cần lưới~2-từ. Thay vì tính toán các giá trị dựa trên nút,
+thuật toán sẽ được thay đổi để tính toán các giá trị dựa trên cạnh.
+
+Thay vì vậy, thuật toán được hiệu chỉnh để áp dụng bigram với lưới từ
 thông thường. Thay vì dùng giá trị nút để tính, ta dùng giá trị cạnh
-để tính. $p(W)$ sẽ được thay bằng $p(W/W')$.
+để tính. $p(W)$ sẽ được thay bằng $p(W|W')$ với $W$ và $W'$ là hai từ
+kề nhau.
 
 $$P(W)=P^{left}(W)P^{right}(W)$$
 
@@ -3963,16 +4022,18 @@ P^{right}(W) = \left\{
 $$
 
 $P(W)$ đại diện cho xác suất tất cả các cách tách từ đi qua nút
-$W$. Do ta huấn luyện 2-gram, nên cần xác suất $P(W/W')$ chứ không cần
+$W$. Do ta huấn luyện bigram, nên cần xác suất $P(W/W')$ chứ không cần
 $P(W)$. Nếu $W$ và $W_{+1}$ chỉ có một cạnh, $P(W)$ cũng chính là
 $P(W/W_{+1})$. Nếu có nhiều hơn một cạnh, ta cần dùng cách khác để
 tính $P(W/W')$. Với thuật toán tính $P^{right}$ hiện có, ta cộng dồn
 $p(W/W')P^{right}$ vào cho $P^{right}(W)$. Vậy trong quá trình cộng
 dồn ta có thể tính ngay $P(W/W')$ bằng cách nhân giá trị cộng dồn với
-$P^{left}(W)$. Thuật toán tính $P^{left}$ và $P^{right}$ sau cùng như
-sau:
+$P^{left}(W)$. Thuật toán~\ref{algo:sc2:pleft}
+và~\ref{algo:sc2:pright} là thuật toán cải tiến để tính  $P^{left}$ và
+$P^{right}$.
 
-\begin{algo}\caption{Tính $P^{left}$}
+\begin{algo}\caption{Tính $P^{left}$ cho bigram}
+\label{algo:sc2:pleft}
 \begin{enumerate}
 \item Đặt $P^{left}(head) = p(head)$
 \item Đặt $P^{left}(W) = 0$ với mọi $W$ còn lại.
@@ -3983,7 +4044,8 @@ sau:
 \end{enumerate}
 \end{algo}
 
-\begin{algo}\caption{Tính $P^{right}$}
+\begin{algo}\caption{Tính $P^{right}$ cho bigram}
+\label{algo:sc2:pright}
 \begin{enumerate}
 \item Đặt $P^{right}(tail) = p(tail)$
 \item Đặt $P^{right}(W) = 0$ với mọi nút còn lại.
@@ -3997,8 +4059,12 @@ sau:
 \end{enumerate}
 \end{algo}
 
-Với cách tính này, ta có thể dùng lưới từ cùng với 2-gram. Để tính
-3-gram, ta dùng lưới 2-từ. 
+
+\subsubsection{Thuật toán Soft-count mới để áp dụng trigram}
+
+Với cách tính áp dụng để tính Soft-count với bigram, ta chỉ cần dùng
+lưới~2-từ thay vì lưới từ để có thể áp dụng trigram (trong khi lẽ ra
+phải dùng lưới~3-từ để tính trigram, nếu dùng thuật toán gốc).
 
 %% \subsection{Tính ngram}
 
@@ -4016,21 +4082,117 @@ Với cách tính này, ta có thể dùng lưới từ cùng với 2-gram. Đ�
 \label{cha:implementation}
 \minitoc
 
+Chương trình được cài đặt bằng C++ trên nền Linux. Phần giao diện được
+cài đặt bằng Gtk+. Phần giao diện này chỉ mang tính chất minh
+hoạ. Trong thực tế, chương trình nên được tích hợp vào các bộ soạn
+thảo văn bản như Open Office, AbiWord~\ldots{} để có thể phát huy tác
+dụng. Ngoài ra chương trình sử dụng thư viện SRILM~\cite{XXX} để tính toán mô
+hình ngôn ngữ.
+
+Chương trình gồm hai phần: phần bắt lỗi chính tả và phần huấn
+luyện. Hai phần này sử dụng khá nhiều thành phần chung. Các
+thành phần sẽ được trình bày lần lượt bên dưới. Những điểm riêng của
+trình bắt lỗi chính tả và trình huấn luyện sẽ được trình bày riêng.
+
+
+\section{Cấu trúc dữ liệu}
+\label{sec:data-structure}
+
+\subsection{Lưu chuỗi}
+%\newcommand{\sym}[1]{\verb@#1@}
+Để tiết kiệm chỗ và giảm chi phí khi so sánh các token và các từ, chương trình
+lưu toàn bộ các token có thể có vào một mảng chung. Mọi token đều được
+tham chiếu bằng một con số, tạm gọi là \verb@strid@ (chính là số thứ tự
+token trong mảng). Ngoài ra một bảng băm được dùng để ánh xạ chuỗi
+sang strid. Cả hai cấu trúc dữ liệu này được cài đặt trong lớp
+\verb@StringArchive@. Chương trình chỉ sử dụng duy nhất một đối tượng 
+thuộc lớp này, được truy cập thông qua hàm \verb@get_sarch()@. Toán tử
+\verb@[]@, được cài đặt để chuyển đổi từ strid sang chuỗi và ngược lại.
+
+Từ và tiếng đều được lưu trong StringArchive. Với từ, các khoảng trắng
+được thay thế bằng dấu gạch chân `\verb@_@' trước khi lưu. Ngoài ra từ
+cách nhau bởi nhiều khoảng trắng sẽ được gom lại thành một khoảng
+trắng. Ví dụ, từ ``\verb@học  sinh@'' sẽ được lưu trong StringArchive
+dạng ``\verb@học_sinh@''. Việc chuẩn hoá sẽ được tiến hành trên từng
+tiếng. Sau khi chuẩn hoá, từ sẽ thành ``\verb@5hoc_0sinh@''.
+
+\subsection{Từ điển}
+
+Từ điển được lưu ở dạng văn bản, mỗi dòng tương ứng với một từ. Trong
+bộ nhớ, từ điển sử dụng cây đa nhánh (lớp \verb@WordNode@). Trong lớp
+\verb@WordNode@, \verb@nodes@ sẽ chứa con trỏ đến các nút kế tiếp. Duyệt
+từ nút gốc (truy cập thông qua hàm \verb@get_root()@) cho đến hết, ta
+sẽ được danh sách tiếng hình thành từ. Với mỗi nút, ngoài việc chứa
+liên kết trỏ đến các nút con, còn có một số thông tin về từ (đối với
+những nút lá) bao gồm xác suất unigram của từ đó, strid của từ~\ldots
+
+Một số hàm thường dùng bao gồm:
+\begin{itemize}
+\item \verb@get_syllable()@: Strid của tiếng của nút hiện tại.
+\item \verb@get_id()@: Strid của từ.
+\item \verb@get_prob()@: Lấy xác suất unigram của từ.
+\item \verb@get_syllables()@: Danh sách strid của các tiếng hình thành
+  nên từ.
+\item \verb@get_syllable_count()@: Số strid hình thành nên từ.
+\item \verb@get_next()@: Trả về nút con với strid cho trước.
+\item \verb@fuzzy_get_next()@: Trả về danh sách nút con gần giống với
+  strid cho trước. Hàm này có thể sẽ được cài đặt để áp dụng so sánh
+  mờ.
+\item \verb@load()@: Xây dựng cây từ điển từ tập tin.
+\item \verb@save()@: Lưu cây từ điển vào tập tin.
+\end{itemize}
+
+Lớp \verb@WordNode@ cài đặt hàm \verb@fuzzy_get_next()@ hoàn toàn giống
+với \verb@get_next()@. Để có thể so sánh mờ, ta sử dụng lớp
+\verb@FuzzyWordNode@ kế thừa từ \verb@WordNode@. Lớp này bao gồm hàm
+\verb@fuzzy_get_next_with_syllable()@ dùng để trả về danh sách các từ có
+phát âm gần giống với từ cho trước, được dùng để cài đặt hàm \verb@fuzzy_get_next()@.
+
+Từ điển tiếng không được lưu trực tiếp vào tập tin mà sẽ được phát
+sinh tự động khi nạp từ điển từ. Thực ra, hàm \verb@WordNode::load()@
+khi được gọi sẽ lưu các tiếng vào \verb@StringArchive@, đồng thời đánh
+dấu tiếng đó thuộc từ điển tiếng. Sau đó, ta có thể xác định một chữ
+có phải thuộc về từ điển tiếng hay không nhờ hàm
+\verb@StringArchive::in_dict()@.
+
+
+\subsection{Câu}
+
+
+\subsection{Lưới từ}
+
+
+\subsection{Cách tách từ}
+
+
+\subsection{Mô hình ngôn ngữ}
+
+Mô hình ngôn ngữ được sử dụng là trigram. Mô hình ngôn ngữ được cài
+đặt trong thư viện SRILM. Mô hình ngôn ngữ được truy cập thông qua hàm
+\verb@get_ngram()@. 
+
+
+\section{Xử lý bảng mã}
+
+Chương trình giao tiếp bằng Unicode UTF-8. Tuy nhiên, để tiện việc xử
+lý, nội bộ chương trình sử dụng mã VISCII. Do VISCII không thể bao
+quát hết Unicode, những ký tự Unicode không có trong VISCII sẽ được
+thay bằng một ký tự đặc biệt (coi như là ký tự không biết). Sau khi xử
+lý VISCII xong, chuỗi so sánh thật sự sẽ là chuỗi Unicode.
+
 \section{Tách token}
 \label{sub:preprocess:token}
 
-Dựa vào flex để tách thành các token. Mục đích là để tách các dấu câu
-ra khỏi tiếng. Ví dụ \fbox{"chào"} sẽ được tách thành 3 token
-\fbox{"} \fbox{chào} \fbox{"}. 
-
+Chương trình sử dụng flex để tách token. Các quy tắc flex được áp dụng
+được liệt kê trong hình~\ref{fig:flex-token}.
+\begin{figure}[htbp]
+  \centering
 \begin{verbatim}
-
 SENTENCE_FINAL [.?!]
 HYPHEN [\-]
 OPEN_SINGLE_QUOTE [\`]
 CLOSE_SINGLE_QUOTE [\']
 RIGHT_PAREN [\"\)\]\}\>\']
-
 
 LETTERS_AND_NUMBERS [a-zA-Z0-9]
 LETTERS_NUMBER_AND_THEN_SOME [a-zA-Z0-9]
@@ -4042,22 +4204,21 @@ WHITE_SPACE [ \t\n]
 NEWLINE [\n]
 INVISIBLE [^\040-\176]
 
-
 {SENTENCE_FINAL}+{RIGHT_PAREN}* |
 {HYPHEN}+ |
 {OPEN_SINGLE_QUOTE}+ |
 {CLOSE_SINGLE_QUOTE}+ |
-
 {LETTERS_NUMBER_AND_THEN_SOME}+{LETTERS_AND_NUMBERS} |
 {LETTERS_AND_NUMBERS}+{APOSTROPHE} |
 
 {SINGLE_CHARACTER} { xuất từ }
 
 ({WHITE_SPACE}|{INVISIBLE}|{NEWLINE})+ { bỏ qua }
-
 \end{verbatim}
-
-Chương trình gồm hai phần: phần bắt lỗi chính tả và phần huấn luyện.
+  
+  \caption{Quy tắc tách token dùng flex}
+  \label{fig:flex-token}
+\end{figure}
 
 \section{Trình bắt lỗi chính tả}
 
@@ -4067,16 +4228,6 @@ Chương trình gồm hai phần: phần bắt lỗi chính tả và phần hu�
 
 
 \subsection{Lưu chuỗi}
-
-Để giảm thiểu không gian bộ nhớ, chương trình không thao tác trực tiếp
-trên các chuỗi mà lưu tập trung các chuỗi lại, sau đó dùng mã id để
-đánh số từng chuỗi một. Các thao tác so sánh sẽ dựa trên id này. Khi
-cần thao tác trên chuỗi, ta sẽ thông qua id để lấy chuỗi gốc.
-
-Các chuỗi được lưu trong một associative array và một array. Một dùng
-để ánh xạ chuỗi sang id. Một để ánh xạ id sang chuỗi.
-
-Có thể dùng lexical tree để giảm thiểu không gian lưu chuỗi (UNIMPL)
 
 Mỗi chuỗi có thể có nhiều id: id gắn với chuỗi gốc ({\em id}), id gắn
 với chuỗi gốc đã chuẩn hoá ({\em sid}), id gắn với chuỗi viết thường

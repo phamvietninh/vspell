@@ -7,7 +7,7 @@
 \usepackage[hmargin={3cm,2cm}]{geometry}
 \usepackage{graphicx}
 \usepackage{amsmath}
-\usepackage[vietnam]{minitoc}
+%TOC\usepackage[vietnam]{minitoc}
 \usepackage{tabularx}
 \usepackage{footnote}
 \usepackage{tipa}
@@ -21,7 +21,7 @@
 
 %\setlength{\parskip}{1.2ex plus 0.7ex minus 0.6ex}
 
-\setcounter{minitocdepth}{4}
+%TOC\setcounter{minitocdepth}{4}
 
 %\usepackage{tocloft}
 %\newcommand{\listalgo}{Danh sách thuật toán}
@@ -48,7 +48,7 @@
 \author{Nguyễn Thái Ngọc Duy\\0012020}
 
 \begin{document}
-\dominitoc
+%TOC\dominitoc
 %\doparttoc
 \maketitle
 %\large
@@ -67,6 +67,17 @@
 \end{titlepage}
 
 \tableofcontents
+%%\eject\addcontentsline{toc}{chapter}{\listfigurename}
+\listoffigures
+%\refstepcounter{chapter}\addcontentsline{toc}{chapter}{\protect\numberline{\thechapter}\listfigurename}
+
+%%\eject\addcontentsline{toc}{chapter}{\listtablename}
+\listoftables
+%\refstepcounter{chapter}\addcontentsline{toc}{chapter}{\protect\numberline{\thechapter}\listtablename}
+
+%%\eject\addcontentsline{toc}{chapter}{Danh sách thuật toán}
+\listof{algo}{Danh sách thuật toán}
+%\refstepcounter{chapter}\addcontentsline{toc}{chapter}{\protect\numberline{\thechapter}Danh sách thuật toán}
 
 %% \chapter{Giới thiệu}
 %% \label{cha:intro}
@@ -167,7 +178,7 @@
 
 \chapter{Tổng quan}
 \label{cha:overview}
-\minitoc
+%TOC\minitoc
 
 
 Ngôn ngữ là một phần quan trọng của đời sống, là phương tiện chuyển
@@ -346,7 +357,7 @@ Luận văn được chia thành các chương sau:
 
 \chapter{Cơ sở lý thuyết ngôn ngữ}
 \label{cha:vietnamese}
-\minitoc
+%TOC\minitoc
 
 
 \section{Âm tiết}
@@ -1476,7 +1487,7 @@ riêng, thuật ngữ, tên tiếng nước ngoài không đúng qui cách.
 
 \chapter{Cơ sở tin học}
 \label{cha:math}
-\minitoc
+%TOC\minitoc
 
 % typographic errors
 
@@ -2666,7 +2677,7 @@ ngôn ngữ học, do đó phần nào hạn chế kết quả cuối cùng.
 
 \chapter{Mô hình}
 \label{cha:model}
-\minitoc
+%TOC\minitoc
 
 \section{Mô hình chung}
 
@@ -4274,7 +4285,7 @@ phải dùng lưới~3-từ để tính tri\-gram, nếu dùng thuật toán g�
 
 \chapter{Cài đặt}
 \label{cha:implementation}
-\minitoc
+%TOC\minitoc
 \tolerance=10000
 
 Chương trình được cài đặt bằng C++ trên nền Linux. Phần giao diện được
@@ -5288,7 +5299,7 @@ tag này (\verb#z.xslt#).
 Trình \verb#convert.sh# sẽ thực hiện bước htmltidy và xslt ở trên. Cách sử
 dụng:
 \begin{verbatim}
-$convert.sh < input  > output
+convert.sh < input  > output
 \end{verbatim}
 
 Sau bước này, ta cần lọc bỏ các tag, loại bỏ các entity~\ldots{}{} để
@@ -5372,7 +5383,7 @@ Một số hàm được tạo ra để hỗ trợ việc xử lý tiếng Việ
 \tolerance=200%reset tolerance because i used infinitive tolerance in
               %the last chapter
 \label{cha:conclusion}
-\minitoc
+%TOC\minitoc
 
 \section{Tóm tắt}
 
@@ -5404,6 +5415,102 @@ Sau đây là tóm tắt các đặc điểm mô hình được đề nghị:
 %% \item 
 %% \end{itemize}
 
+\section{Kết quả thử nghiệm}
+
+Chương trình được huấn luyện dựa trên ngữ liệu từ các bài báo của mạng
+VnExpress.net. Ngữ liệu sử dụng có kích thước 12283822 byte, bao gồm
+2602105 chữ, khoảng 379000 
+câu\footnote{xem phần~\vref{sec:model:sentence-segmentation}  để biết
+  các quy tắc tách câu}. Trình huấn luyện chạy trong vòng 18 phút,
+trung bình khoảng 350 câu một giây. Dữ
+liệu xuất bao gồm 76682 uni\-gram, 446513 bi\-gram, 1101256 tri\-gram với
+kích thước tổng cộng 53939974 byte. Mô
+hình ngôn ngữ n\-gram-tiếng bao gồm 76224 uni\-gram và 324326 bi\-gram
+(8489570 byte). Dữ
+liệu tên riêng bao gồm 790 tiếng tạo thành tên người, rút trích từ
+7567 tên. Từ điển từ bao gồm 73940 từ, bao gồm 12332 tiếng.
+
+Chương trình được thử nghiệm dựa trên hai tập dữ liệu. Một tập được rút ra 
+từ~\cite{LoiChinhTa}. Tập dữ liệu thứ hai sử dụng đoạn đầu luận văn này, 
+sau đó phát sinh lỗi dựa trên tập những tiếng nhập nhằng. Các lỗi về
+nhập liệu không được kiểm tra ở đây mà chủ yếu tập trung vào lỗi phát âm.
+
+Chương trình được
+thử nghiệm với nhiều tham số khác nhau, bao gồm:
+\begin{itemize}
+\item Sử dụng tri\-gram hay bi\-gram (P).
+\item Chuẩn hoá độ dài câu hay không (C).
+\item Bắt lỗi chặt hay không (S).
+\item Áp dụng heuristic phát sinh từ dựa trên ngữ cảnh hay không (H).
+\end{itemize}
+
+Kết quả thử nghiệm tên tập dữ liệu 1 được thể hiện trong
+bảng~\vref{tab:result1}. Kết quả thử nghiệm tên tập dữ liệu 2 được thể
+hiện trong bảng~\vref{tab:result2}. Kết quả được phân thành ba nhóm:
+non-word, real-word và total. Nhóm non-word bao gồm những câu phạm cả
+lỗi non-word lẫn real-word. Nhóm real-word bao gồm những câu chỉ phạm
+lỗi real-word. Nhóm total tính trung bình cả hai trường hợp. Ba kết
+quả PE, NE, CE là:
+\begin{itemize}
+\item PE là tỉ lệ bắt đúng lỗi chính tả, và trong danh sách từ đề nghị
+  có từ đúng. 
+\item NE là số lần bắt nhầm lỗi chính tả trong câu.
+\item CE là tỉ lệ bắt đúng lỗi chính tả, nhưng trong danh sách từ đề
+  nghị không có từ đúng.
+\end{itemize}
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{cccc|rrr|rrr|rrr}
+%Trigram&Chuẩn hóa&Bắt lỗi chặt&Heuristic&Đúng&Sai&Nhảm\\\hline
+\multicolumn{4}{c|}{Tham số}&\multicolumn{3}{c|}{Non-word}&\multicolumn{3}{c|}{Real-word}&\multicolumn{3}{c}{Total}\\
+T&C&S&H&\multicolumn{1}{c}{PE}&\multicolumn{1}{c}{NE}&\multicolumn{1}{c|}{CE}&\multicolumn{1}{c}{PE}&\multicolumn{1}{c}{NE}&\multicolumn{1}{c|}{CE}&\multicolumn{1}{c}{PE}&\multicolumn{1}{c}{NE}&\multicolumn{1}{c}{CE}\\\hline\hline
+\input{result1.tab}
+\end{tabular}
+\caption{Kết quả thử nghiệm tập dữ liệu 1}
+\label{tab:result1}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{cccc|rrr|rrr|rrr}
+%Trigram&Chuẩn hóa&Bắt lỗi chặt&Heuristic&Đúng&Sai&Nhảm\\\hline
+\multicolumn{4}{c|}{Tham số}&\multicolumn{3}{c|}{Non-word}&\multicolumn{3}{c|}{Real-word}&\multicolumn{3}{c}{Total}\\
+T&C&S&H&\multicolumn{1}{c}{PE}&\multicolumn{1}{c}{NE}&\multicolumn{1}{c|}{CE}&\multicolumn{1}{c}{PE}&\multicolumn{1}{c}{NE}&\multicolumn{1}{c|}{CE}&\multicolumn{1}{c}{PE}&\multicolumn{1}{c}{NE}&\multicolumn{1}{c}{CE}\\\hline\hline
+\input{result2.tab}
+\end{tabular}
+\caption{Kết quả tập thử nghiệm dữ liệu 2}
+\label{tab:result2}
+\end{table}
+
+Với nhóm non-word, trong thực tế khi phạm lỗi non-word, chương trình
+sẽ yêu cầu người dùng sửa hết lỗi trước khi tìm lỗi real-word. Do chương
+trình kiểm tra chạy tự động nên bước yêu cầu người dùng sửa lỗi
+non-word được bỏ qua. Việc này làm giảm một phần độ chính xác so với
+thực tế.
+
+Kết quả này cho thấy hiệu suất của chương trình phụ thuộc vào loại văn
+bản cần kiểm tra. Với tập dữ liệu 1, xác suất bắt lỗi đúng cao nhất
+chỉ có thể đạt khoảng 53\% trong khi với tập dữ liệu 2 là 88\%. Độ
+chênh lệch này có thể do tập dữ liệu 1 sử dụng văn phong khác so với
+ngữ liệu huấn luyện (báo chí). Ngoài ra do tập dữ liệu 1 được dùng để
+làm bài tập bắt lỗi chính tả nên đưa ra những trường hợp lỗi tương đối khó.
+
+Việc thay đổi các tham số cũng ảnh hưởng đáng kể đến độ chính
+xác. Việc áp dụng chuẩn hóa độ dài câu, lẽ ra sẽ cải thiện kết quả,
+nhưng thực tế lại giảm độ chính xác đáng kể. Tham số S nhìn chung tăng
+PE, nhưng đồng thời cũng tăng NE. Việc tăng NE khi áp dụng S cho thấy
+mô hình ngôn ngữ chưa thật sự tốt, chưa tìm ra chính xác câu đúng mà
+có khuynh hướng tìm nhầm. Áp dụng H kèm với S giúp giảm bớt NE phần
+nào, nhưng đồng thời cũng giảm PE. Cuối cùng, việc sử dụng trigram
+nhìn chung giúp tăng độ chính xác. Tuy nhiên sử dụng trigram cũng làm
+giảm tính thực tế của chương trình vì dữ liệu trigram lớn hơn rất
+nhiều so với bigram (khoảng 6--7 lần).
+
+Như vậy, qua khảo sát, ta thấy nên áp dụng trigram, bắt lỗi chặt kèm
+heuristic. Độ chính xác real-word trong trường hợp này là 42,91\% và
+86,62\%. Ngoài ra tỉ lệ NE cũng không quá cao.
+
 \section{Đánh giá}
 
 Hạn chế đầu tiên của chương trình chính là lượng thông tin được sử
@@ -5429,21 +5536,6 @@ nghĩa của từ viết hoa. Điều này hiện tại không thể thực hi�
 %% \item Có khả năng nó tự động sửa từ đúng thành từ sai, do từ sai
 %%   ``hay'' được dùng trong câu đó hơn là từ đúng :-P
 %% \end{itemize}
-
-\section{Kết quả thử nghiệm}
-
-Chương trình được huấn luyện dựa trên ngữ liệu từ các bài báo của mạng
-VnExpress.net. Ngữ liệu sử dụng có kích thước 12283822 byte, bao gồm
-2602105 chữ, khoảng 379000 
-câu\footnote{xem phần~\vref{sec:model:sentence-segmentation}  để biết
-  các quy tắc tách câu}. Trình huấn luyện chạy trong vòng 13 phút,
-trung bình khoảng 485 câu một giây. Dữ
-liệu xuất bao gồm 76682 uni\-gram, 446513 bi\-gram, 1101256 tri\-gram với
-kích thước tổng cộng 53939974 byte. Mô
-hình ngôn ngữ n\-gram-tiếng bao gồm 76224 uni\-gram và 324326 bi\-gram
-(8489570 byte). Dữ
-liệu tên riêng bao gồm 790 tiếng tạo thành tên người, rút trích từ
-7567 tên. Từ điển từ bao gồm 73940 từ, bao gồm 12332 tiếng.
 
 \section{Hướng phát triển}
 \label{sec:todo}
@@ -5612,14 +5704,6 @@ là rất lớn, có thể ta chỉ cần xét n cách tách từ tốt nhất m
 \chapter{Dữ liệu kiểm tra}
 {\small\input{test}}
 
-\eject\addcontentsline{toc}{chapter}{\listfigurename}\listoffigures
-%\refstepcounter{chapter}\addcontentsline{toc}{chapter}{\protect\numberline{\thechapter}\listfigurename}
-
-\eject\addcontentsline{toc}{chapter}{\listtablename}\listoftables
-%\refstepcounter{chapter}\addcontentsline{toc}{chapter}{\protect\numberline{\thechapter}\listtablename}
-
-\eject\addcontentsline{toc}{chapter}{Danh sách thuật toán}\listof{algo}{Danh sách thuật toán}
-%\refstepcounter{chapter}\addcontentsline{toc}{chapter}{\protect\numberline{\thechapter}Danh sách thuật toán}
 %\eject\addcontentsline{toc}{chapter}{\bibname}
 \bibliographystyle{alpha}
 \bibliography{reference}

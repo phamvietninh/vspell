@@ -52,6 +52,7 @@ namespace Spell {
       for (start = 0;start < len && node != NULL; start ++)
 	node = node->get_next(st[start+cc].cid);
 
+      cc += len;
       if (node == NULL) {
 	Suggestion _s;
 	_s.id = i;

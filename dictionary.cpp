@@ -250,14 +250,14 @@ namespace Dictionary {
 			syllables.push_back(info->syllables[n]);
 	}
 
-	bool WordNode::check_syllables(const vector<strid> &syllables)
+	WordNodePtr WordNode::follow_syllables(const vector<strid> &syllables)
 	{
 		int n = syllables.size();
 		int i;
 		WordNodePtr root = this;
 		for (i = 0;i < n && root != NULL;i ++)
 			root = root->get_next(syllables[i]);
-		return root != NULL;
+		return root;
 	}
 
 	bool WordNode::fuzzy_get_next_with_ed(strid str,

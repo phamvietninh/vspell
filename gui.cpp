@@ -41,9 +41,9 @@ static gunichar unicode_str[] = {
   0
 };
 
-void viet_utf8_to_viscii(gchar *in,char *out) // pre-allocated
+void viet_utf8_to_viscii(const gchar *in,char *out) // pre-allocated
 {
-  gchar *p = in;
+  const gchar *p = in;
   gunichar ch;
   int i,n = strlen(viscii_str);
   while ((ch = g_utf8_get_char(p)) != 0) {
@@ -66,7 +66,7 @@ void viet_utf8_to_viscii(gchar *in,char *out) // pre-allocated
   *out = 0;
 }
 
-void viet_viscii_to_utf8(char *in,gchar *out) // pre-allocated
+void viet_viscii_to_utf8(const char *in,gchar *out) // pre-allocated
 {
   unsigned char *p = (unsigned char*)in;
   unsigned char ch;
@@ -78,18 +78,39 @@ void viet_viscii_to_utf8(char *in,gchar *out) // pre-allocated
       continue;
     }
     for (i = 0;i < n;i ++)
-      if (viscii_str[i] == ch) {
-				*out++ = viscii_str[i];
+      if ((unsigned char)viscii_str[i] == ch) {
+				g_unichar_to_utf8(unicode_str[i],out);
+				out = g_utf8_next_char(out);
 				break;
       }
 
     if (i >= n) {
       fprintf(stderr,"Warning: unexpected viscii character %d",ch);
-      *out++ = (unsigned char)ch;
+			g_unichar_to_utf8(ch,out);
+			out = g_utf8_next_char(out);
     }
   }
   *out = 0;
 }
+
+char* viet_to_viscii(const char *in)
+{
+	static char buffer[1000];
+	if (g_utf8_strlen(in,-1) >= 1000)
+		return "";
+	viet_utf8_to_viscii(in,buffer);
+	return buffer;
+}
+
+char* viet_to_utf8(const char *in)
+{
+	static char buffer[6000];
+	if (strlen(in) >= 1000)
+		return "";
+	viet_viscii_to_utf8(in,buffer);
+	return buffer;
+}
+
 
 static void button_reset_callback (GtkWidget *button, gpointer data)
 {
@@ -102,6 +123,7 @@ static void button_reset_callback (GtkWidget *button, gpointer data)
 																			&start,&end);
 }
 
+void print_all_words(const Words &words);
 static void button_spell_callback (GtkWidget *button, gpointer data)
 {
   GtkTextIter start,end;
@@ -112,8 +134,7 @@ static void button_spell_callback (GtkWidget *button, gpointer data)
 
   gchar *buffer = gtk_text_buffer_get_text(textbuffer_main,&start,&end,FALSE);
   int len = g_utf8_strlen(buffer,-1);
-  char *pp = new char[len+1];
-  viet_utf8_to_viscii(buffer,pp);
+  char *pp = viet_to_viscii(buffer);
 
 	// preprocess
 	Sentence st(pp);
@@ -145,6 +166,7 @@ static void button_spell_callback (GtkWidget *button, gpointer data)
 		WFST wfst;
 		wfst.set_wordlist(Dictionary::get_root());
 		wfst.get_all_words(st,words);
+		print_all_words(words);
 		wfst.segment_best(st,words,seg);
 			
 		seg.print(cerr,st);
@@ -190,8 +212,6 @@ static void button_spell_callback (GtkWidget *button, gpointer data)
 		}
 
 	}
-
-  delete[] pp;
 }
 
 static void button_exit_callback (GtkWidget *button, gpointer data)
@@ -282,21 +302,26 @@ void button_search_callback(GtkWidget *button, gpointer data)
 	GtkWidget *entry_search = GTK_WIDGET(data);
 	const char *text = gtk_entry_get_text(GTK_ENTRY(data));
 
-	istringstream is(text);
+	istringstream is(viet_to_viscii(text));
 	string s;
 	vector<strid> ids;
 	while (is >> s) {
 		strid id = sarch[s];
 		if (!sarch.in_dict(id)) {
-			char *str = g_strdup_printf("%s not found",s.c_str());
+			char *str = g_strdup_printf("%s not found",viet_to_utf8(s.c_str()));
 			gtk_label_set_text(GTK_LABEL(log_main),str);
 			g_free(str);
 			return;
 		}
 		ids.push_back(id);
 	}
-	if (get_root()->check_syllables(ids))
-		gtk_label_set_text(GTK_LABEL(log_main),"Word found.");
-	else
+
+	WordNodePtr ptr;
+	ptr = get_root()->follow_syllables(ids);
+	if (ptr) {
+		char *str = g_strdup_printf("Word %s found with prob %.02f.",text,ptr->get_prob());
+		gtk_label_set_text(GTK_LABEL(log_main),str);
+		g_free(str);
+	} else
 		gtk_label_set_text(GTK_LABEL(log_main),"Word not found.");
 }

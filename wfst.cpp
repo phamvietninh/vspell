@@ -227,6 +227,8 @@ void WFST::get_all_words(const Sentence &sent,Words &words)
 			nn = old_states.size();
 			for (ii = 0;ii < nn;ii ++) {
 				WordNode::DistanceNode &state = old_states[ii];
+				WordNodePtr exact_node = state.node->get_next(syll[i+k]);
+				if (exact_node) states.push_back(exact_node);
 				state.node->fuzzy_get_next(syll[i+k],states);
 			}
 
@@ -250,6 +252,25 @@ void WFST::get_all_words(const Sentence &sent,Words &words)
 		// remove the last if it is empty
 		while (!winfos.empty() && winfos.back().fuzzy_match.empty())
 			winfos.pop_back();
+	}
+}
+
+void print_all_words(const Words &words)
+{
+	int i, nn = words.size();
+	for (i = 0;i < nn;i ++) {
+		int nnn = words[i].size();
+		cerr << "From " << i << endl;
+		for (int ii = 0;ii < nnn;ii ++) {
+			int nnnn = words[i][ii].fuzzy_match.size();
+			cerr << "Len " << ii << endl;
+			for (int iii = 0;iii < nnnn;iii ++) {
+				cerr << Dictionary::sarch[words[i][ii].fuzzy_match[iii].node->get_id()] << " ";
+				cerr << words[i][ii].fuzzy_match[iii].node->get_syllable_count() << " ";
+				cerr << words[i][ii].fuzzy_match[iii].distance << " ";
+				cerr << words[i][ii].fuzzy_match[iii].node->get_prob() << endl;
+			}
+		}
 	}
 }
 

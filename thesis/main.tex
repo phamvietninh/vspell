@@ -4,7 +4,7 @@
 \renewcommand{\sfdefault}{uhv}
 \renewcommand{\ttdefault}{ucr}
 
-\usepackage[hmargin={2cm,2.5cm}]{geometry}
+\usepackage[hmargin={3cm,2cm}]{geometry}
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage[vietnam]{minitoc}
@@ -3546,6 +3546,21 @@ nhiên, do $\Delta$ có thể âm, cần dùng những thuật toán có thể t
 PFS. Có thể hình dung đồ thị mới là một loại đồ thị động, các cạnh
 phía sau càng ngày càng bị thu ngắn lại.
 
+Một vấn đề cần quan tâm là, liệu thuật toán Bellman-Ford có còn đúng
+với một đồ thị động như vậy hay không? Giả sử ta tính được giá trị
+cạnh khi dựa trên đường đi ngắn nhất phía trước nó là A1. Sau đó, vì
+một lí do nào đó, đường đi ngắn nhất tới điểm đó bị đổi sang A2, dẫn
+đến giá trị cạnh đã tính không còn hợp lệ. Với một đồ thị tổng quát, thuật
+toán có thể không còn chính xác. Tuy nhiên với đồ thị DAG của lưới từ,
+điều này vẫn còn đúng. Trong DAG, ta có thể xác định được tập các nút
+cha của một nút nào đó (những nút nối đến nút đó), tách rời hoàn toàn
+với phần còn lại của đồ thị. Do đó ta có thể tìm đường đi lớn nhất chỉ
+trong tập con đó mà thôi. Sau khi tìm được đường đi ngắn nhất trong
+tập con này, coi như đường đi đã ổn định và không thay đổi nữa, vì vậy
+việc tính giá trị cạnh kế tiếp sẽ không bị thay đổi sau mỗi lần tính
+toán. Vì lí do nay nên thuật toán sẽ phải duyệt thứ tự các điểm theo
+thứ tự tôpô chứ không thể duyệt theo một thứ tự ngẫu nhiên.
+
 %%% trường hợp có hai đường đi đến cùng một cạnh và cạnh âm thì sao?
 
 \subsubsection{Lỗi phát âm}
@@ -4345,28 +4360,10 @@ Mô hình ngôn ngữ được sử dụng là trigram. Mô hình ngôn ngữ đ
 đặt trong thư viện SRILM. Mô hình ngôn ngữ được truy cập thông qua hàm
 \verb@get_ngram()@. 
 
+\section{Tiền xử lý}
 
-\section{Xử lý bảng mã}
 
-Chương trình giao tiếp bằng Unicode UTF-8. Tuy nhiên, để tiện việc xử
-lý, nội bộ chương trình sử dụng mã VISCII. Do VISCII không thể bao
-quát hết Unicode, những ký tự Unicode không có trong VISCII sẽ được
-thay bằng một ký tự đặc biệt (coi như là ký tự không biết). Sau khi xử
-lý VISCII xong, chuỗi so sánh thật sự sẽ là chuỗi Unicode.
-
-\section{So sánh chuỗi}
-
-Do mọi chuỗi đều được lưu thành strid. Việc so sánh chuỗi không phân biệt 
-hoa thường là không thể thực hiện được. Do vậy, ngoài strid ``id'' tham chiếu
-đến chuỗi gốc, ta sử dụng thêm ``cid'' tham chiếu đến chuỗi được dùng để
-so sánh chuỗi. ``cid'' mặc định trong câu tham chiếu đến chuỗi đã
-chuẩn hoá. Nếu cần, ``cid'' sẽ tham chiếu đến chuỗi chuẩn hoá, viết
-thường.
-
-Khi cần thiết phải so sánh chuỗi thật sự, chương trình sẽ dùng ``id''
-để truy ngược đến chuỗi gốc, sau đó thực hiện phép so sánh chuỗi thông thường.
-
-\section{Tách token}
+\subsection{Tách token}
 \label{sub:preprocess:token}
 
 Chương trình sử dụng flex để tách token. Các quy tắc flex được áp dụng
@@ -4407,67 +4404,14 @@ INVISIBLE [^\040-\176]
 \end{figure}
 
 
-\section{Tách câu}
+\subsection{Tách câu}
 
-% sentence.cpp
+XXX% sentence.cpp
 
-\section{Phân tích cấu trúc âm tiết}
+\section{Lưới từ}
 
-Lớp \verb@Syllable@ được dùng để phân tích cú pháp âm tiết. Năm thành
-phần của âm tiết (âm đầu, âm đệm, âm chính, âm cuối, thanh điệu) được
-lưu trong mảng \verb@components@. Hàm \verb@Syllable::parse()@ nhận
-một chuỗi của một âm tiết, sau đó tách âm tiết này ra và điền thông
-tin vào \verb@Syllable::components@.
-
-\section{Tìm các tiếng tương tự cách phát âm}
-
-Việc tìm các tiếng tương tự cách phát âm được cài đặt trong lớp
-\verb@Syllable@ và hàm
-\verb@FuzzyWordNode::fuzzy_get_next_with_syllable()@. Lớp
-\verb@Syllable@ sẽ thực hiện các thao tác cơ bản liên quan đến âm
-tiết, bao gồm hai hàm \verb@match@ và \verb@apply@.
-
-\verb@Syllable::match@ so sánh âm tiết với một mẫu âm tiết. Một mẫu
-âm tiết bao gồm năm thành phần như âm tiết. Mỗi thành phần xác định
-những giá trị được phép đối với thành phần đó. Các thành phần có thể
-cho phép một giá trị, hoặc không quan tâm đến giá trị của nó, hoặc
-không được tồn tại thành phần đó, hoặc phải có thành phần đó. Các
-thành phần được liệt kê lần lượt theo thứ tự: âm đầu, âm đệm, âm
-chính, âm cuối, thanh điệu. Ví dụ, \verb@[?,?,a,i,?]@ sẽ
-khớp với bất cứ âm tiết nào có âm chính là `a' và âm cuối là
-`i'. \verb@[?,?,?,?,Hook]@ sẽ khớp với bất cứ âm nào dùng
-thanh hỏi.
-
-Các mẫu âm tiết này được tập hợp lại để tạo nên tập nhầm nhằng. Một
-tập nhập nhằng bao gồm nhiều mẫu âm tiết. Ví dụ, ta có tập nhập nhằng
-\verb@[?,?,ư,t,?]@ và \verb@[?,?,ư,c,?]@ thể
-hiện sự nhập nhằng giữa những âm tiết ``ưc'' và ``ưt''. Tập nhập nhằng
-có kiểu là \verb@confusion_set@. Tất cả các tập nhập nhằng được lưu
-vào một mảng, được truy cập thông qua hàm \verb@get_confusion_sets()@.
-
-Hàm \verb@Syllable::apply()@ dùng để áp mẫu vào âm tiết đã có. Các
-thành phần tường minh trong mẫu sẽ ghi đè các thành phần tương ứng
-trong âm tiết. Nhưng thành phần quy định không tồn tại trong mẫu sẽ bị
-loại bỏ khỏi âm tiết. Những thành phần không được quy định trong mẫu
-sẽ được giữ nguyên. Các thành phần quy định tồn tại sẽ tạo ra một tập
-các âm tiết khác nhau, mỗi âm tiết tương ứng với một giá trị có thể có
-của thành phần đó.
-
-Sử dụng hai hàm trên, hàm
-\verb@fuzzy_get_next_with_syllable@ làm phần việc còn
-lại là gắn kết \verb@match()@, \verb@apply()@ và tập nhầm lẫn để tìm
-ra các âm tiết phát âm gần giống. Hàm lần lượt duyệt qua các mẫu âm
-tiết trong từng tập nhầm lẫn. Nếu âm tiết đang xét khớp với một mẫu âm
-tiết trong tập nhầm lẫn (\verb@match()@), các âm tiết còn lại của tập
-nhầm lẫn sẽ được áp vào âm tiết đang xét (\verb@apply()@) để tạo ra
-các âm tương tự. Âm tiết mới sẽ lại được duyệt qua tập nhầm lẫn như âm
-tiết đã xét để tạo ra thêm các âm tiết tương tự khác. Quá trình này sẽ
-dừng lại khi không có âm tiết mới nào được phát sinh. Sau đó, các âm
-tiết sẽ được so sánh với từ điển tiếng để lọc bỏ những âm tiết không
-đúng.
-
-\section{Tạo lưới từ}
-\subsection{Tạo lưới từ Lattice}
+\subsection{Tạo lưới từ}
+\subsubsection{Tạo lưới từ Lattice}
 Lưới từ \verb@Lattice@ được tạo thông qua hàm
 \verb@Lattice::construct()@. Thực tế, \verb@construct()@ chỉ là vỏ bọc
 gọi đến ba hàm \verb@Lattice::pre_construct()@,
@@ -4524,7 +4468,7 @@ lồi). Như đã nói, \verb@construct()@ gọi đến hàm
 cho tên riêng. Các hàm khác có thể được gọi ở vị trí của hàm này nếu
 cần thay đổi lưới từ nhiều hơn.
 
-\subsection{Tạo lưới từ DAG}
+\subsubsection{Tạo lưới từ DAG}
 
 Lưới từ \verb@DAG@ được hình thành dựa trên lưới từ \verb@Lattice@. Có
 thể coi đây là một vỏ bọc để dễ truy cập đến lưới từ, thêm vào những
@@ -4544,7 +4488,183 @@ lưới~2-từ được lưu trong biến thành phần \verb@WordDAG2::nodes@. 
 lưới~2-từ thành mã nút trong lưới từ \verb@WordDAG@.
 
 
-\section{Danh từ riêng}
+
+\subsection{Bổ sung lưới từ}
+
+Lớp \verb@PenaltyDAG@ được dẫn xuất từ lớp \verb@DAG@. Lớp này điều
+chỉnh lại hàm \verb@DAG::edge_value()@ để thay đổi độ dài cạnh nhằm
+tạo sự khác biệt giữa các cạnh phát sinh và cạnh gốc. Lớp nhận một đối
+tượng \verb@DAG@ khác, hoạt động như là một vỏ bọc cho đối tượng này.
+
+Lớp sử dụng thông tin \verb@WordEntry::fuzid@ để biết có bao nhiêu
+tiếng trong từ là tiếng phát sinh, sau đó giảm giá trị của cạnh theo
+một tỉ lệ tương ứng. Nếu có $n$ tiếng sai, giá trị cạnh sẽ bị mất đi
+một khoảng $nwV$
+với $V$ là giá trị ban đầu, $w$ là trọng số.
+
+Các hàm mới trong \verb@PenaltyDAG@:
+\begin{itemize}
+\item \verb@PenaltyDAG::set_weight()@: Đặt trọng số $w$ cho đối tượng.
+\item \verb@PenaltyDAG::get_weight()@: Lấy trọng số $w$ của đối tượng.
+\end{itemize}
+
+Giá trị $w$ được sử dụng trong chương trình minh hoạ là $0.05$. 
+
+
+\subsection{Tìm cách tách từ tốt nhất}
+
+
+\subsubsection{PFS}
+
+Xem thuật toán~\ref{algo:pfs}.
+
+\begin{algo}
+  \caption{Thuật toán tìm đường PFS}
+  \label{algo:pfs}
+  \begin{align*}
+    last[head] &\leftarrow head\\
+    val[head] &\leftarrow 0\\
+    seen[head] &\leftarrow true\\
+    candidates &\leftarrow \{ head \} (\text{candidates là một heap})
+  \end{align*}
+
+  \begin{enumerate}
+  \item Nếu $candidates$ rỗng thì kết thúc thuật toán.
+  \item Lấy một đỉnh $v$ ra khỏi $candidates$. $next\_nodes$ là tập điểm
+    nối từ $v$ đến.
+  \item Duyệt từng đỉnh $vv$ trong $next\_nodes$.
+    \begin{enumerate}
+    \item Nếu $seen[vv]$ là $false$.
+      \begin{enumerate}
+      \item Thêm $vv$ vào $candidates$.
+      \item $seen[vv] \leftarrow true$
+      \item $val[vv] \leftarrow val[v]+edge\_value(v,vv)$
+      \item $last[vv] = v$
+      \end{enumerate}
+    \item Nếu $seen[vv]$ là $true$ và $val[vv] > val[v]+edge\_value(v,vv)$
+      \begin{enumerate}
+      \item $val[vv] \leftarrow val[v]+edge\_value(v,vv)$
+      \item $last[vv] \leftarrow v$
+      \item Sắp xếp lại $candidates$.
+      \end{enumerate}
+    \end{enumerate}
+  \item Về bước 1.
+  \end{enumerate}
+
+Lấy danh sách các nút.
+  \begin{enumerate}
+  \item $v \leftarrow tail$.
+  \item Lưu $v$.
+  \item $v \leftarrow last[v]$
+  \item Nếu $v \ne last[v]$, lặp lại bước 2.
+  \item Lưu $v$.
+  \item Đảo ngược danh sách các nút đã lưu.
+  \end{enumerate}
+\end{algo}
+
+\subsubsection{Bellman-Ford kèm chuẩn hoá}
+
+Xem thuật toán~\ref{algo:pfs}.
+
+\begin{algo}
+  \caption{Thuật toán tìm đường Bellman kèm chuẩn hoá}
+  \label{algo:pfs}
+  \begin{align*}
+    last[head] &\leftarrow head\\
+    length[head] &\leftarrow 0\\
+    node\_count[head] &\leftarrow 1\\
+    nexts &\leftarrow \{head\}
+  \end{align*}
+Lập danh sách cạnh. Đặt $i \leftarrow 0$
+  \begin{enumerate}
+  \item $l \leftarrow size\_of(nexts)$
+  \item Nếu $i >= l$, dừng.
+  \item $v \leftarrow nexts[i]$
+  \item $i \leftarrow i+1$
+  \item Nếu $done[v]$ là $true$ thì quay về bước 1. Nếu không thì
+    $done[v] \leftarrow true$
+  \item Thêm các nút kề $v$ vào $nexts$.
+  \item Lặp $ii = l\ldots size\_of(nexts)$, thêm các cạnh
+    $(v,nexts[ii])$ vào $edges$
+  \item Quay về 1.
+  \end{enumerate}
+Tìm đường
+\begin{enumerate}
+\item $cont \leftarrow true$. Duyệt lần lượt từ $0$ đến $n-1$ với điều kiện
+  $cont$ vẫn còn là $true$.
+\item $cont \leftarrow false$. Duyệt lần lượt các cạnh trong $edges$, đặt đỉnh đầu, đỉnh cuối
+  lần lượt là $i$ và $v$, bỏ qua các cạnh có $node\_count[i] = 0$.
+\item Nếu $node\_count[v] \ne 0$ và $length[v] > length[i] +
+  \frac{edge\_value(i,v)-length[i]}{node\_count[i]+1}$
+  \begin{enumerate}
+  \item $length[v] \leftarrow length[i] +
+    \frac{edge\_value(i,v)-length[i]}{node\_count[i]+1}$
+  \item $last[v] \leftarrow i$
+  \item $node\_count[v] \leftarrow node\_count[i]+1$
+  \item $cont \leftarrow true$
+  \end{enumerate}
+\end{enumerate}
+Lấy danh sách các nút tương tự như thuật toán~\ref{algo:pfs}.
+\end{algo}
+
+\subsection{Lỗi phát âm}
+
+\subsubsection{Phân tích cấu trúc âm tiết}
+
+Lớp \verb@Syllable@ được dùng để phân tích cú pháp âm tiết. Năm thành
+phần của âm tiết (âm đầu, âm đệm, âm chính, âm cuối, thanh điệu) được
+lưu trong mảng \verb@components@. Hàm \verb@Syllable::parse()@ nhận
+một chuỗi của một âm tiết, sau đó tách âm tiết này ra và điền thông
+tin vào \verb@Syllable::components@.
+
+\subsubsection{Tìm các tiếng tương tự cách phát âm}
+
+Việc tìm các tiếng tương tự cách phát âm được cài đặt trong lớp
+\verb@Syllable@ và hàm
+\verb@FuzzyWordNode::fuzzy_get_next_with_syllable()@. Lớp
+\verb@Syllable@ sẽ thực hiện các thao tác cơ bản liên quan đến âm
+tiết, bao gồm hai hàm \verb@match@ và \verb@apply@.
+
+\verb@Syllable::match@ so sánh âm tiết với một mẫu âm tiết. Một mẫu
+âm tiết bao gồm năm thành phần như âm tiết. Mỗi thành phần xác định
+những giá trị được phép đối với thành phần đó. Các thành phần có thể
+cho phép một giá trị, hoặc không quan tâm đến giá trị của nó, hoặc
+không được tồn tại thành phần đó, hoặc phải có thành phần đó. Các
+thành phần được liệt kê lần lượt theo thứ tự: âm đầu, âm đệm, âm
+chính, âm cuối, thanh điệu. Ví dụ, \verb@[?,?,a,i,?]@ sẽ
+khớp với bất cứ âm tiết nào có âm chính là `a' và âm cuối là
+`i'. \verb@[?,?,?,?,Hook]@ sẽ khớp với bất cứ âm nào dùng
+thanh hỏi.
+
+Các mẫu âm tiết này được tập hợp lại để tạo nên tập nhầm nhằng. Một
+tập nhập nhằng bao gồm nhiều mẫu âm tiết. Ví dụ, ta có tập nhập nhằng
+\verb@[?,?,ư,t,?]@ và \verb@[?,?,ư,c,?]@ thể
+hiện sự nhập nhằng giữa những âm tiết ``ưc'' và ``ưt''. Tập nhập nhằng
+có kiểu là \verb@confusion_set@. Tất cả các tập nhập nhằng được lưu
+vào một mảng, được truy cập thông qua hàm \verb@get_confusion_sets()@.
+
+Hàm \verb@Syllable::apply()@ dùng để áp mẫu vào âm tiết đã có. Các
+thành phần tường minh trong mẫu sẽ ghi đè các thành phần tương ứng
+trong âm tiết. Nhưng thành phần quy định không tồn tại trong mẫu sẽ bị
+loại bỏ khỏi âm tiết. Những thành phần không được quy định trong mẫu
+sẽ được giữ nguyên. Các thành phần quy định tồn tại sẽ tạo ra một tập
+các âm tiết khác nhau, mỗi âm tiết tương ứng với một giá trị có thể có
+của thành phần đó.
+
+Sử dụng hai hàm trên, hàm
+\verb@fuzzy_get_next_with_syllable@ làm phần việc còn
+lại là gắn kết \verb@match()@, \verb@apply()@ và tập nhầm lẫn để tìm
+ra các âm tiết phát âm gần giống. Hàm lần lượt duyệt qua các mẫu âm
+tiết trong từng tập nhầm lẫn. Nếu âm tiết đang xét khớp với một mẫu âm
+tiết trong tập nhầm lẫn (\verb@match()@), các âm tiết còn lại của tập
+nhầm lẫn sẽ được áp vào âm tiết đang xét (\verb@apply()@) để tạo ra
+các âm tương tự. Âm tiết mới sẽ lại được duyệt qua tập nhầm lẫn như âm
+tiết đã xét để tạo ra thêm các âm tiết tương tự khác. Quá trình này sẽ
+dừng lại khi không có âm tiết mới nào được phát sinh. Sau đó, các âm
+tiết sẽ được so sánh với từ điển tiếng để lọc bỏ những âm tiết không
+đúng.
+
+\subsection{Danh từ riêng}
 
 Một danh sách 8000 tên riêng được sử dụng để tạo một tập các chữ
 thường hình thành tên riêng.
@@ -4552,22 +4672,7 @@ Những chữ liên tiếp nhau nằm trong danh sách này được coi là m�
 riêng. Hàm \verb@mark_proper_name()@ bổ sung những nút $PROP$ vào lưới
 từ cho những tên riêng được tìm ra.
 
-\section{Xử lý tiếng Việt}
-
-Một số hàm được tạo ra để hỗ trợ việc xử lý tiếng Việt, bao gồm:
-\begin{itemize}
-\item \verb@viet_toupper@, \verb@viet_tolower@, \verb@viet_isupper@, \verb@viet_islower@,
-  \verb@viet_isalpha@, \verb@viet_isdigit@, \verb@viet_isxdigit@, \verb@viet_isspace@,
-  \verb@viet_ispunct@: Các hàm tiếng Việt thay thế cho các hàm gốc (toupper,
-  tolower~\ldots)
-\item \verb@viet_utf8_to_viscii()@: Chuyển từ UTF-8 sang VISCII. Trả
-  về \verb@false@ nếu không thể chuyển đổi.
-\item \verb@viet_utf8_to_viscii()@: Chuyển từ UTF-8 sang VISCII. Những
-  ký tự không thể chuyển được sẽ được thay bằng `z'.
-\item \verb@viet_viscii_to_utf8()@: Chuyển từ VISCII sang UTF-8.
-\end{itemize}
-
-\section{Lỗi bàn phím}
+\subsection{Lỗi bàn phím}
 
 Lỗi bàn phím được cài đặt thông qua các lớp \verb@KeyRecover@,
 \verb@CharInserter@, \verb@CharEraser@, \verb@CharTransposer@ và
@@ -4589,28 +4694,7 @@ Hàm \verb@im_recover()@, gọi đến hai hàm \verb@vni_recover()@ và
 Các hàm này được sử dụng trong hàm \verb@get_syllable_candidates()@.
 Các phần xử lý bàn phím khác cũng được xử lý trong hàm này.
 
-\section{Bổ sung lưới từ}
-
-Lớp \verb@PenaltyDAG@ được dẫn xuất từ lớp \verb@DAG@. Lớp này điều
-chỉnh lại hàm \verb@DAG::edge_value()@ để thay đổi độ dài cạnh nhằm
-tạo sự khác biệt giữa các cạnh phát sinh và cạnh gốc. Lớp nhận một đối
-tượng \verb@DAG@ khác, hoạt động như là một vỏ bọc cho đối tượng này.
-
-Lớp sử dụng thông tin \verb@WordEntry::fuzid@ để biết có bao nhiêu
-tiếng trong từ là tiếng phát sinh, sau đó giảm giá trị của cạnh theo
-một tỉ lệ tương ứng. Nếu có $n$ tiếng sai, giá trị cạnh sẽ bị mất đi
-một khoảng $nwV$
-với $V$ là giá trị ban đầu, $w$ là trọng số.
-
-Các hàm mới trong \verb@PenaltyDAG@:
-\begin{itemize}
-\item \verb@PenaltyDAG::set_weight()@: Đặt trọng số $w$ cho đối tượng.
-\item \verb@PenaltyDAG::get_weight()@: Lấy trọng số $w$ của đối tượng.
-\end{itemize}
-
-Giá trị $w$ được sử dụng trong chương trình minh hoạ là $0.05$. 
-
-\section{Trình bắt lỗi chính tả}
+\section{Bắt lỗi chính tả}
 
 Trình bắt lỗi chính tả bao gồm hai lớp chính là lớp \verb@Text@. Lớp
 \verb@Text@ đại diện cho một đoạn văn bản trong toàn bộ văn bản. Lớp
@@ -4832,8 +4916,9 @@ Evolution~\ldots
 Chương trình có giao diện như trong
 hình~\ref{fig:vspell-gtk-ui}. Sau khi nhập liệu, ta nhấn nút
 ``Check''. Chương trình kiểm lỗi hai giai đoạn: kiểm lỗi tiếng và kiểm
-lỗi từ. Phần được kiểm tra sẽ được tô sẫm. Những từ/tiếng bị sai được
-gạch dưới. Từ đang được sửa sẽ được tô đỏ. Nhấn ``Ignore'' sẽ bỏ qua
+lỗi từ. Phần được kiểm tra sẽ được tô sẫm. Các từ nhiều tiếng được
+gạch dưới. Những từ/tiếng bị sai được
+tô đậm. Từ đang được sửa sẽ được tô đỏ. Nhấn ``Ignore'' sẽ bỏ qua
 lỗi hiện tại, chuyển sang lỗi kế, lần lượt xoay vòng lỗi. Nhấn
 ``Ignore all'' sẽ bỏ qua hoàn toàn một giai đoạn kiểm lỗi (tiếng hoặc
 từ), chuyển qua giai đoạn kế (hoặc kết thúc quá trình kiểm tra). Để
@@ -4918,7 +5003,7 @@ và~\ref{algo:MyText::ui_word_check}. \verb@MyText@ có thêm vài hàm phụ
 \end{enumerate}
 \end{algo}
 
-\section{Trình huấn luyện}
+\section{Huấn luyện}
 
 \subsection{Dữ liệu huấn luyện}
 \label{sec:data-preprocessing}
@@ -5032,6 +5117,45 @@ toán~\ref{algo:training}. Chương trình được lặp đi lặp lại nhiề
   \item Xử lý câu kế tiếp.
   \end{enumerate}
 \end{algo}
+
+\section{Linh tinh}
+
+\subsection{Xử lý bảng mã}
+
+Chương trình giao tiếp bằng Unicode UTF-8. Tuy nhiên, để tiện việc xử
+lý, nội bộ chương trình sử dụng mã VISCII. Do VISCII không thể bao
+quát hết Unicode, những ký tự Unicode không có trong VISCII sẽ được
+thay bằng một ký tự đặc biệt (coi như là ký tự không biết). Sau khi xử
+lý VISCII xong, chuỗi so sánh thật sự sẽ là chuỗi Unicode.
+
+\subsection{So sánh chuỗi}
+
+Do mọi chuỗi đều được lưu thành strid. Việc so sánh chuỗi không phân biệt 
+hoa thường là không thể thực hiện được. Do vậy, ngoài strid ``id'' tham chiếu
+đến chuỗi gốc, ta sử dụng thêm ``cid'' tham chiếu đến chuỗi được dùng để
+so sánh chuỗi. ``cid'' mặc định trong câu tham chiếu đến chuỗi đã
+chuẩn hoá. Nếu cần, ``cid'' sẽ tham chiếu đến chuỗi chuẩn hoá, viết
+thường.
+
+Khi cần thiết phải so sánh chuỗi thật sự, chương trình sẽ dùng ``id''
+để truy ngược đến chuỗi gốc, sau đó thực hiện phép so sánh chuỗi thông thường.
+
+\subsection{Xử lý tiếng Việt}
+
+Một số hàm được tạo ra để hỗ trợ việc xử lý tiếng Việt, bao gồm:
+\begin{itemize}
+\item \verb@viet_toupper@, \verb@viet_tolower@, \verb@viet_isupper@, \verb@viet_islower@,
+  \verb@viet_isalpha@, \verb@viet_isdigit@, \verb@viet_isxdigit@, \verb@viet_isspace@,
+  \verb@viet_ispunct@: Các hàm tiếng Việt thay thế cho các hàm gốc (toupper,
+  tolower~\ldots)
+\item \verb@viet_utf8_to_viscii()@: Chuyển từ UTF-8 sang VISCII. Trả
+  về \verb@false@ nếu không thể chuyển đổi.
+\item \verb@viet_utf8_to_viscii()@: Chuyển từ UTF-8 sang VISCII. Những
+  ký tự không thể chuyển được sẽ được thay bằng `z'.
+\item \verb@viet_viscii_to_utf8()@: Chuyển từ VISCII sang UTF-8.
+\end{itemize}
+
+
 
 \chapter{Đánh giá và kết luận}
 \tolerance=200

@@ -32,7 +32,7 @@ bool proper_name_init()
   {
   // find all possibilities:
   // a proper name is a name consisting of words,
-  // which are started with a capitalized character. 
+  // which are started with a capitalized character.
   // e.g. Cong hoa Xa hoi Chu nghia Viet Nam
   // hmm.. these should be treated like other words for spelling checking.
 

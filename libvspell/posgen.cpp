@@ -16,7 +16,7 @@ void Generator::done()
 }
 
 /**
-	Generate every possible 3-misspelled-positions. 
+	Generate every possible 3-misspelled-positions.
 	Then call WFST::generate_misspelled_words.
  */
 
@@ -45,7 +45,7 @@ void PosGen::done()
 }
 
 /**
-	Generate every possible 3-misspelled-positions. 
+	Generate every possible 3-misspelled-positions.
 	Then call WFST::generate_misspelled_words.
  */
 
@@ -74,7 +74,7 @@ bool PosGen::step(vector<uint> &_pos,uint &_len)
 
 		// the last counter is full, step back
 		while (i >= 0 && pos[i] == len) i --;
-		if (i < 0) 
+		if (i < 0)
 			run = false;
 		else {
 			pos[i] ++;

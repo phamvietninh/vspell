@@ -54,7 +54,7 @@ void WFST::generate_misspelled_words(const vector<uint> &pos,int len,Segmentatio
 	//create_base_segmentation(words,sects,base_seg);
 
 
-	// 6. Get the best segmentation of each section, 
+	// 6. Get the best segmentation of each section,
 	// then merge to one big segment.
 	n = sects.size();
 
@@ -92,8 +92,8 @@ void WFST::segment_best(const Lattice &words,Segmentation &seps)
 
 	p_words = &words;
 
-	// in test mode, generate all positions where misspelled can appear, 
-	// then create a new Lattice for them, re get_sections, 
+	// in test mode, generate all positions where misspelled can appear,
+	// then create a new Lattice for them, re get_sections,
 	// create_base_segmentation and call segment_all1 for each sections.
 
 	// 1. Generate mispelled positions (pruning 0 - GA)

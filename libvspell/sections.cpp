@@ -83,8 +83,8 @@ void Sections::construct(const Lattice &words)
 		bool is_section;
 		// just write down and figure out what the formulas mean
 		sect.len = pos - sect.start + 1;
-		is_section = words.get_len(sect.start) > 2 || 
-			(words.get_len(sect.start) >= 2 && 
+		is_section = words.get_len(sect.start) > 2 ||
+			(words.get_len(sect.start) >= 2 &&
 			 !words.get_fuzzy_map(sect.start).empty());
 
 		if (is_section) {

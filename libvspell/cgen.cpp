@@ -17,7 +17,7 @@ void CGen::done()
 }
 
 /**
-	Generate every possible 3-misspelled-positions. 
+	Generate every possible 3-misspelled-positions.
 	Then call WFST::generate_misspelled_words.
  */
 

@@ -211,8 +211,8 @@ static char *diacritic_table[6] = {
 };
 
 static char *case_table[2] = {
-	"áàäãÕâ¤¥¦ç§å¡¢ÆÇ£éèë¨©êª«¬­®íìïî¸óòöõ÷ô¯°±²µ½¾¶·ŞşúùüûøßÑ×ØæñıÏÖÛÜğ", 
-	"ÁÀÄÃ€Â„…†‡Å‚ƒÉÈËˆ‰ÊŠ‹ŒÍÌ›Î˜ÓÒ™ šÔ‘’“´•–—³”ÚÙœ¿º»¼ÿ¹İŸĞ", 
+	"áàäãÕâ¤¥¦ç§å¡¢ÆÇ£éèë¨©êª«¬­®íìïî¸óòöõ÷ô¯°±²µ½¾¶·ŞşúùüûøßÑ×ØæñıÏÖÛÜğ",
+	"ÁÀÄÃ€Â„…†‡Å‚ƒÉÈËˆ‰ÊŠ‹ŒÍÌ›Î˜ÓÒ™ šÔ‘’“´•–—³”ÚÙœ¿º»¼ÿ¹İŸĞ",
 };
 
 static char full_case_table[2][256];
@@ -619,11 +619,11 @@ void Syllable::apply(const Syllable &sample,vector<Syllable> &output)
 				run = true;
 			}
 			break;
-		case -3: 
+		case -3:
 			s.components[i] = -1;
 			s.scomponents[i] = "";
 			break;
-		default: 
+		default:
 			s.components[i] = components[i];
 			s.scomponents[i] = scomponents[i];
 		}
@@ -801,7 +801,7 @@ std::ostream& operator << (std::ostream &os,const Syllable &sy)
 	char **p;
 	char *diacritics[] = {"_","'","`","?","~","."};
 	for (int i = 0;i < 5;i ++) {
-		if (sy.components[i] < 0) 
+		if (sy.components[i] < 0)
 			os << "_";
 		else {
 			switch (i) {

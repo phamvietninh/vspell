@@ -240,7 +240,7 @@ void Lattice::pre_construct(const Sentence &sent,set<WordEntry> &we,const WordSt
 }
 
 /**
-	 The second phase of lattice creation. 
+	 The second phase of lattice creation.
  */
 
 bool we_pos_cmp(const WordEntry &w1,const WordEntry &w2)
@@ -407,7 +407,7 @@ std::ostream& operator << (std::ostream &os,const WordEntry &we)
 
 
 /**
-	 Construct a Lattice based on another Lattice. 
+	 Construct a Lattice based on another Lattice.
 	 Keep only exact matches.
  */
 

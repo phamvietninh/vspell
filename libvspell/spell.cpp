@@ -1065,7 +1065,7 @@ bool Candidates::CandidateComparator::operator()(const std::string &s1,const std
 		return i1->priority > i2->priority;
 	float f1,f2;
 	VocabIndex v;
-	v = Vocab_None; 
+	v = Vocab_None;
 	f1 = -get_syngram().wordProb(sarch[get_std_syllable(get_lowercased_syllable(s1))],&v);
 	f2 = -get_syngram().wordProb(sarch[get_std_syllable(get_lowercased_syllable(s2))],&v);
 	//cerr << f1 << "<>" << f2 << endl;

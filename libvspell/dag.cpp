@@ -16,7 +16,7 @@ const void* WordDAG::node_info(uint node_id) const
 VocabIndex WordDAG::node_id(uint id) const
 {
 	const	WordEntries& we = *lattice->we;
-	return id < we.size() ? we[id].node.node->get_id() : 
+	return id < we.size() ? we[id].node.node->get_id() :
 		get_id(id == node_begin() ? START_ID : STOP_ID);
 }
 

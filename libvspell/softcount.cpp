@@ -104,7 +104,7 @@ void SoftCounter::count(const Lattice &w,NgramFractionalStats &stats)
 	vi[2] = Vocab_None;
 	vi[1] = get_id(STOP_ID);
 	for (i = 0;i < n;i ++) {
-		fc = Sleft[ends[i]]*Sright[ends[i]]/sum; 
+		fc = Sleft[ends[i]]*Sright[ends[i]]/sum;
 		vi[0] = (*w.we)[ends[i]].node.node->get_id();
 		//cerr << "Gram "  << vi[0] << "," << vi[1] << "+=" << fc << endl;
 		*stats.insertCount(vi) += fc;

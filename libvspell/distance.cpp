@@ -17,7 +17,7 @@ int a[MAX_WIDTH+2][MAX_HEIGHT+2];
 using namespace std;
 #ifdef USE_CACHE
 #include <map>
-typedef map<pair<string,string>,int> ed_cache_type; 
+typedef map<pair<string,string>,int> ed_cache_type;
 static ed_cache_type ed_cache;
 #endif
 
@@ -27,9 +27,9 @@ static ed_cache_type ed_cache;
 // a(0,j) = j                1 <= j <= n
 // a(i,0) = i                1 <= i <= m
 // a(i,j) = a(i-1,j-1)       x[i] = y[j]
-// a(i,j) = 1 + min{a(i-2,j-2),a(i,j-1),a(i-1,j)} 
+// a(i,j) = 1 + min{a(i-2,j-2),a(i,j-1),a(i-1,j)}
 //                           x[i] = y[j-1]
-//                           x[i-1] = y[j] 
+//                           x[i-1] = y[j]
 // a(i,j) = 1 + min{a(i-1,j-1),a(i,j-1),a(i-1,j)} otherwise
 int ed(const char *s1,int n1,const char *s2,int n2)
 {
@@ -62,7 +62,7 @@ int ed(const char *s1,int n1,const char *s2,int n2)
       }
 
       // case 6
-      if ((i > 0 && s1[i-1] == s2[j]) || 
+      if ((i > 0 && s1[i-1] == s2[j]) ||
 	  (j > 0 && s1[i] == s2[j-1])) {
 	A(i,j) = min3(A(i-2,j-2),A(i,j-1),A(i-1,j)) + 1;
 	//printf("(%d,%d) < %d %d %d -> %d\n",i+1,j+1,A(i-2,j-2),A(i,j-1),A(i-1,j),A(i,j));

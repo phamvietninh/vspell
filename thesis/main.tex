@@ -1,16 +1,107 @@
 \documentclass[a4paper]{book}
 \usepackage[hmargin={2cm,2cm}]{geometry}
-\usepackage[pdftex]{graphicx}
+\usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage[utf8]{vietnam}
-\title{Luận văn tốt nghiệp\\A B C}
+\title{Luận văn tốt nghiệp\\Đề tài\\Nhảm nhí}
 \author{Nguyễn Thái Ngọc Duy\\0012020}
 \begin{document}
-\maketitle
+%\maketitle{}
+%\tableofcontents{}
 
 \chapter{Giới thiệu}
 \label{cha:intro}
+\begin{center}
+I kept the right ones out
 
+And let the wrong ones in
+
+Had an angel of mercy
+
+To see me through all my sins
+
+There were times in my life
+
+When I was goin' insane
+
+Tryin' to walk through the pain
+
+****
+
+And when I lost my grip
+
+And I hit the floor
+
+Yeah, I thought I could leave
+
+But couldn't get out the door
+
+I was so sick n' tired
+
+Of livin' a lie
+
+I was wishing that I would die
+
+****
+
+It's amazing
+
+With the blink of an eye
+
+You finally see the light
+
+It's amazing
+
+That when the moment arrives
+
+You know you'll be alright
+
+It's amazing
+
+And I'm saying a prayer
+
+To the desperate hearts tonight
+
+
+****
+
+
+That one last shot's a Permanent Vacation
+
+And a how high can you fly with broken wings
+
+Life's a journey - not a destination
+
+And I just can't tell just what tomorrow brings
+
+
+****
+
+
+You have to learn to crawl
+
+Before you learn to walk
+
+But I just couldn't listen
+
+To all that righteous talk
+
+I was out on the street
+
+Just tryin' to survive
+
+Scratchin' to stay alive
+
+
+****
+
+
+"To all of you people out there
+Wherever you are - remember:
+The light at the end of the tunnel
+May be you - goodnight" 
+  
+\end{center}
 
 \chapter{Thông tin nền}
 \label{cha:background}
@@ -51,33 +142,33 @@ hay sai. Cách này chỉ áp dụng với nguyên nhân lỗi thứ ba.
 thể xác định rõ ràng ranh giới từ. Với tiếng Anh và các ngôn ngữ biến
 cách, khoảng trắng được dùng để phân cách hai từ. Trong tiếng Việt,
 khoảng trắng được dùng để phân cách hai tiếng. Ngoài ra, việc định
-nghĩa từ trong tiếng Việt vẫn chưa thống nhất. LV này sử dụng ``từ''
+nghĩa từ trong tiếng Việt vẫn chưa thống nhất. Trong luận văn này sử dụng ``từ''
 như là ``từ từ điển''.
 
 Để bắt lỗi chính tả trong tiếng Việt, có thể dựa trên nhiều cách khác
 nhau. Cách đầu tiên đơn giản là tìm ranh giới từ cho tiếng Việt, sau
-đó chuyển về bài toán bắt lỗi chính tả của tiếng Anh. Một cách khác
+đó chuyển về bài toán bắt lỗi chính tả của tiếng Anh. Cách khác
 là bắt lỗi mà không cần tách từ. XXX
-Cách khác dựa trên ý tưởng ``phân tích cú pháp câu, nếu ta không thể
+Cách nữa dựa trên ý tưởng ``phân tích cú pháp câu, nếu ta không thể
 phân tích cú pháp của câu, nghĩa là câu đó sai chính tả''.
 
-LV này làm theo hướng tách từ, sau đó xác định lỗi chính tả.
+Luận văn này làm theo hướng tách từ, sau đó xác định lỗi chính tả.
 
-\section{Những nghiên cứu về tách từ và bắt lỗi chính tả theo hướng
-tách từ}
+\section{Những nghiên cứu trước đây}
 
 Điều hiển nhiên dễ thấy là nếu câu bị sai chính tả thì ta không thể
 tách từ đúng được. Vấn đề ở đây là phải tách từ trong câu bị sai chính
 tả.
 
-\cite{Oflazer} khi xử lý tách tiếp vĩ ngữ trong tiếng Thổ Nhĩ Kỳ gặp trường
-hợp khá giống với trường hợp này. Tác giả phải tách các tiếp vĩ ngữ
-tiếng Thổ Nhĩ Kỳ trong điều kiện từ đó bị sai chính tả. Do đặc tính
-ngôn ngữ chấp dính (agglunative) nên khó có thể phân biệt đâu là tiếp
-vĩ ngữ, cũng như không thể phân biệt đâu là từ trong một chuỗi tiếng
-trong tiếng Việt. Tác giả dùng một hàm độ đo, tạo ra các tiếp đầu ngữ
-có khả năng thay thế dựa trên độ đo này, sau đó sử dụng WFST để tìm
-chuỗi tiếp vĩ ngữ thích hợp nhất.
+\cite{Oflazer} khi xử lý hình thái trong tiếng Thổ Nhĩ Kỳ gặp trường
+hợp khá giống với trường hợp này. Tác giả phải tách hình thái từ
+trong điều kiện từ đó bị sai chính tả. Do đặc tính
+ngôn ngữ chấp dính\footnote{agglunative language}, số tiếp vĩ ngữ
+nhiều, liên tiếp nhau, gây khó khăn cho việc nhận dạng tiếp vĩ ngữ,
+cũng như không thể phân biệt những tiếng nào hợp thành một từ trong
+một chuỗi tiếng trong tiếng Việt. Tác giả dùng một hàm độ đo, tạo ra
+các tiếp đầu ngữ có khả năng thay thế dựa trên độ đo này, sau đó sử
+dụng WFST để tìm chuỗi tiếp vĩ ngữ thích hợp nhất.
 
 Nhận dạng tiếng nói tiếng Anh cũng gặp trường hợp tương tự. Sau công
 đoạn xử lý âm thanh, ta nhận dạng được một chuỗi các âm tiết
@@ -131,12 +222,33 @@ Chương trình gồm hai phần: phần bắt lỗi chính tả và phần hu�
 
 \section{Trình bắt lỗi chính tả}
 
+
+\subsection{Quy trình chung}
+\label{sec:spellcheck}
+
+Việc bắt lỗi chính tả của một văn bản được xử lý lần lượt qua những
+bước sau:
+\begin{enumerate}
+\item \textbf{Tiền xử lý} Tách văn bản thành những đoạn ngắn. Tách đoạn thành
+  từng tiếng. Đánh dấu các ký hiệu, dấu ngắt dòng, các số, tên riêng
+  \ldots
+\item \textbf{Tạo lưới từ} Tìm ra mọi từ có thể có trong ``câu''. Xem giải
+  thích về lưới từ bên dưới. Lồng trong phần này là phần \textbf{Phát
+  sinh từ thay thế}
+\item \textbf{Tách từ} Dựa vào lưới từ, đưa ra cách tách từ tốt nhất.
+\item \textbf{Lọc các từ sai} Dựa vào từ điển và cách tách từ đã có,
+  tìm những từ nào không có trong từ điển. Những từ này được xem là từ
+  sai.
+\item \textbf{Đưa ra giải pháp thay thế từ sai} Dựa vào từ điển, các
+  độ đo, đưa ra những từ thay thế.
+\end{enumerate}
+
 \subsection{Tiền xử lý}
 \label{sub:preprocess}
 
 Dựa vào flex để tách thành các token. Sau đó dựa vào các dấu ngắt câu
 để ngắt câu ra thành từng đoạn để xử lý. Mỗi đoạn sẽ được xử lý độc
-lập với nhau. ``Đoạn'' có thể là một câu, nhưng cũng có thể là một
+lập với nhau. Đoạn ở đây có thể là một câu, nhưng cũng có thể là một
 phần của câu. Luận văn này sẽ dùng từ ``câu'' để ám chỉ ``đoạn''. Nếu
 các thông tin ở mức cao hơn được sử dụng (như thông tin cú pháp, ngữ
 nghĩa ...) thì phải thật sự xử lý trên câu chứ không phải trên
@@ -145,9 +257,79 @@ nghĩa ...) thì phải thật sự xử lý trên câu chứ không phải trê
 Kết quả là một mảng các chuỗi token.
 
 
+\subsection{Phát sinh từ thay thế}
+
+Phần này được sử dụng trong lúc tạo lưới từ và kiểm tra chính
+tả. Mục đích là, cho trước một từ, phát sinh những từ ``gần giống''
+với từ đó. Việc định nghĩa như thế nào là ``giống'' ở đây dựa theo các
+nguyên nhân gây ra lỗi chính tả:
+\begin{itemize}
+\item Lỗi phát âm. Ví dụ, ``vu và ``du''. Lỗi phát âm phụ thuộc vào
+  cách phát âm của từng vùng. CITEZ liệt kê các trường hợp lỗi thông
+  dụng nhất. Những quy tắc này được áp dụng để, ví dụ, từ ``du'' ta
+  tạo ra ``vu''.
+\item Do lỗi bàn phím. Có thể do gõ nhầm những phím lân cận. Ví dụ: gõ
+  ``tôi'' thành ``tôu''. Khắc phục lỗi này dựa vào bố trí phím trên
+  bàn phím. Độ đo là khoảng cách từ phím tạo ra ký tự trong từ cho
+  trước và những từ chung quanh. Thông thường lỗi này chỉ xảy ra một
+  lần trong mỗi từ.
+\item Lỗi OCR. XXXX. ko thèm xử lý, kêu OCR tự xử đi :-D
+\item Lỗi sai về mặt ngữ nghĩa, cú pháp. Lỗi này không xử lý.
+\item Lỗi không rõ nguyên nhân. Với dạng lỗi này, ta dùng hàm độ đo,
+  tính số lần thêm/xóa/thay đổi/hoán mỗi ký tự giữa hai từ. Hàm độ đo
+  được dùng được nêu trong \cite{Oflazer}, sẽ được trình bày lại bên
+  dưới.
+\end{itemize}
+
+
+
+
+\subsubsection{Lỗi phát âm}
+
+
+
+\subsubsection{Lỗi bàn phím}
+
+Sơ đồ bố trí của bàn phím EN-US được dùng. Do thông thường chỉ gặp một
+lỗi này mỗi từ, nên chương trình chỉ lưu danh sách những phím lân cận
+với từng phím, dựa trên bàn phím EN-US. Ví dụ: \texttt{A} $\rightarrow$
+(\texttt{S},\texttt{Q},\texttt{W},\texttt{X},\texttt{Z}).
+
+\subsubsection{Lỗi không rõ nguyên nhân}
+
+\label{algo:ed}
+Lỗi này dựa vào {\em độ đo khoảng cách hiệu chỉnh} được đề cập
+trong \cite{Oflazer}. Các thao tác hiệu chỉnh được đo gồm {\em chèn,
+xóa, thay thế một ký tự} hoặc {\em hoán vị hai ký tự kề nhau}, để có
+thể chuyển đổi từ này thành từ kia. Đặt $X = x_1, x_2, \ldots, x_m$ và
+$Y = y_1,y_2,\ldots,y_n$ là hai chuỗi có độ dài tương ứng là $m$ và
+$n$. $X[i]\quad(Y[j])$ biểu diễn chuỗi con ban đầu của X (Y) từ đầu từ
+đến ký tự thứ $j$. Cho $X$ và $Y$, độ đo $ed(X[m],Y[n])$ được tính như
+sau:
+\begin{equation}
+\begin{array}{rll}
+  ed(X[i+1],Y[j+1]) &= ed(X[i],Y[j]) & \text{nếu $x_{i+1}=y_{j+1}$
+  (ký tự cuối như nhau)}\\
+                    &= 1+min\{ed(X[i-1],Y[j-1]), & \text{nếu $x_i=y_{j+1}$}\\
+                    &\qquad\qquad ed(X[i+1],Y[j]), & \text{và $x_{i+1}=y_j$}\\
+                    &\qquad\qquad ed(X[i],Y[j+1])\}\\
+                    &= 1+min\{ed(X[i],Y[j]),&\text{trường hợp khác}\\
+                    &\qquad\qquad ed(X[i+1],Y[j]),\\
+                    &\qquad\qquad ed(X[i],Y[j+1])\}\\
+  ed(X[0],Y[j])     &=j & 0 \le j \le n\\
+  ed(X[i],Y[j])     &=i & 0 \le i \le n\\\\
+  ed(X[-1],Y[j])    &=ed(X[i],Y[-1]) = max(m,n)&\text{Biên}
+\end{array}
+\end{equation}
+
+XXXX. cho ví dụ.
+
 \subsection{Tạo lưới từ}
 \label{sub:lattice}
-Lưới từ\footnote{word lattice} là một đồ thị có hướng, liệt kê tất cả
+Lưới từ\footnote{word lattice} là một đồ thị có hướng không chu trình,
+với các nút là các từ trong câu, cạnh là đường nối giữa hai từ kề
+nhau, hướng thể hiện hướng của câu (từ trái sang phải). Lưới từ
+chứa tất cả 
 các từ có khả năng xuất hiện trong câu. Các từ được liên kết với nhau
 theo trật tự trong câu. Khi duyệt từ nút gốc đến nút đích, ta sẽ được
 một cách tách từ cho câu.
@@ -174,9 +356,11 @@ Lưới từ được tạo bằng thuật toán Viterbi. Mỗi tiếng trong c�
 duyệt qua để tìm ra tất cả các từ có thể có trong đoạn. Sau đó tập hợp
 các từ này lại. 
 
-Ngoài lưới từ, ta có thể tạo lưới 2-từ từ lưới từ. Lưới 2-từ là đồ thị
-có hướng mà mỗi nút là một cặp 2 từ đi liền nhau trong câu. Thuật toán
-tạo lưới 2-từ được nêu trong EASR. Xin được ghi lại ở đây:
+XXXX. thuật toán tạo lưới từ.
+
+Ngoài lưới từ, ta có thể tạo lưới 2-từ từ lưới từ. Lưới 2-từ tương tự
+như lưới từ, tuy nhiên mỗi nút là một cặp 2 từ đi liền nhau trong câu. Thuật toán
+tạo lưới 2-từ được nêu trong \cite{Ravishankar}, được tóm tắt lại như sau:
 
 \begin{figure}[htbp]
   \centering
@@ -197,10 +381,11 @@ tạo lưới 2-từ được nêu trong EASR. Xin được ghi lại ở đây:
   và $w_k$.
 \end{enumerate}
 
-Các lưới n-từ có đặc điểm là tuy tăng về số nút và số cạnh, nhưng số
-tầng vẫn không đổi.
+Các lưới n-từ có đặc điểm là tăng nhanh số nút và số cạnh, nhưng số
+tầng vẫn không đổi (Đồ thị ``mập'' ngày càng nhanh, nhưng ``cao''
+không nổi ;-) )
 
-\subsection{Tìm cách tách từ tốt nhất}
+\subsection{Tách từ}
 
 Dùng thuật toán tìm kiếm theo độ ưu tiên\footnote{Priority-First
   Search} để tìm đường đi ngắn nhất trên đồ thị. Khoảng cách giữa hai
@@ -209,15 +394,25 @@ Dùng thuật toán tìm kiếm theo độ ưu tiên\footnote{Priority-First
 Để áp dụng 3-gram thay vì 2-gram, ta sẽ sử dụng lưới 2-từ. Sau đó áp
 dụng thuật toán PFS cho đồ thị.
 
-Cách làm này không thể thực hiện với n-gram ($n > 3$) vì số nút
+Cách làm này không thể thực hiện với n-gram ($n > 3$) vì số nút/cạnh
 trong đồ thị sẽ tăng đáng kể. Trong trường hợp đó ta nên sử dụng
 thuật toán A*
 
+XXXX. Nếu WFST cộng viterbi, beam pruning ...
 
-\subsection{Tìm từ sai chính tả và đề nghị từ thay thế}
 
-So sánh từng từ với từ điển để nhận ra từ sai. Sau đó dùng giải pháp
-của tiếng Anh để tìm từ thay thế.
+\subsection{Tìm từ thay thế}
+
+Đối với tiếng Anh, bước này dùng thuật toán như doublephone. Ý tưởng
+là dựa vào heuristic, thay thế các nhóm ký tự trong từ thành một ký
+hiệu tương trưng cho một âm. Sau đó so sánh độ hiệu chỉnh giữa âm của
+từ sai và các âm của từ trong từ điển. Do tiếng Việt đọc sao ghi vậy,
+nên bước chuyển từ từ sang âm có thể bỏ qua. Bước còn lại là áp dụng
+thuật toán đo độ hiệu chỉnh giữa hai từ như đã nêu trong \ref{algo:ed}
+Ta có thể so sánh từng ký tự, hoặc so sánh theo âm (ví dụ, ``th'' thay
+vì ``t'' và ``h'').
+Chương trình sẽ liệt kê XXXX (chọn theo tiêu chí nào?, 10 từ lớn nhất
+hay sao đây)
 
 
 \section{Trình huấn luyện}
@@ -231,35 +426,61 @@ Giống như phần \ref{sub:lattice}, nhưng chỉ xét những từ nào thự
 có trong câu.
 
 
-\subsection{Đếm số từ}
+\subsection{Đếm từ}
 
 Nếu dùng PFS để tách từ, ta chỉ có 1 cách tách từ tốt nhất.
 
-Như đã nói, có thể dùng WFST hoặc XYZZY để tách từ. WFST phải dùng kèm
-với beam pruning để tránh bùng nổ số tổ hợp các cách tách từ. Sau khi
-dùng WFST, ta có n cách tách từ, có thể đếm fraction count trên các
-cách tách từ này.
+Như đã nói, có thể dùng WFST hoặc dùng thuật toán trong
+\cite{softcount} (tạm gọi là thuật toán ``soft-count'') để tách
+từ. WFST phải dùng kèm với beam pruning để tránh bùng nổ số tổ hợp các
+cách tách từ. Sau khi dùng WFST, ta còn n cách tách từ, có thể đếm
+fractional count (được đề cập bên dưới) trên các cách tách từ này.
 
-Dùng thuật toán XYZZY để đếm mọi alignment. XYZZY hoàn toàn không kết
-xuất ra một cách tách từ cụ thể nào. Thuật toán XYZZY gốc đếm mọi từ
-thể có mà không cần dùng từ điển. Thuật toán được dùng ở đây sử dụng
-từ điển để hạn chế những từ không phải là từ. Giả sử câu S có n cách
-tách từ khác nhau, xác suất mỗi cách tách từ là $p(1) \ldots
-p(n)$. Với mỗi từ trong một cách tách từ, ta cộng thêm một khoảng
-$\displaystyle\frac{p(i)}{\sum_{i=1}^n{p(i)}}$ cho từ đó. XYZZT dùng
+Trường hợp nhiều cách tách từ, ta có thểm đếm từ trên tất cả các cách
+tách, thay vì chỉ đếm trên cách tách từ tốt nhất. Cách này phản ánh
+tầm ảnh hưởng của các từ tốt hơn. Ví dụ, ta có 3 cách tách từ với xác
+suất các cách tách từ tương ứng lần lượt là 0.5, 0.4 và 0.1. Cách chỉ
+dùng cách tách từ tốt nhất sẽ chỉ tính những từ trong cách tách từ
+đầu, với giá trị mỗi từ là 1.0. Cách tính này ``dồn phiếu'' của 2 cách
+sau cho cách đầu. Trường hợp sau, các từ trong cách 2 và 3 vẫn được
+tính. Số đếm của mỗi từ không còn là 1, mà là xác suất của cách tách
+từ chứa từ đó. Trở lại ví dụ, các từ trong cách một sẽ được cộng thêm
+0.5 thay vì 1. Ngoài ra các từ trong cách 2 và 3 lần lượt được cộng
+0.4 và 0.1. Dễ thấy, các từ trong cách tách từ thấp sẽ không tăng số
+đếm đáng kể, do đó không thể gây ảnh hưởng lớn đến quyết định tách từ.
+Cách cộng dồn số như vậy được gọi là ``fractional count'' (hay trong
+\cite{softcount} gọi là ``soft-count'').
+
+Luận văn này thuật toán soft-count để đếm mọi cách tách từ. Soft-count
+thực tế không kết xuất ra một cách tách từ cụ thể nào (và do vậy nên
+cũng không thể áp dụng để tìm cách tách từ tốt nhất được!). Thay vào
+đó, thuật toán đếm mọi từ thể có. Thuật toán được mô tả trong
+\cite{softcount} không dùng từ được. Mọi chuỗi con trong câu đều được
+cho là từ. Điểm này, xét một mặt, là điểm mạnh vì không cần dùng từ
+điển, nhưng cũng là điểm yếu vì yếu tố này làm giảm độ chính xác một
+cách đáng kể (khoảng 20\verb#%#, như kết quả trong \cite{softcount}).
+
+Giả sử câu S có n cách
+tách từ khác nhau, xác suất mỗi cách tách từ là
+$p(1),p(2),\ldots,p(n)$.
+Với mỗi từ trong một cách tách từ, ta cộng thêm một khoảng
+$\displaystyle\frac{p(i)}{\sum_{i=1}^n{p(i)}}$ cho từ đó. Soft-count dùng
 lập trình quy hoạch động để thực hiện quá trình này.
 
-Giả sử câu S có $n$ tiếng $c_1\ldots c_n$, có $|S|$ cách tách từ
-$S_1\ldots S_{|S|}$ và cách tách từ  $S_i$ được
-tách thành $|S_i|$ từ $C_{i_1}\ldots C_{i_{|S_i|}}$ với 
-$C_i$ là một từ xác định bắt đầu ở tiếng thứ $i$ chứa $|C_i|$ tiếng, và
+Thuật toán được dùng ở đây là thuật toán soft-count, được hiệu chỉnh
+sử dụng từ điển để hạn chế những từ không phải là từ. 
+
+Giả sử câu S có $n$ tiếng $c_1,c_2,\ldots,c_n$, có $|S|$ cách tách từ
+$S_1,S_2,\ldots,S_{|S|}$ và cách tách từ  $S_i$ được
+tách thành $|S_i|$ từ $W_{i_1},W_{i_2},\ldots,W_{i_{|S_i|}}$ với 
+$W_i$ là một từ xác định bắt đầu ở tiếng thứ $i$ chứa $|W_i|$ tiếng, và
 $i_j$ là vị trí từ thứ $j$ trong cách tách câu $i$.
 
 Ta có:
-$$p(i)=\sum_{j=1}^{|S_i|}{p(C_{i_j})}$$
+$$p(i)=\sum_{j=1}^{|S_i|}{p(W_{i_j})}$$
 
 Một câu sẽ được tách thành:
-$$P(C_i) = P_{i}^{left}p(C_{i})P_{i+|C_i|}^{right}$$
+$$P(W_i) = P_{i}^{left}p(W_{i})P_{i+|W_i|}^{right}$$
 
 $P_i^{left}$ là xác suất tất cả các tổ hợp từ có thể có từ 
 tiếng thứ nhất đến tiếng thứ $i$.
@@ -267,10 +488,8 @@ tiếng thứ nhất đến tiếng thứ $i$.
 $P_{i}^{right}$ là xác suất tất cả các tổ hợp từ có thể có từ tiếng
 thứ  $i$ đến hết câu. 
 
-$|C|$ là số tiếng của từ $C$
-
-Dễ thấy, với mỗi từ $C$ trong câu $S$, fraction count của từ sẽ là
-$\displaystyle\frac{P(C)}{\sum_i^{|S|}p(i)}$
+Dễ thấy, với mỗi từ $C$ trong câu $S$, fractional count W của từ sẽ là
+$\displaystyle\frac{P(W)}{\sum_i^{|S|}p(i)}$.
 
 $\displaystyle\sum_i^{|S|}p(i)$ cũng chính là $P_{n+1}^{left}$ theo
 định nghĩa $P_i^{left}$.
@@ -281,7 +500,7 @@ $$
 P_i^{left} = \left\{
   \begin{array}{l r}
     1 & i=1\\
-    p(C_i) & i=2\\
+    p(W_i) & i=2\\
     \sum_{j=1}^{i-1}p(c_j\ldots c_{i-1})P_j^{left} & i>2
   \end{array}
 \right.
@@ -290,7 +509,7 @@ $$
 $$
 p(c_i\ldots c_j) = \left\{
   \begin{array}{ll}
-    p(C_i)&\text{nếu } c_i\ldots c_j \text{ tạo thành } C_i\\
+    p(W_i)&\text{nếu } c_i\ldots c_j \text{ tạo thành } W_i\\
     0&\text{ngược lại}
   \end{array}
 \right.
@@ -300,16 +519,16 @@ Thuật toán tính $P^{left}$ như sau:
 \begin{enumerate}
 \item Đặt $P_1^{left} = 1$
 \item Đặt $P_i^{left} = 0\quad \forall i \in [2\ldots n+1]$
-\item Duyệt i từ 1 đến n, tìm tất cả các từ $C_i$ (do tại có thể có
+\item Duyệt i từ 1 đến n, tìm tất cả các từ $W_i$ (do tại có thể có
   nhiều từ bắt đầu tại tiếng $i$).
-  Với mỗi từ $C_i$ tìm được, cộng thêm $p(C_i)$ vào $P_{i+|C_i|}^{left}$
+  Với mỗi từ $W_i$ tìm được, cộng thêm $p(W_i)$ vào $P_{i+|W_i|}^{left}$
 \end{enumerate}
 
 Thuật toán tương tự được áp dụng để tính $P^{right}$.
 
-Sau khi tính được $P^{left}$ và $P^{right}$, ta có thể tính fraction
+Sau khi tính được $P^{left}$ và $P^{right}$, ta có thể tính fractional
 count trong câu bằng cách duyệt tất cả các từ có thể có trong câu,
-cộng thêm vào $\displaystyle\frac{P(C)}{P_{n+1}^{left}}$ cho từ
+cộng thêm vào $\displaystyle\frac{P(W)}{P_{n+1}^{left}}$ cho từ
 $C$. Thực tế, ta sẽ lồng bước này vào trong thuật toán tính
 $P^{right}$, vì thuật toán cũng phải duyệt qua tất cả các từ.
 
@@ -319,10 +538,10 @@ Vậy thuật toán tính $P^{right}$ là:
 \item Đặt $P_i^{right} = 0\quad \forall i \in [1\ldots n]$
 \item Duyệt i từ n+1 đến 1.
   \begin{enumerate}
-  \item tìm tất cả các từ $C_j$ sao cho $j+|C_j|=i$.
-    Với mỗi từ $C_j$ tìm được, cộng thêm $p(C_j)$ vào
+  \item tìm tất cả các từ $W_j$ sao cho $j+|W_j|=i$.
+    Với mỗi từ $W_j$ tìm được, cộng thêm $p(W_j)$ vào
     $P_j^{right}$
-  \item Tính fraction count cho tất cả các từ $C_i$ ($i \le n$)
+  \item Tính fractional count cho tất cả các từ $W_i$ ($i \le n$)
   \end{enumerate}
 \end{enumerate}
 
@@ -334,13 +553,81 @@ tạo lưới 3-từ! Số lượng nút trong lưới 3-từ nhiều hơn nhi�
 lưới từ gốc, làm giảm tính hiệu quả của thuật toán.
 
 Thay vì vậy, thuật toán được hiệu chỉnh để áp dụng 2-gram với lưới từ
-thông thường. Ta thay $p(C_i)$ bằng 
-$$p'(C_i)=\sum_{\forall j, j+|C_j|=i}p(C_i/C_j)$$
+thông thường. 
+$$
+P_i^{left}(W_{i,l}) = \left\{
+  \begin{array}{l r}
+    p(\phi) & i<1\\
+    \sum_{j=1}^{i-1}p(c_j\ldots c_{i-1}/c_k\ldots c_j)P_j^{left} & i>2
+  \end{array}
+\right.
+$$
+
+
+Ta thay $p(W_i)$ bằng 
+$$p'(W_i)=\sum_{\forall j, j+|W_j|=i}p(W_i/W_j)$$
 Và
-$$P(C_i) = P_{i}^{left}P_{i+|C_i|}^{right}$$
+$$P(W_i) = P_{i}^{left}P_{i+|W_i|}^{right}$$
 
 Phần còn lại của thuật toán không đổi. Với cách tính này, ta có thể
 dùng lưới từ cùng với 2-gram. Để tính 3-gram, ta dùng lưới 2-từ.
+
+Ví dụ: câu ``học sinh học sinh học'' có 8 cách tách từ
+\begin{verbatim}
+học-sinh học-sinh học
+học-sinh học sinh học
+học-sinh học sinh-học
+học sinh học sinh học
+học sinh học sinh-học
+học sinh học-sinh học
+học sinh-học sinh học
+học sinh-học sinh-học
+\end{verbatim}
+\def\Zhs{\text{học-sinh}}
+\def\Zsh{\text{sinh-học}}
+\def\Zh{\text{học}}
+\def\Zs{\text{sinh}}
+Ta có
+$$
+\begin{array}{rl}
+P_1^{left}(\Zhs) &= p(\Zhs_1/\phi)\\
+P_1^{left}(\Zh) &= p(\Zh_1/\phi)\\
+P_2^{left}(\Zs) &= p(\Zs_2/\Zh_1)P_1^{left}(\Zh)\\
+ &=p(\Zs_2/\Zh_1)p(\Zh_1/\phi)\\
+P_2^{left}(\Zsh) &= p(\Zsh_2/\Zh_1)P_1^{left}(\Zh)\\
+ &=p(\Zsh_2/\Zh_1)p(\Zh_1/\phi)\\
+P_3^{left}(\Zhs) &= p(\Zhs_3/\Zhs_1)P_1^{left}(\Zhs)+p(\Zhs_3/\Zs_2)P_2^{left}(\Zs)\\
+ &=p(\Zhs_3/\Zhs_1)p(\Zhs_1/\phi)+p(\Zhs_3/\Zs_2)p(\Zs_2/\Zh_1)p(\Zh_1/\phi)\\
+ &=p(\Zhs_1,\Zhs_3)+p(\Zh_1,\Zs_2,\Zhs_3)\\
+P_3^{left}(\Zh) &= p(\Zh_3/\Zs_2)P_2^{left}(\Zs)+p(\Zh_3/\Zhs_1)P_1^{left}(\Zhs)\\
+ &=p(\Zh_3/\Zs_2)p(\Zs_2/\Zh_1)p(\Zh_1/\phi)+p(\Zh_3/\Zhs_1)p(\Zhs_1/\phi)\\
+ &=p(\Zh_1,\Zs_2,\Zh_3)+p(\Zhs_1,\Zh_3)\\
+\end{array}
+$$
+
+$$
+\begin{array}{rl}
+P_5^{right}(\Zh) &= p(\Phi/\Zh_5)\\
+P_4^{right}(\Zsh) &= p(\Phi/\Zsh_4)\\
+P_4^{right}(\Zs) &= p(\Zh_5/\Zs_4)P_5^{right}(\Zh)\\
+ &=p(\Zh_5/\Zs_4)p(\Phi/\Zh_5)\\
+P_3^{right}(\Zh) &= p(\Zsh_4/\Zh_3)P_4^{right}(\Zsh)+p(\Zs_4/\Zh_3)P_4^{right}(\Zs)\\
+ &=p(\Zsh_4/\Zh_3)p(\Phi/\Zsh_4)+p(\Zs_4/\Zh_3)(\Zh_5/\Zs_4)p(\Phi/\Zh_5)\\
+ &=p(\Zh_3,\Zsh_4)+p(\Zh_3,\Zs_4,\Zh_5)\\
+P_3^{right}(\Zhs) &= p(\Zh_5/\Zhs_3)P_5^{right}(\Zh)\\
+ &=p(\Zh_5/\Zhs_3)p(\Phi/\Zh_5)\\
+ &=p(\Zhs_3,\Zh_5)\\
+\end{array}
+$$
+
+$$
+\begin{array}{rl}
+P_3(\Zhs) &= P_3^{left}(\Zhs)P_3^{right}(\Zhs)\\
+ &=[p(\Zhs_1,\Zhs_3)+p(\Zh_1,\Zs_2,\Zhs_3)]p(\Zhs_3,\Zh_5)\\
+ &=p(\Zhs_1,\Zhs_3)p(\Zhs_3,\Zh_5)+p(\Zh_1,\Zs_2,\Zhs_3)p(\Zhs_3,\Zh_5)\\
+ &=p(\Zhs_1,\Zhs_3,\Zh_5)+p(\Zh_1,\Zs_2,\Zhs_3,\Zh_5)
+\end{array}
+$$
 
 Bản cài đặt thật sự có một chút khác biệt, do sử dụng hệ đếm từ 0 chứ
 không phải từ 1.
@@ -367,7 +654,7 @@ không phải từ 1.
 \bibitem{Casebased}Chunyu Kit, Zhiming Xu, Jonathan
   J. Webster, Integrating Ngram Model and Case-based Learning For
   Chinese Word Segmentation.
-\bibitem{Xianping}Xianping Ge, Wanda Pratt,
+\bibitem{softcount}Xianping Ge, Wanda Pratt,
   Padhraic Smyth, Discovering Chinese Words from Unsegmented Text.
 \bibitem{Jianfeng}Jianfeng Gao, Hai-Feng Wang, Mingjing Li, Kai-Fu
   Lee, A Unified Approach to Statistical Language Modeling for

@@ -117,14 +117,14 @@ void MyText::show_wrong_word(unsigned p)
 			int st_pos = (*seg.we)[seg[suggestions[sug].id].id].pos+stid;
 			int pos = st[st_pos].start;
 			if (pos == c && stid == 0) {
-				cerr << (p == sug ? "<" : "[");
+				cout << (p == sug ? "<" : "[");
 			}
 		}
 
 		const char * old_s = s;
 		s = g_utf8_next_char(s);
 		while (*old_s != *s) {
-			cerr << *old_s;
+			cout << *old_s;
 			old_s ++;
 		}
 		c ++;
@@ -136,7 +136,7 @@ void MyText::show_wrong_word(unsigned p)
 			if (pos2 == c) {
 				stid ++;
 				if (pos2 == c && stid == n_stid) {
-					cerr << (p == sug ? ">" : "]");
+					cout << (p == sug ? ">" : "]");
 					if (stid >= n_stid) {
 						stid = 0;
 						sug ++;
@@ -177,7 +177,7 @@ int main(int argc,char **argv)
 	
 
 	string line;
-	while (getline(*in,line)) {
+	while ((cerr << "Input: Please enter a sentence:" << endl, getline(*in,line))) {
 		cout << "Checking... " << line << endl;
 		vspell.check(line.c_str());
 		cout << "Checked" << endl;
@@ -196,8 +196,8 @@ bool MyText::ui_syllable_check()
 	for (int i = 0;i < n;i ++) {
 		show_wrong_syllable(i);
 		// query
-		cout << "The right one is:";
 		string s;
+		cerr << "Input: The right one is:" << endl;
 		getline(cin,s);
 
 		if (s.empty())
@@ -221,8 +221,8 @@ bool MyText::ui_word_check()
 	for (int i = 0;i < n;i ++) {
 		show_wrong_word(i);
 		// query
-		cout << "The right one is:";
 		string s;
+		cerr << "Input: The right one is:" << endl;
 		getline(cin,s);
 
 		if (s.empty())

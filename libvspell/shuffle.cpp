@@ -1,6 +1,8 @@
 // -*- tab-width: 2 mode: c++ -*-
 #include "shuffle.h"
 
+using namespace std;
+
 void CharInserter::init(const char *input_)
 {
 	input = input_;
@@ -17,7 +19,7 @@ bool CharInserter::step(string &output)
 		return false;
 
 	output = input;
-	output.insert(output.start()+i,candidates[i2]);
+	output.insert(output.begin()+i,candidates[i2]);
 	i2 ++;
 	if (i2 == len2) {
 		i2 = 0;

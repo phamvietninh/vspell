@@ -208,6 +208,21 @@ static void window_destroy_callback (GtkObject *object,
 
 static void button_search_callback(GtkWidget *button, gpointer data);
 
+static void
+candidates_row_activated (GtkTreeView *treeview,
+													GtkTreePath *path,
+													GtkTreeViewColumn *arg2,
+													gpointer user_data)
+{
+	GtkTreeIter iter;
+	const char *s;
+	if (!gtk_tree_model_get_iter(GTK_TREE_MODEL(list_store),&iter,path))
+		return;
+	gtk_tree_model_get(GTK_TREE_MODEL(list_store),&iter,0,&s,-1);
+	gtk_entry_set_text(GTK_ENTRY(spell_entry),s);
+}
+
+
 int main(int argc,char **argv)
 {
 	gtk_init(&argc,&argv);
@@ -284,7 +299,11 @@ int main(int argc,char **argv)
 	gtk_container_add(GTK_CONTAINER(spell_entry_button),spell_entry_button_image);
 	gtk_box_pack_start(GTK_BOX(spell_entry_hbox),spell_entry_button,FALSE,FALSE,0);
 
+	GtkWidget *view = gtk_scrolled_window_new(NULL,NULL);
+	gtk_box_pack_start(GTK_BOX(spell_vbox),view,TRUE,TRUE,0);
+
 	GtkWidget *w = gtk_tree_view_new();
+	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(view),w);
 	list_store = gtk_list_store_new(1,G_TYPE_STRING);
 	gtk_tree_view_set_model(GTK_TREE_VIEW(w),GTK_TREE_MODEL(list_store));
 	gtk_tree_view_append_column(GTK_TREE_VIEW(w),
@@ -293,7 +312,9 @@ int main(int argc,char **argv)
 																																			 "text",
 																																			 0,
 																																			 NULL));
-	gtk_box_pack_start(GTK_BOX(spell_vbox),w,TRUE,TRUE,0);
+	g_signal_connect(G_OBJECT(w),"row-activated",
+									 G_CALLBACK(candidates_row_activated),
+									 NULL);
 
 	// Commands
 	GtkWidget *hbox_command = gtk_hbox_new(TRUE,10);
@@ -359,6 +380,20 @@ void button_search_callback(GtkWidget *button, gpointer data)
 		gtk_label_set_text(GTK_LABEL(log_main),"Word not found.");
 }
 
+void candidates_reset()
+{
+	gtk_list_store_clear(list_store);
+}
+
+void candidates_add(const gchar *s)
+{
+	GtkTreeIter iter;
+	gtk_list_store_append(list_store,&iter);
+	gtk_list_store_set(list_store,&iter,
+										 0,s,
+										 -1);
+}
+
 bool MyText::ui_syllable_check()
 {
 	unsigned i,n = suggestions.size();
@@ -370,6 +405,12 @@ bool MyText::ui_syllable_check()
 		len = strlen(get_sarch()[st[suggestions[i].id].id]);
 		string s = substr(from,len);
 		gtk_entry_set_text(GTK_ENTRY(spell_entry),s.c_str());
+		set<string> candidates;
+		candidates_reset();
+		get_syllable_candidates(get_sarch()[st[suggestions[i].id].id],candidates);
+		set<string>::iterator iter;
+		for (iter = candidates.begin();iter != candidates.end();++ iter)
+			candidates_add(viet_to_utf8(iter->c_str()));
 		processed = ignore_all = ignore = false;
 		while (!gtk_main_iteration() && !ignore && !ignore_all && !processed);
 
@@ -397,20 +438,6 @@ bool MyText::ui_syllable_check()
 		return true;								// some things went wrong
 	}
 	return !is_checking;
-}
-
-void candidates_reset()
-{
-	gtk_list_store_clear(list_store);
-}
-
-void candidates_add(const gchar *s)
-{
-	GtkTreeIter iter;
-	gtk_list_store_append(list_store,&iter);
-	gtk_list_store_set(list_store,&iter,
-										 0,s,
-										 -1);
 }
 
 string MyText::word_to_utf8(unsigned seg_id)

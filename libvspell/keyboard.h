@@ -44,5 +44,6 @@ public:
 };
 
 void keyboard_recover(const char *input,std::set<std::string> &output);
-void vni_recover(const char *input,std::set<std::string> &output);
-void telex_recover(const char *input,std::set<std::string> &output);
+void im_recover(const char *input,std::set<std::string> &output);
+std::string vni_recover(const char *input);
+std::string telex_recover(const char *input);

@@ -96,6 +96,7 @@ public:
 	}
 };
 
+void get_syllable_candidates(const char *input,std::set<std::string> &output);
 
 bool viet_utf8_to_viscii(const char *in,char *out); // pre-allocated
 bool viet_utf8_to_viscii_force(const char *in,char *out); // pre-allocated

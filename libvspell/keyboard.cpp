@@ -201,7 +201,7 @@ void keyboard_recover(const char *input,set<string> &output)
 	*/
 }
 
-void vni_recover(const char *input,set<string> &output)
+string vni_recover(const char *input)
 {
 	string s;
 	uint p,i,n = strlen(input);
@@ -326,10 +326,12 @@ void vni_recover(const char *input,set<string> &output)
 	s[0] = diacritic;
 	Syllable syll;
 	if (syll.parse(s.c_str()))
-		output.insert(syll.to_str());
+		return syll.to_str();
+	else
+		return input;
 }
 
-void telex_recover(const char *input,set<string> &output)
+string telex_recover(const char *input)
 {
 	string s;
 	uint p,i,n = strlen(input);
@@ -429,6 +431,18 @@ void telex_recover(const char *input,set<string> &output)
 	s[0] = diacritic;
 	Syllable syll;
 	if (syll.parse(s.c_str()))
-		output.insert(syll.to_str());
+		return syll.to_str();
+	else
+		return input;
 }
 
+void im_recover(const char *input,set<string> &output)
+{
+	string s;
+	s = vni_recover(input);
+	if (s != input)
+		output.insert(s);
+	s = telex_recover(input);
+	if (s != input)
+		output.insert(s);
+}

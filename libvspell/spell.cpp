@@ -9,6 +9,8 @@
 #include "pfs.h"
 #include <map>
 #include "propername.h"
+#include "keyboard.h"
+#include "shuffle.h"
 
 // stolen from glib
 typedef unsigned int guint32;
@@ -649,3 +651,75 @@ char_traits_strid::copy(char_traits_strid::char_type* __s1,
 }
 
 */
+
+void get_syllable_candidates(const char *input,std::set<std::string> &output)
+{
+	Syllable syll;
+	string s,s2;
+	set<string> s3;
+	set<string>::iterator s3i;
+
+	KeyRecover keyr;
+	keyr.init(input);
+	while (keyr.step(s)) {
+		s2 = get_std_syllable(s);
+		if (s2 != s && syll.parse(s2.c_str()))
+			output.insert(syll.to_str());
+		s3.clear();
+		im_recover(s.c_str(),s3);
+		for (s3i = s3.begin(); s3i != s3.end(); ++ s3i) {
+			s2 = get_std_syllable(*s3i);
+			if (s2 != *s3i && syll.parse(s2.c_str()))
+				output.insert(syll.to_str());
+		}
+	}
+	keyr.done();
+
+	CharInserter inserter;
+	inserter.init(input);
+	while (inserter.step(s)) {
+		s2 = get_std_syllable(s);
+		if (s2 != s && syll.parse(s2.c_str()))
+			output.insert(syll.to_str());
+		s3.clear();
+		im_recover(s.c_str(),s3);
+		for (s3i = s3.begin(); s3i != s3.end(); ++ s3i) {
+			s2 = get_std_syllable(*s3i);
+			if (s2 != *s3i && syll.parse(s2.c_str()))
+				output.insert(syll.to_str());
+		}
+	}
+	inserter.done();
+
+	CharEraser eraser;
+	eraser.init(input);
+	while (eraser.step(s)) {
+		s2 = get_std_syllable(s);
+		if (s2 != s && syll.parse(s2.c_str()))
+			output.insert(syll.to_str());
+		s3.clear();
+		im_recover(s.c_str(),s3);
+		for (s3i = s3.begin(); s3i != s3.end(); ++ s3i) {
+			s2 = get_std_syllable(*s3i);
+			if (s2 != *s3i && syll.parse(s2.c_str()))
+				output.insert(syll.to_str());
+		}
+	}
+	eraser.done();
+
+	CharTransposer transposer;
+	transposer.init(input);
+	while (transposer.step(s)) {
+		s2 = get_std_syllable(s);
+		if (s2 != s && syll.parse(s2.c_str()))
+			output.insert(syll.to_str());
+		s3.clear();
+		im_recover(s.c_str(),s3);
+		for (s3i = s3.begin(); s3i != s3.end(); ++ s3i) {
+			s2 = get_std_syllable(*s3i);
+			if (s2 != *s3i && syll.parse(s2.c_str()))
+				output.insert(syll.to_str());
+		}
+	}
+	transposer.done();
+}

@@ -152,8 +152,8 @@ foreach $i (keys %entity) {
     $val = $entity{$i};
     $text =~ s/$i/$val/g;
 }
-#$text =~ s/&[^;]*;/ENT/;
 $text =~ s,&nbsp;, ,g;
+$text =~ s/&[^;]*;/ ENT /g;
 print $text;
 
 # Local Variables:

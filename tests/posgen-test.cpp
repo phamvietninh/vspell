@@ -17,8 +17,8 @@ int main()
     st.standardize();
     st.tokenize();
     gen.init(st);
-    vector<int> pos;
-    int len;
+    vector<VocabIndex> pos;
+    uint len;
     while (gen.step(pos,len)) {
       for (int i = 0;i < len;i ++)
 	cout << pos[i] << " ";

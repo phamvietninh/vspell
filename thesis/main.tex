@@ -1,109 +1,118 @@
-\documentclass[a4paper]{book}
-\usepackage[hmargin={2cm,2cm}]{geometry}
+\documentclass[a4paper]{book} % -*- mode: latex auto-fill:t -*-
+
+%\usepackage[hmargin={2cm,2cm}]{geometry}
 \usepackage{graphicx}
 \usepackage{amsmath}
+\renewcommand{\rmdefault}{utm}
+\renewcommand{\sfdefault}{uhv}
+\renewcommand{\ttdefault}{ucr}
 \usepackage[utf8]{vietnam}
+
+\newtheorem{algo}{Thuật toán}
+
 \title{Luận văn tốt nghiệp\\Đề tài\\Nhảm nhí}
 \author{Nguyễn Thái Ngọc Duy\\0012020}
+
 \begin{document}
 %\maketitle{}
 %\tableofcontents{}
+%\listoffigures{}
 
 \chapter{Giới thiệu}
 \label{cha:intro}
-\begin{center}
-I kept the right ones out
+%% \begin{center}
+%% I kept the right ones out
 
-And let the wrong ones in
+%% And let the wrong ones in
 
-Had an angel of mercy
+%% Had an angel of mercy
 
-To see me through all my sins
+%% To see me through all my sins
 
-There were times in my life
+%% There were times in my life
 
-When I was goin' insane
+%% When I was goin' insane
 
-Tryin' to walk through the pain
+%% Tryin' to walk through the pain
 
-****
+%% ****
 
-And when I lost my grip
+%% And when I lost my grip
 
-And I hit the floor
+%% And I hit the floor
 
-Yeah, I thought I could leave
+%% Yeah, I thought I could leave
 
-But couldn't get out the door
+%% But couldn't get out the door
 
-I was so sick n' tired
+%% I was so sick n' tired
 
-Of livin' a lie
+%% Of livin' a lie
 
-I was wishing that I would die
+%% I was wishing that I would die
 
-****
+%% ****
 
-It's amazing
+%% It's amazing
 
-With the blink of an eye
+%% With the blink of an eye
 
-You finally see the light
+%% You finally see the light
 
-It's amazing
+%% It's amazing
 
-That when the moment arrives
+%% That when the moment arrives
 
-You know you'll be alright
+%% You know you'll be alright
 
-It's amazing
+%% It's amazing
 
-And I'm saying a prayer
+%% And I'm saying a prayer
 
-To the desperate hearts tonight
-
-
-****
+%% To the desperate hearts tonight
 
 
-That one last shot's a Permanent Vacation
-
-And a how high can you fly with broken wings
-
-Life's a journey - not a destination
-
-And I just can't tell just what tomorrow brings
+%% ****
 
 
-****
+%% That one last shot's a Permanent Vacation
+
+%% And a how high can you fly with broken wings
+
+%% Life's a journey - not a destination
+
+%% And I just can't tell just what tomorrow brings
 
 
-You have to learn to crawl
-
-Before you learn to walk
-
-But I just couldn't listen
-
-To all that righteous talk
-
-I was out on the street
-
-Just tryin' to survive
-
-Scratchin' to stay alive
+%% ****
 
 
-****
+%% You have to learn to crawl
+
+%% Before you learn to walk
+
+%% But I just couldn't listen
+
+%% To all that righteous talk
+
+%% I was out on the street
+
+%% Just tryin' to survive
+
+%% Scratchin' to stay alive
 
 
-"To all of you people out there
+%% ****
 
-Wherever you are - remember:
 
-The light at the end of the tunnel
+%% "To all of you people out there
 
-May be you - goodnight" 
-\end{center}
+%% Wherever you are - remember:
+
+%% The light at the end of the tunnel
+
+%% May be you - goodnight" 
+%% \end{center}
 
 \chapter{Thông tin nền}
 \label{cha:background}
@@ -142,15 +151,15 @@ hay sai.
 thể xác định rõ ràng ranh giới từ. Với tiếng Anh và các ngôn ngữ biến
 cách, khoảng trắng được dùng để phân cách hai từ. Trong tiếng Việt,
 khoảng trắng được dùng để phân cách hai tiếng. Ngoài ra, việc định
-nghĩa từ trong tiếng Việt vẫn chưa thống nhất. Trong luận văn này sử dụng ``từ''
-như là ``từ từ điển''.
+nghĩa từ trong tiếng Việt vẫn chưa thống nhất. Trong luận văn này sử
+dụng ``từ'' như là ``từ từ điển''.
 
 Để bắt lỗi chính tả trong tiếng Việt, có thể dựa trên nhiều cách khác
 nhau. Cách đầu tiên đơn giản là tìm ranh giới từ cho tiếng Việt, sau
 đó chuyển về bài toán bắt lỗi chính tả của tiếng Anh. Cách khác
 là bắt lỗi mà không cần tách từ. XXX
 Cách nữa dựa trên ý tưởng ``phân tích cú pháp câu, nếu ta không thể
-phân tích cú pháp của câu, nghĩa là câu đó sai chính tả'' (\cite{iccc}).
+phân tích cú pháp của câu, nghĩa là câu đó sai chính tả'' \cite{iccc}.
 
 Luận văn này làm theo hướng tách từ, sau đó xác định lỗi chính tả.
 
@@ -268,33 +277,94 @@ Chương trình gồm hai phần: phần bắt lỗi chính tả và phần hu�
 Việc bắt lỗi chính tả của một văn bản được xử lý lần lượt qua những
 bước sau:
 \begin{enumerate}
-\item \textbf{Tiền xử lý} Tách văn bản thành những đoạn ngắn. Tách đoạn thành
-  từng tiếng. Đánh dấu các ký hiệu, dấu ngắt dòng, các số, tên riêng
-  \ldots
-\item \textbf{Tạo lưới từ} Tìm ra mọi từ có thể có trong ``câu''. Xem giải
-  thích về lưới từ bên dưới. Lồng trong phần này là phần \textbf{Phát
-  sinh từ thay thế}
+\item \textbf{Tiền xử lý} Tách văn bản thành những đoạn ngắn. Tách
+  đoạn thành từng tiếng. Đánh dấu các ký hiệu, dấu ngắt dòng, các số,
+  tên riêng \ldots
+\item \textbf{Bắt lỗi tiếng} Kiểm tra các tiếng với các tiếng đã có
+  trong từ điển. Báo lỗi những tiếng không có trong từ điển. Sau đó 
+  \textbf{Đưa ra giải pháp thay thế}.
+\item \textbf{Tạo lưới từ} Tìm ra mọi từ có thể có trong câu. Xem
+  giải thích về lưới từ bên dưới. Lồng trong phần này là phần
+  \textbf{Phát sinh từ thay thế}
 \item \textbf{Tách từ} Dựa vào lưới từ, đưa ra cách tách từ tốt nhất.
-\item \textbf{Lọc các từ sai} Dựa vào từ điển và cách tách từ đã có,
+\item \textbf{Bắt lỗi từ} Dựa vào từ điển và cách tách từ đã có,
   tìm những từ nào không có trong từ điển. Những từ này được xem là từ
-  sai.
-\item \textbf{Đưa ra giải pháp thay thế từ sai} Dựa vào từ điển, các
-  độ đo, đưa ra những từ thay thế.
+  sai. Sau đó \textbf{Đưa ra giải pháp thay thế}
 \end{enumerate}
 
 \subsection{Tiền xử lý}
 \label{sub:preprocess}
 
-Dựa vào flex để tách thành các token. Sau đó dựa vào các dấu ngắt câu
-để ngắt câu ra thành từng đoạn để xử lý. Mỗi đoạn sẽ được xử lý độc
-lập với nhau. Đoạn ở đây có thể là một câu, nhưng cũng có thể là một
+Dựa vào flex để tách thành các token. Mục đích là để tách các dấu câu
+ra khỏi tiếng. Ví dụ \verb#"chào"# sẽ được tách thành 3 token
+\verb#"#, \verb#chào# và \verb#"#. Quy tắc được dùng như sau:
+
+FIXME.
+
+\subsubsection{Tách câu}
+
+Dựa vào các dấu câu để ngắt câu ra thành từng đoạn để xử lý. Mỗi
+đoạn sẽ được xử lý độc lập với nhau. Đoạn ở đây có thể là một câu,
+nhưng cũng có thể là một 
 phần của câu. Luận văn này sẽ dùng từ ``câu'' để ám chỉ ``đoạn''. Nếu
 các thông tin ở mức cao hơn được sử dụng (như thông tin cú pháp, ngữ
-nghĩa ...) thì phải thật sự xử lý trên câu chứ không phải trên
-đoạn. 
+nghĩa \ldots) thì phải thật sự xử lý trên câu chứ không phải trên
+đoạn. Các đoạn được phân cách bởi các dấu câu (\verb#.# \verb#,# \verb#;# \verb#(# \verb#)# \ldots)
 
-Kết quả là một mảng các chuỗi token.
+\subsubsection{Chuẩn hóa NOTIMPL}
 
+Do trong tiếng Việt có nhiều từ có thể viết theo các
+cách khác nhau về vị trí dấu thanh điệu, ví dụ, ``hoà'' và
+``hòa''. Bởi vậy cần phải chuẩn hóa sao cho chương trình xem ``hòa''
+và ``hoà'' là một. Giải pháp đưa ra là tách dấu thanh điệu ra khỏi
+từ, biểu diễn dấu thanh điệu bằng ký tự đầu tiên trong từ. Như vậy,
+``hoà'' và ``hòa'' đều có cùng cách biểu diễn là ``2hoa'', trong khi
+đó ``hoa'' được biểu diễn là ``0hoa'', ``hồng'' được biểu diễn là
+``2hông''.
+
+\subsubsection{Tên riêng NOTIMPL}
+
+Xử lý chữ viết hoa. Chữ viết hoa dùng để biểu diễn tên riêng, hoặc
+dùng cho chữ đứng đầu câu. Do đó cần phân biệt chữ đầu câu có phải là
+chữ bắt đầu tên riêng hay không. Ngoài ra, cần xác định tên riêng khi
+tìm được chữ viết hoa bắt đầu tên riêng. Các văn bản tiếng Việt chưa
+hoàn toàn thống nhất về quy tắc viết hoa. Ví dụ, có tài liệu dùng
+``Cộng hoà Xã hội Chủ nghĩa Việt Nam'', nhưng có tài liệu lại dùng
+``Cộng Hoà Xã Hội Chủ Nghĩa Việt Nam''. HELPME.
+Có thể dùng heuristic như sau: Nếu bắt đầu bằng chữ viết hoa, và chữ
+đầu được viết thường cùng những từ kế tiếp của nó là một từ trong từ
+điển, thì xem như đó là một từ. Nếu một chuỗi từ viết hoa liên tục
+(hai từ trở lên) thì xem như đó là một từ (một tên riêng), và được
+đánh dấu từ lạ ``Unknown word''.
+
+Cách tiếp cận này không hoàn hảo. Lỗi sai của heuristic này
+có thể ảnh hưởng nặng nề đến chất lượng tách từ và bắt lỗi. Nên đánh
+dấu theo kiểu ``80\verb#%# UNK, 10\verb#%# là tổ hợp từ \ldots''. Cần
+nghiên cứu sâu hơn về vấn đề này.
+
+Cần tham khảo thêm các tài liệu về vấn đề này.
+
+\subsubsection{Từ láy NOTIMPL}
+
+Hổng thèm làm :-) Vấn đề từ láy cũng tương tự như  tên riêng. Giải
+pháp có thể áp dụng như của LV anh Toàn. Nhưng những ``từ láy''
+``nhưng những'' có thể giết chết module tách từ một cách êm dịu. Chắc
+nên áp dụng giải pháp ``80 từ láy, 20 từ thường''. Không biết được hay
+không, phiêu quá \ldots
+
+\subsubsection{Từ nước ngoài, các ký hiệu, \ldots NOTIMPL}
+
+Coi như từ sai chính tả.
+Xử lý tiếng nước ngoài, các ký hiệu chuyên ngành, các từ viết tắt. Do
+trình bắt lỗi không có kiến thức về các lĩnh vực chuyên 
+ngành, cũng như các thứ tiếng trên thế giới, nên việc áp dụng tri thức
+để phân loại là điều hết sức khó khăn. Giải pháp được dùng ở đây là áp
+dụng hàm độ đo $ed$ trên từ đang xét và từ điển. Nếu từ không có trong
+từ điển và giá trị hàm $ed$ lớn hơn 2. Từ đó được xem như là từ lạ
+``Unknown word''. Các con số được đánh dấu riêng bằng mã ``Cardinal word''.
+``Số'' ở đây là bất cứ chữ nào bắt đầu bằng số. Ví dụ, ``0lit'',
+``0.2'', ``0-4'' \ldots{} đều được coi là số. Với những từ có $ed$ nhỏ
+hơn 2, từ đó được xem là sai chính tả. 
 
 \subsection{Phát sinh từ thay thế}
 
@@ -303,7 +373,7 @@ tả. Mục đích là, cho trước một từ, phát sinh những từ ``gần
 với từ đó. Việc định nghĩa như thế nào là ``giống'' ở đây dựa theo các
 nguyên nhân gây ra lỗi chính tả:
 \begin{itemize}
-\item Lỗi phát âm. Ví dụ, ``vu và ``du''. Lỗi phát âm phụ thuộc vào
+\item Lỗi phát âm. Ví dụ, ``vu'' và ``du''. Lỗi phát âm phụ thuộc vào
   cách phát âm của từng vùng. CITEZ liệt kê các trường hợp lỗi thông
   dụng nhất. Những quy tắc này được áp dụng để, ví dụ, từ ``du'' ta
   tạo ra ``vu''.
@@ -315,26 +385,29 @@ nguyên nhân gây ra lỗi chính tả:
 \item Lỗi OCR. XXXX. ko thèm xử lý, kêu OCR tự xử đi :-D
 \item Lỗi sai về mặt ngữ nghĩa, cú pháp. Lỗi này không xử lý.
 \item Lỗi không rõ nguyên nhân. Với dạng lỗi này, ta dùng hàm độ đo,
-  tính số lần thêm/xóa/thay đổi/hoán mỗi ký tự giữa hai từ. Hàm độ đo
+  tính số lần thêm/xóa/thay đổi/hoán vị mỗi ký tự giữa hai từ. Hàm độ đo
   được dùng được nêu trong \cite{Oflazer}, sẽ được trình bày lại bên
   dưới.
 \end{itemize}
 
 
+Hmm.. có lẽ nên gắng thêm vào các từ phát sinh một ``hệ số chính
+xác''. Từ gốc là từ có hệ số chính xác cao hơn so với các từ được phát
+sinh. Good or bad? Hmmm
 
 
 \subsubsection{Lỗi phát âm}
 
 
 
-\subsubsection{Lỗi bàn phím}
+\subsubsection{Lỗi bàn phím NOTIMPL}
 
 Sơ đồ bố trí của bàn phím EN-US được dùng. Do thông thường chỉ gặp một
 lỗi này mỗi từ, nên chương trình chỉ lưu danh sách những phím lân cận
 với từng phím, dựa trên bàn phím EN-US. Ví dụ: \texttt{A} $\rightarrow$
 (\texttt{S},\texttt{Q},\texttt{W},\texttt{X},\texttt{Z}).
 
-\subsubsection{Lỗi không rõ nguyên nhân}
+\subsubsection{Lỗi không rõ nguyên nhân NOTIMPL}
 
 \label{algo:ed}
 Lỗi này dựa vào {\em độ đo khoảng cách hiệu chỉnh} được đề cập
@@ -361,7 +434,14 @@ sau:
 \end{array}
 \end{equation}
 
+Thuật toán có thể được khử đệ quy khi cài đặt bằng quy hoạch động.
+
 XXXX. cho ví dụ, ghi thuật toán.
+\begin{algo} Tính hàm ed()
+  
+\end{algo}
+
+Ví dụ:
 
 \subsection{Tạo lưới từ}
 \label{sub:lattice}
@@ -396,6 +476,17 @@ duyệt qua để tìm ra tất cả các từ có thể có trong đoạn. Sau 
 các từ này lại. 
 
 XXXX. thuật toán tạo lưới từ.
+\begin{algo} Tạo lưới từ
+
+Cho câu S có n tiếng. Duyệt i từ 1 đến n:
+\begin{itemize}
+\item Tạo state gốc cho nút i.
+\item Xét các state, nếu tiến thêm được một bước thì lưu lại state mới.
+\item Nếu không tiến được thì xóa state.
+\item Nếu hoàn tất một từ thì lưu lại.
+\end{itemize}
+  
+\end{algo}
 
 Ngoài lưới từ, ta có thể tạo lưới 2-từ từ lưới từ. Lưới 2-từ tương tự
 như lưới từ, tuy nhiên mỗi nút là một cặp 2 từ đi liền nhau trong câu. Thuật toán
@@ -408,6 +499,8 @@ tạo lưới 2-từ được nêu trong \cite{Ravishankar}, được tóm tắt
   \label{fig:wordlattice2}
 \end{figure}
 
+\begin{algo}Tạo lưới n-từ từ lưới (n-1)-từ
+
 \begin{enumerate}
 \item Nếu nút ($w$) có $n$ từ đứng liền trước nó ($w_i$),
   $i=1,2,\ldots,n$ trong lưới từ gốc, nó sẽ được lặp lại $n$ lần trong
@@ -419,6 +512,7 @@ tạo lưới 2-từ được nêu trong \cite{Ravishankar}, được tóm tắt
 \item Giá trị của cạnh ($w_iw_j$) ($w_jw_k$) là 3-gram của $w_i$, $w_j$
   và $w_k$.
 \end{enumerate}
+\end{algo}
 
 Các lưới n-từ có đặc điểm là tăng nhanh số nút và số cạnh, nhưng số
 tầng vẫn không đổi (Đồ thị càng ngày càng ``mập'', nhưng ``cao''
@@ -442,23 +536,25 @@ nút đang xét đến các nút kế tiếp.
 \label{sub:wordseg}
 
 Dùng thuật toán tìm kiếm theo độ ưu tiên\footnote{Priority-First
-  Search---PFS} để tìm đường đi ngắn nhất trên đồ thị. Khoảng cách giữa hai
-  điểm trong đồ thị là xác suất 2-gram của hai từ.
+Search---PFS} để tìm đường đi ngắn nhất trên đồ thị. Khoảng cách giữa hai
+điểm trong đồ thị là xác suất 2-gram của hai từ. Bài toán tìm đường
+đi ngắn nhất, có thể áp dụng PFS, Prime, Djisktra. PFS được chọn vì
+lưới từ, qua khảo sát, có thể được coi là một đồ thị thưa.
 
 Để áp dụng 3-gram thay vì 2-gram, ta sẽ sử dụng lưới 2-từ. Sau đó áp
-dụng thuật toán PFS cho đồ thị.
+dụng thuật toán PFS cho đồ thị mới.
 
 Cách làm này không thể thực hiện với n-gram ($n > 3$) vì số nút/cạnh
 trong đồ thị sẽ tăng đáng kể. Trong trường hợp đó ta nên sử dụng
 thuật toán A*
 
-XXXX. Nếu WFST cộng viterbi, beam pruning ...
+XXXX. Nếu WFST cộng viterbi, beam pruning \ldots thì sai nhỉ?
 
 
 \subsection{Tìm từ thay thế}
 
-Đối với tiếng Anh, bước này dùng thuật toán như doublephone, Soundex \cite{soundex},
-Phonetex \cite{phonetex}. Ý tưởng 
+Đối với tiếng Anh, bước này dùng thuật toán như doublephone, Soundex
+\cite{soundex}, Phonetex \cite{phonetex}. Ý tưởng 
 là dựa vào heuristic, thay thế các nhóm ký tự trong từ thành một ký
 hiệu tương trưng cho một âm. Sau đó so sánh độ hiệu chỉnh giữa âm của
 từ sai và các âm của từ trong từ điển. Do tiếng Việt đọc sao ghi vậy,
@@ -484,7 +580,7 @@ Giống như phần \ref{sub:lattice}, nhưng chỉ xét những từ nào thự
 có trong câu.
 
 
-\subsection{Đếm từ}
+\subsection{Thống kê n-gram}
 \label{sub:wordcount}
 
 Nếu dùng PFS để tách từ, ta chỉ có 1 cách tách từ tốt nhất. Việc đếm
@@ -562,15 +658,16 @@ P^{right}(W) = \left\{
   \right.
 $$
 
-Thuật toán tính $P^{left}$ như sau:
+\begin{algo}Tính $P^{left}$
+
 \begin{enumerate}
 \item Đặt $P^{left}(head) = p(head)$
 \item Đặt $P^{left}(W) = 0$ với mọi $W$ còn lại.
 \item Duyệt lần lượt các nút $W$ theo thứ tự từ trái sang phải, tính
-  theo vị trí bắt đầu của $W$ trong câu.
-  Với mỗi $W$ tìm được, cộng thêm $p(W)$ vào $P^{left}(W')\quad
-  W' \in R(W)$
+  theo vị trí bắt đầu của $W$ trong câu. Với $W' \in R(W)$
+  cộng thêm $p(W)P^{left}(W)$ vào $P^{left}(W')$
 \end{enumerate}
+\end{algo}
 
 Thuật toán tương tự được áp dụng để tính $P^{right}$.
 
@@ -580,19 +677,21 @@ cộng thêm vào $\displaystyle\frac{P(W)}{P^{left}(tail)}$ cho từ
 $C$. Thực tế, ta sẽ lồng bước này vào trong thuật toán tính
 $P^{right}$, vì thuật toán cũng phải duyệt qua tất cả các từ.
 
-Vậy thuật toán tính $P^{right}$ là:
+\begin{algo}Tính $P^{right}$
+  
 \begin{enumerate}
 \item Đặt $P^{right}(tail) = p(tail)$
 \item Đặt $P^{right}(W) = 0$ với mọi nút còn lại.
 \item Duyệt tất cả các nút $W$ từ phải sang trái, tính theo vị trí kết
   thúc của $W$ trong câu.
   \begin{enumerate}
-  \item Với mỗi $W$ tìm được, cộng thêm $p(W)$ vào
-    $P^{right}(W')\quad W' \in L(W)$
+  \item Với $W' \in L(W)$, cộng thêm $p(W)P^{right}(W)$ vào
+    $P^{right}(W')$
   \item Tính fractional count cho $W$ theo công thức
     $\displaystyle\frac{P^{left}(W)p(W)P^{right}(W)}{P^{left}(tail)}$
   \end{enumerate}
 \end{enumerate}
+\end{algo}
 
 
 Tuy nhiên, thuật toán trên (cũng như thuật toán gốc) sử dụng
@@ -629,12 +728,50 @@ P^{right}(W) = \left\{
   \right.
 $$
 
+$P(W)$ đại diện cho xác suất tất cả các cách tách từ đi qua nút
+$W$. Do ta huấn luyện 2-gram, nên cần xác suất $P(W/W')$ chứ không cần
+$P(W)$. Nếu $W$ và $W_{+1}$ chỉ có một cạnh, $P(W)$ cũng chính là
+$P(W/W_{+1})$. Nếu có nhiều hơn một cạnh, ta cần dùng cách khác để
+tính $P(W/W')$. Với thuật toán tính $P^{right}$ hiện có, ta cộng dồn
+$p(W/W')P^{right}$ vào cho $P^{right}(W)$. Vậy trong quá trình cộng
+dồn ta có thể tính ngay $P(W/W')$ bằng cách nhân giá trị cộng dồn với
+$P^{left}(W)$. Thuật toán tính $P^{left}$ và $P^{right}$ sau cùng như
+sau:
+
+\begin{algo}Tính $P^{left}$
+
+\begin{enumerate}
+\item Đặt $P^{left}(head) = p(head)$
+\item Đặt $P^{left}(W) = 0$ với mọi $W$ còn lại.
+\item Duyệt lần lượt các nút $W$ theo thứ tự từ trái sang phải, tính
+  theo vị trí bắt đầu của $W$ trong câu.
+  Với mỗi $W$ tìm được, cộng thêm $p(W'/W)P^{left}(W)$ vào $P^{left}(W')\quad
+  W' \in R(W)$
+\end{enumerate}
+\end{algo}
+
+\begin{algo}Tính $P^{right}$
+  
+\begin{enumerate}
+\item Đặt $P^{right}(tail) = p(tail)$
+\item Đặt $P^{right}(W) = 0$ với mọi nút còn lại.
+\item Duyệt tất cả các nút $W$ từ phải sang trái, tính theo vị trí kết
+  thúc của $W$ trong câu. Với $W' \in L(W)$:
+  \begin{enumerate}
+  \item Cộng thêm $p(W/W')P^{right}(W)$ vào $P^{right}(W')$
+  \item Tính fractional count cho $W'$ theo công thức
+    $\displaystyle\frac{P^{left}(W')p(W/W')P^{right}(W)}{P^{left}(tail)}$
+  \end{enumerate}
+\end{enumerate}
+\end{algo}
+
 Với cách tính này, ta có thể dùng lưới từ cùng với 2-gram. Để tính
 3-gram, ta dùng lưới 2-từ. 
 
 \subsection{Tính n-gram}
 
-N-gram được tính như thông thường. Sử dụng backoff chuẩn.
+N-gram được tính như thông thường. Sử dụng backoff chuẩn. Thư viện
+SRILM được dùng để tính n-gram.
 
 \chapter{Kết luận}
 \label{cha:conclusion}
@@ -646,9 +783,10 @@ N-gram được tính như thông thường. Sử dụng backoff chuẩn.
 
 \section{Hướng phát triển}
 
+Viết lại từ đầu :-D
 
 
-\begin{thebibliography}{99}
+\begin{thebibliography}{}
 \bibitem{Ravishankar}Mosur K. Ravishankar. Efficient Algorithms for
   Speech Recognition, PhD thesis, 1996.
 \bibitem{Oflazer}Kemal Oflazer. Error-tolerant Finite State

@@ -8,12 +8,15 @@
 #include <sstream>
 #include <iostream>
 #include "sentence.h"
-#include <libsrilm/NgramStats.h>
+#include "softcount.h"
 #include <boost/format.hpp>
 
 using namespace std;
 
 PFS wfst;
+
+
+NgramFractionalStats stats(sarch.get_dict(),2);
 
 int main(int argc,char **argv)
 {

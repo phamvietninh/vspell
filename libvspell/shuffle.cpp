@@ -1,5 +1,6 @@
 // -*- tab-width: 2 mode: c++ -*-
 #include "shuffle.h"
+#include "spell.h"
 
 using namespace std;
 

@@ -4,6 +4,7 @@
 #include <string.h>
 #include "dictionary.h"
 #include "syllable.h"
+#include "spell.h"
 
 /*
 	VISCII character map.

@@ -4,6 +4,10 @@
 #include <string>
 #endif
 
+#ifndef __SPELL_H__
+#include "spell.h"
+#endif
+
 class CharInserter//CharShuffle
 {
 private:

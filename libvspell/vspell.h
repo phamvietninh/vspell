@@ -29,6 +29,7 @@ protected:
 	bool syllable_check(int sentence_element_id);
 	void apply_separators(std::set<WordEntry> &wes);
 	void get_separators(std::vector<unsigned> &seps);
+	void penalty2_construct(Segmentation &s);
 
 public:
 	int offset,length;
@@ -68,7 +69,7 @@ protected:
 	std::vector<unsigned> separators;
 	std::string utf8_text;
 	std::string text;
-	float penalty_weight;
+	float penalty_weight,penalty2_weight;
 	bool do_normalization,do_trigram,do_strict_word_checking;
 
 public:
@@ -90,6 +91,13 @@ public:
 	}
 	float get_penalty() const {
 		return penalty_weight;
+	}
+
+	void set_penalty2(float weight) {
+		penalty2_weight = weight;
+	}
+	float get_penalty2() const {
+		return penalty2_weight;
 	}
 
 	void set_normalization(bool t) {

@@ -346,18 +346,31 @@ bool Text::sentence_check(const char *pp)
 	w.post_construct(wes);
 	//cerr << w << endl;
 
-	Path path;
 	WordDAG dagw(&w);
-	WordDAG2 *dagw2;
 	DAG *dag = &dagw;
+
+	WordDAG2 *dagw2;
 	if (vspell->get_trigram()) {
 		dagw2 = new WordDAG2(&dagw);
 		dag = dagw2;
 	}
-	PenaltyDAG pdag(dag,vspell->get_penalty());
-	if (vspell->get_penalty())
-		dag = &pdag;
 
+	Penalty2DAG p2dag(dag,vspell->get_penalty2());
+	if (vspell->get_penalty2()) {
+		// with penalty2dag, we have to do non-fuzzy segmentation first
+		// to feed Penalty2DAG::syllable_weights
+		Segmentation p2seg;
+		penalty2_construct(p2seg);
+		p2dag.set_syllable_weights(p2seg);
+		dag = &p2dag;
+	}
+
+	PenaltyDAG pdag(dag,vspell->get_penalty());
+	if (vspell->get_penalty()) {
+		dag = &pdag;
+	}
+
+	Path path;
 	if (vspell->get_normalization()) {
 		Bellman pfs;
 		pfs.search(*dag,path);
@@ -365,10 +378,12 @@ bool Text::sentence_check(const char *pp)
 		PFS pfs;
 		pfs.search(*dag,path);
 	}
+
 	if (vspell->get_trigram()) {
 		dagw2->demangle(path);
 		delete dagw2;
 	}
+
 	seg.resize(path.size()-2);
 	// don't copy head/tail
 	copy(path.begin()+1,path.end()-1,seg.begin());
@@ -381,6 +396,55 @@ bool Text::sentence_check(const char *pp)
 
 	return true;									// done
 }
+
+void Text::penalty2_construct(Segmentation &seg)
+{
+	WordStateFactories factories;
+	ExactWordStateFactory exact;
+	LowerWordStateFactory lower;
+	UpperWordStateFactory upper;
+	//FuzzyWordStateFactory fuzzy;
+
+	factories.push_back(&exact);
+	factories.push_back(&lower);
+	factories.push_back(&upper);
+	//factories.push_back(&fuzzy);
+	Lattice lattice;
+	set<WordEntry> wes;	
+	lattice.pre_construct(st,wes,factories);
+	mark_proper_name(st,wes);
+	//apply_separators(wes);
+	lattice.post_construct(wes);
+
+	WordDAG dagw(&lattice);
+	DAG *dag = &dagw;
+
+	WordDAG2 *dagw2;
+	if (vspell->get_trigram()) {
+		dagw2 = new WordDAG2(&dagw);
+		dag = dagw2;
+	}
+
+	Path path;
+	if (vspell->get_normalization()) {
+		Bellman pfs;
+		pfs.search(*dag,path);
+	} else {
+		PFS pfs;
+		pfs.search(*dag,path);
+	}
+
+	if (vspell->get_trigram()) {
+		dagw2->demangle(path);
+		delete dagw2;
+	}
+
+	seg.resize(path.size()-2);
+	// don't copy head/tail
+	copy(path.begin()+1,path.end()-1,seg.begin());
+	seg.we = w.we;
+}
+
 
 bool Text::syllable_check(int i)
 {

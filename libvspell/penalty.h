@@ -43,4 +43,16 @@ public:
 	virtual float edge_value(uint node_from,uint node_to) const;
 };
 
+class Penalty2DAG : public PenaltyDAG {
+protected:
+	std::vector<float> syllable_weights;
+
+public:
+	Penalty2DAG(DAG *dag_,float weight_):PenaltyDAG(dag_,weight_) {}
+
+	void set_syllable_weights(const Segmentation &seg);
+
+	virtual float edge_value(uint node_from,uint node_to) const;
+};
+
 #endif

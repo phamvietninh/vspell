@@ -12,37 +12,203 @@
 
 \newtheorem{algo}{Thuật toán}
 
-\title{Luận văn tốt nghiệp\\Chương trình bắt lỗi chính tả tiếng Việt}
+\title{Chương trình bắt lỗi chính tả tiếng Việt}
 \author{Nguyễn Thái Ngọc Duy\\0012020}
 
 \begin{document}
-%\maketitle{}
+\maketitle{}
 \tableofcontents{}
-%\listoffigures{}
+\listoffigures{}
+
+
+\chapter{Giới thiệu}
+\label{cha:intro}
+\begin{center}
+I kept the right ones out
+
+And let the wrong ones in
+
+Had an angel of mercy
+
+To see me through all my sins
+
+There were times in my life
+
+When I was goin' insane
+
+Tryin' to walk through the pain
+
+****
+
+And when I lost my grip
+
+And I hit the floor
+
+Yeah, I thought I could leave
+
+But couldn't get out the door
+
+I was so sick n' tired
+
+Of livin' a lie
+
+I was wishing that I would die
+
+****
+
+It's amazing
+
+With the blink of an eye
+
+You finally see the light
+
+It's amazing
+
+That when the moment arrives
+
+You know you'll be alright
+
+It's amazing
+
+And I'm saying a prayer
+
+To the desperate hearts tonight
+
+
+****
+
+
+That one last shot's a Permanent Vacation
+
+And a how high can you fly with broken wings
+
+Life's a journey - not a destination
+
+And I just can't tell just what tomorrow brings
+
+
+****
+
+
+You have to learn to crawl
+
+Before you learn to walk
+
+But I just couldn't listen
+
+To all that righteous talk
+
+I was out on the street
+
+Just tryin' to survive
+
+Scratchin' to stay alive
+
+
+****
+
+
+``To all of you people out there
+
+Wherever you are - remember:
+
+The light at the end of the tunnel
+
+May be you - goodnight''
+\end{center}
+
 
 \chapter{Thông tin nền}
 \label{cha:background}
 
+
+\section{Lý thuyết về ngôn ngữ tự nhiên}
+\label{sec:natural-language}
+
+\section{Lý thuyết về tiếng Việt}
+\label{sec:Vietnamese}
+
+
+
 \section{Tổng quan về lỗi chính tả}
 
-Văn bản nhập vào thường hay bị lỗi. Các nguyên nhân gây ra lỗi là:
-Theo \cite{Chang} thì lỗi là:
+\note{Lỗi chính tả là gì?}
+
+Theo \cite{LoiChinhTa} thì:
+\begin{verse}
+  Chữ viết là hệ thống ký hiệu bằng đường nét đặt ra để ghi tiếng nói
+  và có những qui tắc, qui định riêng. Muốn viết đúng chính tả tiếng
+  Việt, ta phải tuân theo những qui định, qui tắc đã được xác lập.
+
+  Chính tả là cách viết chữ được xem là chuẩn, tức là viết đúng âm
+  đầu, đúng vần, đúng dấu (thanh), đúng quy định về viết hoa, viết
+  tắt, viết thuật ngữ.
+\end{verse}
+
+\note{nổ thêm tí ở đây}
+
+\note{Phân loại lỗi, nguyên nhân gây lỗi}
+
+\subsection{Phân loại lỗi}
+
+Theo \cite{LoiChinhTa}, lỗi bao gồm các loại sau:
+\begin{itemize}
+\item Lỗi thanh điệu. Chủ yếu là lỗi nhầm lẫn hai thanh hỏi, ngã.
+\item Lỗi về âm đầu. Thường lẫn lộn các âm đầu sau: C/K, G/Gh, Ng/Ngh,
+  Ch/Tr, S/X, V/D/Gi/R, W/Hw/Ngw/Qu.
+\item Lỗi về âm chính. Thường lẫn lộn các âm chính sau: ai/ay/ây,
+  ao/au/âu, ăm/âm, ăp/âp, iu/iêu/êu, im/iêm/em, ip/iêp/êp/ep,
+  oi/ôi/ơi, om/ôm/ơm, op/ôp/ơp, ong/ông, oc/ôc, ui/uôi, um/uôm, up/(uôp),
+  ưi/ươi, ưu/ươu, ưm/ươm, (ưp)/ươp.
+\item Lỗi về âm cuối. Thường lẫn lộn chữ ghi các âm cuối trong các vần
+  sau:
+  an/ang, at/ac, ăn/ăng, ăt/ăc, ân/âng, ât/âc, en/eng, et/ec, ên/ênh,
+  êt/êch, in/inh, it/ich, iên/iêng, iêt/iêc, ơn/(ơng), ơt/(ơc),
+  un/ung, ut/uc, uôn/uông, uôt/uôc, ưn/ưng, ưt/ưc, ươn/ương, ươt/ươc.
+\end{itemize}
+
+\noindent Theo \cite{Tuoi}, lỗi được phân làm hai loại:
+\begin{itemize}
+\item Từ bị sai không nằm trong từ điển. (do sai dấu hỏi---ngã, bỏ dấu
+  không đúng vị trí, gõ nhầm ký tự trên bàn phím, gõ thiếu ký tự, gõ
+  dư ký tự, gõ sai do gõ theo cách phát âm từng vùng, gõ nhầm vị trí
+  các ký tự trong từ \ldots)
+\item Từ bị sai nhưng vẫn có trong từ điển. (sai cách phát âm, nhầm ký
+  tự, bỏ dấu sai, thiếu/thừa ký tự\ldots)
+\end{itemize}
+
+\noindent Theo \cite{Chang} thì lỗi bao gồm:
 \begin{itemize}
 \item Giống phiên âm
-\item Giống hình dạng
-\item Cách gõ tương tự nhau
+\item Giống hình dạng chữ viết
 \item Giống nghĩa
+\item Giống cách gõ
 \end{itemize}
-
-Luận văn này chỉ giải quyết ba lỗi đầu.
 
 \section{Xử lý lỗi chính tả}
+%Nêu tổng quan, nói cụ thể hơn ở phần sau ``previous work''
 
-Có hai hướng chính:
+Với \cite{Tuoi} thì việc xử lý lỗi bao gồm:
 \begin{itemize}
-\item Tìm lỗi, đề nghị cách sửa chữa.
-\item Tự động sửa lỗi.
+\item Từ không có trong từ điển thì bắt lỗi ở cấp từ vựng.
+\item Từ có trong từ điển thị bắt lỗi ở cấp cú pháp.
 \end{itemize}
+
+Với \cite{Chang}, giải pháp gồm:
+\begin{itemize}
+\item Composite confusing character substitution
+\item Advanced word class bigram language. LM score is composed base
+  language model score and substitution penalty score.
+\end{itemize}
+
+qua các bước:
+\begin{enumerate}
+\item Input and Clause Segmentation
+\item Composite Confusing Character Substitution
+\item Language Model Evaluation
+\item Comparision and Correction
+\item Output
+\end{enumerate}
 
 Tìm lỗi dựa chủ yếu trên từ điển. So từng từ với từ điển, những từ
 không có trong từ điển là những từ có khả năng bị lỗi. Sau đó dựa trên
@@ -57,13 +223,13 @@ hay sai.
 thể xác định rõ ràng ranh giới từ. Với tiếng Anh và các ngôn ngữ biến
 cách, khoảng trắng được dùng để phân cách hai từ. Trong tiếng Việt,
 khoảng trắng được dùng để phân cách hai tiếng. Ngoài ra, việc định
-nghĩa từ trong tiếng Việt vẫn chưa thống nhất. Trong luận văn này sử
-dụng ``từ'' như là ``từ từ điển''.
+nghĩa từ trong tiếng Việt vẫn chưa thống nhất\cite{worddef}. Trong
+luận văn này sử dụng ``từ'' như là ``từ từ điển''.
 
 Để bắt lỗi chính tả trong tiếng Việt, có thể dựa trên nhiều cách khác
 nhau. Cách đầu tiên đơn giản là tìm ranh giới từ cho tiếng Việt, sau
 đó chuyển về bài toán bắt lỗi chính tả của tiếng Anh. Cách khác
-là bắt lỗi mà không cần tách từ. XXX \cite{Tuoi}
+là bắt lỗi mà không cần tách từ. \cite{Tuoi}
 Cách nữa dựa trên ý tưởng ``phân tích cú pháp câu, nếu ta không thể
 phân tích cú pháp của câu, nghĩa là câu đó sai chính tả'' \cite{iccc}.
 
@@ -97,7 +263,7 @@ word class bigram. Các bước thực hiện:
 \begin{enumerate}
 \item Input and Clause Segmentation. Dùng cách ký tự như `?' `!' `,'
   `:' `.' \ldots{} để tách.
-\item Composite Confusing Character Stubstitution. 
+\item Composite Confusing Character Substitution. 
 \item Language Model Evaluation. Xài Modified-IWCB và SA-class
   bigram. IWCB là, những từ cùng ký tự đầu tiên được nhóm thành 1
   class, những từ cùng ký tự cuối cùng được nhóm thành class. Bigram
@@ -122,6 +288,49 @@ tìm được cách tách từ, ta có thể tra từ điển để tìm xem t�
 Bài toán tách từ cho ngôn ngữ đơn lập đã được đặt ra từ lâu, chủ yếu
 để giải quyết cho tiếng Hoa, tiếng Nhật. 
 
+\begin{description}
+\item[Dựa theo luật] 
+  \begin{itemize}
+  \item Longest Matching, Greedy Matching Models (Yuen Poowarawan, 1986;
+    Sampan Rarurom, 1991)
+  \item Maximal Matching Models. This model is divided into ``forward
+    maximum match'' and ``backward maximum match'', for which the fully
+    comprehensive dictionary is indispensible. However, it is obvious
+    that there is no comprehensive dictionary and depending on different
+    contexts that this model requires suitable dictionaries.
+    \begin{itemize}
+    \item Thai, Sornlertlamvanich (1993).
+    \item Chinese, Chih-Hao Tsai (1996), MMSeg 2000.
+    \end{itemize}
+  \end{itemize}
+\item[Dùng thống kê]
+  This approach on the word context in considering
+  the information of the neighboring words to issue revelant
+  decisions. There are two points to be resolved for this approach,
+  which are the context width and applied statistical method. As far
+  as the context is concerned the wider the more complex.
+
+  As far as the context is concerned, the first-order HMM has always
+  been applied. However, this method greatly depends on the corpus for
+  its training. In case one method is applicable for the political
+  corpus, it can not be applied to literal ones. In addition, there
+  are some words of high probability but of syntactical function only,
+  which lessens the role of probability.
+  \begin{itemize}
+  \item HMM, based on Viterbi algorithm. (Asanee Kawtraku, 1995;
+    Surapant,1995).
+  \item EM. Xianping, 1996.
+  \end{itemize}
+\item[Các cách khác]
+  Most of these approaches are hybrid in combination with such other
+  linguistic models as WFST, TBL (Julia, 1996). However, due to the
+  requirement of various manipulation, the processing becomes quite
+  time-consuming but it accuracy proves to be high.
+
+  However, the linguistic knowledge, which is applied in the
+  rule-based models, is rarely found in all the above models.
+\end{description}
+
 \cite{Sproat} sử dụng WFST để tách từ, huấn luyện bằng EM dựa trên
 cách tách từ đúng nhất.
 
@@ -144,6 +353,15 @@ soft-count thay vì ``hard-count'' như \cite{Chang}. \cite{Chunyu} còn
 đề nghị dùng case-based learning.
 
 \subsection{Huấn luyện tách từ}
+
+\note{Tại sao không xài bộ tách từ đã có?} Hai vấn đề:
+\begin{itemize}
+\item Chất lượng của bộ tách từ hiện có. (2-gram tốt hơn unigram
+  \ldots...)
+\item Nếu thống kê trên mọi cách tách từ thì không thể dùng bộ tách từ
+  hiện có vì chỉ tạo ra kết quả sau cùng.
+\end{itemize}
+
 
 Có thể huấn luyện dựa trên dữ liệu mẫu, hoặc dữ liệu thô. Do hầu hết
 các phương pháp tách từ đều dựa trên ngram ($n\ge 1$) nên rất cần có
@@ -203,10 +421,43 @@ bước sau:
 \label{sub:preprocess}
 
 Dựa vào flex để tách thành các token. Mục đích là để tách các dấu câu
-ra khỏi tiếng. Ví dụ \verb#"chào"# sẽ được tách thành 3 token
-\verb#"#, \verb#chào# và \verb#"#. Quy tắc được dùng như sau:
+ra khỏi tiếng. Ví dụ \fbox{"chào"} sẽ được tách thành 3 token
+\fbox{"} \fbox{chào} \fbox{"}. Quy tắc được dùng như sau:
 
-FIXME.
+\begin{verbatim}
+
+SENTENCE_FINAL                  [.?!]
+HYPHEN                          [\-]
+OPEN_SINGLE_QUOTE               [\`]
+CLOSE_SINGLE_QUOTE              [\']
+RIGHT_PAREN                     [\"\)\]\}\>\']
+
+
+LETTERS_AND_NUMBERS             [a-zA-Z0-9]
+LETTERS_NUMBER_AND_THEN_SOME    [a-zA-Z0-9]
+APOSTROPHE                      \'
+
+SINGLE_CHARACTER                [a-zA-Z0-9]
+
+WHITE_SPACE                     [ \t\n]
+NEWLINE                         [\n]
+INVISIBLE                       [^\040-\176]
+
+
+{SENTENCE_FINAL}+{RIGHT_PAREN}*                                 |
+{HYPHEN}+                                                       |
+{OPEN_SINGLE_QUOTE}+                                            |
+{CLOSE_SINGLE_QUOTE}+                                           |
+
+{LETTERS_NUMBER_AND_THEN_SOME}+{LETTERS_AND_NUMBERS}            |
+{LETTERS_AND_NUMBERS}+{APOSTROPHE}                              |
+
+{SINGLE_CHARACTER}                   { xuất từ }
+
+({WHITE_SPACE}|{INVISIBLE}|{NEWLINE})+                { bỏ qua }
+
+\end{verbatim}
+
 
 \subsubsection{Tách câu}
 
@@ -215,9 +466,9 @@ Dựa vào các dấu câu để ngắt câu ra thành từng đoạn để xử
 nhưng cũng có thể là một 
 phần của câu. Luận văn này sẽ dùng từ ``câu'' để ám chỉ ``đoạn''. Nếu
 các thông tin ở mức cao hơn được sử dụng (như thông tin cú pháp, ngữ
-nghĩa \ldots) thì phải thật sự xử lý trên câu chứ không phải trên
-đoạn. Các đoạn được phân cách bởi các dấu câu \verb#.# \verb#,#
-\verb#;# \verb#(# \verb#)# \ldots 
+nghĩa \ldots) thì phải thật sự xử lý trên câu chứ không phải trên 
+đoạn. Các đoạn được phân cách bởi các dấu câu \fbox{.} \fbox{,}
+\fbox{;} \fbox{(} \fbox{)} \ldots 
 
 \subsubsection{Chuẩn hóa}
 
@@ -230,8 +481,6 @@ từ, biểu diễn dấu thanh điệu bằng ký tự đầu tiên trong từ.
 đó ``hoa'' được biểu diễn là ``0hoa'', ``hồng'' được biểu diễn là
 ``2hông''.
 
-Bước này sẽ gán $fid$ là $sid$.
-
 \subsubsection{Chữ viết hoa UNIMPL}
 
 Xử lý chữ viết hoa. Chữ viết hoa dùng để biểu diễn tên riêng, hoặc
@@ -240,24 +489,24 @@ chữ bắt đầu tên riêng hay không. Ngoài ra, cần xác định tên ri
 tìm được chữ viết hoa bắt đầu tên riêng. Các văn bản tiếng Việt chưa
 hoàn toàn thống nhất về quy tắc viết hoa. Ví dụ, có tài liệu dùng
 ``Cộng hoà Xã hội Chủ nghĩa Việt Nam'', nhưng có tài liệu lại dùng
-``Cộng Hoà Xã Hội Chủ Nghĩa Việt Nam''. \note{HELPME.}
+``Cộng Hoà Xã Hội Chủ Nghĩa Việt Nam''.
+
+Do văn bản đầu vào có khả năng bị sai chính tả nên không thể xác định
+ngay chính xác có phải là cụm từ viết hoa đúng hay không. Bước này cố
+gắng phát hiện ra những cụm từ viết hoa và thêm vào lưới từ. Do vậy,
+phần này được thực hiện bên trong phần \textbf{Phát sinh từ thay thế}. 
+
 Có thể dùng heuristic như sau: Nếu bắt đầu bằng chữ viết hoa, và chữ
 đầu được viết thường cùng những từ kế tiếp của nó là một từ trong từ
 điển, thì xem như đó là một từ. Nếu một chuỗi từ viết hoa liên tục
 (hai từ trở lên) thì xem như đó là một từ (một tên riêng), và được
-đánh dấu từ lạ ``Unknown word''.
+đánh dấu từ lạ ``UNK''.
 
-\note{Cách tiếp cận này không hoàn hảo.} Lỗi sai của heuristic này
-có thể ảnh hưởng nặng nề đến chất lượng tách từ và bắt lỗi. Nên đánh
-dấu theo kiểu ``0.80 UNK, 0.10 là tổ hợp từ \ldots''. Cần
-nghiên cứu sâu hơn về vấn đề này.
+Với tên riêng của người Việt. Một danh sách các tên tiếng Việt được
+thu thập nhằm rút ra những chữ thường dùng khi đặt tên. Những chuỗi
+các chữ hoa liên tiếp được hình thành từ những chữ trong danh sách này
+sẽ được xem như là tên riêng, đánh mã ``PROP''.
 
-\note{Cần tham khảo thêm các tài liệu về vấn đề này.}
-
-Đối với tên người Việt, lập danh sách tên, xử lý riêng, không đưa vào
-phần Phát sinh từ thay thế.
-
-Phần này được thực hiện bên trong phần \textbf{Phát sinh từ thay thế}.
 
 \begin{algo} Xử lý chữ hoa
 
@@ -281,6 +530,14 @@ Phần này được thực hiện bên trong phần \textbf{Phát sinh từ tha
 \subsubsection{Từ láy UNIMPL}
 
 Phần này được thực hiện bên trong phần \textbf{Phát sinh từ thay thế}.
+
+\begin{itemize}
+\item Láy toàn bộ (Vd. ba ba, chuồn chuồn \ldots)
+\item Láy âm đầu (Vd. chặt chẽ, trong trẻo \ldots)
+\item Láy điệp vần (Vd. lông bông, lã chã \ldots)
+\item Láy điệp âm, láy vần (Vd. thủ thỉ, tủm tỉm \ldots)
+\item hai thanh của tiếng thường ở cùng một hệ \ldots
+\end{itemize}
 
 \note{Hổng thèm làm :-)} Vấn đề từ láy cũng tương tự như  tên riêng. Giải
 pháp có thể áp dụng như của LV anh Toàn. Nhưng những ``từ láy''
@@ -306,7 +563,8 @@ liền với hình tượng, cảm giác gì đó. Làm sao người ta có th�
 
 \subsubsection{Từ nước ngoài, các ký hiệu, \ldots UNIMPL}
 
-Coi như từ sai chính tả.
+\note{Coi như từ sai chính tả}
+\note{không phân biệt từ nước ngoài và từ sai chính tả}
 Xử lý tiếng nước ngoài, các ký hiệu chuyên ngành, các từ viết tắt. Do
 trình bắt lỗi không có kiến thức về các lĩnh vực chuyên 
 ngành, cũng như các thứ tiếng trên thế giới, nên việc áp dụng tri thức
@@ -325,17 +583,14 @@ tả. Mục đích là, cho trước một từ, phát sinh những từ ``gần
 với từ đó. Việc định nghĩa như thế nào là ``giống'' ở đây dựa theo các
 nguyên nhân gây ra lỗi chính tả:
 \begin{itemize}
-\item Lỗi phát âm. Ví dụ, ``vu'' và ``du''. Lỗi phát âm phụ thuộc vào
-  cách phát âm của từng vùng. CITEZ liệt kê các trường hợp lỗi thông
-  dụng nhất. Những quy tắc này được áp dụng để, ví dụ, từ ``du'' ta
-  tạo ra ``vu''.
+\item Lỗi phát âm. Ví dụ, ``vu'' và ``du''. 
 \item Do lỗi bàn phím. Có thể do gõ nhầm những phím lân cận. Ví dụ: gõ
   ``tôi'' thành ``tôu''. Khắc phục lỗi này dựa vào bố trí phím trên
   bàn phím. Độ đo là khoảng cách từ phím tạo ra ký tự trong từ cho
   trước và những từ chung quanh. Thông thường lỗi này chỉ xảy ra một
   lần trong mỗi từ.
 \item Lỗi OCR. \note{XXXX. ko thèm xử lý, kêu OCR tự xử đi :-D}
-\item Lỗi sai về mặt ngữ nghĩa, cú pháp. Lỗi này không xử lý.
+\item Lỗi sai về mặt từ vựng, cú pháp. Lỗi này không xử lý.
 \item Lỗi không rõ nguyên nhân. Với dạng lỗi này, ta dùng hàm độ đo,
   tính số lần thêm/xóa/thay đổi/hoán vị mỗi ký tự giữa hai từ. Hàm độ đo
   được dùng được nêu trong \cite{Oflazer}, sẽ được trình bày lại bên
@@ -347,6 +602,11 @@ xác''. Từ gốc là từ có hệ số chính xác cao hơn so với các t�
 sinh. Good or bad? Hmmm... Làm sao để làm? Hmmm Hmmm
 
 \subsubsection{Lỗi phát âm}
+
+Lỗi phát âm phụ thuộc vào cách phát âm của từng
+vùng. \cite{LoiChinhTa} liệt kê các trường hợp   lỗi thông dụng
+nhất. Những quy tắc này được áp dụng để, ví dụ, từ   ``du'' ta tạo ra
+``vu''. 
 
 Để phát sinh từ dựa trên lỗi phát âm, cần phân tích cấu trúc của từng
 tiếng. Một tiếng bao gồm âm đầu, vần và thanh. Vần gồm âm đệm, âm
@@ -1005,69 +1265,75 @@ Viết lại từ đầu :-D
 
 
 \begin{thebibliography}{}
-\bibitem{Ravishankar}Mosur K. Ravishankar. 1996. Efficient Algorithms for
-  Speech Recognition. PhD thesis.
-\bibitem{Oflazer}Kemal Oflazer. 1996. Error-tolerant Finite State
+\bibitem{Ravishankar}Mosur K. Ravishankar. 1996. {\em Efficient Algorithms for
+  Speech Recognition.} PhD thesis. %CMU-CS-96-143.ps
+\bibitem{Oflazer}Kemal Oflazer. 1996. {\em Error-tolerant Finite State
   Recognition with Applications to Morphological Analysis and Spelling
-  Correction.
-\bibitem{LAH}Le An Ha. A method for word segmentation in
-  Vietnamese.
-\bibitem{Chang}Chao-Huang Chang. A New Approach for
-  Automatic Chinese Spelling Correction. 
+  Correction.} %oflazer96errortolerant.ps.gz
+\bibitem{LAH}Le An Ha. {\em A method for word segmentation in
+  Vietnamese.} %Ha-03.pdf
+\bibitem{Chang}Chao-Huang Chang. {\em A New Approach for
+  Automatic Chinese Spelling Correction.} %a-new-approach-for.ps
 \bibitem{Sproat}Richard Sproat, William Gale, Chilin Shih, Nancy
-  Chang. A Stochastic Finite-State Word-Segmentation Algorithm for
-  Chinese.
+  Chang. {\em A Stochastic Finite-State Word-Segmentation Algorithm for
+  Chinese.} ACL Vol 22 N3.%J96-3004.pdf
 \bibitem{Chunyu}Chunyu Kit, Zhiming Xu, Jonathan
-  J. Webster. Integrating Ngram Model and Case-based Learning For
-  Chinese Word Segmentation.
+  J. Webster. {\em Integrating Ngram Model and Case-based Learning For
+  Chinese Word Segmentation.}%tsdx.ps.gz
 \bibitem{softcount}Xianping Ge, Wanda Pratt,
-  Padhraic Smyth. Discovering Chinese Words from Unsegmented Text.
+  Padhraic Smyth. {\em Discovering Chinese Words from Unsegmented
+  Text.}%mlwordsigir.ps
 \bibitem{text-tiling}Jianfeng Gao, Hai-Feng Wang, Mingjing Li, Kai-Fu
-  Lee. A Unified Approach to Statistical Language Modeling for
-  Chinese.
-\bibitem{}Nianwen Xue.Chinese Word Segmentation as Character Tagging.
-\bibitem{self-supervised}Fuchun Peng and Dale Schuurmans. Self-Supervised Chinese
-  Word Segmentation.
-\bibitem{phonetex}Victoria J. Hodge, Jim Austin, An Evaluation of
-  Phonetic Spell Checkers
-\bibitem{soundex}K. Kukich. 1992. Techniques for Automatically Correcting
-  Words in Text.
-\bibitem{}Cláudio L. Lucchesi and Tomasz Kowaltowski. Applications of
-  Finite Automata Representing Large Vocabularies.
-\bibitem{}Bo-Hyun Yun, Min-Jeung Cho, Hae-Chang Rim. Segmenting Korean
-  Compound Nouns using Statistical Information and a Preference Rule.
-\bibitem{}Roger I. W. Spooner and Alistair D. N. Edwards. User
-  Modelling for Error Recovery: A Spelling Checker for Dyslexic Users
+  Lee. {\em A Unified Approach to Statistical Language Modeling for
+  Chinese.}%icassp00.pdf
+\bibitem{}Nianwen Xue.{\em Chinese Word Segmentation as Character
+  Tagging.}%paper2.pdf
+\bibitem{self-supervised}Fuchun Peng and Dale Schuurmans. {\em Self-Supervised Chinese
+  Word Segmentation.}%IDA01.pdf
+\bibitem{phonetex}Victoria J. Hodge, Jim Austin. {\em An Evaluation of
+  Phonetic Spell Checkers}%an-evaluation-of-phonetic.ps.gz
+\bibitem{soundex}K. Kukich. 1992. {\em Techniques for Automatically Correcting
+  Words in Text.}
+\bibitem{}Cláudio L. Lucchesi and Tomasz Kowaltowski. {\em Applications of
+  Finite Automata Representing Large Vocabularies.}%lucchesi92applications.ps.gz
+\bibitem{}Bo-Hyun Yun, Min-Jeung Cho, Hae-Chang Rim. {\em Segmenting Korean
+  Compound Nouns using Statistical Information and a Preference
+  Rule. }%PACLING97.ps 
+\bibitem{}Roger I. W. Spooner and Alistair D. N. Edwards. {\em User
+  Modelling for Error Recovery: A Spelling Checker for Dyslexic
+  Users}%spooner97user.ps.gz 
 \bibitem{}Theppitak Karoonboonyanan, Virach Sornlertlamvanich,
-  Surapant Meknavin. A Thai Soundex System for Spelling Correction.
-\bibitem{}Justin Zobel and Philip Dart. Finding Approximate Matches in
-  Large Lexicons.
-\bibitem{}Sun Maosong, Shen Dayang, Huang Changning. CSeg\&Tag1.0: A
-  Practical Word Segmenter and POS Tagger for Chinese Texts.
-\bibitem{wordseg}Đinh Điền, Hoàng Kiếm, Nguyễn Văn Toàn. Vietnamese Word
-  Segmentation.
-\bibitem{}Bidyut Baran Chaudhuri. Reversed word dictionary and
-  phonetically similar word grouping based spell-checker to Banglaa
-  text
-\bibitem{}Timothy Gambell, Charles D. Yang. Scope and Limits of
-  Statistical Learning in Word Segmentation.
+  Surapant Meknavin. {\em A Thai Soundex System for Spelling Correction.}%tsdx.ps.gz
+\bibitem{}Justin Zobel and Philip Dart. {\em Finding Approximate Matches in
+  Large Lexicons.}%zobel95finding.ps.gz
+\bibitem{}Sun Maosong, Shen Dayang, Huang Changning. {\em CSeg\&Tag1.0: A
+  Practical Word Segmenter and POS Tagger for Chinese Texts.}%A97-1018.pdf
+\bibitem{wordseg}Đinh Điền, Hoàng Kiếm, Nguyễn Văn Toàn. {\em Vietnamese Word
+  Segmentation.}%0047-02.pdf
+\bibitem{}Bidyut Baran Chaudhuri. {\em Reversed word dictionary and
+  phonetically similar word grouping based spell-checker to Bangla
+  text.}%bangla.pdf
+\bibitem{}Timothy Gambell, Charles D. Yang. {\em Scope and Limits of
+  Statistical Learning in Word Segmentation.}%gambell_yang.pdf
 \bibitem{iccc}Andi Wu, George Heidorn, Zixin Jiang, Terence
-  Peng. Correction of Erroneous Characters in Chinese Sentence
-  Analysis
+  Peng. {\em Correction of Erroneous Characters in Chinese Sentence
+  Analysis.}%ICCC-2001.pdf
 \bibitem{}Fuchun Peng, Xiangji Huang, Dale Schuurmans, Shaojun
-  Wang. Text Clasification in Asian Languages without Word
-  Segmentation. 
+  Wang. {\em Text Clasification in Asian Languages without Word
+  Segmentation.}%IRAL2003.pdf 
 \bibitem{}Yalin Wang, Ihsin T. Phillips, Robert
-  Haralick. Statistical-based Approach to Word Segmentation.
-\bibitem{}Combining Syntactical And Statistical Language Constraints
-  in Context-dependent Language Models for Interactive Speech Applications.
-\bibitem{}TS. Lê Trung Hoa. 2002. Lỗi chính tả và cách khắc phục. NXB Khoa
-  học Xã hội. 
-\bibitem{}PGS. Hồ Lê, TS. Trần Thị Ngọc Lang, Tô Đình Nghĩa. 2002. Lỗi từ
-  vựng và cách khắc phục. NXB Khoa học Xã hội.
+  Haralick. {\em Statistical-based Approach to Word Segmentation.}%wordicpr.pdf
+\bibitem{}{\em Combining Syntactical And Statistical Language Constraints
+  in Context-dependent Language Models for Interactive Speech
+  Applications.}%K026.pdf
+\bibitem{LoiChinhTa}TS. Lê Trung Hoa. 2002. {\em Lỗi chính tả và cách khắc phục. NXB Khoa
+  học Xã hội.} 
+\bibitem{LoiTuVung}PGS. Hồ Lê, TS. Trần Thị Ngọc Lang, Tô Đình Nghĩa. 2002. {\em Lỗi từ
+  vựng và cách khắc phục.} NXB Khoa học Xã hội.
 \bibitem{Tuoi}PTS. Phan Thị Tươi, KS. Nguyễn Hứa Phùng, KS. Huỳnh Vụ
-  Như Liên, KS. Phạm Quyết Thắng. 1998. Bắt lỗi chinh tả tự động cho
-  tiếng Việt bằng máy tính.
+  Như Liên, KS. Phạm Quyết Thắng. 1998. {\em Bắt lỗi chinh tả tự động cho
+  tiếng Việt bằng máy tính.}
+\bibitem{worddef}Đinh Điền. 2000. {\em Từ tiếng Việt.} VNU-HCMC.
 \end{thebibliography}
 
 \end{document}
@@ -1206,99 +1472,4 @@ P_3(\Zhs) &= P_3^{left}(\Zhs)P_3^{right}(\Zhs)\\
 \end{array}
 $$
 
-\chapter{Giới thiệu}
-\label{cha:intro}
-\begin{center}
-I kept the right ones out
-
-And let the wrong ones in
-
-Had an angel of mercy
-
-To see me through all my sins
-
-There were times in my life
-
-When I was goin' insane
-
-Tryin' to walk through the pain
-
-****
-
-And when I lost my grip
-
-And I hit the floor
-
-Yeah, I thought I could leave
-
-But couldn't get out the door
-
-I was so sick n' tired
-
-Of livin' a lie
-
-I was wishing that I would die
-
-****
-
-It's amazing
-
-With the blink of an eye
-
-You finally see the light
-
-It's amazing
-
-That when the moment arrives
-
-You know you'll be alright
-
-It's amazing
-
-And I'm saying a prayer
-
-To the desperate hearts tonight
-
-
-****
-
-
-That one last shot's a Permanent Vacation
-
-And a how high can you fly with broken wings
-
-Life's a journey - not a destination
-
-And I just can't tell just what tomorrow brings
-
-
-****
-
-
-You have to learn to crawl
-
-Before you learn to walk
-
-But I just couldn't listen
-
-To all that righteous talk
-
-I was out on the street
-
-Just tryin' to survive
-
-Scratchin' to stay alive
-
-
-****
-
-
-``To all of you people out there
-
-Wherever you are - remember:
-
-The light at the end of the tunnel
-
-May be you - goodnight''
-\end{center}
 

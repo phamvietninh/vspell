@@ -1,142 +1,60 @@
 #include "bellman.h"		// -*- tab-width: 2 -*-
-#include <values.h>
 
 using namespace std;
 
-void PFS::segment_best(const Lattice &w,Segmentation &seps)
+void Bellman::search(const DAG &dag,Path &seps)
 {
-	uint i,n;
-	for (i = 0;i < n;i ++)
-		if (matrix[x][i]) {
-			length[i] = matrix[x][i];
-			last[i] = x;
-		} else {
-			length[i] = MAXINT;
-			last[i] = -1;
-		}
+	vector<uint> last;
+	vector<bool> seen;
+	vector<float> length;					// examining nodes
+	uint i,n,ii,nn,v;
 
-	//    length[x] = 0;
+	n = dag.node_count();
+	length.resize(n);
+	last.resize(n);
+	seen.resize(n);
 
-	for (cont = 1,k = 0; cont && k < n;k ++) {
-		cont = 0;
-		for (j = 0;j < n;j ++)
-			for (i = 0;i < n;i ++)
-				if (length[i] != MAXINT && matrix[i][j] &&
-						length[j] > length[i] + matrix[i][j]) {
-					length[j] = length[i] + matrix[i][j];
-					last[j] = i;
-					cont = 1;
-				}
+	length[dag.node_begin()] = 0;
+	seen[dag.node_begin()] = true;
+	last[dag.node_begin()] = dag.node_begin();
+
+	vector<uint> nexts;
+	vector<pair<uint,uint> > edges;
+	uint l;
+	i = 0;
+	nexts.clear();
+	nexts.push_back(dag.node_begin());
+	while (i < (l = nexts.size())) {
+		v = nexts[i++];
+		dag.get_next(v,nexts);
+		nn = nexts.size();
+		for (ii = l;ii < nn;ii ++)
+			edges.push_back(make_pair(v,nexts[ii]));
 	}
 
-	vector<uint> back_traces;
-	vector<bool> seen;						// true if a node is seen
-	vector<uint> candidates;				// examining nodes
-	HeapValue val;
 
-	int n = w.get_word_count();
-
-	seps.we = w.we;
-
-	val.resize(w.we->size()+1);
-	back_traces.resize(w.we->size()+1);
-	seen.resize(w.we->size()+1);
-	candidates.reserve(w.we->size()+1);
-
-	const WordEntryRefs &wers_start = w.get_we(0);
-	int ii,nn = wers_start.size();
-	for (ii = 0; ii < nn;ii ++) {
-		int v = wers_start[ii]->id;
-		candidates.push_back(v);
-		push_heap(candidates.begin(),candidates.end(),val);
-		seen[v] = true;
-		val[v] = 0;
-		back_traces[v] = v;
-	}
-
-	// while there is a node to examine
-	while (!candidates.empty()) {
-
-		// get a node
-		pop_heap(candidates.begin(),candidates.end(),val);
-		int v = candidates.back();
-		candidates.pop_back();
-
-		//cerr << "got " << (*w.we)[v].node << " " << val[v] << endl;
-
-		int next = (*w.we)[v].pos+(*w.we)[v].len;
-
-		if (next >= n) {
-			int vv = w.we->size();
-		  if (!seen[vv]) {
-				seen[vv] = true;
-				val[vv] = val[v];
-				back_traces[vv] = v;
-				//cerr << " end " << val[vv] << "=" << v << endl;
-		  } else {
-				if (val[vv] > val[v]) {
-					val[vv] = val[v];
-					back_traces[vv] = v;
-					//cerr << " new end " << val[vv] << "=" << v << endl;
-				}
-		  }
-			continue;
-		}
-
-		const WordEntryRefs &wers = w.get_we(next);
-		uint vv;
-		nn = wers.size();
-		float value,add;
-		VocabIndex vi[2];
-		vi[1] = Vocab_None;
-		vi[0] = (*w.we)[v].node.node->get_id();
+	for (bool cont = true,k = 0; cont && k < n;k ++) {
+		cont = false;
+		nn = edges.size();
 		for (ii = 0;ii < nn;ii ++) {
-		  vv = wers[ii]->id;
-		  //value = val[v]+wers[ii]->node.node->get_prob();
-		  //vi[0] = (*w.we)[back_traces[v]].node.node->get_id();
-		  add = (-get_ngram().wordProb((*w.we)[vv].node.node->get_id(),vi));
-		  value = val[v] + add;
-		  //cerr << "examine " << vv << "(" << wers[ii]->node << ")";
-
-		  if (!seen[vv]) {
-				candidates.push_back(vv);
-				seen[vv] = true;
-				val[vv] = value;
-				push_heap(candidates.begin(),candidates.end(),val);
-				back_traces[vv] = v;
-				//cerr << " add " << val[vv] << "=" << v << "+"<< add;
-		  } else {
-				if (val[vv] > value) {
-					val[vv] = value;
-					back_traces[vv] = v;
-
-					// re-heap if necessary
-					vector<uint>::iterator iter = find(candidates.begin(),candidates.end(),vv);
-					while (true) {
-						push_heap(candidates.begin(),iter,val);
-						if (iter != candidates.end())
-							++iter;
-						else
-							break;
-					}
-					//cerr << " val " << val[vv] << "=" << v << "+"<< add;
-				}
-		  }
-		  //cerr << endl;
+			i = edges[ii].first;
+			v = edges[ii].second;
+			if (seen[i] && 
+					(!seen[v] || length[v] > length[i] + dag.edge_value(i,v))) {
+				length[v] = length[i] + dag.edge_value(i,v);
+				last[v] = i;
+				seen[v] = true;
+				cont = true;
+			}
 		}
 	}
 
-	const WordEntries &we = *w.we;
-	uint v = we.size();
-	while (true) {
-		//cerr << v << "->" << back_traces[v] << endl;
-		if (back_traces[v] != v) {
-			v = back_traces[v];
-			seps.push_back(v);
-		} else
-			break;
-	}
+	v = dag.node_end();
+	do {
+		seps.push_back(v);
+		v = last[v];
+	} while (v != last[v]);
+	seps.push_back(v);
 	reverse(seps.begin(),seps.end());
-
 	//cerr << "done" << endl;
 }

@@ -17,7 +17,8 @@ libvspell_a_SOURCES = \
 	boost\
 	keyboard.h keyboard.cpp\
 	shuffle.h shuffle.cpp\
-	dag.h dag.cpp
+	dag.h dag.cpp\
+	bellman.cpp bellman.h
 INCLUDES = -I$(top_builddir)/libsrilm
 libvspell_a_LIBADD = $(top_builddir)/libsrilm/libsrilm.a
 #data_DATA = data/wordlist.wl data/ngram data/last-names.lst

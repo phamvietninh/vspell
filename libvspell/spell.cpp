@@ -330,8 +330,9 @@ bool Text::sentence_check(const char *pp)
 	Path path;
 	WordDAG dag(&w);
 	pfs.search(dag,path);
-	seg.resize(path.size());
-	copy(path.begin(),path.end(),seg.begin());
+	seg.resize(path.size()-2);
+	// don't copy head/tail
+	copy(path.begin()+1,path.end()-1,seg.begin());
 	seg.we = w.we;
 	//cerr << seg << endl;
 	

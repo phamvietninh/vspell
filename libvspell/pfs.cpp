@@ -13,7 +13,7 @@ public:
 /*
 void PFS::segment_best(const Lattice &w,Segmentation &seps)
 {
-	vector<uint> back_traces;
+	vector<uint> last;
 	vector<bool> seen;						// true if a node is seen
 	vector<uint> candidates;				// examining nodes
 	HeapValue val;
@@ -23,7 +23,7 @@ void PFS::segment_best(const Lattice &w,Segmentation &seps)
 	seps.we = w.we;
 
 	val.resize(w.we->size()+1);
-	back_traces.resize(w.we->size()+1);
+	last.resize(w.we->size()+1);
 	seen.resize(w.we->size()+1);
 	candidates.reserve(w.we->size()+1);
 
@@ -35,7 +35,7 @@ void PFS::segment_best(const Lattice &w,Segmentation &seps)
 		push_heap(candidates.begin(),candidates.end(),val);
 		seen[v] = true;
 		val[v] = 0;
-		back_traces[v] = v;
+		last[v] = v;
 	}
 
 	// while there is a node to examine
@@ -55,12 +55,12 @@ void PFS::segment_best(const Lattice &w,Segmentation &seps)
 		  if (!seen[vv]) {
 				seen[vv] = true;
 				val[vv] = val[v];
-				back_traces[vv] = v;
+				last[vv] = v;
 				//cerr << " end " << val[vv] << "=" << v << endl;
 		  } else {
 				if (val[vv] > val[v]) {
 					val[vv] = val[v];
-					back_traces[vv] = v;
+					last[vv] = v;
 					//cerr << " new end " << val[vv] << "=" << v << endl;
 				}
 		  }
@@ -77,7 +77,7 @@ void PFS::segment_best(const Lattice &w,Segmentation &seps)
 		for (ii = 0;ii < nn;ii ++) {
 		  vv = wers[ii]->id;
 		  //value = val[v]+wers[ii]->node.node->get_prob();
-		  //vi[0] = (*w.we)[back_traces[v]].node.node->get_id();
+		  //vi[0] = (*w.we)[last[v]].node.node->get_id();
 		  add = (-get_ngram().wordProb((*w.we)[vv].node.node->get_id(),vi));
 		  value = val[v] + add;
 		  //cerr << "examine " << vv << "(" << wers[ii]->node << ")";
@@ -87,12 +87,12 @@ void PFS::segment_best(const Lattice &w,Segmentation &seps)
 				seen[vv] = true;
 				val[vv] = value;
 				push_heap(candidates.begin(),candidates.end(),val);
-				back_traces[vv] = v;
+				last[vv] = v;
 				//cerr << " add " << val[vv] << "=" << v << "+"<< add;
 		  } else {
 				if (val[vv] > value) {
 					val[vv] = value;
-					back_traces[vv] = v;
+					last[vv] = v;
 
 					// re-heap if necessary
 					vector<uint>::iterator iter = find(candidates.begin(),candidates.end(),vv);
@@ -113,9 +113,9 @@ void PFS::segment_best(const Lattice &w,Segmentation &seps)
 	const WordEntries &we = *w.we;
 	uint v = we.size();
 	while (true) {
-		//cerr << v << "->" << back_traces[v] << endl;
-		if (back_traces[v] != v) {
-			v = back_traces[v];
+		//cerr << v << "->" << last[v] << endl;
+		if (last[v] != v) {
+			v = last[v];
 			seps.push_back(v);
 		} else
 			break;
@@ -128,21 +128,21 @@ void PFS::segment_best(const Lattice &w,Segmentation &seps)
 
 void PFS::search(const DAG &dag,Path &seps)
 {
-	vector<uint> back_traces;
+	vector<uint> last;
 	vector<bool> seen;						// true if a node is seen
-	vector<uint> candidates;				// examining nodes
+	vector<uint> candidates;			// examining nodes
 	uint v;
 	HeapValue val;
 	uint n = dag.node_count();
 
 	val.resize(n+1);
-	back_traces.resize(n+1);
+	last.resize(n+1);
 	seen.resize(n+1);
 	candidates.reserve(n+1);
 
 	vector<uint> next_nodes;
 	v = dag.node_begin();
-	back_traces[v] = v;
+	last[v] = v;
 	val[v] = 0;
 	seen[v] = true;
 	dag.get_next(dag.node_begin(),next_nodes);
@@ -153,7 +153,7 @@ void PFS::search(const DAG &dag,Path &seps)
 		push_heap(candidates.begin(),candidates.end(),val);
 		seen[v] = true;
 		val[v] = 0;
-		back_traces[v] = dag.node_begin();
+		last[v] = dag.node_begin();
 	}
 
 	// while there is a node to examine
@@ -183,12 +183,12 @@ void PFS::search(const DAG &dag,Path &seps)
 				seen[vv] = true;
 				val[vv] = value;
 				push_heap(candidates.begin(),candidates.end(),val);
-				back_traces[vv] = v;
+				last[vv] = v;
 				//cerr << " add " << val[vv] << "=" << v << "+"<< add;
 		  } else {
 				if (val[vv] > value) {
 					val[vv] = value;
-					back_traces[vv] = v;
+					last[vv] = v;
 
 					// re-heap if necessary
 					vector<uint>::iterator iter = find(candidates.begin(),candidates.end(),vv);
@@ -212,8 +212,9 @@ void PFS::search(const DAG &dag,Path &seps)
 
 	do {
 		seps.push_back(v);
-		v = back_traces[v];
-	} while (v != back_traces[v]);
+		v = last[v];
+	} while (v != last[v]);
+	seps.push_back(v);
 	reverse(seps.begin(),seps.end());
 
 	//cerr << "done" << endl;

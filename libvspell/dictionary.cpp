@@ -45,7 +45,7 @@ bool dic_init(WordNodePtr _root)
 	ed_init();
 	myroot = _root;
 	sarch["<reserved>"]; // 0, don't use
-	unk_id = sarch["<unk>"];
+	unk_id = sarch["<opaque>"];
 	start_id = sarch["<s>"];
 	stop_id = sarch["</s>"];
 	proper_name_id = sarch["<prop>"];

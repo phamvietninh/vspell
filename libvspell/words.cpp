@@ -125,9 +125,11 @@ void Lattice::post_construct(set<WordEntry> &we)
 	n = st->get_syllable_count();
 	marks.resize(n);
 	set<WordEntry>::iterator iter;
-	for (iter = we.begin();iter != we.end(); ++iter)
+	for (iter = we.begin();iter != we.end(); ++iter) {
+		//cerr << get_sarch()[iter->node.node->get_id()] << " " << iter->pos << " " << iter->len << endl;
 		for (k = 0; k < iter->len;k ++)
 			marks[iter->pos+k] = true;
+	}
 
 	// make sure that one can go from source to destination, without gaps.
 	for (i = 0;i < n;i ++)
@@ -138,10 +140,12 @@ void Lattice::post_construct(set<WordEntry> &we)
 			e.fuzid = 0;
 			// if one starts with a cardinal number, then mark it number_id
 			string s = get_sarch()[(*st)[i].get_cid()];
-			if (strchr("0123456789",s[0]) != NULL)
+			//cerr << "Consider " << s;
+			if (strchr("0123456789",s[1]) != NULL)
 				e.node = get_root()->get_next(get_id(NUMBER_ID));
 			else
 				e.node = get_root()->get_next(get_id(UNK_ID));
+			//cerr << " " << get_sarch()[e.node.node->get_id()] << endl;
 			we.insert(e);
 		}
 

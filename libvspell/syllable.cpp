@@ -955,7 +955,7 @@ string get_std_syllable(const string &str)
 	if (get_sarch().in_dict(s) || get_sarch().in_dict(get_lowercased_syllable(s)))
 		return s;
 	else
-		return str;
+		return string("0")+str;
 }
 
 string get_lowercased_syllable(const string &str)

@@ -50,6 +50,7 @@ public:
   strid to_id() const;
   strid to_std_id() const;
   std::string to_str() const;
+  std::string to_std_str() const;
 	friend std::ostream& operator << (std::ostream &os,const Syllable &sy);
 	friend bool operator < (const Syllable &s1,const Syllable &s2);
 	friend bool operator == (const Syllable &s1,const Syllable &s2);

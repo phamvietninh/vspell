@@ -492,8 +492,10 @@ bool syllable_init()
 
 Syllable::Syllable(const Syllable &sy)
 {
-	for (int i = 0;i < 5;i ++)
+	for (int i = 0;i < 5;i ++) {
 		components[i] = sy.components[i];
+		scomponents[i] = sy.scomponents[i];
+	}
 }
 
 Syllable::Syllable(const char*  _first_consonant,
@@ -555,9 +557,17 @@ Syllable::Syllable(const char*  _first_consonant,
 			}
 
 	components[First_Consonant] = __first_consonant;
+	if (__first_consonant >= 0)
+		scomponents[First_Consonant] = first_consonants[__first_consonant];
 	components[Padding_Vowel] 	= __padding_vowel;
+	if (__padding_vowel >= 0)
+		scomponents[Padding_Vowel] = padding_vowels[__padding_vowel];
 	components[Vowel] 		= __vowel;
+	if (__vowel >= 0)
+		scomponents[Vowel] = vowels[__vowel];
 	components[Last_Consonant] 	= __last_consonant;
+	if (__last_consonant >= 0)
+		scomponents[Last_Consonant] = last_consonants[__last_consonant];
 	components[Diacritic] 	= d;
 }
 
@@ -609,8 +619,13 @@ void Syllable::apply(const Syllable &sample,vector<Syllable> &output)
 				run = true;
 			}
 			break;
-		case -3: s.components[i] = -1; break;
-		default: s.components[i] = components[i]; break;
+		case -3: 
+			s.components[i] = -1;
+			s.scomponents[i] = "";
+			break;
+		default: 
+			s.components[i] = components[i];
+			s.scomponents[i] = scomponents[i];
 		}
 	}
 
@@ -630,8 +645,18 @@ void Syllable::apply(const Syllable &sample,vector<Syllable> &output)
 				for (k = 0;k < n;k ++) {
 					output.push_back(s);
 					for (int kk = 0;kk < 5;kk ++)
-						if (components[kk] == -2)
+						if (components[kk] == -2) {
 							output.back().components[kk] = iter[k];
+							if (kk != Diacritic) {
+								switch (kk) {
+								case First_Consonant: p = first_consonants; break;
+								case Last_Consonant: p = last_consonants; break;
+								case Padding_Vowel: p = padding_vowels; break;
+								case Vowel: p = vowels; break;
+								}
+								output.back().scomponents[kk] = p[iter[k]];
+							}
+						}
 				}
 				iter[i] ++;
 			} else {
@@ -711,6 +736,7 @@ bool Syllable::parse(const char *str)
 		// parse from the pattern cases[z]
 		for (unsigned zz = 0;ok && zz < 4;zz ++) {	// component
 			components[zz] = -1;
+			scomponents[zz] = "";
 			if (ok && cases[z][zz] == 0) {
 				// get the first_consonant
 				ok = false;
@@ -820,6 +846,27 @@ string Syllable::to_str() const
 				else
 					s[last] = diacritic_table[components[Diacritic]][j];
 			}
+		}
+	}
+	return s;
+}
+
+string Syllable::to_std_str() const
+{
+	string s("0");
+	char **p;
+
+	s[0] = '0'+components[Diacritic];
+
+	for (int i = 0;i < 4;i ++) {
+		if (components[i] >= 0) {
+			switch (i) {
+			case First_Consonant: p = first_consonants; break;
+			case Last_Consonant: p = last_consonants; break;
+			case Padding_Vowel: p = padding_vowels; break;
+			case Vowel: p = vowels; break;
+			}
+			s += scomponents[i];			// no diacritic because i=0..3
 		}
 	}
 	return s;
@@ -948,11 +995,11 @@ string get_lowercased_syllable(const string &str)
 bool operator < (const Syllable &s1,const Syllable &s2)
 {
 	for (int i = 0;i < 5;i ++) {
-		if (s1.components[i] == s2.components[i])
+		if (s1.scomponents[i] == s2.scomponents[i])
 			continue;
-		if (s1.components[i] > s2.components[i])
+		if (s1.scomponents[i] > s2.scomponents[i])
 			return false;
-		if (s1.components[i] < s2.components[i])
+		if (s1.scomponents[i] < s2.scomponents[i])
 			return true;
 	}
 	return false;
@@ -961,7 +1008,7 @@ bool operator < (const Syllable &s1,const Syllable &s2)
 bool operator == (const Syllable &s1,const Syllable &s2)
 {
 	for (int i = 0;i < 5;i ++) {
-		if (s1.components[i] == s2.components[i])
+		if (s1.scomponents[i] == s2.scomponents[i])
 			continue;
 		return false;
 	}

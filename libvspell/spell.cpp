@@ -679,12 +679,62 @@ char_traits_strid::copy(char_traits_strid::char_type* __s1,
 
 */
 
+void get_phonetic_syllable_candidates(const char *input,std::set<std::string> &output)
+{
+	vector<confusion_set>& confusion_sets = get_confusion_sets();
+	int i,j,m,n = confusion_sets.size();
+	bool ret = false;
+	set<Syllable> syllset,syllset2;
+	Syllable _syll;
+
+	_syll.parse(input);
+	syllset2.insert(_syll);
+	while (!syllset2.empty()) {
+		const Syllable sy = *syllset2.begin();
+		syllset2.erase(syllset2.begin());
+		
+		if (syllset.find(sy) != syllset.end())
+			continue;								// we already matched&applied this syllable
+
+		//cerr << sy << endl;
+		syllset.insert(sy);
+		
+		vector<Syllable> sylls;
+		// match & apply
+		for (i = 0;i < n;i ++) {
+			m = confusion_sets[i].size();
+			for (j = 0;j < m;j ++)
+				if (confusion_sets[i][j].match(sy))
+					break;
+			if (j < m) {
+				for (j = 0;j < m;j ++)
+					confusion_sets[i][j].apply(sy,sylls);
+			}
+		}
+		copy(sylls.begin(),sylls.end(), inserter(syllset2,syllset2.begin()));
+	}
+		
+	// move to _nodes
+	//copy(syllset.begin(),syllset.end(),ostream_iterator<Syllable>(cerr)); cerr << endl;
+	set<Syllable>::iterator iter;
+	for (iter = syllset.begin();iter != syllset.end(); ++ iter) {
+		string s = iter->to_std_str();
+		string ss = get_lowercased_syllable(s);
+		cerr << s << endl;
+		if (get_sarch().in_dict(get_sarch()[s]) ||
+				get_sarch().in_dict(get_sarch()[ss]))
+			output.insert(iter->to_str());
+	}
+}
+
 void get_syllable_candidates(const char *input,std::set<std::string> &output)
 {
 	Syllable syll;
 	string s,s2;
 	set<string> s3;
 	set<string>::iterator s3i;
+
+	get_phonetic_syllable_candidates(input,output);
 
 	KeyRecover keyr;
 	keyr.init(input);

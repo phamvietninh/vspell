@@ -48,7 +48,7 @@ public:
 
 	//private:
 public:													// for testing purpose
-	void generate_misspelled_words(const std::vector<int> &pos,
+	void generate_misspelled_words(const std::vector<uint> &pos,
 																 int len,
 																 Segmentation& final_seg);
 	// variables needed when run wfst

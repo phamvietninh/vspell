@@ -78,6 +78,7 @@ char *case_table[2] = {
 
 char full_case_table[2][256];
 char cat_table[256];						// numeric,alpha...
+pair<char,unsigned char> full_diacritic_table[256];
 #define CAT_ALPHA 1
 #define CAT_DIGIT 2
 #define CAT_SPACE 4
@@ -103,14 +104,20 @@ bool syllable_init()
 		if (isdigit(i)) cat_table[i] |= CAT_DIGIT;
 		if (isxdigit(i)) cat_table[i] |= CAT_XDIGIT;
 		if (ispunct(i)) cat_table[i] |= CAT_PUNCT;
+		full_diacritic_table[i] = make_pair(-1,0);
 	}
 	for (i = 0;i < len; i ++) {
 		full_case_table[0][(unsigned char)case_table[1][i]] = case_table[0][i];
 		full_case_table[1][(unsigned char)case_table[0][i]] = case_table[1][i];
-		cat_table[case_table[0][i]] = CAT_ALPHA;
-		cat_table[case_table[1][i]] = CAT_ALPHA;
+		cat_table[(int)case_table[0][i]] = CAT_ALPHA;
+		cat_table[(int)case_table[1][i]] = CAT_ALPHA;
 	}
 
+	for (i = 0;i < 6;i ++) {
+		int j,n = strlen(diacritic_table[i]);
+		for (j = 0;j < n;j ++)
+			full_diacritic_table[(unsigned char)diacritic_table[i][j]] = make_pair(i,j);
+	}
 
 	confusion_sets.push_back(confusion_set());
 	confusion_sets.back().push_back(Syllable("c"));
@@ -343,7 +350,7 @@ Syllable::Syllable(const char*  _first_consonant,
 	int __padding_vowel = -1;
 	int __vowel = -1;
 	int __last_consonant = -1;
-	int __diacritic = -1;
+	//int __diacritic = -1;
 	int i;
 
 	if (_first_consonant == syll_exist)
@@ -493,7 +500,7 @@ bool Syllable::parse(const char *str)
 	// [first_consonant] [padding_vowel] vowel [last_consonant]
 
 	int i,j,k;
-	char **pattern;
+	//char **pattern;
 	int len;
 	string syllable(str);
 
@@ -591,7 +598,7 @@ bool Syllable::parse(const char *str)
 		return true;
 	for (i = 0;padding_vowels[i] != 0; i++) {
 		char *pattern = padding_vowels[i];
-		int pattern_len = strlen(pattern);
+		//int pattern_len = strlen(pattern);
 
 		if (syllable == pattern) {
 			components[Padding_Vowel] = i;
@@ -718,6 +725,21 @@ bool viet_ispunct(int ch)
 	return cat_table[ch] & CAT_PUNCT;
 }
 
+string get_std_syllable(const string &str)
+{
+	uint i,n = str.size();
+
+	for (i = 0;i < n;i ++) {
+		pair<char,unsigned char> p;
+		p = full_diacritic_table[(unsigned char)str[i]];
+		if (p.first > 0) {
+			string ret = char(p.first+'0')+str;
+			ret[i+1] = diacritic_table[0][p.second];
+			return ret;
+		}
+	}
+	return '0'+str;
+}
 /*
 	}
 */

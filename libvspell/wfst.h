@@ -24,9 +24,9 @@
 #define SEGM_SEPARATOR 1
 
 struct Section {
-	int segment;
-	int start;
-	int len;
+	uint segment;
+	uint start;
+	uint len;
 	void segment_best(const Words&,Segmentation &final_seg);
 };
 
@@ -50,7 +50,7 @@ private:
 	{
 		Segmentation s;
 		int next_syllable;
-		Trace(boost::shared_ptr<WordEntries> _we):next_syllable(0),s(_we) {}
+		Trace(boost::shared_ptr<WordEntries> _we):s(_we),next_syllable(0) {}
 	};
 	int nr_syllables;
 	std::vector<Trace> segs;
@@ -87,7 +87,7 @@ public:
 
 	//private:
 public:													// for testing purpose
-	void generate_misspelled_words(const std::vector<int> &pos,
+	void generate_misspelled_words(const std::vector<uint> &pos,
 																 int len,
 																 Segmentation& final_seg);
 	// variables needed when run wfst

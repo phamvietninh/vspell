@@ -16,16 +16,16 @@
 class Generator
 {
 private:
-	int ii,i,nr_misspelled;
-	std::vector<int> misspelled_pos;
+	uint ii,i,nr_misspelled;
+	std::vector<uint> misspelled_pos;
 	bool run;
 
-	int len;
+	uint len;
 	SentenceRef st;
 
 public:
 	void init(const Sentence &st);
-	bool step(std::vector<int> &pos,int &len);
+	bool step(std::vector<uint> &pos,uint &len);
 	void done();
 };
 

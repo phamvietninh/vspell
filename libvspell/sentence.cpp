@@ -114,8 +114,9 @@ void Sentence::standardize()
 
 void Sentence::tokenize_punctuation(const string &s,vector<string> &ret)
 {
-	int npos,pos = 0,start = 0;
-	int len = s.size();
+	unsigned int pos = 0,start = 0;
+	unsigned int npos;
+	unsigned int len = s.size();
 	while (start < len) {
 		if (pos < len) {
 			npos = s.find_first_of("!#()'\";:.,?/",pos);
@@ -161,7 +162,6 @@ void Sentence::tokenize()
 	Syllable sy;
 	sy.span = 1;
 	sy.sent_ = this;
-	sy.sid = -1;
 	sy.start = 0;
 	
 	for (i = 0;i < n;i ++) {
@@ -173,11 +173,14 @@ void Sentence::tokenize()
 
 			if (jj < nn) {							// a token
 				string &s = tokens[i].value;
-				sy.id = sarch[s];
+				sy.sid = sy.id = sarch[s];
+				//sy.sid = sarch[get_std_syllable(s)];
+				//sy.iid = sy.sid;
 				transform(s.begin(),s.end(),s.begin(),viet_tolower);
-				sy.cid = sarch[s];
+				sy.scid = sy.cid = sarch[s];
+				//sy.scid = sarch[get_std_syllable(s)];
+				//sy.icid = sy.scid;
 				syllables.push_back(sy);
-				sy.start += s.size();
 			}
 		}
 		sy.start += tokens[i].value.size();
@@ -191,7 +194,7 @@ void Sentence::tokenize()
 
 ostream& operator <<(ostream &os, const Sentence &st)
 {
-	int cc,i,n = st.get_syllable_count();
+	//int cc,i,n = st.get_syllable_count();
 	/*
 		for (i = 0;i < n;i ++) {
 		cout << *st[i] << " ";
@@ -212,6 +215,7 @@ ostream& operator <<(ostream &os, const Sentence &st)
 	}
 	os << prob << endl;
 	*/
+	return os;
 }
 
 /*

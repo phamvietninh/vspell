@@ -29,7 +29,7 @@ private:
 	bool blocked;
 
 public:
-	StringArchive():blocked(false),rest(NULL) {}
+	StringArchive():rest(NULL),blocked(false) {}
 	void set_blocked(bool _blocked);
 	Vocab& get_dict() { return dict; }
 	void clear_rest();

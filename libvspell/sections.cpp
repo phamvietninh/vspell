@@ -11,7 +11,7 @@
 
 using namespace std;
 
-extern int ngram_length;
+extern unsigned int ngram_length;
 
 /**
  * dump a Sections
@@ -21,7 +21,7 @@ std::ostream& operator << (std::ostream &os,const Sections &me)
 {
 	using namespace boost;
 	const Sentence &_sent = *me.st;
-	int i,ii,nn,n = _sent.get_syllable_count();
+	unsigned int i,ii,nn,n = _sent.get_syllable_count();
 	ii = 0;
 	nn = me.size();
 	for (i = 0;i < n;i ++) {
@@ -50,13 +50,13 @@ void Sections::construct(const Words &words)
 	// mark all possible words. All bounds left is really bounds.
 	// because we need at most n-1 boundary syllable for n-gram
 	// if two ambiguous sections is near than n-1 syllables, then merge them.
-	int i,ii,n,nn;
+	unsigned int i,ii,n,nn;
 
 	sects.st = words.st;
 
 	n = words.get_word_count();
 
-	vector<int> bound(n);
+	vector<uint> bound(n);
 
 	for (i = 0;i < n;i ++) {
 		nn = words.get_len(i);
@@ -147,8 +147,8 @@ void Section::segment_best(const Words &w,Segmentation &final_seg)
 		// compute ngram. take the best seg.
 		seg.prob = 0;
 		vi[ngram_length] = Vocab_None;
-		for (int ii = ngram_length-1;ii < seg.size();ii ++) {
-			for (int j = 0;j < ngram_length-1;j++)
+		for (unsigned int ii = ngram_length-1;ii < seg.size();ii ++) {
+			for (unsigned int j = 0;j < ngram_length-1;j++)
 				vi[j] = seg[ii-1-j].node.node->get_id();
 			seg.prob += -ngram.wordProb(seg[ii].node.node->get_id(),vi);
 		}

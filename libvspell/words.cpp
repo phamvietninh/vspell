@@ -95,6 +95,7 @@ void Words::construct(const Sentence &sent)
 				//nodes.clear();
 				//if (exact_node)
 				//nodes.push_back(exact_node);
+				//cerr << *exact_node << endl;
 				state.node->fuzzy_get_next(syll[i+k],nodes);
 				if (exact_node && 
 						find(nodes.begin(),nodes.end(),exact_node) == nodes.end())
@@ -237,7 +238,7 @@ void Words::add(WordEntry &w)
 		wi.exact_match = &w;
 	else {
 		wi.fuzzy_match.push_back(&w);
-		for (int j = 0;j < w.len;j ++)
+		for (unsigned int j = 0;j < w.len;j ++)
 			if (w.fuzid & (1 << j)) {
 				while (me.size() <= j+w.pos) {
 					me.push_back(new WordInfos);

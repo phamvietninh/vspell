@@ -20,6 +20,8 @@
 #include <boost/shared_ptr.hpp>
 #endif
 
+typedef unsigned int uint;
+
 class Sentence;
 
 /**
@@ -27,11 +29,11 @@ class Sentence;
  */
 
 struct WordEntry {
-	int pos;											/// syllable index
-	int len;											/// word len
-	int fuzid; /// to identify different WordEntry with the same pos/len.
+	unsigned int pos;							/// syllable index
+	unsigned int len;							/// word len
+	unsigned int fuzid;	/// to identify different WordEntry with the same pos/len.
 																/// fuzid is a mask of fuzzy/exact match.
-	int id;												/// index in WordEntries
+	unsigned int id;							/// index in WordEntries
 
 	WordNode::DistanceNode node;	/// Word content
 
@@ -76,7 +78,7 @@ public:
 class WordInfos : public std::vector<WordInfo*> {
 public:
 	WordInfos();
-	int exact_len;
+	unsigned int exact_len;
 	WordEntryRefs fuzzy_map; /// contains all WordEntry which are fuzzy at this position
 	WordEntryRefs we;	/// contains all WordEntry which started at this pos
 };
@@ -94,7 +96,7 @@ public:
 	void construct(const Sentence &st);
 
 	/// Get the number of available positions, from 0 to n-1
-	int get_word_count() const { 
+	unsigned int get_word_count() const { 
 		return size(); 
 	}
 
@@ -102,7 +104,7 @@ public:
 		 Get maximal length of words at specified position.
 		 \param i specify a position in sentence
 	*/
-	int get_len(int i) const {
+	unsigned int get_len(unsigned int i) const {
 		return (*this)[i]->size(); 
 	}
 
@@ -110,7 +112,7 @@ public:
 		 Get the length of the exact words at specified position.
 		 \param i specify a position in sentence
 	*/
-	int get_exact_len(int i) const {
+	unsigned int get_exact_len(unsigned int i) const {
 		return (*this)[i]->exact_len; 
 	}
 
@@ -119,7 +121,7 @@ public:
 		 \param i specify a position
 	 */
 
-	const WordEntryRefs& get_fuzzy_map(int i) const {
+	const WordEntryRefs& get_fuzzy_map(unsigned int i) const {
 		return (*this)[i]->fuzzy_map; 
 	}
 
@@ -128,7 +130,7 @@ public:
 		 \param i specify pos
 		 \param l specify len
 	 */
-	int get_fuzzy_count(int i,int l) const { 
+	unsigned int get_fuzzy_count(unsigned int i,unsigned int l) const { 
 		return (*(*this)[i])[l]->fuzzy_match.size();
 	}
 
@@ -137,15 +139,15 @@ public:
 		 \param pos specify a position.
 	 */
 
-	WordEntryRefs& get_we(int pos) const {
+	WordEntryRefs& get_we(unsigned int pos) const {
 		return (*this)[pos]->we;
 	}
 
-	const WordEntry& get_we_fuzzy(int i,int l,int f) const {
+	const WordEntry& get_we_fuzzy(unsigned int i,unsigned int l,unsigned int f) const {
 		return *(*(*this)[i])[l]->fuzzy_match[f];
 	}
 
-	const WordEntry* get_we_exact(int i,int l) const {
+	const WordEntry* get_we_exact(unsigned int i,unsigned int l) const {
 		return (*(*this)[i])[l]->exact_match;
 	}
 
@@ -206,16 +208,19 @@ public:
   {
   private:
   public:
-    int start;
-    strid id,cid;
+    unsigned int start;
+    strid id;										/// real string
+		strid cid;									/// lowercased string
+		strid scid;									/// standardized, lowercased string
+		strid sid;									/// standardized string
+		//strid iid,icid;
     //std::string::iterator start,end;
     Sentence *sent_;
-    int category;
-    int span;
-    int sid;										// faked id
+    unsigned int category;
+    unsigned int span;
 
-    strid get_id() const { return sid >= 0 ? sid : id; }
-    strid get_cid() const { return sid >= 0 ? sid : cid; }
+    strid get_id() const { return sid; }
+    strid get_cid() const { return scid; }
   };
 
 private:
@@ -231,13 +236,13 @@ public:
   std::string get_sentence() { return sent_; }
   void tokenize();
   void standardize();
-  int get_syllable_count() const { return syllables.size(); }
+  unsigned int get_syllable_count() const { return syllables.size(); }
   //  void get_word_number() { return word.size(); }
-  Syllable& operator[] (int i) { return syllables[i]; }
-  Syllable operator[] (int i) const { return syllables[i]; }
+  Syllable& operator[] (unsigned int i) { return syllables[i]; }
+  Syllable operator[] (unsigned int i) const { return syllables[i]; }
   //  Syllable& operator[] (int i) { return syllables[i]; }
-  bool is_contiguous(int i);		// i & i+1 is contiguous ?
-  void merge(int i);
+  bool is_contiguous(unsigned int i);		// i & i+1 is contiguous ?
+  void merge(unsigned int i);
 	
 };
 
@@ -248,25 +253,25 @@ typedef Sentence* SentenceRef;
 	 From WordEntry we can get the real word.
  */
 
-struct Segmentation : public std::vector<int> 
+struct Segmentation : public std::vector<uint> 
 {
 	boost::shared_ptr<WordEntries> we; /// WordEntries associated with Segmentation
   float prob;										/// total prob
   int distance;									/// total distance
 
   Segmentation(boost::shared_ptr<WordEntries> _we = boost::shared_ptr<WordEntries>()):
+		we(_we),
 		prob(0),
-		distance(0),
-		we(_we)
+		distance(0)
 	{}
-	Segmentation(const Segmentation&seg):std::vector<int>(seg) {
+	Segmentation(const Segmentation&seg):std::vector<uint>(seg) {
 		prob = seg.prob;
 		distance = seg.distance;
 		we = seg.we;
 	}
 
 	const WordEntry& operator[] (int id) const {
-		return (*we)[std::vector<int>::operator[](id)];
+		return (*we)[std::vector<uint>::operator[](id)];
 	}
 	friend std::ostream& operator <<(std::ostream &os,const Segmentation &seg);
 	std::ostream& pretty_print(std::ostream &os,const Sentence &st);

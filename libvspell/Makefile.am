@@ -9,6 +9,7 @@ libvspell_a_SOURCES = \
 	wfst.cpp wfst.h\
 	pfs.cpp pfs.h\
 	words.cpp sections.cpp\
+	softcount.cpp softcount.h\
 	tokenize.ll\
 	debug.h
 INCLUDES = -I$(top_builddir)/libsrilm

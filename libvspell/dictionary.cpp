@@ -26,12 +26,12 @@ using namespace std;
 typedef SArray<strid,float> syllable_dict_type;
 typedef SArrayIter<strid,float> syllable_dict_iterator;
 syllable_dict_type syllable_dict;
-WordNodePtr root;
+WordNodePtr myroot;
 strid unk_id,start_id,stop_id,punct_id,proper_name_id;
 
 StringArchive sarch;
 Ngram ngram(sarch.get_dict(),2);
-NgramStats stats(sarch.get_dict(),2);
+
 
 bool syllable_init();
 
@@ -39,7 +39,8 @@ bool dic_init(WordNodePtr _root)
 {
 	syllable_init();
 	ed_init();
-	root = _root;
+	myroot = _root;
+	sarch["<unused>"]; // 0, don't use
 	unk_id = sarch["<unk>"];	// should be in Dictionary::load
 	start_id = sarch["<s>"];	// should be in Dictionary::load
 	stop_id = sarch["</s>"];	// should be in Dictionary::load
@@ -58,12 +59,12 @@ void StringArchive::dump()
 
 void dic_clean()
 {
-	delete root;
+	delete myroot;
 }
 
 WordNodePtr get_root()
 {
-	return root;
+	return myroot;
 }
 
 bool is_syllable_exist(strid syll)
@@ -106,7 +107,8 @@ bool WordNode::load(const char* filename)
 
 	int nr_lines = 0;
 	char *line;
-	int pos,start,len,tmp_char;
+	int start,len,tmp_char;
+	string::size_type pos;
 	char *str_pos;
 	vector<string> toks;
 	while ((line = ifs.getline())) {
@@ -142,10 +144,8 @@ bool WordNode::load(const char* filename)
 			pos = toks[0].find(' ',start);
 			if (pos == string::npos)
 				pos = len;
-			else
-				toks[0][pos] = '_';	// prepared for getting word id
 			string s = toks[0].substr(start,pos-start);
-			VocabIndex id = sarch[s];
+			VocabIndex id = sarch[/*get_std_syllable*/(s)];
 			syllables.push_back(id);
 			WordNodePtr next = node->get_next(id);
 			if (!next) {		// create new
@@ -154,7 +154,7 @@ bool WordNode::load(const char* filename)
 			node = next;
 
 			transform(s.begin(),s.end(),s.begin(),viet_tolower);
-			VocabIndex cid = sarch[s];
+			VocabIndex cid = sarch[/*get_std_syllable*/(s)];
 			csyllables.push_back(cid);
 			WordNodePtr cnext = cnode->get_next(cid);
 			if (!cnext) {		// create new
@@ -163,12 +163,21 @@ bool WordNode::load(const char* filename)
 			cnode = cnext;
 			start = pos+1;
 		}
+
 		if (toks[2].find(' ') != string::npos)
 			toks[2].erase(toks[2].find(' '));
 
-		node->info.reset(new WordInfo);
-		node->info->id = sarch[toks[0]];
+		// reconstruct word id
+		string word;
 		int i,nr_syllables = syllables.size();
+		for (i = 0;i < nr_syllables;i ++) {
+			if (i)
+				word += "_";
+			word += sarch[syllables[i]];
+		}
+
+		node->info.reset(new WordInfo);
+		node->info->id = sarch[word];
 		node->info->syllables.resize(nr_syllables+1);
 		node->info->syllables[nr_syllables] = Vocab_None;
 		//cerr << "Word " << toks[0] << "(" << node->info->id << "| ";
@@ -180,16 +189,17 @@ bool WordNode::load(const char* filename)
 		node->set_prob(atof(toks[2].c_str()));
 
 		if (csyllables != syllables) {
-			transform(toks[0].begin(),toks[0].end(),toks[0].begin(),viet_tolower);
+			transform(word.begin(),word.end(),word.begin(),viet_tolower);
 			cnode->info.reset(new WordInfo);
-			cnode->info->id = sarch[toks[0]];
+			cnode->info->id = sarch[word];
 			nr_syllables = csyllables.size();
 			cnode->info->syllables.resize(nr_syllables+1);
 			cnode->info->syllables[nr_syllables] = Vocab_None;
 			for (i = 0;i < nr_syllables;i ++)
 				cnode->info->syllables[i] = csyllables[i];
 			cnode->set_prob(atof(toks[2].c_str()));
-		}
+		} else
+			cnode->info = node->info;
 		nr_lines ++;
 	}
 
@@ -507,10 +517,10 @@ std::ostream& operator << (std::ostream &os,const WordNode &node)
 {
 	std::vector<strid> syll;
   node.get_syllables(syll);
-	for (int i = 0;i < syll.size();i ++) {
+	for (std::vector<strid>::size_type i = 0;i < syll.size();i ++) {
 		if (i)
 			os << " ";
-		os << sarch[syll[i]];// << "(" << syll[i] << ") ";
+		os << sarch[syll[i]] << "(" << syll[i] << ") ";
 	}
 	return os;
 }

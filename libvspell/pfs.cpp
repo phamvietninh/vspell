@@ -4,7 +4,7 @@ using namespace std;
 
 class HeapValue : public vector<float> {
 public:
-	bool operator() (int v1,int v2) {
+	bool operator() (uint v1,uint v2) {
 	  return (*this)[v1] > (*this)[v2];
 	}
 	
@@ -12,80 +12,112 @@ public:
 
 void PFS::segment_best(const Words &w,Segmentation &seps)
 {
-	vector<int> back_traces;
-	vector<bool> seen;
-	vector<int> candidates;
+	vector<uint> back_traces;
+	vector<bool> seen;						// true if a node is seen
+	vector<uint> candidates;				// examining nodes
 	HeapValue val;
 
-	int i,n = w.get_word_count();
+	int n = w.get_word_count();
 
-	val.resize(n+1);
-	back_traces.resize(n+1);
-	seen.resize(n+1);
-	candidates.reserve(n+1);
+	val.resize(w.we->size()+1);
+	back_traces.resize(w.we->size()+1);
+	seen.resize(w.we->size()+1);
+	candidates.reserve(w.we->size()+1);
 
-	candidates.push_back(0);
-	seen[0] = true;
-	val[0] = 0;
+	const WordEntryRefs &wers_start = w.get_we(0);
+	int ii,nn = wers_start.size();
+	for (ii = 0; ii < nn;ii ++) {
+		int v = wers_start[ii]->id;
+		candidates.push_back(v);
+		push_heap(candidates.begin(),candidates.end(),val);
+		seen[v] = true;
+		val[v] = 0;
+		back_traces[v] = v;
+	}
 
-	int c = 1;
+	// while there is a node to examine
+	while (!candidates.empty()) {
 
-	while (c <= n) {
+		// get a node
 		pop_heap(candidates.begin(),candidates.end(),val);
 		int v = candidates.back();
 		candidates.pop_back();
-		if (v == n)
-		  continue;
-		c++;
-		cerr << "got " << v << " " << val[v] << endl;
 
-		const WordEntryRefs &wers = w.get_we(v);
-		int vv,ii,nn = wers.size();
+		//cerr << "got " << (*w.we)[v].node << " " << val[v] << endl;
+
+		int next = (*w.we)[v].pos+(*w.we)[v].len;
+
+		if (next >= n) {
+			int vv = w.we->size();
+		  if (!seen[vv]) {
+				seen[vv] = true;
+				val[vv] = val[v];
+				back_traces[vv] = v;
+				//cerr << " end " << val[vv] << "=" << v << endl;
+		  } else {
+				if (val[vv] > val[v]) {
+					val[vv] = val[v];
+					back_traces[vv] = v;
+					//cerr << " new end " << val[vv] << "=" << v << endl;
+				}
+		  }
+			continue;
+		}
+
+		const WordEntryRefs &wers = w.get_we(next);
+		uint vv;
+		nn = wers.size();
 		float value,add;
 		VocabIndex vi[2];
 		vi[1] = Vocab_None;
-		vi[0] = start_id;
+		vi[0] = (*w.we)[v].node.node->get_id();
 		for (ii = 0;ii < nn;ii ++) {
-		  vv = wers[ii]->pos+wers[ii]->len;
+		  vv = wers[ii]->id;
 		  //value = val[v]+wers[ii]->node.node->get_prob();
-		  vi[0] = (*w.we)[back_traces[v]].node.node->get_id();
-		  add = (-ngram.wordProb(wers[ii]->node.node->get_id(),vi));
-		  value = val[v]+ add;
-		  cerr << "examine " << vv << "(" << wers[ii]->node << ")";
+		  //vi[0] = (*w.we)[back_traces[v]].node.node->get_id();
+		  add = (-ngram.wordProb((*w.we)[vv].node.node->get_id(),vi));
+		  value = val[v] + add;
+		  //cerr << "examine " << vv << "(" << wers[ii]->node << ")";
+
 		  if (!seen[vv]) {
 				candidates.push_back(vv);
 				seen[vv] = true;
 				val[vv] = value;
 				push_heap(candidates.begin(),candidates.end(),val);
-				back_traces[vv] = wers[ii]->id;
-				cerr << " add " << val[vv] << "=" << v << "+"<< add;
+				back_traces[vv] = v;
+				//cerr << " add " << val[vv] << "=" << v << "+"<< add;
 		  } else {
-	if (val[vv] > value) {
-		val[vv] = value;
-		vector<int>::iterator iter = find(candidates.begin(),candidates.end(),vv);
-		while (true) {
-		  push_heap(candidates.begin(),iter);
-		  if (iter != candidates.end())
-		    ++iter;
-		  else
-		    break;
-		}
-		back_traces[vv] = wers[ii]->id;
-		cerr << " val " << val[vv] << "=" << v << "+"<< add;
-	}
+				if (val[vv] > value) {
+					val[vv] = value;
+					back_traces[vv] = v;
+
+					// re-heap if necessary
+					vector<uint>::iterator iter = find(candidates.begin(),candidates.end(),vv);
+					while (true) {
+						push_heap(candidates.begin(),iter,val);
+						if (iter != candidates.end())
+							++iter;
+						else
+							break;
+					}
+					//cerr << " val " << val[vv] << "=" << v << "+"<< add;
+				}
 		  }
-		  cerr << endl;
+		  //cerr << endl;
 		}
 	}
 
-	int p = n;
 	const WordEntries &we = *w.we;
-	while (p) {
-		int l = we[back_traces[p]].len;
-		seps.push_back(back_traces[p]);
-		p -= l;
+	uint v = we.size();
+	while (true) {
+		//cerr << v << "->" << back_traces[v] << endl;
+		if (back_traces[v] != v) {
+			v = back_traces[v];
+			seps.push_back(v);
+		} else
+			break;
 	}
 	reverse(seps.begin(),seps.end());
 
-	cerr << "done" << endl;
+	//cerr << "done" << endl;
 }

@@ -17,91 +17,96 @@
 #include <boost/scoped_ptr.hpp>
 #endif
 
+#ifndef BOOST_SHARED_PTR_HPP_INCLUDED
+#include <boost/shared_ptr.hpp>
+#endif
+
 class WordNode;
 typedef WordNode* WordNodePtr;
 
 class WordNode {
 protected:
-  struct WordInfo {
-    VocabIndex id;
-    float prob;
-    std::vector<VocabIndex> syllables;
-    int a,b;			// a/b
-    WordInfo():prob(0),a(0),b(0) {}
-    //      ~WordInfo() { if (syllables) delete[] syllables; }
-  };
-  //  WordNodePtr wl;
-  typedef SArray<strid,WordNodePtr > node_map;
-  typedef SArrayIter<strid,WordNodePtr > node_map_iterator;
-  boost::scoped_ptr<node_map> nodes;
-  boost::scoped_ptr<WordInfo> info;
+	struct WordInfo {
+	  VocabIndex id;
+	  float prob;
+	  std::vector<VocabIndex> syllables;
+	  int a,b;			// a/b
+	  WordInfo():prob(0),a(0),b(0) {}
+	  //      ~WordInfo() { if (syllables) delete[] syllables; }
+	};
+	//  WordNodePtr wl;
+	typedef SArray<strid,WordNodePtr > node_map;
+	typedef SArrayIter<strid,WordNodePtr > node_map_iterator;
+	boost::scoped_ptr<node_map> nodes;
+	boost::shared_ptr<WordInfo> info;
 	VocabIndex id;
 
 public:
-  struct DistanceNode {
-    WordNodePtr node;
-    int distance;
-    DistanceNode(WordNodePtr _node = NULL):node(_node),distance(0) {}
-    int operator == (const DistanceNode &dn1) const {
-      return dn1.node == node;
-    }
-    int operator < (const DistanceNode &dn1) const {
-      return (int)node+distance < (int)dn1.node+dn1.distance;
-    }
+	struct DistanceNode {
+	  WordNodePtr node;
+	  int distance;
+	  DistanceNode(WordNodePtr _node = NULL):node(_node),distance(0) {}
+	  int operator == (const DistanceNode &dn1) const {
+	    return dn1.node == node;
+	  }
+	  int operator < (const DistanceNode &dn1) const {
+	    return (int)node+distance < (int)dn1.node+dn1.distance;
+	  }
 		WordNode& operator* () const { return *node; }
 		WordNode* operator-> () const { return node; }
-  };
+	};
 
-  void recalculate();
+	void recalculate();
 
 public:
 
-  WordNode(strid _syllable):
+	WordNode(strid _syllable):
 		//info(),
 		nodes(new node_map),
 		id(_syllable)
 	{}
-  //    ~WordNode();
+	virtual ~WordNode() {}
 
-  VocabIndex get_syllable() const { return id; }
-  virtual WordNodePtr get_next(strid str) const;
-  void inc_a() { ASSERT(info.get()); info->a++; }
-  void inc_b() { ASSERT(info.get()); info->b++; }
-  int& get_a() { ASSERT(info.get()); return info->a; }
-  int& get_b() { ASSERT(info.get()); return info->b; }
-  VocabIndex get_id() { return info->id; } // ASSERT: info != NULL
-  bool is_next_empty() { return nodes->empty(); }
-  virtual bool fuzzy_get_next(strid str,std::vector<DistanceNode>& _nodes) const;
-  virtual WordNodePtr create_next(strid str);
-  float get_prob() const { return info.get() ? info->prob : -1; }
-  void set_prob(float _prob);
+	VocabIndex get_syllable() const { return id; }
+	virtual WordNodePtr get_next(strid str) const;
+	void inc_a() { ASSERT(info.get()); info->a++; }
+	void inc_b() { ASSERT(info.get()); info->b++; }
+	int& get_a() { ASSERT(info.get()); return info->a; }
+	int& get_b() { ASSERT(info.get()); return info->b; }
+	VocabIndex get_id() { return info->id; } // ASSERT: info != NULL
+	bool is_next_empty() { return nodes->empty(); }
+	virtual bool fuzzy_get_next(strid str,std::vector<DistanceNode>& _nodes) const;
+	virtual WordNodePtr create_next(strid str);
+	float get_prob() const { return info.get() ? info->prob : -1; }
+	void set_prob(float _prob);
 
-  int get_syllable_count() const;
-  void get_syllables(std::vector<strid> &syllables) const;
-  WordNodePtr follow_syllables(const std::vector<strid> &syllables);
+	int get_syllable_count() const;
+	void get_syllables(std::vector<strid> &syllables) const;
+	WordNodePtr follow_syllables(const std::vector<strid> &syllables);
 
 	void dump_next(std::ostream &os) const;
 
-  bool load(const char* filename);
-  bool save(const char* filename);
+	bool load(const char* filename);
+	bool save(const char* filename);
 };
 
 class FuzzyWordNode:public WordNode {
 protected:
-  bool fuzzy_get_next_with_syllable(strid str,
+	bool fuzzy_get_next_with_syllable(strid str,
 				    std::vector<DistanceNode>& _nodes,
 				    const Syllable &syll) const;
-  bool fuzzy_get_next_with_ed(strid str,
+	bool fuzzy_get_next_with_ed(strid str,
 			      std::vector<DistanceNode>& _nodes,
 			      const char *str_data,
 			      bool parsable) const;
-  bool fuzzy;
+	bool fuzzy;
 
 public:
-  FuzzyWordNode(strid _id):WordNode(_id),fuzzy(true) {}
-  virtual bool fuzzy_get_next(strid str,std::vector<DistanceNode>& _nodes) const;
-  virtual WordNodePtr create_next(strid str);
-  void enable_fuzzy(bool _fuzzy) { fuzzy = _fuzzy; }
+	FuzzyWordNode(strid _id):WordNode(_id),fuzzy(true) {}
+	virtual ~FuzzyWordNode() {}
+	virtual bool fuzzy_get_next(strid str,std::vector<DistanceNode>& _nodes) const;
+	virtual WordNodePtr create_next(strid str);
+	void enable_fuzzy(bool _fuzzy) { fuzzy = _fuzzy; }
 };
 
 WordNodePtr get_root();

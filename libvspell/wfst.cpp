@@ -13,7 +13,7 @@
 
 using namespace std;
 
-int ngram_length = 2;						// for lazy men ;)
+unsigned int ngram_length = 2;						// for lazy men ;)
 
 /**
 	 Don't know how to name this class. 
@@ -24,12 +24,12 @@ int ngram_length = 2;						// for lazy men ;)
 class ZZZ
 {
 private:
-	std::vector<int> limit,iter;
+	std::vector<uint> limit,iter;
 	int nr_limit,cur;
 
 public:
-	void init(const std::vector<int> &limit);
-	bool step(std::vector<int> &pos);
+	void init(const std::vector<uint> &limit);
+	bool step(std::vector<uint> &pos);
 	void done();
 };
 
@@ -61,7 +61,7 @@ void Generator::done()
 	Then call WFST::generate_misspelled_words.
  */
 
-bool Generator::step(vector<int> &_pos,int &_len)
+bool Generator::step(vector<uint> &_pos,uint &_len)
 {
 	while (run) {
 
@@ -107,7 +107,7 @@ typedef vector<Segmentations> Segmentation2;
 	\param len specify the actual length pos. Don't use pos.size()
 */
 
-void WFST::generate_misspelled_words(const vector<int> &pos,int len,Segmentation &final_seg)
+void WFST::generate_misspelled_words(const vector<uint> &pos,int len,Segmentation &final_seg)
 {
 	const Words &words = *p_words;
 	Words w;
@@ -117,7 +117,7 @@ void WFST::generate_misspelled_words(const vector<int> &pos,int len,Segmentation
 	// 2. Compute the score, jump to 1. if score is too low (pruning 1)
 
 	// create new (more compact) Words structure
-	int i,j,n = words.get_word_count();
+	int i,n = words.get_word_count();
 	for (i = 0;i < len;i ++) {
 		const WordEntryRefs &fmap = words.get_fuzzy_map(pos[i]);
 		int ii,nn = fmap.size();
@@ -140,7 +140,7 @@ void WFST::generate_misspelled_words(const vector<int> &pos,int len,Segmentation
 	// then merge to one big segment.
 	n = sects.size();
 
-	int ii,nn;
+	uint ii,nn;
 
 	i = ii = 0;
 	nn = words.get_word_count();
@@ -170,7 +170,7 @@ void WFST::generate_misspelled_words(const vector<int> &pos,int len,Segmentation
 
 void WFST::segment_best(const Words &words,Segmentation &seps)
 {
-	int i,ii,n,nn;
+	//int i,ii,n,nn;
 
 	p_words = &words;
 
@@ -190,8 +190,8 @@ void WFST::segment_best(const Words &words,Segmentation &seps)
 	Generator gen;
 
 	gen.init(*words.st);
-	vector<int> pos;
-	int len;
+	vector<uint> pos;
+	uint len;
 	seps.prob = 100;
 	while (gen.step(pos,len)) {
 		Segmentation seg;
@@ -218,7 +218,7 @@ void WFST::segment_best_no_fuzzy(const Words &words,Segmentation &seps)
 {
 	p_words = &words;
 
-	vector<int> pos;
+	vector<uint> pos;
 	generate_misspelled_words(pos,0,seps);
 }
 
@@ -291,7 +291,7 @@ void Segmentor::init(const Words &words,
 bool Segmentor::step(Segmentation &result)
 {
 	const Words &words = *_words;
-	const Sentence &sent = *_words->st;
+	//	const Sentence &sent = *_words->st;
 	while (!segs.empty()) {
 		// get one
 		Trace trace = segs.back();
@@ -348,7 +348,7 @@ void Segmentor::done()
 {
 }
 
-void ZZZ::init(const vector<int> &_limit)
+void ZZZ::init(const vector<uint> &_limit)
 {
 	limit = _limit;
 	nr_limit = limit.size();
@@ -365,7 +365,7 @@ void ZZZ::done()
 	Then call WFST::generate_misspelled_words.
  */
 
-bool ZZZ::step(vector<int> &_pos)
+bool ZZZ::step(vector<uint> &_pos)
 {
 	while (cur >= 0) {
 

@@ -8,6 +8,7 @@
 #include <iostream>
 #include "sentence.h"
 #include "softcount.h"
+#include "propername.h"
 #include <boost/format.hpp>
 
 using namespace std;
@@ -25,6 +26,7 @@ int main(int argc,char **argv)
 	char *newres = argv[2];
 	bool nofuz = true;
 	bool nofuz2 = true;
+	bool trigram = true;
 	const char *str;
 
 	dic_init();
@@ -45,7 +47,7 @@ int main(int argc,char **argv)
 	string s;
 	int i,ii,iii,n,nn,nnn,z;
 	int count = 0;
-	NgramFractionalStats stats(get_sarch().get_dict(),2);
+	NgramFractionalStats stats(get_sarch().get_dict(),3);
 	while (getline(cin,s)) {
 		count ++;
 		if (count % 200 == 0)
@@ -60,12 +62,32 @@ int main(int argc,char **argv)
 			st.tokenize();
 			if (!st.get_syllable_count())
 				continue;
-			//cerr << ">>" << endl;
+			//cerr << ">>" << count << endl;
 			Lattice words;
-			words.construct(st);
-			Segmentation seg(words.we);
+			set<WordEntry> wes;
+			WordStateFactories factories;
+			ExactWordStateFactory exact;
+			LowerWordStateFactory lower;
+			//FuzzyWordStateFactory fuzzy;
+			factories.push_back(&exact);
+			factories.push_back(&lower);
+			//factories.push_back(&fuzzy);
+			words.pre_construct(st,wes,factories);
+			mark_proper_name(st,wes);
+			words.post_construct(wes);
+			//cerr << words << endl;
+			WordDAG dagw(&words);
+			DAG *dag = &dagw;
+			WordDAG2 *dagw2;
+			if (trigram) {
+				dagw2 = new WordDAG2(&dagw);
+				dag = dagw2;
+			}
 			SoftCounter sc;
-			sc.count(words,stats);
+			//sc.count(words,stats);
+			sc.count(*dag,stats);
+			if (trigram)
+				delete (WordDAG2*)dag;
 		}
 	}
 

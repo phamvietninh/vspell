@@ -1,4 +1,5 @@
 #include "softcount.h"		// -*- tab-width: 2 -*-
+#include <deque>
 
 using namespace std;
 
@@ -125,7 +126,7 @@ void SoftCounter::count(const Lattice &w,NgramFractionalStats &stats)
 void SoftCounter::count(const DAG &dag,NgramFractionalStats &stats)
 {
 	vector<float> Sleft,Sright;
-	vector<vector<uint> > prev;
+	vector<set<uint> > prev;
 	int i,n,v,vv;
 	float add;
 
@@ -133,14 +134,21 @@ void SoftCounter::count(const DAG &dag,NgramFractionalStats &stats)
 	Sleft.resize(n);
 	Sright.resize(n);
 	prev.resize(n);
+	//cerr << "Nodes: " << n << endl;
 
-	vector<uint> traces;
-	uint itrace = 0;
-	dag.get_next(dag.node_begin(),traces);
+	vector<bool> mark;
+	mark.resize(n);
+	deque<uint> traces;
 	Sleft[dag.node_begin()] = 1;
+	traces.push_back(dag.node_begin());
 	// first pass: Sleft
-	while (itrace < traces.size()) {
-		v = traces[itrace++];
+	while (!traces.empty()) {
+		v = traces.front();
+		traces.pop_front();
+		if (mark[v])
+			continue;
+		else
+			mark[v] = true;
 		std::vector<uint> nexts;
 		dag.get_next(v,nexts);
 		n = nexts.size();
@@ -153,21 +161,29 @@ void SoftCounter::count(const DAG &dag,NgramFractionalStats &stats)
 			traces.push_back(vv);
 
 			// init prev references for Sright phase
-			prev[vv].push_back(v);
+			prev[vv].insert(v);
 		}
 	}
+
+	//cerr << "Sleft done" << endl;
 
 	float fc;
 	// second pass: Sright
 	float sum = Sleft[dag.node_end()];
 	Sright[dag.node_end()] = 1;
+	traces.clear();
 	traces.push_back(dag.node_end()); // the last v above
-	itrace = 0;
-	while (itrace < traces.size()) {
-		vv = traces[itrace++];
-		n = prev[vv].size();
-		for (i = 0;i < n;i ++) {
-			v = prev[vv][i];
+	while (!traces.empty()) {
+		vv = traces.front();
+		traces.pop_front();
+		if (!mark[vv])
+			continue;
+		else
+			mark[vv] = false;
+		//cerr << vv << " ";
+		set<uint>::iterator iter;
+		for (iter = prev[vv].begin();iter != prev[vv].end(); ++iter) {
+			v = *iter;
 			traces.push_back(v);
 
 			add = Sright[vv]*dag.edge_value(v,vv);
@@ -175,22 +191,23 @@ void SoftCounter::count(const DAG &dag,NgramFractionalStats &stats)
 
 			// collect fractional counts
 			fc = Sleft[v]*add/sum; // P(vv/v)
-			/*
-			vi[0] = vv;
-			vi[1] = v;
-			vi[2] = Vocab_None;
-			*/
 			VocabIndex vi[10];
 			VocabIndex vvv;
 			if (dag.fill_vi(v,vv,vvv,vi,9)) {
-				uint j;
-				for (j = 0;vi[j] != Vocab_None; j ++) {
-					vi[j] = vvv;
-					vi[j++] = Vocab_None;
-					break;
+				uint t,jn,j;
+				for (jn = 0;vi[jn] != Vocab_None && jn < 9; jn ++);
+				if (jn < 9 && vi[jn] == Vocab_None) {
+					for (j = 0;j < jn/2;j ++) {
+						t = vi[j];
+						vi[j] = vi[jn-j-1];
+						vi[jn-j-1] = t;
+					}
+					vi[jn] = vvv;
+					vi[jn+1] = Vocab_None;
+					*stats.insertCount(vi) += fc;
 				}
-				*stats.insertCount(vi) += fc;
 			}
 		}
 	}
+	//cerr << "Sright done" << endl;
 }

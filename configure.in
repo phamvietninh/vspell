@@ -1,15 +1,51 @@
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
+
+AC_PREREQ(2.57)
 AC_INIT(vspell,1.0)
 AM_INIT_AUTOMAKE
-AC_CONFIG_SRCDIR(vspell/gui.cpp)
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_SRCDIR([compose.cpp])
+AC_CONFIG_HEADER([config.h])
 
+# Checks for programs.
 AC_PROG_CXX
-AC_PROG_LIBTOOL
+AC_PROG_CC
+AC_PROG_CPP
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
+AC_PROG_RANLIB
+
+# Checks for libraries.
 
 VSPELL_PACKAGES=gtk+-2.0
 PKG_CHECK_MODULES(VSPELL, $VSPELL_PACKAGES)
 AC_SUBST(VSPELL_CFLAGS)
 AC_SUBST(VSPELL_LIBS)
 
-AC_CONFIG_FILES(Makefile vspell/Makefile libvspell/Makefile libsrilm/Makefile tests/Makefile)
+# Checks for header files.
+AC_HEADER_STDC
+AC_CHECK_HEADERS([fcntl.h locale.h stddef.h stdlib.h string.h sys/param.h unistd.h values.h])
+
+# Checks for typedefs, structures, and compiler characteristics.
+AC_HEADER_STDBOOL
+AC_C_CONST
+AC_C_INLINE
+AC_TYPE_SIZE_T
+AC_STRUCT_TM
+
+# Checks for library functions.
+AC_FUNC_ERROR_AT_LINE
+AC_FUNC_MALLOC
+AC_FUNC_MKTIME
+AC_FUNC_REALLOC
+AC_FUNC_STRTOD
+AC_CHECK_FUNCS([memmove memset rint setlocale sqrt strchr strdup strrchr strtol])
+
+AC_CONFIG_FILES([Makefile
+                 libsrilm/Makefile
+                 libvspell/Makefile
+                 tests/Makefile
+                 vspell/Makefile])
 AC_OUTPUT
+

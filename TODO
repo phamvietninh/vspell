@@ -10,3 +10,5 @@ Thống kê các thông tin liên quan đến DISTANCE_THRESOLD, ED_THRESOLD.
 *done*Tách thành từng đoạn để wordseg (nên chỉnh lại, tìm ranh giới thay vì từ đứng độc lập)
 Xử lý proper name, abbreviation (đang làm)
 Áp dụng bottom up + top down ??
+Hoàn tất việc chỉnh sửa segment_best.
+Quay lại proper name, làm cho xong còn đem nộp.

@@ -362,7 +362,7 @@ bool FuzzyWordNode::fuzzy_get_next_with_syllable(strid str,
 	// move to _nodes
 	n = sylls.size();
 	for (i = 0;i < n;i ++) {
-		WordNodePtr* pnode = nodes->find(sylls[i].to_id());
+		WordNodePtr* pnode = nodes->find(sylls[i].to_std_id());
 		if (pnode) {
 			_nodes.push_back(*pnode);
 			_nodes.back().distance = 1;

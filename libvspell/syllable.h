@@ -47,6 +47,7 @@ public:
   void standardize(std::string str);
   void print();
   strid to_id();
+  strid to_std_id();
   std::string to_str();
 };
 

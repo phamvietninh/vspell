@@ -643,20 +643,27 @@ bool Syllable::parse(const char *str)
 	string syllable(str);
 
 	// fisrt of all, extract diacritic.
-	components[Diacritic] = None;
-	len = syllable.size();
-	for (k = 0;k < len;k ++) {
-		// look up into diacritic_table
-		for (j = 1;j < 6;j ++) {
-			char *pos = strchr(diacritic_table[j],syllable[k]);
-			if (pos != NULL) {
-				int ipos = pos - diacritic_table[j];
-				syllable[k] = diacritic_table[0][ipos];	// remove diacritic
-				components[Diacritic] = j;
-				break;
+	// because the syllable has been stardardized. just extract the diacritic.
+	if (syllable[0] >= '0' && syllable[0] <= '5') {
+		components[Diacritic] = syllable[0] - '0';
+		syllable.erase(0,1);
+	}	else {
+		components[Diacritic] = None;
+		len = syllable.size();
+		for (k = 0;k < len;k ++) {
+			// look up into diacritic_table
+			for (j = 1;j < 6;j ++) {
+				char *pos = strchr(diacritic_table[j],syllable[k]);
+				if (pos != NULL) {
+					int ipos = pos - diacritic_table[j];
+					syllable[k] = diacritic_table[0][ipos];	// remove diacritic
+					components[Diacritic] = j;
+					break;
+				}
 			}
 		}
 	}
+
 
 	// first, get the last_consonant
 	components[Last_Consonant] = -1;
@@ -796,6 +803,11 @@ string Syllable::to_str()
 strid Syllable::to_id()
 {
 	return sarch[to_str()];
+}
+
+strid Syllable::to_std_id()
+{
+	return sarch[get_dic_syllable(to_str())];
 }
 
 /*

@@ -39,16 +39,19 @@ public:
 	   const char*  _vowel = NULL,
 	   const char*  _last_consonant = NULL,
 	   int diacritic = -1);
+	Syllable(const Syllable &sy);
 
 
   bool match(const Syllable &sample);
   void apply(const Syllable &sample,std::vector<Syllable> &output);
   bool parse(const char *str);
   void standardize(std::string str);
-  void print();
-  strid to_id();
-  strid to_std_id();
-  std::string to_str();
+  strid to_id() const;
+  strid to_std_id() const;
+  std::string to_str() const;
+	friend std::ostream& operator << (std::ostream &os,const Syllable &sy);
+	friend bool operator < (const Syllable &s1,const Syllable &s2);
+	friend bool operator == (const Syllable &s1,const Syllable &s2);
 };
 
 extern char *vowels[];

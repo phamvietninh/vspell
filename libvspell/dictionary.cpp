@@ -10,6 +10,7 @@
 #include "distance.h"
 #include "propername.h"
 #include <math.h>
+#include <iterator>
 #ifndef _SArray_cc_
 #include <libsrilm/SArray.cc>
 #endif
@@ -381,28 +382,52 @@ extern vector<confusion_set> confusion_sets;
 
 bool FuzzyWordNode::fuzzy_get_next_with_syllable(strid str,
 																								 vector<DistanceNode>& _nodes,
-																								 const Syllable &syll) const
+																								 const Syllable &_syll) const
 {
 	int i,j,m,n = confusion_sets.size();
 	bool ret = false;
-	vector<Syllable> sylls;
+	set<Syllable> syllset,syllset2;
+
+	syllset2.insert(_syll);
+	while (!syllset2.empty()) {
+		const Syllable sy = *syllset2.begin();
+		syllset2.erase(syllset2.begin());
 		
-	// match & apply
-	for (i = 0;i < n;i ++) {
-		m = confusion_sets[i].size();
-		for (j = 0;j < m;j ++)
-			if (confusion_sets[i][j].match(syll))
-				break;
-		if (j < m) {
+		if (syllset.find(sy) != syllset.end())
+			continue;								// we already matched&applied this syllable
+
+		//cerr << sy << endl;
+		syllset.insert(sy);
+		
+		
+		vector<Syllable> sylls;
+		// match & apply
+		for (i = 0;i < n;i ++) {
+			m = confusion_sets[i].size();
 			for (j = 0;j < m;j ++)
-				confusion_sets[i][j].apply(syll,sylls);
+				if (confusion_sets[i][j].match(sy))
+					break;
+			if (j < m) {
+				for (j = 0;j < m;j ++)
+					confusion_sets[i][j].apply(sy,sylls);
+			}
 		}
+		//sort(sylls.begin(),sylls.end());
+		//sylls.erase(unique(sylls.begin(),sylls.end()),sylls.end());
+		//set_difference(sylls.begin(),sylls.end(),
+		//							 syllset.begin(),syllset.end(),
+		//							 insert_iterator<set<Syllable> >(syllset2,syllset2.begin()));
+		copy(sylls.begin(),sylls.end(), inserter(syllset2,syllset2.begin()));
+		//cerr << "sylls ";copy(sylls.begin(),sylls.end(),ostream_iterator<Syllable>(cerr)); cerr << endl;
+		//cerr << "syllset ";copy(syllset.begin(),syllset.end(),ostream_iterator<Syllable>(cerr)); cerr << endl;
+		//cerr << "syllset2 ";copy(syllset2.begin(),syllset2.end(),ostream_iterator<Syllable>(cerr)); cerr << endl;
 	}
 		
 	// move to _nodes
-	n = sylls.size();
-	for (i = 0;i < n;i ++) {
-		WordNodePtr* pnode = nodes->find(sylls[i].to_std_id());
+	//copy(syllset.begin(),syllset.end(),ostream_iterator<Syllable>(cerr)); cerr << endl;
+	set<Syllable>::iterator iter;
+	for (iter = syllset.begin();iter != syllset.end(); ++ iter) {
+		WordNodePtr* pnode = nodes->find(iter->to_std_id());
 		if (pnode) {
 			_nodes.push_back(*pnode);
 			_nodes.back().distance = 1;

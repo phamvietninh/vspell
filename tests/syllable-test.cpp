@@ -12,7 +12,7 @@ int main()
   
   while (cin >> str) {
     cout << i.parse(str.c_str()) << ": ";
-    i.print();
+    cout << i << endl;
   }
   return 0;
 }

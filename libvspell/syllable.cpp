@@ -480,6 +480,12 @@ bool syllable_init()
 	return true;
 }
 
+Syllable::Syllable(const Syllable &sy)
+{
+	for (int i = 0;i < 5;i ++)
+		components[i] = sy.components[i];
+}
+
 Syllable::Syllable(const char*  _first_consonant,
 									 const char*  _padding_vowel,
 									 const char*  _vowel,
@@ -760,28 +766,29 @@ bool Syllable::parse(const char *str)
 	return components[Vowel] != -1 && syllable.empty();
 }
 
-void Syllable::print()
+std::ostream& operator << (std::ostream &os,const Syllable &sy)
 {
 	char **p;
 	char *diacritics[] = {"_","'","`","?","~","."};
 	for (int i = 0;i < 5;i ++) {
-		if (components[i] < 0) 
-			cout << "_";
+		if (sy.components[i] < 0) 
+			os << "_";
 		else {
 			switch (i) {
-			case First_Consonant: p = first_consonants; break;
-			case Last_Consonant: p = last_consonants; break;
-			case Padding_Vowel: p = padding_vowels; break;
-			case Vowel: p = vowels; break;
-			case Diacritic: p = diacritics; break;
+			case Syllable::First_Consonant: p = first_consonants; break;
+			case Syllable::Last_Consonant: p = last_consonants; break;
+			case Syllable::Padding_Vowel: p = padding_vowels; break;
+			case Syllable::Vowel: p = vowels; break;
+			case Syllable::Diacritic: p = diacritics; break;
 			}
-			cout << p[components[i]];
+			os << p[sy.components[i]];
 		}
-		cout << " ";
+		os << " ";
 	}
+	return os;
 }
 
-string Syllable::to_str()
+string Syllable::to_str() const
 {
 	string s;
 	char **p;
@@ -805,12 +812,12 @@ string Syllable::to_str()
 }
 
 
-strid Syllable::to_id()
+strid Syllable::to_id() const
 {
 	return sarch[to_str()];
 }
 
-strid Syllable::to_std_id()
+strid Syllable::to_std_id() const
 {
 	return sarch[get_dic_syllable(to_str())];
 }
@@ -923,6 +930,30 @@ string get_lowercased_syllable(const string &str)
 {
 	return viet_tolower(str);
 }
+
+bool operator < (const Syllable &s1,const Syllable &s2)
+{
+	for (int i = 0;i < 5;i ++) {
+		if (s1.components[i] == s2.components[i])
+			continue;
+		if (s1.components[i] > s2.components[i])
+			return false;
+		if (s1.components[i] < s2.components[i])
+			return true;
+	}
+	return false;
+}
+
+bool operator == (const Syllable &s1,const Syllable &s2)
+{
+	for (int i = 0;i < 5;i ++) {
+		if (s1.components[i] == s2.components[i])
+			continue;
+		return false;
+	}
+	return true;
+}
+
 /*
 	}
 */

@@ -80,18 +80,16 @@ int main(int argc,char **argv)
 			Path path;
 			WordDAG dag(&words);
 			wfst.search(dag,path);
-			seg.resize(path.size());
-			copy(path.begin(),path.end(),seg.begin());
+			seg.resize(path.size()-2);
+			copy(path.begin()+1,path.end()-1,seg.begin());
 
 			//seg.pretty_print(cout,st) << endl;
 
-			n = seg.size();
-			VocabIndex *vi = new VocabIndex[n+3];
-			vi[0] = get_id(START_ID);
-			vi[n+1] = get_id(STOP_ID);
-			vi[n+2] = Vocab_None;
+			n = path.size();
+			VocabIndex *vi = new VocabIndex[n];
+			vi[n] = Vocab_None;
 			for (i = 0;i < n;i ++) {
-				vi[i+1] = seg[i].node.node->get_id();
+				vi[i] = seg[i].node.node->get_id();
 				//cerr << "<" << sarch[vi[i]] << "> ";
 			}
 			//cerr << endl;

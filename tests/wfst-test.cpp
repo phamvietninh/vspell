@@ -1,5 +1,6 @@
 // -*- coding: viscii -*-
 #include "pfs.h"
+#include "bellman.h"
 #include "distance.h"
 #include "sentence.h"
 #include <string>
@@ -13,8 +14,14 @@ using namespace std;
 void print_all_words(const Lattice &words);
 int main(int argc,char **argv)
 {
-  PFS wfst;
-  dic_init(argc > 1 ? 
+  bool fuzzy = true;
+  bool bellman = false;
+
+  for (int i = 1;i < argc;i ++) {
+    if (!strcmp(argv[i],"nofuzzy")) fuzzy = false;
+    else if (!strcmp(argv[i],"bellman")) bellman = true;
+  }
+  dic_init(!fuzzy ? 
 	   new WordNode(get_sarch()["<root>"]) : 
 	   new FuzzyWordNode(get_sarch()["<root>"]));
   ed_init();
@@ -94,9 +101,15 @@ int main(int argc,char **argv)
 	*/
 	Path path;
 	WordDAG dag(&words);
-	wfst.search(dag,path);
-	seg.resize(path.size());
-	copy(path.begin(),path.end(),seg.begin());
+	if (bellman) {
+	  Bellman wfst;
+	  wfst.search(dag,path);
+	} else {
+	  PFS wfst;
+	  wfst.search(dag,path);
+	}
+	seg.resize(path.size()-2);
+	copy(path.begin()+1,path.end()-1,seg.begin());
 	seg.pretty_print(cout,st) << endl;
 	//	sarch.clear_rest();
       }

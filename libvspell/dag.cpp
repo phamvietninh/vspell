@@ -44,22 +44,22 @@ float WordDAG::edge_value(uint node_from,uint node_to) const
 	uint n = we.size();
 	if (node_from < n && node_to < n) {
 		VocabIndex vi[2];
-		vi[1] = 0;
+		vi[1] = Vocab_None;
 		vi[0] = we[node_from].node.node->get_id();
 		return (-get_ngram().wordProb(we[node_to].node.node->get_id(),vi));
 	}
 
 	if (node_from == node_begin() && node_to < n) {
 		VocabIndex vi[2];
-		vi[1] = 0;
+		vi[1] = Vocab_None;
 		vi[0] = get_id(START_ID);
 		return (-get_ngram().wordProb(we[node_to].node.node->get_id(),vi));
 	}
 
 	if (node_to == node_end() && node_from < n) {
 		VocabIndex vi[2];
-		vi[1] = 0;
-		vi[0] = we[node_to].node.node->get_id();
+		vi[1] = Vocab_None;
+		vi[0] = we[node_from].node.node->get_id();
 		return (-get_ngram().wordProb(get_id(STOP_ID),vi));
 	}
 

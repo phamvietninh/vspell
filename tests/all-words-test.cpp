@@ -43,7 +43,9 @@ int main(int argc,char **argv)
     if (!strcmp(argv[i],"edgeval")) edge_value = true;
   }
 
-  dic_init(fuzzy ? new FuzzyWordNode(get_sarch()["<root>"]) : new WordNode(get_sarch()["<root>"]));
+  dic_init(fuzzy ?
+	   new FuzzyWordNode(get_sarch()["<root>"]) :
+	   new WordNode(get_sarch()["<root>"]));
 
   cerr << "Loading... ";
   get_root()->load("wordlist");
@@ -146,14 +148,14 @@ int main(int argc,char **argv)
 	if (we.pos == 0) {
 	  if (edge_value) {
 	    vi[0] = get_id(START_ID);
-	    val = -get_ngram().wordProb(we.id,vi);
+	    val = -get_ngram().wordProb(we.node.node->get_id(),vi);
 	    cout << "\thead -> n" << we.id << " [ label=\"" << val << "\"];" << endl;
 	  } else
 	    cout << "\thead -> n" << we.id << ";" << endl;
 	}
 	if (we.pos+we.len >= w2.get_word_count()) {
 	  if (edge_value) {
-	    vi[0] = we.id;
+	    vi[0] = we.node.node->get_id();
 	    val = -get_ngram().wordProb(get_id(STOP_ID),vi);
 	    cout << "\tn" << we.id << " -> tail [ label=\"" << val << "\"];" << endl;
 	  } else
@@ -166,8 +168,8 @@ int main(int argc,char **argv)
 	    nn = wers.size();
 	    for (ii = 0;ii < nn; ii ++) {
 	      if (edge_value) {
-		vi[0] = we.id;
-		val = -get_ngram().wordProb(wers[ii]->id,vi);
+		vi[0] = we.node.node->get_id();
+		val = -get_ngram().wordProb(wers[ii]->node.node->get_id(),vi);
 		cout << "\tn" << we.id << " -> n" << wers[ii]->id << " [label=\"" << val << "\"];" << endl;
 	      } else
 		cout << "\tn" << we.id << " -> n" << wers[ii]->id << ";" << endl;

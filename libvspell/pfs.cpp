@@ -145,6 +145,9 @@ void PFS::search(const DAG &dag,Path &seps)
 	last[v] = v;
 	val[v] = 0;
 	seen[v] = true;
+	candidates.push_back(v);
+	int ii,nn = next_nodes.size();
+	/*
 	dag.get_next(dag.node_begin(),next_nodes);
 	int ii,nn = next_nodes.size();
 	for (ii = 0; ii < nn;ii ++) {
@@ -154,7 +157,8 @@ void PFS::search(const DAG &dag,Path &seps)
 		seen[v] = true;
 		val[v] = 0;
 		last[v] = dag.node_begin();
-	}
+		}
+*/
 
 	// while there is a node to examine
 	while (!candidates.empty()) {
@@ -164,8 +168,8 @@ void PFS::search(const DAG &dag,Path &seps)
 		v = candidates.back();
 		candidates.pop_back();
 
-		//cerr << "got " << (*w.we)[v].node << " " << val[v] << endl;
-
+		//cerr << "check " << v << " " << val[v] << endl;
+		
 		next_nodes.clear();
 		dag.get_next(v,next_nodes);
 
@@ -174,9 +178,9 @@ void PFS::search(const DAG &dag,Path &seps)
 		float value,add;
 		for (ii = 0;ii < nn;ii ++) {
 		  vv = next_nodes[ii];
-		  add = dag.edge_value(vv,v);
+		  add = dag.edge_value(v,vv);
 		  value = val[v] + add;
-		  //cerr << "examine " << vv << "(" << wers[ii]->node << ")";
+		  //cerr << "examine " << vv << "(" << vv << ")";
 
 		  if (!seen[vv]) {
 				candidates.push_back(vv);

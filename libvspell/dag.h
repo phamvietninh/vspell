@@ -48,6 +48,9 @@ protected:
 	WordDAG *dag;
 
 public:
+	virtual uint node_begin() const;
+	virtual uint node_end() const;
+	virtual uint node_count() const;
 	virtual const void* node_info(uint node_id) const;
 	virtual void get_next(uint node_id,std::vector<uint> &next_id) const;
 	virtual float edge_value(uint node_from,uint node_to) const;

@@ -8,7 +8,8 @@ libvspell_a_SOURCES = \
 	spell.cpp spell.h vspell.h\
 	wfst.cpp wfst.h\
 	pfs.cpp pfs.h\
-	words.cpp sections.cpp\
+	words.cpp\
+	sections.cpp\
 	softcount.cpp softcount.h\
 	tokenize.ll tokenize.h\
 	debug.h mystring.h\
@@ -18,7 +19,8 @@ libvspell_a_SOURCES = \
 	keyboard.h keyboard.cpp\
 	shuffle.h shuffle.cpp\
 	dag.h dag.cpp\
-	bellman.cpp bellman.h
+	bellman.cpp bellman.h\
+	penalty.h penalty.cpp
 INCLUDES = -I$(top_builddir)/libsrilm
 libvspell_a_LIBADD = $(top_builddir)/libsrilm/libsrilm.a
 #data_DATA = data/wordlist.wl data/ngram data/last-names.lst

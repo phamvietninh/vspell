@@ -67,14 +67,34 @@ protected:
 	std::vector<unsigned> separators;
 	std::string utf8_text;
 	std::string text;
+	float penalty_weight;
+	bool do_normalization;
 
 public:
-	VSpell(const TextFactory &tf):text_factory(tf) {}
+	VSpell(const TextFactory &tf):
+		text_factory(tf),
+		penalty_weight(0),
+		do_normalization(true)
+	{}
 	virtual ~VSpell() { cleanup(); }
 
 	bool init();
 	virtual void cleanup() {}
 	bool check(const char *pp); // in utf-8 encoding
+
+	void set_penalty(float weight) {
+		penalty_weight = weight;
+	}
+	float get_penalty() const {
+		return penalty_weight;
+	}
+
+	void set_normalization(bool t) {
+		do_normalization = t;
+	}
+	bool get_normalization() const {
+		return do_normalization;
+	}
 
 	const std::string &get_utf8_text() const { return utf8_text; }
 	const std::string &get_text() const { return text; }

@@ -11,6 +11,8 @@
 #include "propername.h"
 #include "keyboard.h"
 #include "shuffle.h"
+#include "penalty.h"
+#include "bellman.h"
 
 // stolen from glib
 typedef unsigned int guint32;
@@ -326,10 +328,20 @@ bool Text::sentence_check(const char *pp)
 	w.post_construct(wes);
 	//cerr << w << endl;
 
-	PFS pfs;
 	Path path;
-	WordDAG dag(&w);
-	pfs.search(dag,path);
+	WordDAG dagw(&w);
+	PenaltyDAG pdag(&dagw,vspell->get_penalty());
+	DAG *dag = &dagw;
+	if (vspell->get_penalty())
+		dag = &pdag;
+
+	if (vspell->get_normalization()) {
+		Bellman pfs;
+		pfs.search(*dag,path);
+	} else {
+		PFS pfs;
+		pfs.search(*dag,path);
+	}
 	seg.resize(path.size()-2);
 	// don't copy head/tail
 	copy(path.begin()+1,path.end()-1,seg.begin());

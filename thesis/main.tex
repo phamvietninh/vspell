@@ -1,4 +1,4 @@
-\documentclass[a4paper,oneside]{book} % -*- coding: vietnamese-utf8 mode: latex -*-
+\documentclass[a4paper,oneside,12pt]{book} % -*- coding: vietnamese-utf8 mode: latex -*-
 \usepackage[utf8]{vietnam}
 \renewcommand{\rmdefault}{utm}
 \renewcommand{\sfdefault}{uhv}
@@ -14,117 +14,140 @@
 \usepackage{tabularx}
 \usepackage{footnote}
 \usepackage{tipa}
+\usepackage{subfigure}
 
 \theoremstyle{break}
 \newtheorem{algo}{Thuật toán}
+
+\setlength{\parskip}{1.5ex plus 0.7ex minus 0.6ex}
+
+\setcounter{minitocdepth}{4}
 
 \title{Chương trình bắt lỗi chính tả tiếng Việt}
 \author{Nguyễn Thái Ngọc Duy\\0012020}
 
 \begin{document}
 \dominitoc
+%\doparttoc
 \maketitle
+\begin{titlepage}
+  \begin{center}
+    \Large BLAH
+  \end{center}
+balh blah blah
+balh blah blah
+balh blah blah
+balh blah blah
+balh blah blah
+balh blah blah
+balh blah blah
+balh blah blah
+
+\begin{flushright}
+  blah blah
+\end{flushright}
+\end{titlepage}
 \tableofcontents
 \listoffigures
 \listoftables
-\large%
-\chapter{Giới thiệu}
-\label{cha:intro}
-\begin{center}
+%\large%
 
-I kept the right ones out
+%% \chapter{Giới thiệu}
+%% \label{cha:intro}
+%% \begin{center}
 
-And let the wrong ones in
+%% I kept the right ones out
 
-Had an angel of mercy
+%% And let the wrong ones in
 
-To see me through all my sins
+%% Had an angel of mercy
 
-There were times in my life
+%% To see me through all my sins
 
-When I was goin' insane
+%% There were times in my life
 
-Tryin' to walk through the pain
+%% When I was goin' insane
 
-****
+%% Tryin' to walk through the pain
 
-And when I lost my grip
+%% ****
 
-And I hit the floor
+%% And when I lost my grip
 
-Yeah, I thought I could leave
+%% And I hit the floor
 
-But couldn't get out the door
+%% Yeah, I thought I could leave
 
-I was so sick n' tired
+%% But couldn't get out the door
 
-Of livin' a lie
+%% I was so sick n' tired
 
-I was wishing that I would die
+%% Of livin' a lie
 
-****
+%% I was wishing that I would die
 
-It's amazing
+%% ****
 
-With the blink of an eye
+%% It's amazing
 
-You finally see the light
+%% With the blink of an eye
 
-It's amazing
+%% You finally see the light
 
-That when the moment arrives
+%% It's amazing
 
-You know you'll be alright
+%% That when the moment arrives
 
-It's amazing
+%% You know you'll be alright
 
-And I'm saying a prayer
+%% It's amazing
 
-To the desperate hearts tonight
+%% And I'm saying a prayer
 
-
-****
+%% To the desperate hearts tonight
 
 
-That one last shot's a Permanent Vacation
-
-And a how high can you fly with broken wings
-
-Life's a journey - not a destination
-
-And I just can't tell just what tomorrow brings
+%% ****
 
 
-****
+%% That one last shot's a Permanent Vacation
+
+%% And a how high can you fly with broken wings
+
+%% Life's a journey - not a destination
+
+%% And I just can't tell just what tomorrow brings
 
 
-You have to learn to crawl
-
-Before you learn to walk
-
-But I just couldn't listen
-
-To all that righteous talk
-
-I was out on the street
-
-Just tryin' to survive
-
-Scratchin' to stay alive
+%% ****
 
 
-****
+%% You have to learn to crawl
+
+%% Before you learn to walk
+
+%% But I just couldn't listen
+
+%% To all that righteous talk
+
+%% I was out on the street
+
+%% Just tryin' to survive
+
+%% Scratchin' to stay alive
 
 
-``To all of you people out there
+%% ****
 
-Wherever you are - remember:
 
-The light at the end of the tunnel
+%% ``To all of you people out there
 
-May be you - goodnight''
-\end{center}
+%% Wherever you are - remember:
 
+%% The light at the end of the tunnel
+
+%% May be you - goodnight''
+%%\end{center}
 
 \chapter{Tổng quan}
 \label{cha:overview}
@@ -177,8 +200,33 @@ và đề nghị cách giải quyết lỗi nếu có.
 
 Do ngôn ngữ là một lĩnh vực quá rộng. Việc bắt lỗi chính tả tiếng Việt
 tổng quát là cực kỳ khó khăn. Do vậy đề tài này chỉ giới hạn bắt lỗi
-chính tả trong các văn bản hành chính. Từ ở đây là ``từ từ điển'': các
-từ đơn, từ ghép, cụm từ có trong từ điển.
+chính tả trong các văn bản hành chính.
+
+Chỉ sử dụng từ điển từ, từ điển tiếng và ngữ liệu thô làm đầu vào.
+
+Khái niệm từ ở đây là ``từ từ điển'' --- tức là các từ đơn, từ ghép,
+cụm từ được lưu trong từ điển. 
+
+Lỗi chính tả ở đây bao gồm chủ yếu hai loại lỗi sau:
+\begin{itemize}
+\item Lỗi nhập liệu sai: lỗi gõ thiếu chữ, gõ dư chữ, gõ nhầm vị trí
+  hai chữ liên tiếp nhau, gõ nhầm một chữ bằng một chữ khác, sai sót
+  do bộ gõ tiếng Việt~\ldots
+\item Lỗi phát âm sai: chủ yếu là do đặc điểm phát âm của từng vùng,
+  dẫn đến sai chính tả khi viết.
+\end{itemize}
+
+Không xử lý lỗi từ vựng, lỗi cú pháp.
+
+Giả định rằng, nếu từ bị sai chính tả, thì chỉ sai bởi một trong những
+lý do nêu trên {\em một lần}. Nghĩa là không xét những trường hợp sai
+chính tả, vừa gõ nhầm chữ này bằng chữ khác, vừa gõ dư chữ.
+
+Giả định người dùng chỉ sử dụng một trong hai cách gõ tiếng Việt là
+VNI hoặc TELEX.
+
+Văn bản tiếng Việt được coi là thuần Việt. Những từ nước ngoài, các ký
+hiệu đều bị coi là sai chính tả.
 
 \section{Đặc điểm}
 
@@ -224,15 +272,23 @@ chương trình.
 % Bối cảnh %%%%Nổ thêm về bối cảnh ở đây. Cố để lấn qua trang kế%%%
 
 Bài toán bắt lỗi chính tả đã được tìm hiểu từ rất lâu. Tuy nhiên đa số
-đều tập trung vào các ngôn ngữ phổ dụng ở châu Âu. Trong khi đó ngôn
+đều tập trung vào các ngôn ngữ phổ dụng ở châu Âu. Trong khi đó các ngôn
 ngữ châu Á, đặc biệt là tiếng Việt, có những đặc trưng riêng, đặt ra
 nhiều thách thức mới. Bài toán bắt lỗi chính tả trên các ngôn ngữ châu
-Á như tiếng Hoa, tiếng Hàn Quốc, tiếng Nhật, tiếng Thái và tiếng Việt
+Á như tiếng Trung Quốc, tiếng Hàn Quốc, tiếng Nhật, tiếng Thái và tiếng Việt
 chỉ bắt đầu được nghiên cứu gần đây.
 
-Áp dụng cách giải quyết truyền thống, so sánh từ dựa trên từ điển. Nếu
-từ không có trong từ điển nghĩa là sai chính tả, từ đó đưa ra những
-gợi ý thích hợp.
+Đối với các ngôn ngữ châu Âu, cách giải quyết đơn giản là dựa vào từ
+điển. Nếu một từ trên văn bản không có trong từ điển nghĩa là từ đó
+sai chính tả.
+
+Đối với các ngôn ngữ như tiếng Trung Quốc, tiếng Nhật~\ldots, nhiều
+giải pháp được đề ra để giải quyết bài toán. Những giải pháp nổi bật
+là: blah blah blah
+
+Đề tài này áp dụng cách giải quyết truyền thống, so sánh từ dựa trên
+từ điển. Nếu từ không có trong từ điển nghĩa là sai chính tả, từ đó
+đưa ra những gợi ý thích hợp.
 
 Bài toán đặt ra một bái toán con khác là tách từ tiếng Việt trong điều
 kiện văn bản bị sai chính tả. Cách giải quyết bài toán này là tạo ra
@@ -241,155 +297,408 @@ ngôn ngữ để tìm ra cách tách từ đúng nhất.
 
 \chapter{Cơ sở lý thuyết ngôn ngữ}
 \label{cha:vietnamese}
-\minitoc
+\minitoc\newpage
 
 
 
 \section{Âm tiết}
 
-% Cấu trúc âm tiết:
-Âm tiết trong tiếng Việt có 5 thành phần, đó là thanh điệu, âm đầu, âm
-đệm, âm chính và âm cuối.
+Ngôn ngữ là một hệ thống tín hiệu. Khi nói, vỏ vật chất của tín hiệu
+là âm thanh, khi viết nó được thể hiện bằng chữ. Không phải chữ viết
+lúc nào cũng phản ánh chính xác các âm tố tương ứng. Vì vậy, các âm tố
+được biểu diễn bằng những ký hiệu đặc biệt, gọi là phiên âm. Các ký
+hiệu phiên âm thường đặt giữa \textipa{/\quad/} hoặc
+\textipa{[\quad]}.
 
-Âm đầu các âm vị phụ âm đảm nhiệm. Các âm tiết mà có chữ trên chữ viết
-không ghi phụ âm đầu có thể có âm đầu là âm tắt thanh hầu \textipa{/P/}.
+Âm thanh trong tự nhiên được tạo thành nhờ sự rung động của một vật
+thể đàn hồi. Âm thanh của tiếng nói được hình thành nhờ ``bộ máy phát
+âm'' của con người --- bao gồm môi, răng, lưỡi, khoang miệng, khoang
+mũi, yết hầu, thanh hầu, phổi~\ldots. Ngoài ra, tai người chỉ có thể
+tiếp nhận một khoảng âm thanh nhất định. Những chấn động không nghe
+được gọi là siêu âm và âm ngoại.
 
-Âm đệm do các âm vị bán nguyên âm \textipa{/-u-/} đảm nhiệm.
+Âm học phân biệt các âm thanh theo những đặc trưng khác nhau, bao gồm:
+độ cao, độ mạnh, độ dài. Độ cao phụ thuộc vào tần số dao động. Tần số
+dao động càng lớn thì âm thanh càng cao. Tai người có khả năng nhận
+biết độ cao trong khoảng từ 16 đến 20.000 $H_z$. Độ mạnh (cường độ)
+phụ thuộc vào biên độ dao động. Biên độ càng lớn, âm thanh càng
+to. Cường độ âm thanh trong ngôn ngữ đảm bảo sự xác minh trong giao tế
+và là cơ sở để tạo thành các kiểu trọng âm khác nhau. Độ dài (trường
+độ) là khoảng thời gian kéo dài của âm thanh. Ngôn ngữ chỉ quan trọng
+thời gian tương đối của âm thanh. Ví dụ, các nguyên âm có trọng âm
+thường dài hơn nguyên âm không có trọng âm.
 
-Âm chính do các âm vị nguyêm âm đảm nhiệm như trong bảng~\ref{tab:nguyenam}.
 
-\begin{savenotes}
-  \begin{table}[htbp]
-    \centering
+\subsection{Nguyên âm và phụ âm}
 
-    \begin{tabular}{cc|cc}
-      Âm vị&Chữ cái&Âm vị&Chữ cái\\
-      \textipa{/i/}&i,y&\textipa{/o/}&ô,ôô\\
-      \textipa{/e/}&ê&\textipa{/O/}&o,oo\\
-      \textipa{/E/}&e,a&\textipa{/\v{7}/}&â\\
-      \textipa{/W/}&ư&\textipa{/\v{a}/}&a,ă\\
-      \textipa{/7/}&ơ&\textipa{/ie/}&iê,ia,yê,y\\
-      \textipa{/a/}&a&\textipa{/uo/}&uô,ua\\
-      \textipa{/u/}&u&\textipa{/W7/}&ươ,ưa\\
-    \end{tabular}
-    
-    \caption{Bảng nguyên âm}
-    \label{tab:nguyenam}
-  \end{table}
-\end{savenotes}
+Các âm tố có thể chia thành nguyên âm và phụ âm, dựa vào các đặc điểm
+âm học, cấu âm và vai tròn trong cấu tạo âm tiết.
 
-Âm cuối do các âm vị phụ âm bán nguyên âm đảm nhiệm như trong
-bảng~\ref{tab:phuamcuoi} và bảng~\ref{tab:bannguyenamcuoi}. 
+Nguyên âm có đặc điểm cấu tạo:
+\begin{itemize}
+\item Luồng hơi ra tự do, không bị cản trở, không có vị trí cấu âm.
+\item Bộ máy phát âm căng thẳng toàn bộ.
+\item Luồng hơi ra yếu.
+\end{itemize}
 
-\begin{savenotes}
-  \begin{table}[htbp]
-    \centering
+Phụ âm có đặc điểm cấu tạo hoàn toàn trái ngược với nguyên âm:
+\begin{itemize}
+\item Luồng hơi bị cản trở do sự xuất hiện chướng ngại trên lối ra của
+  luồng không khí, chương ngại thường xuất hiện ở các khoang trên
+  thanh hầu do các khí quan tiếp xúc nhau hay nhích gần nhau mà thành,
+  điểm có chướng ngại được gọi là vị trí cấu âm của phụ âm.
+\item Bộ máy phát âm không căng thẳng toàn bộ mà sự căng thẳng cơ thịt
+  tập trung ở vị trí cấu âm.
+\item Luồng hơi ra mạnh.
+\end{itemize}
 
-    \begin{tabular}{cc}
-      Âm vị&Chữ cái\\
-      \textipa{/-p/}&p\\
-      \textipa{/-t/}&t\\
-      \textipa{/-k/}&c,ch\\
-      \textipa{/-m/}&m\\
-      \textipa{/-n/}&n\\
-      \textipa{/-N/}&ng,nh\\
-    \end{tabular}
-    
-    \caption{Bảng phụ âm cuối}
-    \label{tab:phuamcuoi}
-  \end{table}
-\end{savenotes}
+Nguyên âm và phụ âm có chức năng khác nhau trong cấu tạo âm tiết. Các
+nguyên âm thường làm hạt nhân hay đỉnh của âm tiết, còn phụ âm thường
+là yếu tố đi kèm, không tạo thành âm tiết (trừ các âm phụ vang).
 
-\begin{savenotes}
-  \begin{table}[htbp]
-    \centering
+Những âm tố có đặc tính giống nguyên âm nhưng thường chỉ đi kèm, bản
+thân không tạo thành âm tiết được gọi là {\em bán nguyên âm}. Ví dụ,
+các âm tố viết là u, i trong các âm ``sau'', ``mai'' trong tiếng Việt.
 
-    \begin{tabular}{cc}
-      Âm vị&Chữ cái\\
-      \textipa{/-u/}&u,o\\
-      \textipa{/-i/}&i,y\\
-    \end{tabular}
-    
-    \caption{Bảng bán nguyên âm cuối}
-    \label{tab:bannguyenamcuoi}
-  \end{table}
-\end{savenotes}
 
-Trên chữ viết, các âm vị âm đầu được thể hiện như trong bảng~\ref{tab:phuamdau}
+\subsection{Âm vị}
 
-\begin{savenotes}
-  \begin{table}[htbp]
-    \centering
+Âm vị là đơn vị nhỏ nhất của cơ cấu âm thanh ngôn ngữ, dùng để cấu tạo
+và phân biệt hình thức ngữ âm của những đơn vị có nghĩa của ngôn ngữ
+--- từ và hình vị. Ví dụ, các từ ``tôi'' và ``đôi'', ``ta'' và ``đa''
+được phân biệt bởi các âm vị \textipa{/t/} và \textipa{/d/}.
 
-    \begin{tabular}{cc|cc}
-      Âm vị&Chữ cái&Âm vị&Chữ cái\\
-      \textipa{/b/}&b&\textipa{/m/}&m\\
-      \textipa{/f/}&ph&\textipa{/v/}&v\\
-      \textipa{/t\super{h}/}&th&\textipa{/t/}&t\\
-      \textipa{/d/}&đ&\textipa{/n/}&n\\
-      \textipa{/s/}&x&\textipa{/z/}&d,gi\footnote{Dựa vào nguyên tắc từ nguyên để phân biệt}\\
-      \textipa{/l/}&l&\textipa{/\:t/}&tr\\
-      \textipa{/\:s/}&s&\textipa{/\:z/}&r\\
-      \textipa{/c/}&ch&\textipa{/\textltailn/}&nh\\
-      \textipa{/k/}&
-      q\footnote{Dùng khi đứng trước bán nguyên âm \textipa{/-u-/}}, 
-      k\footnote{Dùng khi đứng trước các nguyên âm \textipa{/i,e,E,ie/}},
-      c&
-      \textipa{/N/}&ngh\footnotemark[\value{footnote}], ng\\
-      \textipa{/x/}&kh&\textipa{/G/}&gh\footnotemark[\value{footnote}], g\\
-      \textipa{/h/}&h&\textipa{/P/}&khuyết\\
-    \end{tabular}
-    
-    \caption{Bảng phụ âm đầu}
-    \label{tab:phuamdau}
-  \end{table}
-\end{savenotes}
+Âm vị là đơn vị nhỏ nhất, vì về mặt tuyến tính nó không thể phân chia
+nhỏ hơn nữa. Nếu thay âm vị này bằng âm vị khác trong cùng mọt bối
+cảnh ngữ âm sẽ làm cho từ thay đổi nghĩa hoặc mất nghĩa. Ví dụ, thay
+âm \textipa{/t/} trong từ ``toàn'' bằng âm \textipa{/h/} sẽ được
+``hoàn'' có nghĩa khác, hoặc nếu thay bằng âm \textipa{/n/} sẽ được
+``noàn'' hoàn toàn vô nghĩa.
 
-Một số âm như k và  q, gh và g, ngh và ng là cùng âm vị. Tuy nhiên, do
-khi hình thành chữ quốc ngữ, ngữ âm tiếng Việt chưa được nghiên cứu
-đầy đủ, nên các giáo sĩ đã phải mượn nhiều con chữ ghép trong chữ Bồ
-Đào Nha, Hi Lạp, Pháp, Ý~\ldots dẫn đến sự không đồng nhất khi biểu
-diễn âm vị.
+Âm vị có thể được so sánh như những viên gạch trong việc xây dựng mỗi
+ngôn ngữ. Các viên gạch thường giống nhau, nhưng các âm vị về nguyên
+tắc phải khác nhau, ít nhất ở một đặc trưng nào đó. Sự khác biệt này
+tạo ra khác biệt về hình thức âm thanh của hình vị và từ, tạo ra tín
+hiệu khác biệt đối với sự thụ cảm của con người. Vậy âm vị có hai chức
+năng cơ bản là {\em chức năng khu biệt} (vỏ âm thanh của hình vị và
+từ) và {\em chức năng cấu tạo} (chất liệu để cấu tạo nên
+những thành tố của những đơn vị có nghĩa).
 
-Hệ thống âm chính tiếng Việt dựa trên cách phát âm Hà Nội bao gồm 9
-nguyên âm dài, 2 nguyên âm ngắn, 3 nguyên âm đôi. Tóm gọn các cách
-biểu diễn nguyên âm chính gồm: i, y, ê, e, a, ư, ơ, a, u, ô, o, â, ă,
-iê, ia, yê, y, uô, y, uô, ươ, ưa.
 
-Các phụ âm cuối được ghi bằng ``ch'' khi đứng sau ca'c nguyên âm i, y,
-ê, e, a. Ví dụ: {\em minh, mênh, manh}. Trong các trường hợp khác lại
-được ghi bằng ``ng''. Ví dụ: {\em mang, vâng, hồng, xuống}.
+\subsection{Âm tiết}
 
-Các bán nguyên âm cuối /-u/ ghi bằng ``o'' khi đứng sau các nguyên âm đơn
-dài, ở bậc thanh lượng lớn như e, a. Các viết này biểu diễn sự biến
-dạng của các bán âm sau các mở rộng. Trong các trường hợp còn lại, bán
-nguyên âm này được ghi bằng ``u''.
+Chuỗi lời nói của con người được chia ra làm những khúc đoạn khác
+nhau, từ lớn đến nhỏ. Âm tiết là đơn vị phát âm nhỏ nhất, được phân
+định tự nhiên trong lời nói con người.
 
-Các bán nguyên âm cuối /-i/ được ghi bằng ``y'' khi đứng sau các
-nguyên âm ngắn ă, a, â. Trong các trường hợp khác nó được ghi bằng
-``i''.
+Về phương diện phát âm, dụ lời nói chậm đến đâu cũng chỉ phân chia đến
+giới hạn của âm tiết mà thôi. Nhưng về phương diện thính giác thì âm
+tiết là một tổ hợp âm thanh, có thể gồm nhiều âm tố hoặc đôi khi chỉ
+có một âm tố. Mỗi âm tiết chỉ có một âm tố âm tiết tính (có khả năng
+tạo thành âm tiết), còn lại là những yếu tố đi kèm, không tự mình tạo
+thành âm tiết. Âm tố âm tiết tính thường được phân bố ở đỉnh hay ở
+trung tâm, làm hạt nhân âm tiết, thường là các nguyên âm. Các phụ âm
+thường là các yếu tố đi kèm, đứng ngoài biên, hay ở ranh giới của âm
+tiết. Đôi khi âm tiết chỉ gồm một nguyên âm.
 
-Tóm lại, các âm vị cuối được thể hiện bằng những chữ cái: p, t, c, ch,
-m, n, ng, nh, u, o, i, y.
+Trong một số trường hợp, âm tiết có thể có hai hoặc ba nguyên âm. Tuy
+nhiên trong số đó chỉ có một nguyên âm tạo đỉnh, các âm tố khác không
+tạo thành âm tiết, gọi là bán nguyên âm.
 
-Tiếng Việt có sáu thanh điệu. Có ba nguyên tắc bỏ dấu sau:
-\begin{description}
-\item[Nguyên tắc bỏ đấu khoa học] Dấu thanh được đặt ở âm chính của
-  vần, tức là đặt trên hoặc dưới nguyên âm có vai trò quyết định âm
-  sắc chủ yếu của âm tiết.
-\item[Nguyên tắc thẩm mỹ] (nguyên tắc thứ yếu) Dấu thanh được đặt ở vị
-  tri cân đối trong âm tiết. Nguyên tắc này trước đây hay dùng nhưng
-  nay trong một số trường hợp nếu đặt dấu thanh sai sẽ làm cho phát âm
-  không đúng và hiểu sai nghĩa từ.
-\item[Nguyên tắc thực dụng] Dấu thanh thường được đặt vào một con chữ
-  nguyên âm chứ không đặt ở giữa hai con chữ, để tiện việc in ấn.
-  \begin{itemize}
-  \item Nếu âm chính là một nguyên âm đơn thì dấu thanh luôn luôn được
-  ghi ở trên hoặc ở dưới âm chính.
-  \item Nếu âm chính là một nguyên âm đôi thì tùy trường hợp có thể bỏ
-  đấu thanh ở yếu tố thứ nhất hoặc yếu tố thứ hai của âm chính.
-  \end{itemize}
-\end{description}
+Âm tiết có một số chức năng sau:
+\begin{itemize}
+\item Âm tiết có chức năng tổ chức chất liệu âm thanh của ngôn ngữ
+  bằng cách hợp nhất các âm tố trong một đơn vị phát âm nhỏ nhất.
+\item Âm tiết là môi trường để hiện thực hoá các hiện tượng ngôn điệu
+  như trọng âm, âm điệu.
+\item Âm tiết có chức năng cấu thành tiết điệu của lời nói~\ldots Chức
+  năng này thể hiện rõ trong ngôn ngữ thơ.
+\end{itemize}
+
+Trong các ngôn ngữ âm tiết tính như tiếng Trung Quốc, tiếng Miến Điện,
+tiếng Việt~\ldots nói chung âm tiết trùng với hình vị --- đơn vị cơ
+bản của ngữ pháp. Âm tiết có chức năng là vỏ ngữ âm của hình vì, tạo
+nên một đơn vị đặc biệt, gọi là {\em hình tiết}.
+
+Tính chất âm tiết của tiếng Việt đưa đến nhiều hệ quả quan trọng về
+ngữ âm cũng như về ngữ pháp. Về mặt ngữ âm, do mỗi âm tiết là vỏ ngữ
+âm của một hình vị, và cũng thường là vỏ ngữ âm của từ đơn, nên số
+lượng các âm tiết là hữu hạn\footnote{Theo Nguyễn Phan Cảnh ``tiếng
+  Việt đưa ra hơn 17.000 âm tiết --- tín hiệu với tự cách là vỏ ngữ âm
+khả năng, và chỉ sử dụng hơn 6.900 với tư cách là các âm tiết tồn tại
+thực'' (Nguyễn Phan Cảnh, ``Bản chất cấu trúc âm tiết tính của ngôn
+ngữ: Dẫn luận vào một miêu tả không phân lập đối với âm vị học Việt
+Nam, tạp chí ngôn ngữ, H. 1978, sồ 2)}.
+
+Là vỏ ngữ âm của một hình vị hay một từ đơn, mỗi âm tiết Tiếng Việt
+bao giờ cũng tương ứng với một ý nghĩa nhất định, nên việc phá vỡ cấu
+trúc âm tiết trong ngữ lưu, tức xê dịch vị trí các âm tố (âm vị) của
+cùng một hình vị từ âm tiết này sang âm tiết khác, là điều ít xảy
+ra. Kết quả là trong tiếng Việt, âm tiết có một cấu trúc chặt chẽ, mỗi
+âm tố (âm vị) có một vị trí nhất định trong âm tiết. Đứng đầu âm tiết
+bao giờ cũng là một phụ âm, cuối âm tiết là một phụ âm hoặc một bán
+nguyên âm. Phụ âm cuối luôn luôn ở cuối âm tiết, không thể trở thành
+âm đầu được. Do đó, phụ âm cuối và âm đầu làm thành hai đối hệ khác
+nhau, có vị trí và chức năng khác nhau trong cấu trúc âm tiết.
+
+Một đặc điểm khác của âm tiết tiếng Việt là mỗi âm tiết đều mang
+một thanh điệu nhất định. Việc thể hiện thanh điệu đòi hỏi âm tiết
+phải có một trường độ cố định. Tính chất này làm cho các yếu tố bên
+trong âm tiết, trừ phụ âm đầu, không có một trường độ cố định, mà đắp
+đổi lẫn nhau, liên quan với nhau rất chặt chẽ.
+
+
+\subsubsection{Cấu trúc âm tiết tiếng Việt}
+
+Trên bình diện ngữ âm học, các cứ liệu thực nghiệm cho thấy âm tiết
+Tiếng Việt được cấu tạo bởi ba thành tố độc lập là thanh điệu, phụ âm
+đầu và phần còn lại.
+
+Thanh điệu là yếu tố luôn có mặt trong mọi âm tiết tiếng Việt. Tính
+chất độc lập về mặt ngữ âm của thanh điệu thể hiện ở chỗ nó có đường
+nét và trường độ tương đối ổn định tùy thuộc vào các loại hình âm
+tiết.
+
+Phụ âm đầu là yếu tố mở đầu của âm tiết. Tính chất độc lập của phụ âm
+đầu thể hiện ở chỗ nó không tham gia vào việc đắp đổi về trường độ
+giữa các yếu tố bên trong âm tiết.
+
+Phần còn lại của âm tiết có từ một đến ba yếu tố, gồm một bán nguyên
+âm chiếm vị trí trung gian giữa phụ âm đầu và phần còn lại, một nguyên
+âm âm tiết tính và một phụ âm hoặc bán nguyên âm cuối, có vai trò kết
+thúc âm tiết. Trừ bán nguyên âm trước nguyên âm tiết tính, các yếu tố
+của phần còn lại liên kết với nhau rất chặt chẽ, làm thành một
+khối. Để đảm bảo cho tính chất cố định về trường độ của âm tiết, các
+yếu tố của phần còn lại có sự đắp đổi nhau về trường độ: nếu nguyên âm
+dài thì phụ âm hay bán âm cuối ngắn, ngược lại nếu nguyên âm ngắn thì
+âm cuối dài. Các yếu tố của phần còn lại không có một trường độ cố
+định, và do đó mức độ độc lập về mặt ngữ âm của chúng thấp hơn so với
+phụ âm mở đầu âm tiết. Phần còn lại của âm tiết được gọi là phần vần,
+vì đây là bộ phận đoạn tính kết hợp với thanh điệu tạo nên vần thơ.
+
+Tóm lại, các yếu tố của âm tiết tiếng Việt có mức độ độc lập khác
+nhau, chia làm hai bậc:
+
+\begin{itemize}
+\item Bậc một là những yếu tố độc lập về mặt ngữ âm và có thể được
+  tách rời về mặt hình thái học. Đó là thanh điệu, âm đầu và vần.
+\item Bậc hai là các yếu tố của phần vần, gồm bán nguyên âm trước
+  nguyên âm âm tiết tính (được gọi là âm đệm), nguyên âm âm tiết tính
+  (được gọi là âm chính), phụ âm hoặc bán nguyên âm cuối (được gọi là
+  âm cuối). Các yếu tố này gắn liền với nhau về mặt ngữ âm do tính
+  chất cố định về trường độ của âm tiết và chỉ được tách ra bằng những
+  ranh giới thuần túy ngữ âm học.
+\end{itemize}
+
+Các thành tố của âm tiết tiếng Việt và quan hệ hai bậc giữa các thành
+tố được trình bày trong hình~\ref{fig:cautrucamtiet}.
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tabular}{|c|c|c|c|}
+    \hline
+    \multicolumn{4}{|c|}{Thanh điệu}\\\hline
+    Âm đầu&\multicolumn{3}{c|}{Vần}\\\cline{2-4}
+    &Âm đệm&Âm chính&Âm cuối\\\hline
+  \end{tabular}
+  \caption{Cấu trúc âm tiết}
+  \label{fig:cautrucamtiet}
+\end{figure}
+
+%\subsection{Các hiện tượng liên quan đến âm tiết}
+
+
+%\subsubsection{Nguyên âm đôi}
+
+
+% Sự biến hoá ngữ âm
+
+Khái niệm âm tiết liên quan mật thiết đến sự biến hoá ngữ âm. Vì các
+âm tố lời nói không phát âm đơn lập mà được phát âm trong dòng lời nói
+liên tục, cho nên các âm tố có thể ảnh hưởng lẫn nhau, đặc biệt là
+những âm tố lân cận được phát âm trong cùng một âm tiết, hoặc ở những
+âm tiết đi liền nhau. Một số hiện tượng biến hoá ngữ âm thường gặp
+trong tiếng Việt:
+\begin{itemize}
+\item Sự thích nghi. Xuất hiện giữa phụ âm và nguyên âm đứng cạnh
+  nhau. Nếu âm tố sau biến đổi cho giống âm tố đi trước, đó là thích
+  nghi xuôi. Nếu âm tố trước biến đổi cho hợp với âm tố sau là thích
+  nghi ngược. Trong tiếng Việt, nguyên âm và phụ âm cuối kết hợp với
+  nhau rất chặt chẽ, tạo thành vần của âm tiết. Hiện tượng thích nghi
+  biểu hiện rõ rệt trong những vần có nguyên âm dòng trước và dòng sau
+  tròn môi kết hợp với phụ âm cuối ``ng'' và ``c''.
+\item Sự đồng hoá (một yếu tố thay đổi để giống yếu tố kia). Ví dụ,
+  ``vỏn vẹn'' và ``vẻn vẹn''.
+\item Sự dị hoá (hiện tượng rút gọn cho dễ phát âm). Ví dụ, ``ba mươi
+  mốt'' và ``băm mốt''.
+\end{itemize}
+
+\subsection{Phụ âm đầu}
+
+Phụ âm đầu luôn gắn liền với vị trí và chức năng mở đầu âm tiết. Đi
+sau âm đầu trong âm tiết là bán nguyên âm không thành âm tiết (hay còn
+gọi là âm đệm).
+
+Hệ thống phụ âm đầu tiếng Việt với số lưỡng đối lập âm vị học tối đa
+được thể hiện trên chữ viết. Riêng những âm tiết như ``ăn'',
+``uống''~\ldots tuy không ghi phụ âm đầu, nhưng thực tế vẫn tồn tại
+phụ âm đầu (âm tắt thanh hầu \textipa{/P/}). Trong từng phương ngữ,
+một số đối lập có trên chữ viết có thể bị mất đi hoặc bị thay thế. Ví
+dụ, trong tiếng Hà Nội không còn đối lập các phụ âm đầu giữa
+ch--tr,x--s và gi,d với r. Trong tiếng miền Nam, \textipa{/v/} và
+\textipa{/z/} được thay bằng \textipa{/j/}.
+
+Hiện nay, hệ thống phụ âm đầu được sử dụng thực tế trong nhà trường và
+trên các văn bản, chung cho các phương ngữ đó là hệ thống phụ âm đầu
+hình thành trên cơ sở phát âm Hà Nội với sự phân biệt các phụ âm
+ch--tr, x--s, g,gi--r gồm 22 phụ âm sau: \textipa{/b, m, f, v, t,
+  t\super{h}, d, n, s, z, l, \:t, \:s, \:z, c, \textltailn, k, N, x,
+  G, P, h/}\footnote{Phụ âm \textipa{/p/} gặp trong từ vay mượn hoặc
+  phiên âm tiếng nước ngoài, không được đưa vào hệ thống này}
+
+Hệ thống phụ âm đầu của tiếng địa phương miền Bắc, mà cở sở là phát âm
+Hà Nội có 19 phụ âm (kể cả âm tắc thanh hầu \textipa{/P/}). Trong phát
+âm Hà Nội không có loạt phụ âm uốn lưỡi \textipa{/\:t, \:s, \:z/}. Các
+phụ âm này đều được chuyển thành các âm đầu lưỡi hoặc mặt lưỡi tương
+ứng \textipa{/c, s, z/}. Ví dụ,
+\begin{itemize}
+\item ``cha'' và ``tra'' đều phát âm thành ``cha'' \textipa{/ca/}
+\item ``sa'' và ``xa'' đều phát âm thành ``xa'' \textipa{/sa/}
+\item ``da'', ``gia'' và ``ra'' đều được phát âm thành ``da'' \textipa{/da/}
+\end{itemize}
+
+Trong các thổ ngữ vùng Bắc Trung Bộ (Nghệ Tĩnh --- Bình Trị Thiên) còn
+giữ loạt các phụ âm cong lưỡi \textipa{/\:t, \:s, \:z/}. Ở một số nơi
+thuộc Nghệ Tĩnh, phụ âm ``ph'' được phát âm như âm mặt lưỡi sau bật
+hơi \textipa{/k\super{h}/}. Vì vậy hệ thống phụ âm đầu những nơi này
+có thêm dãy âm bật hơi \textipa{p\super{j}, \:t\super{h},
+  k\super{h}}. Trong khi đó các thổ ngữ miền Bắc và miền Nam chỉ còn
+lại một âm bật hơi \textipa{/t\super{h}/} mà thôi. Vùng Bình Trị Thiên
+không có phụ âm ``nh''. Phụ âm này thường được phát âm thành
+\textipa{/j/}. Ví dụ, ``nhà'' được phát âm thành ``dà''. Nếu coi hệ
+thống phụ âm đầu vùng Vinh là đại diện cho phương ngự Bắc Trung Bộ thì
+hệ thống này có 22 phụ âm đầu.
+
+Hệ thống phụ âm đầu miền Nam (từ đèo Hải Vân trở vào) không có các phụ
+âm xát hữu thanh \textipa{/v, z/}. Tương ứng với \textipa{/v, z/}
+trong phát âm Hà Nội, phát âm miền Nam có phụ âm mặt lưỡi giữa
+\textipa{/j/}. Đôi khi âm \textipa{/v/} được phát âm thành âm mội-môi,
+xát, vang ngạc hoá \textipa{/Bj/}. Hiện nay các âm cong lưỡi đang
+trong quá trình biến đổi trong tiếng miền Nam. Phụ âm \textipa{/\:s/}
+là phụ âm ít bền vững nhất thường được phát âm thành
+\textipa{/s/}. Các phụ âm cong lưỡi khác như \textipa{/\:t/} và
+\textipa{/\:z/} vẫn còn giữ lại, phân biệt với \textipa{/c/} và
+\textipa{/j/} nhưng không đều đặn ở các thổ ngữ. Trong phát âm miền
+Nam có phụ âm đầu \textipa{/w/}\footnote{Giá trị âm vị học của
+  \textipa{/w/} là vấn đề còn đang bàn cãi} xát, môi-môi, tương ứng
+với các phụ âm tắc, lưỡi sau và thanh hầu tiếng Bắc khi kết hợp với âm
+đệm \textipa{/-u-/}. Ví dụ, ``qua'' \textipa{/wa/}, ``ngoại''
+\textipa{/wai/}, hoa \textipa{/wa/}. Nếu lấy hệ thống phụ âm đầu của
+tiếng thành phố Hồ Chí Minh làm cơ sở cho phương ngữ miền Nam thì hệ
+thống này có 21 phụ âm đầu.
+
+
+\subsubsection{Quan hệ phân bố giữa phụ âm đầu và âm đệm}
+
+Âm đệm là thành tố đi sau phụ âm đầu trong âm tiết. Trong tiếng Việt
+chỉ có một âm đệm là \textipa{/-u-/}, thể hiện trên chữ viết bằng hai
+chữ ``u'' và ``o''. Ví dụ, ``hoa'', ``quế''. Trong phát âm, âm đệm chỉ
+được thể hiện ở tiếng địa phương miền Bắc và Bắc Trung Bộ, còn trong
+tiếng địa phương miền Nam thường không có âm đệm \textipa{/-u-/}.
+
+Trong phát âm Hà Nội, hầu hết loạt phụ âm lưỡi và thanh hầu có thể
+phân bố trước âm đệm. Ví dụ, ``toa'', ``đoán'', ``nhoà''~\ldots Riêng
+loạt âm môi \textipa{/b, m, v, f/} không phân bố trước âm đệm
+\textipa{/-u-/} vì chúng có cấu âm môi giống nhau. Trong tiếng Việt,
+hễ những âm có cấu âm giống nhau hay tương tự nhau thì không phân bố
+cạnh nhau.
+
+Ngoài các âm môi, một vài phụ âm lưỡi như \textipa{/n, \:z, G/} cũng
+rất ít xuất hiện trước âm đệm.
+
+\subsection{Vần}
+
+
+\subsubsection{Âm đệm}
+
+Trong âm tiết, âm đệm \textipa{/-u-/} đứng sau phụ âm đầu và đứng
+trước âm chính. Nó đóng vai tròn một âm lướt trong kết cấu âm tiết. Về
+mặt cấu âm, âm đệm \textipa{/-u-/} được phát âm giống như nguyên âm
+\textipa{[u]} nhưng không làm đỉnh âm tiết. Đó là một bán nguyên âm
+môi-ngạc mềm, được phiên âm là \textipa{[-u-]} hay
+\textipa{[-w-]}. Động tác cấu âm này diễn ra đồng thời với các giai
+đoạn phát âm của phụ âm đầu và phần vần đầu của nguyên âm làm âm
+chính. Về mặt âm học, âm đệm \textipa{/-u-/} có tác dụng làm biến đổi
+âm sắc của âm tiết, làm trầm hoá âm sắc của âm tiết.
+
+Âm đệm \textipa{/-u-/}, với tính chất là một bán nguyên âm môi-ngạc
+mềm, có độ mở rộng hay hẹp tương ứng với độ mở của nguyên âm đi sau
+nó. Trước nguyên âm hẹp \textbf{i}, âm đệm \textipa{/-u-/} được thể
+hiện bằng một bán âm hẹp tương ứng là \textipa{[u]}, ví dụ
+``tuy''. Trước các nguyên âm có độ mở trung bình \textbf{ê, ơ, â}, âm
+đệm  \textipa{/-u-/} được thể hiện bằng một bán âm độ mở vừa
+\textipa{[o]}, ví dụ ``khuê'', ``huơ'', ``huân''. Trước các nguyên âm
+có độ mở rộng \textbf{e, a, ă}, âm đệm  \textipa{/-u-/} được thể hiện
+bằng một bán âm có độ mở tương ứng là \textipa{[O]}, ví dụ ``khỏe'',
+``khoắn'', ``khoan''.
+
+Âm đệm  \textipa{/-u-/} xuất hiện phần lớn ở các từ gốc Hán như
+``thuyền'', ``loan'', ``uyên''. Về mặt phân bố, như đã nói, âm đệm có
+thể xuất hiện sau hầu hết các phụ âm đầu, trừ các phụ âm môi
+\textipa{/b, m, f, v/}. Sau các phụ âm môi, âm đệm chỉ có mặt trong
+một ít từ phiên âm tiếng nước ngoài như ``buýt'', ``phuy'',
+``voan''. Ngoài ra, sau các phụ âm \textipa{/n, \:z, G/}, âm đệm
+\textipa{/-u-/} cũng chỉ xuất hiện trong một vài từ như ``noãn'',
+``roa'', ``goá''.
+
+Âm đệm \textipa{/-u-/} cũng không xuất hiện trước các nguyên âm tròn
+môi \textbf{u, uô, ô, o}. Sự phân bố của âm đệm sau phụ âm đầu và
+trước các nguyên âm thể hiện một quy luật của ngữ âm tiếng Việt: các
+âm có cấu âm giống nhau hoặc gần gũi nhau không được phân bố cạnh
+nhau.
+
+Về mặt chữ viết, âm đệm \textipa{/-u-/} được ghi bằng con chữ ``o''
+trước ba nguyên âm rộng \textbf{e, a, ă} và được ghi bằng con chữ
+``u'' trước các nguyên âm còn lại. Ví dụ, ``thuý'', ``thuê'', ``loe'',
+``loa''. Riêng trường hợp sau phụ âm đầu \textipa{/k-/}, âm đệm
+\textipa{/-u-/} luôn được ghi bằng con chữ ``u'' dù sau nó là nguyên
+âm rộng. Ví dụ: ``quạ'', ``quý'' (trong những trường hợp này âm
+\textipa{/k-/} được ghi bằng con chữ ``q'')\footnote{Do đó về mặt chữ
+  viết, sau con chữ ``q'', con chữ ``u'' luôn luôn có giá trị là một
+  âm đệm. Điều này giúp ta phân biệt ``ua'' là một nguyên âm đôi trong
+từ ``của'' với ``ua'' trong tổ hợp âm đệm+nguyên âm trong
+``quả''. Riêng trường hợp ``quốc'' thì ``uô'' là nguyên âm đôi nhưng
+\textipa{/k-/} vẫn được ghi bằng ``q''. Sự phân biệt về mặt con chữ ở
+đây có giá trị phân biệt nghĩa hai từ đồng âm ``cuốc'' và ``quốc'' đều
+được phát âm là \textipa{/kuok/}.}.
+
+Âm đệm \textipa{/-u-/}, vốn là yếu tố có mặt trong phương ngữ Bắc và
+Bắc Trung Bộ, lại hoàn toàn vắng mặt trong phương ngữ Nam Bộ. Do đó,
+cấu trúc âm tiết của phương ngữ Nam Bộ chỉ có ba thành phần đoạn tính:
+âm đầu, âm chính, âm cuối.
+
+Sự vắng mặt của âm đệm trong phương ngữ Nam Bộ có thể đưa đến một số
+biến đổi ở âm đầu và âm chính. Đáng chú ý là sự biến đổi của các phụ
+âm mặt lưỡi sau và thanh hầu, thành các phụ âm môi. Ví dụ, ``hoa''
+thành ``wa'', khuya thành ``phia''.
+
+Hiện nay dưới sự ảnh hưởng của ngôn ngữ văn học, đã thấy xuất hiện âm
+đệm sau các phụ âm đầu lưỡi, mặt lưỡi giữa và mặt lưỡi sau trong cách
+phát âm của tầng lớp trí thức, của giới trẻ, trừ trường hợp hai phụ âm
+thanh hầu \textipa{/h-,P-/} và phụ âm mặt lưỡi sau \textipa{/k-/}, vẫn
+được phát âm thành \textipa{[w-]} trong các từ ``hoa'', ``oa'',
+``qua'' (đều phát âm là \textipa{[wa]}).
+
+\subsubsection{Âm chính}
+
+\subsubsection{Âm cuối}
+
+
+\subsection{Thanh điệu}
+
+
+
+
 
 \section{Từ}
 
@@ -478,6 +787,7 @@ khá lớn giữa chữ viết và phát âm.
 
 \subsection{Chính tả tiếng Việt}
 
+
 Nói ngắn gọn, chính tả là toàn bộ những tiêu chuẩn và những qui luật
 thực hành chữ viết, bao gồm:
 \begin{enumerate}
@@ -510,6 +820,155 @@ chủ yếu. Chữ quốc ngữ được xây dựng chủ yếu trên nguyên t
 và ngữ âm học. Ngược lại, chữ Pháp và chữ Anh chủ yếu dùng nguyên tắc
 từ nguyên, viết theo truyền thống lịch sử.
 
+% Cấu trúc âm tiết:
+Âm tiết trong tiếng Việt có 5 thành phần, đó là thanh điệu, âm đầu, âm
+đệm, âm chính và âm cuối.
+
+Âm đầu các âm vị phụ âm đảm nhiệm. Các âm tiết mà có chữ trên chữ viết
+không ghi phụ âm đầu có thể có âm đầu là âm tắt thanh hầu \textipa{/P/}.
+
+Âm đệm do các âm vị bán nguyên âm \textipa{/-u-/} đảm nhiệm.
+
+Âm chính do các âm vị nguyêm âm đảm nhiệm như trong bảng~\ref{tab:nguyenam}.
+
+\begin{savenotes}
+  \begin{table}[htbp]
+    \centering
+
+    \begin{tabular}{cc|cc}
+      Âm vị&Chữ cái&Âm vị&Chữ cái\\
+      \textipa{/i/}&i,y&\textipa{/o/}&ô,ôô\\
+      \textipa{/e/}&ê&\textipa{/O/}&o,oo\\
+      \textipa{/E/}&e,a&\textipa{/\v{7}/}&â\\
+      \textipa{/W/}&ư&\textipa{/\v{a}/}&a,ă\\
+      \textipa{/7/}&ơ&\textipa{/ie/}&iê,ia,yê,y\\
+      \textipa{/a/}&a&\textipa{/uo/}&uô,ua\\
+      \textipa{/u/}&u&\textipa{/W7/}&ươ,ưa\\
+    \end{tabular}
+    
+    \caption{Bảng nguyên âm}
+    \label{tab:nguyenam}
+  \end{table}
+\end{savenotes}
+
+Âm cuối do các âm vị phụ âm bán nguyên âm đảm nhiệm như trong
+bảng~\ref{tab:phuamcuoi} và bảng~\ref{tab:bannguyenamcuoi}. 
+
+\begin{table}
+  \hfill
+  \begin{minipage}{0.4\textwidth}
+    \centering
+
+    \begin{tabular}{cc}
+      Âm vị&Chữ cái\\
+      \textipa{/-p/}&p\\
+      \textipa{/-t/}&t\\
+      \textipa{/-k/}&c,ch\\
+      \textipa{/-m/}&m\\
+      \textipa{/-n/}&n\\
+      \textipa{/-N/}&ng,nh\\
+    \end{tabular}
+    
+    \caption{Bảng phụ âm cuối}
+    \label{tab:phuamcuoi}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.4\textwidth}
+    \centering
+
+    \begin{tabular}{cc}
+      Âm vị&Chữ cái\\
+      \textipa{/-u/}&u,o\\
+      \textipa{/-i/}&i,y\\
+    \end{tabular}
+    
+    \caption{Bảng bán nguyên âm cuối}
+    \label{tab:bannguyenamcuoi}
+  \end{minipage}
+  \hfill
+\end{table}
+
+Trên chữ viết, các âm vị âm đầu được thể hiện như trong bảng~\ref{tab:phuamdau}
+
+%\begin{savenotes}
+  \begin{table}[htbp]
+    \centering
+  \begin{minipage}[htbp]{0.6\textwidth}
+    \def\thefootnote{\alph{mpfootnote}}
+    \centering
+
+    \begin{tabular}{cc|cc}
+      Âm vị&Chữ cái&Âm vị&Chữ cái\\
+      \textipa{/b/}&b&\textipa{/m/}&m\\
+      \textipa{/f/}&ph&\textipa{/v/}&v\\
+      \textipa{/t\super{h}/}&th&\textipa{/t/}&t\\
+      \textipa{/d/}&đ&\textipa{/n/}&n\\
+      \textipa{/s/}&x&\textipa{/z/}&d,gi\footnote{Dựa vào nguyên tắc từ nguyên để phân biệt}\\
+      \textipa{/l/}&l&\textipa{/\:t/}&tr\\
+      \textipa{/\:s/}&s&\textipa{/\:z/}&r\\
+      \textipa{/c/}&ch&\textipa{/\textltailn/}&nh\\
+      \textipa{/k/}&
+      q\footnote{Dùng khi đứng trước bán nguyên âm \textipa{/-u-/}}, 
+      k\footnote{Dùng khi đứng trước các nguyên âm \textipa{/i,e,E,ie/}},
+      c&
+      \textipa{/N/}&ngh\footnotemark, ng\\
+      \textipa{/x/}&kh&\textipa{/G/}&gh\footnotemark, g\\
+      \textipa{/h/}&h&\textipa{/P/}&khuyết\\
+    \end{tabular}
+    
+    \caption{Bảng phụ âm đầu}
+    \label{tab:phuamdau}
+
+  \end{minipage}
+  \end{table}
+%\end{savenotes}
+
+Một số âm như k và  q, gh và g, ngh và ng là cùng âm vị. Tuy nhiên, do
+khi hình thành chữ quốc ngữ, ngữ âm tiếng Việt chưa được nghiên cứu
+đầy đủ, nên các giáo sĩ đã phải mượn nhiều con chữ ghép trong chữ Bồ
+Đào Nha, Hi Lạp, Pháp, Ý~\ldots dẫn đến sự không đồng nhất khi biểu
+diễn âm vị.
+
+Hệ thống âm chính tiếng Việt dựa trên cách phát âm Hà Nội bao gồm 9
+nguyên âm dài, 2 nguyên âm ngắn, 3 nguyên âm đôi. Tóm gọn các cách
+biểu diễn nguyên âm chính gồm: i, y, ê, e, a, ư, ơ, a, u, ô, o, â, ă,
+iê, ia, yê, y, uô, y, uô, ươ, ưa.
+
+Các phụ âm cuối được ghi bằng ``ch'' khi đứng sau ca'c nguyên âm i, y,
+ê, e, a. Ví dụ: {\em minh, mênh, manh}. Trong các trường hợp khác lại
+được ghi bằng ``ng''. Ví dụ: {\em mang, vâng, hồng, xuống}.
+
+Các bán nguyên âm cuối /-u/ ghi bằng ``o'' khi đứng sau các nguyên âm đơn
+dài, ở bậc thanh lượng lớn như e, a. Các viết này biểu diễn sự biến
+dạng của các bán âm sau các mở rộng. Trong các trường hợp còn lại, bán
+nguyên âm này được ghi bằng ``u''.
+
+Các bán nguyên âm cuối /-i/ được ghi bằng ``y'' khi đứng sau các
+nguyên âm ngắn ă, a, â. Trong các trường hợp khác nó được ghi bằng
+``i''.
+
+Tóm lại, các âm vị cuối được thể hiện bằng những chữ cái: p, t, c, ch,
+m, n, ng, nh, u, o, i, y.
+
+Tiếng Việt có sáu thanh điệu. Có ba nguyên tắc bỏ dấu sau:
+\begin{description}
+\item[Nguyên tắc bỏ đấu khoa học] Dấu thanh được đặt ở âm chính của
+  vần, tức là đặt trên hoặc dưới nguyên âm có vai trò quyết định âm
+  sắc chủ yếu của âm tiết.
+\item[Nguyên tắc thẩm mỹ] (nguyên tắc thứ yếu) Dấu thanh được đặt ở vị
+  tri cân đối trong âm tiết. Nguyên tắc này trước đây hay dùng nhưng
+  nay trong một số trường hợp nếu đặt dấu thanh sai sẽ làm cho phát âm
+  không đúng và hiểu sai nghĩa từ.
+\item[Nguyên tắc thực dụng] Dấu thanh thường được đặt vào một con chữ
+  nguyên âm chứ không đặt ở giữa hai con chữ, để tiện việc in ấn.
+  \begin{itemize}
+  \item Nếu âm chính là một nguyên âm đơn thì dấu thanh luôn luôn được
+  ghi ở trên hoặc ở dưới âm chính.
+  \item Nếu âm chính là một nguyên âm đôi thì tùy trường hợp có thể bỏ
+  đấu thanh ở yếu tố thứ nhất hoặc yếu tố thứ hai của âm chính.
+  \end{itemize}
+\end{description}
+
 \section{Lỗi chính tả}
 
 Theo~\cite{LoiChinhTa} thì:
@@ -525,11 +984,99 @@ Theo~\cite{LoiChinhTa} thì:
 
 \chapter{Cơ sở toán học}
 \label{cha:math}
-\minitoc
+\minitoc\newpage
 
 
 \section{Bắt lỗi chính tả}
 
+Trình bắt lỗi chính tả có thể được phân loại theo nhiều cách khác
+nhau. Nhưng chủ yếu vấn được phân loại từ quan điểm người dùng: khả
+năng phát hiện lỗi sai, và khả năng đề nghị những từ thay thế cho lỗi
+sai đó.
+
+
+\subsection{Các loại sai lầm của trình bắt lỗi chính tả}
+
+Khi bắt lỗi chính tả, trình bắt lỗi không tránh khỏi các sai lầm. Có
+thể phân ra làm hai loại sai lầm: sai lầm tích cực\footnote{false
+  positive} và sai lầm tiêu cực\footnote{false negative}.
+
+Sai lầm tích cực xảy ra khi trình bắt lỗi báo lỗi ở những từ hoàn toàn không sai
+chính tả. Sai lầm tiêu cực xảy ra khi trình bắt lỗi bỏ qua những từ bị
+sai chính tả. Nói cách khác, trình bắt lỗi cho rằng những từ sai chính
+tả này không sai. Sai lầm tích cực có thể tránh được nhờ tăng kích
+thước từ điển. Tuy nhiên đây không phải là giải pháp hoàn hảo. Việc
+tăng kích thước từ điển sẽ tốn kém. Hơn nữa, càng có nhiều từ thì việc
+đề nghị các từ thay thế càng trở nên kém hiệu quả do bị phân tán bởi
+những từ rất ít gặp, không thể tập trung vào những lỗi phổ biến.
+
+Sai lầm tiêu cực có thể xem là lỗi không phát hiện được. Phần nhiều
+những lỗi này thường đòi hỏi phải hiểu văn bản (ít nhất là một phần
+văn bản) để có thế phát hiện lỗi. Những dạng lỗi từ vựng, lỗi cú pháp
+thường rơi vào dạng này. Tuy nhiên vẫn có một số lỗi chính tả rơi vào
+loại này. Những loại lỗi này được phát hiện nhờ những chương trình bắt
+lỗi chính tả cảm ngữ cảnh (((Golding 1995, Golding and Schabes, 1996,
+Golding and Roth1999)))
+
+Giải pháp đơn giản để phát hiện lỗi chính tả là dùng một cấu trúc dữ
+liệu để lưu tất cả các từ đã biết (được lưu trong từ điển). Các dạng
+cấu trúc dữ liệu như bảng băm hoặc cấu trúc dữ liệu dạng cây có thể
+được sử dụng (((McIlroy 1982, Peterson 1980)))
+
+Có thể chia thành hai loại lỗi chính là ==orthographic và
+lỗi nhập liệu\footnote{typographic}. Lỗi nhập liệu xảy ra khi gõ không
+đúng phím cần gõ trên bàn phím. (((Damerau 1994))) xác định bốn thao
+tác có thể gây ra lỗi như sau:
+\begin{itemize}
+\item Tráo đổi một cặp ký tự.
+\item Xóa một ký tự đã có.
+\item Chèn một ký tự lạ.
+\item Thay một ký tự bằng một ký tự khác.
+\end{itemize}
+
+Damerau cho rằng 80\% các lỗi là do thực hiện thao tác trên  một lần
+(một trong bốn thao tác trên).
+
+Phân loại lỗi theo các thao tác trên dẫn đến một kỹ thuật sửa lỗi đơn
+giản được dùng bởi (((Peterson 1980b))). Nếu phát hiện một từ bị sai
+chính tả, ta lần lượt thực hiện lại những thao tác trên để phục hồi từ
+bị sai chính tả. Những từ được phát sinh, nếu có trong từ điển, sẽ
+được lưu vào danh sách những từ đề nghị. Kỹ thuật này thường được gọi
+là Đảo ngược lỗi\footnote{Error reversal}.
+
+Chọn từ tốt nhất trong danh sách từ đề nghị là một công việc không dễ
+dàng. (((Agirre et al 1998))) mô tả cách lựa chọn trong trường hợp
+này, có thể chia làm các nhóm như sau:
+
+\begin{itemize}
+\item Sử dụng phân tích cú pháp để loại bỏ những từ sai từ loại, hoặc
+  sai các đặc trưng hình thái (số đếm, chữ hoa/chữ thường~\ldots)
+\item Khử nhập nhằng ngữ nghĩa để chọn từ phù hợp với ngữ cảnh nhất.
+\item Dùng thống kê để chọn từ thường xuất hiện nhất.
+\item Những từ có cách viết hoa/thường khác với từ bị sai sẽ bị loại
+  (ví dụ, nếu từ viết sai là chữ thường thì các từ đề nghị viết hoa sẽ
+  bị loại)
+\end{itemize}
+
+
+\subsection{Vấn đề chữ hoa/chữ thường}
+
+Vấn đề chữ hoa/chữ thường gây nhiều khó khăn cho trình bắt lỗi chính
+tả. Trong từ điển, hầu hết các từ là chữ thường. Tuy nhiên cũng có chữ
+hoa (tên riêng, từ viết tắt~\ldots). Các quy tắc chính tả về viết hoa
+cũng khá phức tạp. Ngoài ra, đôi khi các chữ được viết hoa hoàn toàn
+để nhấn mạnh, để làm tiêu đề~\ldots
+
+\begin{enumerate}
+\item Đặt $w_t$ là chữ viết thường của $w$.
+\item Đặt $c$ là kết quả tìm kiếm $w_t$.
+\item Nếu không tìm được $c$, từ bị sai chính tả.
+\item Nếu $c$ giống $w$, từ đúng.
+\item Đặt $c_c$ là chữ thường, viết hoa chữ cái đầu tiên của $w$. Nếu
+  $c$ giống $c_c$, từ đúng.
+\item Đặt $c_u$ là chữ hoa của $w$. Nếu $c$ giống $c_u$, từ đúng.
+\item Ngược lại, từ $w$ sai.
+\end{enumerate}
 
 \subsection{Bắt lỗi chính tả truyền thống}
 
@@ -600,7 +1147,7 @@ tìm được cách tách từ, ta có thể tra từ điển để tìm xem t�
 
 \chapter{Mô hình}
 \label{cha:model}
-\minitoc
+\minitoc\newpage
 
 % \note{Phân loại lỗi, nguyên nhân gây lỗi}
 
@@ -703,7 +1250,7 @@ từ điển.
 \note{Liệt kê các phương pháp tách từ}
 
 Bài toán tách từ cho ngôn ngữ đơn lập đã được đặt ra từ lâu, chủ yếu
-để giải quyết cho tiếng Hoa, tiếng Nhật. Các thuật toán tách từ có thể
+để giải quyết cho tiếng Trung Quốc, tiếng Nhật. Các thuật toán tách từ có thể
 được phân loại như sau:
 
 \begin{description}
@@ -974,7 +1521,7 @@ nhiều nên có thể thêm các từ láy này vào từ điển.
 %% liền với hình tượng, cảm giác gì đó. Làm sao người ta có thể cảm nhận
 %% được một từ có phải là từ láy hay không??
 
-\subsection{Từ nước ngoài, từ viết tắt, các ký hiệu,~\ldots}
+\subsection{Từ nước ngoài, từ viết tắt, các ký hiệu~\ldots}
 
 \note{Coi như từ sai chính tả}
 \note{không phân biệt từ nước ngoài và từ sai chính tả}
@@ -1519,7 +2066,7 @@ SRILM được dùng để tính n-gram.
 
 \chapter{Cài đặt}
 \label{cha:implementation}
-\minitoc
+\minitoc\newpage
 
 Chương trình gồm hai phần: phần bắt lỗi chính tả và phần huấn luyện.
 
@@ -1665,7 +2212,7 @@ Chương trình được lặp đi lặp lại nhiều lần.
 
 \chapter{Đánh giá và kết luận}
 \label{cha:conclusion}
-\minitoc
+\minitoc\newpage
 
 \section{Hạn chế}
 \begin{itemize}
@@ -1774,6 +2321,17 @@ Viết lại từ đầu :-D
   Như Liên, KS. Phạm Quyết Thắng. 1998. {\em Bắt lỗi chinh tả tự động cho
   tiếng Việt bằng máy tính.}
 \bibitem{worddef}Đinh Điền. 2000. {\em Từ tiếng Việt.} VNU-HCMC.
+\bibitem{}Andrew R. Golding. 1995. {\em A Bayesian hybrid method for
+    context-sensitive spelling correction}. Proceedings of the Third
+    Workshop on Very Large Corpora, pages 39-53.
+\bibitem{}Andrew R. Golding and Dan Roth. 1999. {\em A Winnow-based
+    approach to context-sensitive correction}. Machine Learning,
+    Special issue on Machine Learning and Natural Language Processing,
+    34:107-130.
+\bibitem{}Andrew R. Golding and Yves Schabes. 1996. {\em Combining
+    trigram-based and feature-based methods for context-sensitive
+    spelling correction}. Proceedings of the 34th Annual Meeting of
+    the Association for Computational Linguistics.
 \end{thebibliography}
 
 

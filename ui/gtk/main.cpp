@@ -266,6 +266,14 @@ void penalty_modification_cb(GtkEntry *b,VSpell *vspell)
 		vspell->set_penalty(val);
 }
 
+void penalty2_modification_cb(GtkEntry *b,VSpell *vspell)
+{
+	const char *s = gtk_entry_get_text(b);
+	float val;
+	if (sscanf(s,"%f",&val) == 1)
+		vspell->set_penalty2(val);
+}
+
 void trigram_cb(GtkToggleButton *b,VSpell *vspell)
 {
 	bool state = gtk_toggle_button_get_active(b);
@@ -286,7 +294,8 @@ int main(int argc,char **argv)
 	//	sarch["<root>"];
 
 	vspell.init();
-	vspell.set_penalty(0.05);
+	vspell.set_penalty(0.9);
+	vspell.set_penalty2(0.1);
 	vspell.set_normalization(true);
 	vspell.set_trigram(true);
 	word_boundaries = true;
@@ -439,13 +448,22 @@ int main(int argc,char **argv)
 
 	GtkWidget *hbox = gtk_hbox_new(FALSE,10);
 	gtk_box_pack_start(GTK_BOX(vbox_main),hbox,FALSE,FALSE,0);
-	gtk_box_pack_start(GTK_BOX(hbox),gtk_label_new("Penalty modification"),FALSE,FALSE,0);
+	gtk_box_pack_start(GTK_BOX(hbox),gtk_label_new("Penalty"),FALSE,FALSE,0);
 	w = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(hbox),w,FALSE,FALSE,0);
 	char buff[100];
 	sprintf(buff,"%f",vspell.get_penalty());
 	gtk_entry_set_text(GTK_ENTRY(w),buff);
 	g_signal_connect(G_OBJECT(w),"changed",G_CALLBACK(penalty_modification_cb),&vspell);
+
+	hbox = gtk_hbox_new(FALSE,10);
+	gtk_box_pack_start(GTK_BOX(vbox_main),hbox,FALSE,FALSE,0);
+	gtk_box_pack_start(GTK_BOX(hbox),gtk_label_new("Penalty2"),FALSE,FALSE,0);
+	w = gtk_entry_new();
+	gtk_box_pack_start(GTK_BOX(hbox),w,FALSE,FALSE,0);
+	sprintf(buff,"%f",vspell.get_penalty2());
+	gtk_entry_set_text(GTK_ENTRY(w),buff);
+	g_signal_connect(G_OBJECT(w),"changed",G_CALLBACK(penalty2_modification_cb),&vspell);
 
 	set_state(false);
 

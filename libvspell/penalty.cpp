@@ -14,7 +14,7 @@ float PenaltyDAG::edge_value(uint node_from,uint node_to) const
 		for (uint i = 0;i < we->len;i ++)
 			if (we->fuzid & (1 << i))
 				count ++;
-		value -= (float)count*weight*value;
+		value += (float)count*weight*value;
 	}
 
 	we = (WordEntry*)dag->node_info(node_from);
@@ -23,9 +23,9 @@ float PenaltyDAG::edge_value(uint node_from,uint node_to) const
 		for (uint i = 0;i < we->len;i ++)
 			if (we->fuzid & (1 << i))
 				count ++;
-		value -= (float)count*weight*value;
+		value += (float)count*weight*value;
 	}
-	return value > 0 ? value : 0;
+	return value;
 }
 
 float Penalty2DAG::edge_value(uint node_from,uint node_to) const
@@ -39,7 +39,7 @@ float Penalty2DAG::edge_value(uint node_from,uint node_to) const
 		for (uint i = 0;i < we->len;i ++)
 			if (we->fuzid & (1 << i))
 				myweight += weight*syllable_weights[we->pos+i];
-		value += (float)myweight*value;
+		value -= (float)myweight*value;
 	}
 
 	we = (WordEntry*)dag->node_info(node_from);
@@ -49,7 +49,7 @@ float Penalty2DAG::edge_value(uint node_from,uint node_to) const
 		for (uint i = 0;i < we->len;i ++)
 			if (we->fuzid & (1 << i))
 				myweight += weight*syllable_weights[we->pos+i];
-		value += (float)count*weight*value;
+		value -= (float)count*weight*value;
 	}
 	return value > 0 ? value : 0;
 }

@@ -10,8 +10,9 @@ libvspell_a_SOURCES = \
 	pfs.cpp pfs.h\
 	words.cpp sections.cpp\
 	softcount.cpp softcount.h\
-	tokenize.ll\
-	debug.h
+	tokenize.ll tokenize.h\
+	debug.h mystring.h posgen.h\
+	boost
 INCLUDES = -I$(top_builddir)/libsrilm
 libvspell_a_LIBADD = $(top_builddir)/libsrilm/libsrilm.a
-data_DATA = data/wordlist.wl data/ngram data/last-names.lst
+#data_DATA = data/wordlist.wl data/ngram data/last-names.lst

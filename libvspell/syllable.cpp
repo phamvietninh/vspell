@@ -767,7 +767,11 @@ string Syllable::to_str() const
 			}
 			s += p[components[i]];
 			if (i == Vowel && components[Diacritic] != None) {
-				int last = s.size()-1;
+				int last;
+				if (components[Last_Consonant] == -1)
+					last = s.size() - strlen(p[components[Vowel]]);
+				else
+					last = s.size()-1;
 				int j = strchr(diacritic_table[0],s[last]) - diacritic_table[0];
 				s[last] = diacritic_table[components[Diacritic]][j];
 			}

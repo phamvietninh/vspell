@@ -303,18 +303,18 @@ bool Text::syllable_check()
 	suggestions.clear();
 
 	for (i = 0;i < n;i ++) {
-		strid id = st[i].get_cid();
-		if (sarch.in_dict(id) || vspell->in_dict(st[i].get_id()))
+		if (vspell->in_dict(st[i].get_id()))
 			continue;
 
-		st[i].cid = unk_id;
-
-		VocabString s = sarch[id];
-		if (strlen(s) == 1 && !viet_isalpha(s[0])) {
-			st[i].cid = sarch["<PUNCT>"];
-			continue;
+		if (sarch.in_dict(st[i].get_cid())) {
+			Syllable syl;							// diacritic check
+			if (syl.parse(sarch[st[i].get_cid()])) {
+				string s = get_lowercased_syllable(syl.to_str());
+				if (get_lowercased_syllable(sarch[st[i].get_id()]) == s)
+					continue;
+			}
 		}
-
+		
 		Suggestion _s;
 		_s.id = i;
 		suggestions.push_back(_s);

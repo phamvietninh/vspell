@@ -18,7 +18,7 @@ int main(int argc,char **argv)
   ed_init();
 
   cerr << "Loading... ";
-  get_root()->load("wordlist.wl");
+  get_root()->load("wordlist");
   File f("ngram","rt",0);
   if (!f.error())
 	  ngram.read(f);

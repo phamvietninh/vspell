@@ -3,3 +3,7 @@ Xử lý proper name, abbreviation (đang làm)
 Cài đặt thuật toán trong "Discovering Chinese Words from Unsegmented Text" --> Language Model.
 Xử lý chuỗi unicode.
 vspell user interface.
+sc-train
+golden corpus
+spell check (syllable case, word check ...)
+diacritic check

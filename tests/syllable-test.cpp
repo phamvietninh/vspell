@@ -15,7 +15,7 @@ int main()
 
   while (cin >> str) {
     cout << i.parse(str.c_str()) << ": ";
-    cout << i << endl;
+    cout << i << " " << i.to_str() << endl;
   }
   return 0;
 }

@@ -813,3 +813,48 @@ void get_syllable_candidates(const char *input,std::set<std::string> &output)
 	}
 	transposer.done();
 }
+
+void get_left_syllable_candidates(const char *input,const char *left,std::set<std::string> &output)
+{
+	// merge
+	string s;
+	s = string(left)+string(input);
+	get_syllable_candidates(s.c_str(),output);
+
+	// cut one char from input
+	if (strlen(input) > 1) {
+		s = string(input+1);
+		get_syllable_candidates(s.c_str(),output);
+	}
+
+	// insert one char from left to input
+	if (strlen(left)) {
+		s = string(" ") + string(input);
+		s[0] = left[strlen(left)-1];
+		get_syllable_candidates(s.c_str(),output);
+	}
+}
+
+void get_right_syllable_candidates(const char *input,const char *right,std::set<std::string> &output)
+{
+	// merge
+	string s;
+	s = string(input)+string(right);
+	get_syllable_candidates(s.c_str(),output);
+
+	// cut one char from input
+	if (strlen(input) > 1) {
+		s = string(input);
+		s.resize(strlen(input)-1);
+		get_syllable_candidates(s.c_str(),output);
+	}
+
+	// insert one char from right to input
+	if (strlen(right)) {
+		s = string(input)+string(" ");
+		s[s.size()-1] = right[0];
+		get_syllable_candidates(s.c_str(),output);
+	}
+}
+
+

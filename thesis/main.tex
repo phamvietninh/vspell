@@ -19,7 +19,7 @@
 %\theoremstyle{break}
 %\newtheorem{algo}{Thuật toán}
 
-\setlength{\parskip}{1.2ex plus 0.7ex minus 0.6ex}
+%\setlength{\parskip}{1.2ex plus 0.7ex minus 0.6ex}
 
 \setcounter{minitocdepth}{4}
 
@@ -4434,7 +4434,7 @@ nên cách tách từ đó.
 
 Mô hình ngôn ngữ được sử dụng là tri\-gram. Mô hình ngôn ngữ được cài
 đặt trong thư viện SRILM. Mô hình ngôn ngữ được truy cập thông qua hàm
-\verb@get_n\-gram()@. 
+\verb@get_ngram()@. 
 
 \section{Tiền xử lý}
 
@@ -4990,8 +4990,8 @@ Các hàm thường dùng trong \verb@VSpell@:
 \item \verb@set_normalization()@: Cho biết có áp dụng chuẩn hoá cách
   tách từ hay không.
 \item \verb@get_normalization()@: Như trên.
-\item \verb@set_tri\-gram()@: Cho biết có áp dụng tri\-gram hay không.
-\item \verb@get_tri\-gram()@: Như trên.
+\item \verb@set_trigram()@: Cho biết có áp dụng tri\-gram hay không.
+\item \verb@get_trigram()@: Như trên.
 \end{itemize}
 
 \begin{algo}
@@ -5160,7 +5160,7 @@ và~\vref{algo:MyText::ui_word_check}. \verb@MyText@ có thêm vài hàm phụ
 \subsection{Dữ liệu huấn luyện}
 \label{sec:data-preprocessing}
 
-Dữ liệu gốc bao gồm: danh sách từ và các văn bản tiếng Việt thu thập
+Dữ liệu gốc bao gồm: danh sách từ và các văn bản tiếng Việc thu thập
 từ mạng VnExpress\footnote{http://www.vnexpress.net}.
 
 Nhiệm vụ:
@@ -5278,7 +5278,9 @@ Chương trình giao tiếp bằng Unicode UTF-8. Tuy nhiên, để tiện việ
 lý, nội bộ chương trình sử dụng mã VISCII. Do VISCII không thể bao
 quát hết Unicode, những ký tự Unicode không có trong VISCII sẽ được
 thay bằng một ký tự đặc biệt (coi như là ký tự không biết). Sau khi xử
-lý VISCII xong, chuỗi so sánh thật sự sẽ là chuỗi Unicode.
+lý VISCII xong, chuỗi so sánh thật sự sẽ là chuỗi Unicode. Hầu hết các
+lớp sử dụng VISCII. Hai lớp sử dụng cả UTF-8 và VISCII là
+\verb@VSpell@ và \verb@Text@.
 
 \subsection{So sánh chuỗi}
 
@@ -5485,7 +5487,8 @@ Túm lại có ba vấn đề:
 \end{itemize}
 
 \appendix\eject\addcontentsline{toc}{part}{Phụ lục}
-\chapter{Dữ liệu thử nghiệm}
+\chapter{Dữ liệu kiểm tra}
+\input test
 
 \eject\addcontentsline{toc}{chapter}{\listfigurename}\listoffigures
 %\refstepcounter{chapter}\addcontentsline{toc}{chapter}{\protect\numberline{\thechapter}\listfigurename}

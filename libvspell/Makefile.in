@@ -128,6 +128,7 @@ libvspell_a_SOURCES = \
 	distance.cpp distance.h\
 	spell.cpp spell.h\
 	wfst.cpp wfst.h\
+	pfs.cpp pfs.h\
 	words.cpp sections.cpp\
 	tokenize.ll\
 	debug.h
@@ -146,7 +147,7 @@ libvspell_a_AR = $(AR) cru
 libvspell_a_DEPENDENCIES = $(top_builddir)/libsrilm/libsrilm.a
 am_libvspell_a_OBJECTS = syllable.$(OBJEXT) dictionary.$(OBJEXT) \
 	propername.$(OBJEXT) sentence.$(OBJEXT) distance.$(OBJEXT) \
-	spell.$(OBJEXT) wfst.$(OBJEXT) words.$(OBJEXT) \
+	spell.$(OBJEXT) wfst.$(OBJEXT) pfs.$(OBJEXT) words.$(OBJEXT) \
 	sections.$(OBJEXT) tokenize.$(OBJEXT)
 libvspell_a_OBJECTS = $(am_libvspell_a_OBJECTS)
 
@@ -154,11 +155,11 @@ DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/dictionary.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/distance.Po ./$(DEPDIR)/propername.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/sections.Po ./$(DEPDIR)/sentence.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/spell.Po ./$(DEPDIR)/syllable.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/tokenize.Po ./$(DEPDIR)/wfst.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/words.Po
+@AMDEP_TRUE@	./$(DEPDIR)/distance.Po ./$(DEPDIR)/pfs.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/propername.Po ./$(DEPDIR)/sections.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/sentence.Po ./$(DEPDIR)/spell.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/syllable.Po ./$(DEPDIR)/tokenize.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/wfst.Po ./$(DEPDIR)/words.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -229,6 +230,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dictionary.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/distance.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pfs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/propername.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sections.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sentence.Po@am__quote@

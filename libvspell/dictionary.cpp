@@ -27,7 +27,7 @@ typedef SArray<strid,float> syllable_dict_type;
 typedef SArrayIter<strid,float> syllable_dict_iterator;
 syllable_dict_type syllable_dict;
 WordNodePtr root;
-strid unk_id;
+strid unk_id,start_id,stop_id,punct_id,proper_name_id;
 
 StringArchive sarch;
 Ngram ngram(sarch.get_dict(),2);
@@ -40,7 +40,9 @@ bool dic_init(WordNodePtr _root)
 	syllable_init();
 	ed_init();
 	root = _root;
-	unk_id = sarch["<UNK>"];	// should be in Dictionary::load
+	unk_id = sarch["<unk>"];	// should be in Dictionary::load
+	start_id = sarch["<s>"];	// should be in Dictionary::load
+	stop_id = sarch["</s>"];	// should be in Dictionary::load
 	// if 
 	return true;
 }

@@ -111,9 +111,9 @@ void Sections::construct(const Words &words)
 
 std::ostream& operator <<(std::ostream &os,const Segmentation &seg)
 {
-	int i,n = seg.size();
+           int i,n = seg.size();
 	for (i = 0;i < n;i ++)
-		os << "[" << seg[i].node << "] ";
+	            	os << "[" << seg[i].node << "] ";
 	return os;
 }
 

@@ -66,7 +66,7 @@ float get_word(const std::string &word);
 
 extern StringArchive sarch;
 extern Ngram ngram;
-extern strid unk_id,punct_id,proper_name_id;
+extern strid unk_id,punct_id,proper_name_id,start_id,stop_id;
 
 inline bool is_syllable_exist(const std::string &syll) {
 	return is_syllable_exist(sarch[syll]); 

@@ -7,6 +7,7 @@ libvspell_a_SOURCES = \
 	distance.cpp distance.h\
 	spell.cpp spell.h\
 	wfst.cpp wfst.h\
+	pfs.cpp pfs.h\
 	words.cpp sections.cpp\
 	tokenize.ll\
 	debug.h

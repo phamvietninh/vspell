@@ -342,23 +342,40 @@ nguyên nhân gây ra lỗi chính tả:
   dưới.
 \end{itemize}
 
-
-Hmm.. có lẽ nên gắng thêm vào các từ phát sinh một ``hệ số chính
+\note{Hmm..} có lẽ nên gắng thêm vào các từ phát sinh một ``hệ số chính
 xác''. Từ gốc là từ có hệ số chính xác cao hơn so với các từ được phát
 sinh. Good or bad? Hmmm... Làm sao để làm? Hmmm Hmmm
 
-
-
-
 \subsubsection{Lỗi phát âm}
 
+Để phát sinh từ dựa trên lỗi phát âm, cần phân tích cấu trúc của từng
+tiếng. Một tiếng bao gồm âm đầu, vần và thanh. Vần gồm âm đệm, âm
+chính và âm cuối. Trong các thành phần của tiếng, âm chính là bắt buộc
+phải có. Các thành phần còn lại có thể không có. Ta có thể biểu diễn
+cấu trúc âm tiếng theo sơ đồ trạng thái như hình \ref{fig:syllable}.
 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{syllable}
+  \caption{Sơ đồ trạng thái phân tích cấu trúc tiếng}
+  \label{fig:syllable}
+\end{figure}
+
+Khi phân tích tiếng, có thể có một số nhập nhằng giữa các thành phần
+của tiếng. Vd, ``lúa'' bao gồm âm chính ``ua'' hay âm đệm ``u'' và âm
+chính ``a'' \ldots
+
+Ta có thể phân tích tiếng dùng FST. Tuy nhiên, qua hình
+\ref{fig:syllable} có thể thấy chỉ có tám cách để hình thành
+tiếng. Nên chỉ cần cài đặt theo tám cách này là đủ. Việc sắp xếp thứ
+tự của từng cách sẽ giúp loại bỏ nhập nhằng khi phân tích tiếng.
 
 \subsubsection{Lỗi bàn phím UNIMPL}
 
-Sơ đồ bố trí của bàn phím EN-US được dùng. Do thông thường chỉ gặp một
-lỗi này mỗi từ, nên chương trình chỉ lưu danh sách những phím lân cận
-với từng phím, dựa trên bàn phím EN-US. Ví dụ: $A \rightarrow (S,Q,W,X,Z)$.
+Chương trình giả định sơ đồ bố trí của bàn phím EN-US được dùng. Do
+thông thường chỉ gặp một lỗi này mỗi từ, nên chương trình chỉ lưu danh
+sách những phím lân cận với từng phím, dựa trên bàn phím EN-US. Ví dụ:
+$A \rightarrow (S,Q,W,X,Z)$. 
 
 \subsubsection{Lỗi không rõ nguyên nhân UNIMPL}
 
@@ -391,7 +408,7 @@ Thuật toán có thể được khử đệ quy khi cài đặt bằng quy ho�
 động. Nhận thấy $ed(X[i+1],Y[i+1])$ cần dùng
 $ed(X[i],Y[i])$,$ed(X[i-1],Y[i-1])$,$ed(X[i],Y[i+1])$ hoặc
 $ed(X[i+1],Y[i])$, ta có thể tính từ lần lượt từ thấp đến cao theo
-đường zig-zag bắt đầu từ đỉnh (1,1), sau đó đến đường chéo (1,2),
+đường zig-zag bắt đầu từ đỉnh (1,1), sau đó đến đường chéo phụ (1,2),
 (2,1), rồi đường chéo (1,3),(2,2),(3,1) \ldots
 
 \begin{algo} Tính hàm ed()

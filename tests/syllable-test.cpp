@@ -5,11 +5,14 @@
 
 using namespace std;
 
+bool syllable_init();
 int main()
 {
   Syllable i;
   string str;
   
+  syllable_init();
+
   while (cin >> str) {
     cout << i.parse(str.c_str()) << ": ";
     cout << i << endl;

@@ -1,6 +1,5 @@
-main.pdf: main.tex wordlattice.png wordlattice1.png wordlattice2.png
-	pdflatex $<
-	pdflatex $<
+main.pdf: main.tex wordlattice.png wordlattice1.png wordlattice2.png syllable.png
+	pdflatex $<&& pdflatex $<
 %.png: %.dot
 	DOTFONTPATH=~/.fonts dot $< -Tpng -o $@
 wordlattice.ps: wordlattice.dot

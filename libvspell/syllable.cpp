@@ -648,7 +648,7 @@ bool Syllable::parse(const char *str)
 	int i,j,k;
 	//char **pattern;
 	int len;
-	string syllable(str);
+	string syllable(viet_tolower(string(str)));
 
 	// fisrt of all, extract diacritic.
 	// because the syllable has been stardardized. just extract the diacritic.
@@ -661,8 +661,8 @@ bool Syllable::parse(const char *str)
 		for (k = 0;k < len;k ++) {
 			// look up into diacritic_table
 			for (j = 1;j < 6;j ++) {
-				char *pos = strchr(diacritic_table[j],viet_tolower(syllable[k]));
-				if (pos != NULL) {
+				char *pos = strchr(diacritic_table[j],syllable[k]);
+				if (pos) {
 					int ipos = pos - diacritic_table[j];
 					if (viet_toupper(syllable[k]) == syllable[k])
 						syllable[k] = viet_toupper(diacritic_table[0][ipos]);	// remove diacritic
@@ -675,95 +675,60 @@ bool Syllable::parse(const char *str)
 		}
 	}
 
+	// there are 8 cases:
+	int cases[8][4] = {
+		{ 0,-1, 0, 0},							// F_VL
+		{-1,-1, 0, 0},							// __VL
+		{ 0,-1, 0,-1},							// F_V_
+		{-1,-1, 0,-1},							// __V_
+		{ 0, 0, 0, 0},							// FPVL
+		{-1, 0, 0, 0},							// _PVL
+		{ 0, 0, 0,-1},							// FPV_
+		{-1, 0, 0,-1},							// _PV_
+	};
 
-	// first, get the last_consonant
-	components[Last_Consonant] = -1;
-	len = syllable.size();
-	for (i = 0;last_consonants[i] != 0; i++) {
-		char *pattern = last_consonants[i];
-		int pattern_len = strlen(pattern);
+	string saved_syllable = syllable;
 
-		if (len > pattern_len &&
-				viet_tolower(syllable.substr(len-pattern_len)) == pattern) {
-			components[Last_Consonant] = i;
-			syllable.erase(len-pattern_len);
-			break;
-		}
-	}
+	for (unsigned z = 0;z < 8;z ++) {
+		bool ok = true;
+		syllable = saved_syllable;
 
-	// then get the first_consonant
-	components[First_Consonant] = -1;
-	len = syllable.size();
-	for (i = 0;first_consonants[i] != 0; i++) {
-		char *pattern = first_consonants[i];
-		int pattern_len = strlen(pattern);
-
-		if (len >= pattern_len && 	// equal is possible
-				viet_tolower(syllable.substr(0,pattern_len)) == pattern) {
-			components[First_Consonant] = i;
-			syllable.erase(0,pattern_len);
-			break;
-		}
-	}
-
-	// check if syllable is empty.
-	// if it is, we can't use this last_consonant.
-	// find the next last_consonant
-	if (syllable.empty()) {
-		if (components[Last_Consonant] == -1)
-			return false;		// bad syllable
-
-		syllable = last_consonants[components[Last_Consonant]];
-		len = syllable.size();
-		int start = components[Last_Consonant]+1;
-		components[Last_Consonant] = -1;
-		for (i = start;last_consonants[i] != 0; i++) {
-			char *pattern = last_consonants[i];
-			int pattern_len = strlen(pattern);
-
-			if (len > pattern_len &&
-					syllable.substr(len-pattern_len) == pattern) {
-				components[Last_Consonant] = i;
-				syllable.erase(len-pattern_len);
-				break;
+		for (unsigned zz = 0;ok && zz < 4;zz ++) {	// component
+			components[zz] = -1;
+			if (ok && cases[z][zz] == 0) {
+				// get the first_consonant
+				ok = false;
+				len = syllable.size();
+				char **p;
+				switch (zz) {
+				case Syllable::First_Consonant: p = first_consonants; break;
+				case Syllable::Last_Consonant: p = last_consonants; break;
+				case Syllable::Padding_Vowel: p = padding_vowels; break;
+				case Syllable::Vowel: p = vowels; break;
+				}
+				for (i = 0;p[i] != 0; i++) {
+					char *pattern = p[i];
+					int pattern_len = strlen(pattern);
+					
+					if (len >= pattern_len && 	// equal is possible
+							syllable.substr(0,pattern_len) == pattern) {
+						//cerr << "Comp " << zz << " is <" << pattern << ">" << endl;
+						components[zz] = i;
+						syllable.erase(0,pattern_len);
+						ok = true;
+						break;
+					}
+				}
 			}
 		}
+
+		if (ok && syllable.empty())
+			return true;
+		//else
+		//cerr << "Case " << z << " failed" << endl;
 	}
 
-	// get vowel
-	components[Vowel] = -1;
-	len = syllable.size();
-	if (len == 0)
-		return false;		// bad syllable
-	for (i = 0;vowels[i] != 0; i++) {
-		char *pattern = vowels[i];
-		int pattern_len = strlen(pattern);
-
-		if (len >= pattern_len && 	// equal is possible
-				viet_tolower(syllable.substr(len-pattern_len)) == pattern) {
-			components[Vowel] = i;
-			syllable.erase(len-pattern_len);
-			break;
-		}
-	}
-
-	// the last is vowel
-	components[Padding_Vowel] = -1;
-	len = syllable.size();
-	if (len == 0)
-		return true;
-	for (i = 0;padding_vowels[i] != 0; i++) {
-		char *pattern = padding_vowels[i];
-		//int pattern_len = strlen(pattern);
-
-		if (viet_tolower(syllable) == pattern) {
-			components[Padding_Vowel] = i;
-			syllable = "";
-			break;
-		}
-	}
-
-	return components[Vowel] != -1 && syllable.empty();
+	return false;
 }
 
 std::ostream& operator << (std::ostream &os,const Syllable &sy)

@@ -60,6 +60,7 @@ class SoftCounter
 public:
 	void count(const Lattice &words,NgramFractionalStats &stats);
 	void count(const DAG &words,NgramFractionalStats &stats);
+	void count(const DAG &words,NgramStats &stats);
 };
 
 #endif

@@ -51,8 +51,10 @@ float WordDAG::edge_value(uint node_from,uint node_to) const
 	VocabIndex vi[2],v;
 	if (fill_vi(node_from,node_to,v,vi,2))
 		return (-get_ngram().wordProb(v,vi));
-	else
+	else {
+		cerr << "ARGHHHHHHHHHHHHHHHHH!" << endl;
 		return 1000;
+	}
 }
 
 bool WordDAG::fill_vi(uint node_from,uint node_to,VocabIndex &v,VocabIndex *vi,int size) const
@@ -178,8 +180,10 @@ float WordDAG2::edge_value(uint node_from,uint node_to) const
 
 	if (fill_vi(node_from,node_to,v2,v,3))
 		return (-get_ngram().wordProb(v2,v));
-	else
+	else {
+		cerr << "ARGHH!!" << endl;
 		return  1000;
+	}
 }
 
 const void* WordDAG2::node_info(uint node_id) const

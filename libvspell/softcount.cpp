@@ -155,7 +155,7 @@ void SoftCounter::count(const DAG &dag,NgramFractionalStats &stats)
 
 		for (i = 0;i < n;i ++) {
 			vv = nexts[i];
-			add = Sleft[v]*dag.edge_value(v,vv);
+			add = Sleft[v]*LogPtoProb(-dag.edge_value(v,vv));
 			Sleft[vv] += add;
 					
 			traces.push_back(vv);
@@ -186,7 +186,7 @@ void SoftCounter::count(const DAG &dag,NgramFractionalStats &stats)
 			v = *iter;
 			traces.push_back(v);
 
-			add = Sright[vv]*dag.edge_value(v,vv);
+			add = Sright[vv]*LogPtoProb(-dag.edge_value(v,vv));
 			Sright[v] += add;
 
 			// collect fractional counts
@@ -204,10 +204,134 @@ void SoftCounter::count(const DAG &dag,NgramFractionalStats &stats)
 					}
 					vi[jn] = vvv;
 					vi[jn+1] = Vocab_None;
+					//stats.countSentence(vi,/*LogPtoProb(--fc)*/fc);
 					*stats.insertCount(vi) += fc;
 				}
 			}
 		}
 	}
+	//cerr << "Sright done" << endl;
+}
+
+void SoftCounter::count(const DAG &dag,NgramStats &stats)
+{
+	vector<double> Sleft,Sright;
+	vector<set<uint> > prev;
+	int i,n,v,vv;
+	double add;
+
+	n = dag.node_count();
+	Sleft.resize(n);
+	Sright.resize(n);
+	prev.resize(n);
+	//cerr << "Nodes: " << n << endl;
+
+	// topo sort
+	vector<uint> traces;
+	traces.push_back(dag.node_begin());
+	int itrace = 0;
+	while (itrace < traces.size()) {
+		v = traces[itrace++];
+		std::vector<uint> nexts;
+		dag.get_next(v,nexts);
+		n = nexts.size();
+
+		for (i = 0;i < n;i ++) {
+			vector<uint>::iterator iter = find(traces.begin(),traces.end(),nexts[i]);
+			if (iter != traces.end()) {
+				traces.erase(iter);
+				if (iter - traces.begin() <= itrace-1)
+					itrace --;
+			}
+			traces.push_back(nexts[i]);
+		}
+	}
+	
+	// first pass: Sleft
+	uint ntrace = traces.size();
+	Sleft[dag.node_begin()] = 1; // log(1) = 0
+	for (itrace = 0;itrace < ntrace;itrace ++) {
+		v = traces[itrace];
+		//cout << " " << v << ":" << Sleft[v];
+		std::vector<uint> nexts;
+		dag.get_next(v,nexts);
+		n = nexts.size();
+
+		for (i = 0;i < n;i ++) {
+			vv = nexts[i];
+			add = Sleft[v]*dag.edge_value(v,vv);
+			//cout << "-" << dag.edge_value(v,vv) << "-" << Sleft[vv] << ">" << vv;
+			Sleft[vv] += add;
+
+			// init prev references for Sright phase
+			prev[vv].insert(v);
+		}
+	}
+
+	//cerr << "Sleft done" << endl;
+
+	unsigned int fc;
+	// second pass: Sright
+	double sum = Sleft[dag.node_end()];
+	if (sum == 0)
+		return;
+	cout << "Sum " << sum << endl;
+
+	traces.clear();
+	traces.push_back(dag.node_end());
+	itrace = 0;
+	while (itrace < traces.size()) {
+		vv = traces[itrace++];
+
+		set<uint>::iterator iter;
+		for (iter = prev[vv].begin();iter != prev[vv].end(); ++iter) {
+			vector<uint>::iterator iiter = find(traces.begin(),traces.end(),*iter);
+			if (iiter != traces.end()) {
+				traces.erase(iiter);
+				if (iiter - traces.begin() <= itrace-1)
+					itrace --;
+			}
+			traces.push_back(*iter);
+		}
+	}
+	
+	ntrace = traces.size();
+	Sright[dag.node_end()] = 1; // log(1) = 0
+	for (itrace = 0;itrace < ntrace;itrace ++) {
+		vv = traces[itrace];
+		//cout << " " << vv << ":" << Sright[vv];
+		set<uint>::iterator iter;
+		for (iter = prev[vv].begin();iter != prev[vv].end(); ++iter) {
+			v = *iter;
+			add = Sright[vv]*dag.edge_value(v,vv);
+			//cout << "-" << dag.edge_value(v,vv)<< "-" << Sright[v] << ">" << v;
+			Sright[v] += add;
+
+			// collect fractional counts
+			fc = (unsigned int)((Sleft[v]*add)*100.0/sum); // P(vv/v)
+			cout << Sleft[v] << "+" << dag.edge_value(v,vv) << Sright[vv]<<  "=("<< (Sleft[v]+add)<< ")"<<((Sleft[v]+add)/sum) <<"_" << fc << endl;
+			if (fc != 0) {
+				VocabIndex vi[10];
+				VocabIndex vvv;
+				if (dag.fill_vi(v,vv,vvv,vi,9)) {
+					uint t,jn,j;
+					for (jn = 0;vi[jn] != Vocab_None && jn < 9; jn ++);
+					if (jn < 9 && vi[jn] == Vocab_None) {
+						for (j = 0;j < jn/2;j ++) {
+							t = vi[j];
+							vi[j] = vi[jn-j-1];
+							vi[jn-j-1] = t;
+						}
+						vi[jn] = vvv;
+						vi[jn+1] = Vocab_None;
+						//stats.countSentence(vi,(unsigned int)(fc*10.0));
+						*stats.insertCount(vi) += fc;
+					}
+				}
+			}
+		}
+	}
+	//double sum2 = Sright[dag.node_begin()];
+	//cout << sum2 << " " << (traces[ntrace-1] == dag.node_begin()) << " " << (sum2 == sum ? "Ok" : "Failed") << endl;
 	//cerr << "Sright done" << endl;
 }

@@ -47,7 +47,7 @@ int main(int argc,char **argv)
 	string s;
 	int i,ii,iii,n,nn,nnn,z;
 	int count = 0;
-	NgramFractionalStats stats(get_sarch().get_dict(),3);
+	NgramStats stats(get_sarch().get_dict(),3);
 	while (getline(cin,s)) {
 		count ++;
 		if (count % 200 == 0)
@@ -62,7 +62,7 @@ int main(int argc,char **argv)
 			st.tokenize();
 			if (!st.get_syllable_count())
 				continue;
-			//cerr << ">>" << count << endl;
+			//cout << ">>" << count << endl;
 			Lattice words;
 			set<WordEntry> wes;
 			WordStateFactories factories;
@@ -91,9 +91,14 @@ int main(int argc,char **argv)
 		}
 	}
 
+	cerr << "Dumping...";
+	File fff("dump","wt");
+	stats.write(fff);
+	fff.close();
+
 	cerr << "Calculating... ";
-	//estimate(ngram,stats);
-	get_ngram().estimate(stats,NULL);
+	//estimate(get_ngram(),stats);
+	get_ngram().estimate(stats);
 	//wfst.enable_ngram(true);
 
 	cerr << "Saving... ";
@@ -127,7 +132,7 @@ void estimate(Ngram &ngram,NgramFractionalStats &stats)
 	Boolean error = false;
 	
 	for (i = 1; !error & i <= order; i++) {
-		discounts[i-1] = new GoodTuring(GT_defaultMinCount, GT_defaultMaxCount);
+		discounts[i-1] = new WittenBell();
 		/*
 		 * Transfer the LMStats's debug level to the newly
 		 * created discount objects

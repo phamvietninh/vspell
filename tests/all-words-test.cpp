@@ -65,7 +65,8 @@ int main(int argc,char **argv)
 	      else
 		cout << sarch[syll[ii]];
 	    }
-	  }
+	  } else
+	    cout << "UNK";
 	  cout << "\"];" << endl;
 	  //}
       }

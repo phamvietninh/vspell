@@ -47,8 +47,10 @@
   \begin{center}
     \Large Lời cảm ơn
   \end{center}
-  Xin chân thành cảm ơn TS. Đinh Điền và các thành viên trong nhóm VCL
-  đã hỗ trợ hoàn thành luận văn này.
+  Xin chân thành cảm ơn TS. Đinh Điền đã tận tình hướng dẫn, giúp đỡ
+  trong quá trình làm luận văn. Ngoài ra xin cảm ơn các thành viên
+  trong nhóm VCL đã hỗ trợ, động viên hoàn thành luận văn này.
+\vskip 1cm
 \begin{flushright}
   Nguyễn Thái Ngọc Duy
 \end{flushright}
@@ -329,7 +331,7 @@ Luận văn được chia thành các chương sau:
 \item Chương 6 tóm tắt luận văn, các kết quả đạt được, tìm hiểu các
   đặc điểm của mô hình   cũng như chương trình cài đặt, các hạn chế và
   các hướng giải quyết   trong tương lai.
-\item Phần phụ lục trình bày XXX.
+\item Phần phụ lục trình bày các thông tin liên quan.
 \end{itemize}
 
 \chapter{Cơ sở lý thuyết ngôn ngữ}
@@ -1167,9 +1169,9 @@ Sự phân bố thanh điệu trong các từ láy tiếng Việt tuân theo lu�
 phù-trầm. Luật hài hoà thanh điệu này bị chế định rõ rệt trong kiểu
 láy vần do mối quan hệ chặt chẽ giữa vần và thanh điệu.
 
-\section{Từ ghép}
+%% \section{Từ ghép}
 
-XXX
+%% XXX
 
 \section{Chính tả tiếng Việt}
 
@@ -1414,7 +1416,7 @@ Về việc bỏ dấu, có ba nguyên tắc bỏ dấu sau:
   \end{itemize}
 \end{description}
 
-XXX% \subsection{Những qui định về chính tả tiếng Việt}
+%XXX \subsection{Những qui định về chính tả tiếng Việt}
 
 
 \subsection{Lỗi chính tả}
@@ -1498,7 +1500,7 @@ loại là lỗi non-word và lỗi real-word (được sử dụng trong~\cite{
 \item Lỗi real-word là lỗi chính tả mà từ/tiếng đó có trong từ điển. Nếu
   không dựa vào ngữ cảnh chung quanh thì không thể xác định đó có phải
   là lỗi chính tả hay không. (Ví dụ, ``Anh ta là một người bàng
-  quang''--- từ ``bàng quang'' không đúng, nhưng vẫn có trong từ
+  quang'' --- từ ``bàng quang'' không đúng, nhưng vẫn có trong từ
   điển). Đây là loại lỗi rất khó nhận ra và xử lý.
 \end{itemize}
 
@@ -1778,7 +1780,7 @@ phạm ràng buộc tiếng Anh (EngCG) đã giúp cải thiện đáng kể ch�
 lượng bộ đánh nhãn từ loại tiếng Anh. Văn phạm ràng buộc giúp loại bỏ
 hầu hết các nhập nhằng có thể được.
 
-XXX % vd
+% XXX vd
 
 
 Việc áp dụng CG để khử nhập nhằng cho trình bắt lỗi chính tả là một
@@ -2624,8 +2626,8 @@ bởi chính HMM, vì HMM là mô hình thống kê thuần tuý, không phát h
 được một số đặc trưng của tách từ, cũng không sử dụng các tri thức về
 ngôn ngữ học, do đó phần nào hạn chế kết quả cuối cùng. 
 
-XXX
-XXX % đưa cái này lên phần cơ sở tin học/huấn luyện
+%XXX
+%XXX % đưa cái này lên phần cơ sở tin học/huấn luyện
 %% Có thể huấn luyện dựa trên dữ liệu mẫu, hoặc dữ liệu thô. Do hầu hết
 %% các phương pháp tách từ đều dựa trên ngram ($n\ge 1$) nên rất cần có
 %% khối lượng dữ liệu huấn luyện lớn nhằm đạt tính bao quát. Dữ liệu
@@ -3282,7 +3284,7 @@ chủ yếu của lỗi loại này.
 
 Lỗi phát âm sẽ được trình bày cụ thể trong
 phần~\ref{sec:realword:recover:sound}. Phần này chỉ nêu ra những điểm
-riêng của lỗi phát âm---non-word.
+riêng của lỗi phát âm --- non-word.
 
 Với loại lỗi này, ta cần phân tích cấu trúc âm tiết tiếng Việt. Sau
 khi phân tích cấu trúc âm tiết tiếng Việt, ta sẽ thay thế từng thành
@@ -3795,7 +3797,7 @@ tìm đướng đi ngắn nhất từ head đến tail. Bài toán cuối cùng 
 toán tìm đường đi ngắn nhất trong đồ thị có hướng, có trọng số.
 
 Thuật toán tìm đường đi ngắn nhất được dùng ở đây là thuật toán tìm
-kiếm theo độ ưu tiên PFS\footnote{Priority-First Search---PFS} để tìm
+kiếm theo độ ưu tiên PFS\footnote{Priority-First Search --- PFS} để tìm
 đường đi ngắn nhất trên đồ thị. Khoảng cách giữa hai 
 điểm trong đồ thị là xác suất bigram của hai từ. Bài toán tìm đường
 đi ngắn nhất, có thể áp dụng PFS, Prime, Djisktra. PFS được chọn vì
@@ -4256,6 +4258,19 @@ dấu tiếng đó thuộc từ điển tiếng. Sau đó, ta có thể xác đ�
 có phải thuộc về từ điển tiếng hay không nhờ hàm
 \verb@StringArchive::in_dict()@.
 
+Từ điển từ còn chứa một số ``từ'' đặc biệt, được lấy thông qua hàm
+\verb@get_id()@. Những từ này bao gồm:
+\begin{itemize}
+\item $UNK\_ID$  đại diện cho từ lạ, không biết.
+\item $PUNCT\_ID$ đại diện cho các dấu câu.
+\item $PROPER\_NAME\_ID$ đại diện cho tên riêng.
+\item $START\_ID$ đại diện cho đầu câu. Mỗi đầu câu đề có một ``từ''
+  này (tương đương nút ``head'').
+\item $STOP\_ID$ đại diện cho cuối câu. Mỗi cuối câu đề có một ``từ''
+  này (tương đương nút ``tail'').
+\item $POEM\_ID$ đại diện cho từ láy.
+\item $NUMBER\_ID$ đại diện cho các loại số.
+\end{itemize}
 
 \subsection{Câu}
 
@@ -4406,7 +4421,9 @@ INVISIBLE [^\040-\176]
 
 \subsection{Tách câu}
 
-XXX% sentence.cpp
+Trước hết, câu được tách thành token. Sau đó, các dấu ``\texttt{?!()[]:;.,}''
+sẽ được dùng để tách thành những đoạn nhỏ hơn --- những ``câu''. Hàm
+\verb@sentences_split()@ được dùng để thực hiện điều này.
 
 \section{Lưới từ}
 
@@ -4514,9 +4531,9 @@ Giá trị $w$ được sử dụng trong chương trình minh hoạ là $0.05$.
 \subsection{Tìm cách tách từ tốt nhất}
 
 
-\subsubsection{PFS}
+Thuật toán~\ref{algo:pfs} trình bày cài đặt PFS. 
+Thuật toán~\ref{algo:bellman} trình bày cài đặt Bellman-Ford kèm chuẩn hoá.
 
-Xem thuật toán~\ref{algo:pfs}.
 
 \begin{algo}
   \caption{Thuật toán tìm đường PFS}
@@ -4562,31 +4579,28 @@ Lấy danh sách các nút.
   \end{enumerate}
 \end{algo}
 
-\subsubsection{Bellman-Ford kèm chuẩn hoá}
-
-Xem thuật toán~\ref{algo:pfs}.
 
 \begin{algo}
-  \caption{Thuật toán tìm đường Bellman kèm chuẩn hoá}
-  \label{algo:pfs}
+  \caption{Thuật toán tìm đường Bellman-Ford kèm chuẩn hoá}
+  \label{algo:bellman}
   \begin{align*}
     last[head] &\leftarrow head\\
     length[head] &\leftarrow 0\\
     node\_count[head] &\leftarrow 1\\
     nexts &\leftarrow \{head\}
   \end{align*}
-Lập danh sách cạnh. Đặt $i \leftarrow 0$
+Lập danh sách cạnh.
   \begin{enumerate}
+  \item $i \leftarrow 0$.
   \item $l \leftarrow size\_of(nexts)$
   \item Nếu $i >= l$, dừng.
-  \item $v \leftarrow nexts[i]$
-  \item $i \leftarrow i+1$
-  \item Nếu $done[v]$ là $true$ thì quay về bước 1. Nếu không thì
+  \item $v \leftarrow nexts[i]$. $i \leftarrow i+1$
+  \item Nếu $done[v]$ là $true$ thì quay về bước 2. Nếu không thì
     $done[v] \leftarrow true$
-  \item Thêm các nút kề $v$ vào $nexts$.
+  \item Thêm các nút kề $v$ vào phía sau $nexts$.
   \item Lặp $ii = l\ldots size\_of(nexts)$, thêm các cạnh
     $(v,nexts[ii])$ vào $edges$
-  \item Quay về 1.
+  \item Quay về 2.
   \end{enumerate}
 Tìm đường
 \begin{enumerate}
@@ -5162,42 +5176,78 @@ Một số hàm được tạo ra để hỗ trợ việc xử lý tiếng Việ
 \label{cha:conclusion}
 \minitoc
 
-\section{Hạn chế}
+\section{Tóm tắt}
+
+Sau đây là tóm tắt các đặc điểm mô hình được đề nghị:
+\begin{itemize}
+\item Áp dụng mô hình tách từ mờ dựa trên ngram (bigram và trigram).
+\item Cấu trúc dữ liệu dựa trên lưới từ --- một dạng đồ thị có
+  hướng không chu trình. Nhờ đó có thể áp dụng thuật toán tìm đường
+  trên đồ thị có hướng để tìm ra cách tốt từ tốt nhất.
+\item Sử dụng lưới~2-từ cho trigram, các thuật toán làm việc trên
+  bigram sẽ vẫn làm việc với trigram thông qua lưới~2-từ.
+\item Đồ thị được hiệu chỉnh để tạo
+  ra sự khác biệt giữa từ gốc và các từ phát sinh bằng cách điều chỉnh
+  giá trị các cạnh nối đến từ phát sinh. 
+\item Loại bỏ khả năng cách tách từ
+  chứa ít từ hơn có khả năng được chọn cao hơn cách tách từ có nhiều từ
+  hơn bằng cách chuẩn hoá các cách tách từ thông qua lưới từ động.
+\item Áp dụng đảo ngược lỗi để phục hồi lỗi phát âm và lỗi bàn
+  phím. Lỗi bàn phím bao gồm lỗi gõ thiếu phím, dư phím, nhầm phím,
+  nhầm thứ tự hai lần gõ. Ngoài ra còn có lỗi do bộ gõ như VNI và
+  TELEX.
+\item Sử dụng soft-count để huấn luyện ngram nhằm tạo ra mô hình ngôn
+  ngữ tốt hơn.
+\end{itemize}
+
+\subsection{Ưu điểm}
+
+\begin{itemize}
+\item 
+\end{itemize}
+
+\subsection{Hạn chế}
 \begin{itemize}
 \item Không sử dụng những thông tin cấp cao hơn.
 \item Có khả năng nó tự động sửa từ đúng thành từ sai, do từ sai
   ``hay'' được dùng trong câu đó hơn là từ đúng :-P
 \end{itemize}
 
+\section{Kết quả thử nghiệm}
+
+
+\section{Đánh giá}
+
+
 \section{Hướng phát triển}
 \label{sec:todo}
 
-Viết lại từ đầu :-D
+%% Viết lại từ đầu :-D
 
-\begin{itemize}
-\item Các hướng cải tiến EM.
-\item Tư tưởng cơ bản hiện thời là phát sinh mọi trường hợp tương tự
-  với trường hợp đang xét và hy vọng giải pháp đúng cũng nằm trong
-  đó. Cách này có hai điểm cần bàn:
-  \begin{itemize}
-  \item Khi nào nên phát sinh, khi nào không? Nói cách khác, khi nào
-    ta ``cảm thấy'' chỗ đó có thể bị sai? Statistics/Genetic approach?
-  \item Khi phát sinh, nên đánh giá tầm quan trọng của các cách phát
-    sinh  cho hợp lý, không nên đánh đồng như hiện nay. How can i do
-    that? 
-  \end{itemize}
-\item Ngoài cách đang làm, còn hướng nào khác không? Liệu speech
-  recognition/OCR có ý kiến nào hay không? Cần tìm hiểu mọi thứ liên
-  quan đến ``error tolerance''
-\item \verb#Syllable::to_str()# output sai từ ``của''.
-\item Từ điển bao gồm hai loại viết hoa ``Việt Nam'' và ``A di đà
-  phật''. Nên phát sinh thêm loại ``A Di Đà Phật'' luôn. Làm sao chuẩn
-  hoá cả hai càng tốt. Chỉ cần lưu ``a di đà phật'' là đủ.
-\item \verb#Syllable::parse()# sẽ gặp vấn đề với chữ hoa.
-\end{itemize}
+%% \begin{itemize}
+%% \item Các hướng cải tiến EM.
+%% \item Tư tưởng cơ bản hiện thời là phát sinh mọi trường hợp tương tự
+%%   với trường hợp đang xét và hy vọng giải pháp đúng cũng nằm trong
+%%   đó. Cách này có hai điểm cần bàn:
+%%   \begin{itemize}
+%%   \item Khi nào nên phát sinh, khi nào không? Nói cách khác, khi nào
+%%     ta ``cảm thấy'' chỗ đó có thể bị sai? Statistics/Genetic approach?
+%%   \item Khi phát sinh, nên đánh giá tầm quan trọng của các cách phát
+%%     sinh  cho hợp lý, không nên đánh đồng như hiện nay. How can i do
+%%     that? 
+%%   \end{itemize}
+%% \item Ngoài cách đang làm, còn hướng nào khác không? Liệu speech
+%%   recognition/OCR có ý kiến nào hay không? Cần tìm hiểu mọi thứ liên
+%%   quan đến ``error tolerance''
+%% \item \verb#Syllable::to_str()# output sai từ ``của''.
+%% \item Từ điển bao gồm hai loại viết hoa ``Việt Nam'' và ``A di đà
+%%   phật''. Nên phát sinh thêm loại ``A Di Đà Phật'' luôn. Làm sao chuẩn
+%%   hoá cả hai càng tốt. Chỉ cần lưu ``a di đà phật'' là đủ.
+%% \item \verb#Syllable::parse()# sẽ gặp vấn đề với chữ hoa.
+%% \end{itemize}
 
 \appendix\eject\addcontentsline{toc}{part}{Phụ lục}
-\chapter{Blah}
+\chapter{Dữ liệu thử nghiệm}
 
 \eject\addcontentsline{toc}{chapter}{\listfigurename}\listoffigures
 %\refstepcounter{chapter}\addcontentsline{toc}{chapter}{\protect\numberline{\thechapter}\listfigurename}

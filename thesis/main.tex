@@ -1,4 +1,4 @@
-\documentclass[a4paper]{book} % -*- coding: vietnamese-utf8 mode: latex auto-fill:t -*-
+\documentclass[a4paper,oneside]{book} % -*- coding: vietnamese-utf8 mode: latex -*-
 
 \usepackage[hmargin={2cm,2cm}]{geometry}
 \usepackage{graphicx}
@@ -10,109 +10,13 @@
 
 \newtheorem{algo}{Thuật toán}
 
-\title{Luận văn tốt nghiệp\\Đề tài\\Nhảm nhí}
+\title{Luận văn tốt nghiệp\\Chương trình bắt lỗi chính tả tiếng Việt}
 \author{Nguyễn Thái Ngọc Duy\\0012020}
 
 \begin{document}
 %\maketitle{}
-%\tableofcontents{}
+\tableofcontents{}
 %\listoffigures{}
-
-\chapter{Giới thiệu}
-\label{cha:intro}
-%% \begin{center}
-%% I kept the right ones out
-
-%% And let the wrong ones in
-
-%% Had an angel of mercy
-
-%% To see me through all my sins
-
-%% There were times in my life
-
-%% When I was goin' insane
-
-%% Tryin' to walk through the pain
-
-%% ****
-
-%% And when I lost my grip
-
-%% And I hit the floor
-
-%% Yeah, I thought I could leave
-
-%% But couldn't get out the door
-
-%% I was so sick n' tired
-
-%% Of livin' a lie
-
-%% I was wishing that I would die
-
-%% ****
-
-%% It's amazing
-
-%% With the blink of an eye
-
-%% You finally see the light
-
-%% It's amazing
-
-%% That when the moment arrives
-
-%% You know you'll be alright
-
-%% It's amazing
-
-%% And I'm saying a prayer
-
-%% To the desperate hearts tonight
-
-
-%% ****
-
-
-%% That one last shot's a Permanent Vacation
-
-%% And a how high can you fly with broken wings
-
-%% Life's a journey - not a destination
-
-%% And I just can't tell just what tomorrow brings
-
-
-%% ****
-
-
-%% You have to learn to crawl
-
-%% Before you learn to walk
-
-%% But I just couldn't listen
-
-%% To all that righteous talk
-
-%% I was out on the street
-
-%% Just tryin' to survive
-
-%% Scratchin' to stay alive
-
-
-%% ****
-
-
-%% "To all of you people out there
-
-%% Wherever you are - remember:
-
-%% The light at the end of the tunnel
-
-%% May be you - goodnight" 
-%% \end{center}
 
 \chapter{Thông tin nền}
 \label{cha:background}
@@ -265,6 +169,7 @@ không thật bảo đảm (\textit{training set}), xử lý qua 4 bước:
 \end{enumerate}
 
 \chapter{Cài đặt}
+\label{cha:implementation}
 
 Chương trình gồm hai phần: phần bắt lỗi chính tả và phần huấn luyện.
 
@@ -325,7 +230,7 @@ từ, biểu diễn dấu thanh điệu bằng ký tự đầu tiên trong từ.
 
 Bước này sẽ gán $fid$ là $sid$.
 
-\subsubsection{Tên riêng NOTIMPL}
+\subsubsection{Chữ viết hoa NOTIMPL}
 
 Xử lý chữ viết hoa. Chữ viết hoa dùng để biểu diễn tên riêng, hoặc
 dùng cho chữ đứng đầu câu. Do đó cần phân biệt chữ đầu câu có phải là
@@ -476,14 +381,46 @@ sau:
 \end{array}
 \end{equation}
 
-Thuật toán có thể được khử đệ quy khi cài đặt bằng quy hoạch động.
+Thuật toán có thể được khử đệ quy khi cài đặt bằng quy hoạch
+động. Nhận thấy $ed(X[i+1],Y[i+1])$ cần dùng
+$ed(X[i],Y[i])$,$ed(X[i-1],Y[i-1])$,$ed(X[i],Y[i+1])$ hoặc
+$ed(X[i+1],Y[i])$, ta có thể tính từ lần lượt từ thấp đến cao theo
+đường zig-zag bắt đầu từ đỉnh (1,1), sau đó đến đường chéo (1,2),
+(2,1), rồi đường chéo (1,3),(2,2),(3,1) \ldots
 
-XXXX. cho ví dụ, ghi thuật toán.
 \begin{algo} Tính hàm ed()
-  
+  \begin{enumerate}
+  \item Đặt (0,0) là 0 nếu x[0] = y[0] hoặc 1 nếu ngược lại.
+  \item Đặt (0,j) là j
+  \item Đặt (i,0) là i
+  \item (i,j)=(i-1,j-1) nếu x[i]=y[j]
+  \item (i,j)=1+min\{(i-2,j-2),(i,j-1),(i-1,j)\} nếu x[i] = y[j-1]
+    hoặc x[i-1]=y[j]
+  \item (i,j)=1+min\{(i-1,j-1),(i,j-1),(i-1,j)\} trong các trường hợp còn lại
+  \end{enumerate}
 \end{algo}
 
-Ví dụ:
+Ví dụ: tính độ sai khác giữa chữ ``thắng'' và ``tắgn''. Ta tính các
+giá trị như bảng \ref{tab:ed-example}. Vậy có hai khác biệt giữa hai
+chữ. Khác biệt thứ nhất là xoá ký tự `h'. Khác biệt thứ hai là hoán vị
+hay ký tự `n' và `g'.
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{|c|c|c|c|c|c|c|}
+    \hline
+    X&-&-&t&ắ&g&n\\\hline
+    -&0&0&0&0&0&0\\\hline
+    -&0&0&1&2&3&4\\\hline
+    t&0&1&\bf 0&\bf 1&\bf 2&\bf 3\\\hline
+    h&0&2&\bf 1&\bf 1&\bf 2&\bf 3\\\hline
+    ắ&0&3&\bf 2&\bf 1&\bf 1&\bf 2\\\hline
+    n&0&4&\bf 3&\bf 2&\bf 2&\bf 1\\\hline
+    g&0&5&\bf 4&\bf 3&\bf 2&\bf 2\\\hline
+  \end{tabular}
+  \caption{Bảng $ed$ của ``thắng'' và ``tắgn''}
+  \label{tab:ed-example}
+\end{table}
 
 \subsection{Tạo lưới từ}
 \label{sub:lattice}
@@ -493,7 +430,7 @@ nhau, hướng thể hiện hướng của câu (từ trái sang phải). Lướ
 chứa tất cả 
 các từ có khả năng xuất hiện trong câu. Các từ được liên kết với nhau
 theo trật tự trong câu. Khi duyệt từ nút gốc đến nút đích, ta sẽ được
-một cách tách từ cho câu.
+một cách tách từ cho câu. Xem hình \ref{fig:wordlattice}.
 
 \begin{figure}[htbp]
   \centering
@@ -504,7 +441,7 @@ một cách tách từ cho câu.
 
 Khi tạo lưới từ trong chương trình bắt lỗi chính tả, thuật toán không
 chỉ phát sinh những từ được tạo từ đoạn, mà còn những từ {\em có thể
-có} được phát sinh từ đoạn.
+có} được phát sinh từ đoạn. Xem hình \ref{fig:wordlattice1}.
 
 \begin{figure}[htbp]
   \centering
@@ -520,19 +457,29 @@ các từ này lại.
 XXXX. thuật toán tạo lưới từ.
 \begin{algo} Tạo lưới từ
 
-Cho câu S có n tiếng. Duyệt i từ 1 đến n:
+Cho câu S có n tiếng. State là đỉnh, còn ``nút i'' là cạnh. Ta duyệt
+lần lượt qua các cạnh để tìm  ra các từ. Duyệt i từ 1 đến n:
 \begin{itemize}
 \item Tạo state gốc cho nút i.
-\item Xét các state, nếu tiến thêm được một bước thì lưu lại state mới.
+\item Xét các state, nếu tiến thêm được một bước thì lưu lại state mới (i+1).
 \item Nếu không tiến được thì xóa state.
 \item Nếu hoàn tất một từ thì lưu lại.
 \end{itemize}
+
+Sau khi hoàn tất, đánh dấu tất cả các chữ xuất hiện trong các từ tìm
+được. Do từ điển không hoàn chỉnh, và do các ký hiệu, từ viết tắt
+\ldots{}, sẽ có một số chữ không nằm trong bất kỳ từ nào tìm được. Do
+đó ta cần duyệt lại, và đánh dấu những chữ này là từ ``UNK''. Việc tạo
+thêm các từ ``UNK'' sẽ đảm bảo tạo ra một đồ thị liên thông. Nếu đồ
+thị không liên thông, ta không thể áp dụng thuật toán tìm đường đi
+ngắn nhất.
   
 \end{algo}
 
 Ngoài lưới từ, ta có thể tạo lưới 2-từ từ lưới từ. Lưới 2-từ tương tự
 như lưới từ, tuy nhiên mỗi nút là một cặp 2 từ đi liền nhau trong câu. Thuật toán
-tạo lưới 2-từ được nêu trong \cite{Ravishankar}, được tóm tắt lại như sau:
+tạo lưới 2-từ được nêu trong \cite{Ravishankar}, được tóm tắt lại như
+sau (xem hình \ref{fig:wordlattice2}):
 
 \begin{figure}[htbp]
   \centering
@@ -590,7 +537,7 @@ Cách làm này không thể thực hiện với n-gram ($n > 3$) vì số nút/
 trong đồ thị sẽ tăng đáng kể. Trong trường hợp đó ta nên sử dụng
 thuật toán A*
 
-XXXX. Nếu WFST cộng viterbi, beam pruning \ldots thì sai nhỉ?
+XXXX. Nếu WFST cộng viterbi, beam pruning \ldots thì sao nhỉ?
 
 
 \subsection{Tìm từ thay thế}
@@ -612,6 +559,7 @@ XXXX. thuật toán tính ed.
 
 
 \section{Trình huấn luyện}
+\label{sec:training}
 
 \subsection{Tiền xử lý}
 Giống như phần \ref{sub:preprocess}
@@ -619,7 +567,7 @@ Giống như phần \ref{sub:preprocess}
 
 \subsection{Tạo Lưới từ}
 Giống như phần \ref{sub:lattice}, nhưng chỉ xét những từ nào thực sự
-có trong câu.
+có trong câu, sử dụng lưới từ thay vì lưới từ mở rộng.
 
 
 \subsection{Thống kê n-gram}
@@ -851,7 +799,105 @@ từ gốc đã chuẩn hoá, và các từ viết thường đã chuẩn hoá.
 
 Với bản huấn luyện, lưu thêm id gốc để có thể xuất ra y như cũ ??
 Không cần. Wordlist sẽ lưu theo dạng chuẩn hoá. Như vậy không cần lưu
-id gốc.
+id gốc. Quá trình training cần có bước chuyển tiếp để đọc wordlist
+chưa chuẩn hoá, ghi ra wordlist chuẩn hoá.
+
+
+\section{Dữ liệu huấn luyện}
+\label{sec:data-preprocessing}
+
+Dữ liệu gốc bao gồm: danh sách từ và các văn bản tiếng Việt thu thập
+từ mạng vnexpress\footnote{http://www.vnexpress.net}.
+
+Nhiệm vụ:
+\begin{itemize}
+\item Tạo danh sách tiếng, chuẩn hoá danh sách tiếng.
+\item Tiền xử lý ngữ liệu.
+\item Huấn luyện n-gram, tạo ra dữ liệu n-gram.
+\end{itemize}
+
+
+\subsection{Dữ liệu nguồn}
+\label{sec:data-source}
+
+Dữ liệu nguồn bao gồm danh sách từ và ngữ liệu tiếng Việt. Dữ liệu
+được lưu dưới dạng mã VISCII. 
+\subsubsection{Danh sách từ}
+
+Đây là một tập tin văn bản lưu tất cả các từ được dùng trong tiếng
+Việt, mỗi từ một dòng. Các chữ cách bởi một khoảng trắng.
+
+
+\subsubsection{Ngữ liệu huấn luyện}
+
+Bao gồm một loạt các tập tin văn bản tiếng Việt. Mỗi dòng là một đoạn
+văn bản.
+
+\subsection{Danh sách tiếng}
+\label{sub:syllable-list}
+
+Danh sách tiếng chứa mọi tiếng thông dụng nhất được sử dụng trong
+tiếng Việt. Danh sách này được rút trích từ danh sách từ, sau đó được
+lưu ở dạng chuẩn hoá.
+
+Chương trình syllable-extract được dùng để tạo danh sách này. Cách
+dùng:
+\begin{verbatim}
+$syllable-extract < word-list > syllable-list
+\end{verbatim}
+
+
+\subsection{Tiền xử lý ngữ liệu huấn luyện}
+\label{sec:training-data-preprocessing}
+
+Dữ liệu thu được từ vnexpress bao gồm một loạt các file html, chia
+thành nhiều thư mục.
+
+htmltidy được sử dụng để chuyển dữ liệu html về dạng xhtml. Các file
+html của vnexpress không hoàn toàn tuân theo chuẩn html, bao gồm hai
+trường hợp:
+
+\begin{itemize}
+\item Sử dụng tag <vne>
+\item Không đóng tag <frame>
+\end{itemize}
+
+Hai lỗi này được tự động phát hiện và sửa chữa trước khi chuyển dữ
+liệu cho htmltidy.
+
+Sau khi chạy htmltidy, ta được dữ liệu xhtml hợp khuôn dạng. Phân tích
+các tài liệu này cho thấy phần nội dung chính thường nằm trong tag
+<vne>, hoặc trong tag <table> với thuộc tính id là
+``CContainer''. XSLT được sử dụng để lọc ra phần nội dung nằm giữa hai
+tag này (\verb#z.xslt#).
+
+Trình \verb#convert.sh# sẽ thực hiện bước htmltidy và xslt ở trên. Cách sử
+dụng:
+\begin{verbatim}
+$convert.sh < input  > output
+\end{verbatim}
+
+Sau bước này, ta cần lọc bỏ các tag, loại bỏ các entity \ldots{} để
+đưa dữ liệu về dạng văn bản thuần túy. Do số lượng tag được định nghĩa
+html rất nhiều nên chỉ xử lý những tag nào được sử dụng trong
+vnexpress (thông qua chương trình \verb#gettags.pl#). Các tag này được loại
+bỏ bằng \verb#html2text.pl#. Các mả utf-8 được sử dụng trong
+vnexpress (thông qua chương trình \verb#z.c#) được chuyển về mã VISCII
+qua \verb#z.cpp#. Các entity còn lại (lấy bằng \verb#list-entity.pl#)
+được xử lý trong \verb#html2text.pl#.
+
+\verb#html2text.pl# sử dụng các tag để tách dữ liệu thành các đoạn. Dữ
+liệu sau cùng là các tập tin văn bản, mỗi dòng là một đoạn.
+
+\subsection{Huấn luyện dữ liệu}
+\label{sub:training-data}
+
+Chương trình \verb#wfst-train# được dùng để huấn luyện dữ liệu. Thông
+tin nhập là danh sách từ, danh sách tiếng, n-gram (nếu có). Thông tin
+xuất là n-gram mới.
+
+Chương trình được lặp đi lặp lại nhiều lần.
+
 
 \chapter{Kết luận}
 \label{cha:conclusion}
@@ -859,11 +905,30 @@ id gốc.
 \section{Hạn chế}
 \begin{itemize}
 \item Không sử dụng những thông tin cấp cao hơn.
+\item Có khả năng nó tự động sửa từ đúng thành từ sai, do từ sai
+  ``hay'' được dùng trong câu đó hơn là từ đúng :-P
 \end{itemize}
 
 \section{Hướng phát triển}
 
 Viết lại từ đầu :-D
+
+\begin{itemize}
+\item Các hướng cải tiến EM.
+\item Tư tưởng cơ bản hiện thời là phát sinh mọi trường hợp tương tự
+  với trường hợp đang xét và hy vọng giải pháp đúng cũng nằm trong
+  đó. Cách này có hai điểm cần bàn:
+  \begin{itemize}
+  \item Khi nào nên phát sinh, khi nào không? Nói cách khác, khi nào
+    ta ``cảm thấy'' chỗ đó có thể bị sai? Statistics/Genetic approach?
+  \item Khi phát sinh, nên đánh giá tầm quan trọng của các cách phát
+    sinh  cho hợp lý, không nên đánh đồng như hiện nay. How can i do
+    that? 
+  \end{itemize}
+\item Ngoài cách đang làm, còn hướng nào khác không? Liệu speech
+  recognition/OCR có ý kiến nào hay không? Cần tìm hiểu mọi thứ liên
+  quan đến ``error tolerance''
+\end{itemize}
 
 
 \begin{thebibliography}{}
@@ -926,6 +991,8 @@ Viết lại từ đầu :-D
 \end{thebibliography}
 
 \end{document}
+
+
 Giả sử câu S có $n$ tiếng $c_1,c_2,\ldots,c_n$, có $|S|$ cách tách từ
 $S_1,S_2,\ldots,S_{|S|}$ và cách tách từ  $S_i$ được
 tách thành $|S_i|$ từ $W_{i_1},W_{i_2},\ldots,W_{i_{|S_i|}}$ với 
@@ -1058,3 +1125,100 @@ P_3(\Zhs) &= P_3^{left}(\Zhs)P_3^{right}(\Zhs)\\
  &=p(\Zhs_1,\Zhs_3,\Zh_5)+p(\Zh_1,\Zs_2,\Zhs_3,\Zh_5)
 \end{array}
 $$
+
+\chapter{Giới thiệu}
+\label{cha:intro}
+\begin{center}
+I kept the right ones out
+
+And let the wrong ones in
+
+Had an angel of mercy
+
+To see me through all my sins
+
+There were times in my life
+
+When I was goin' insane
+
+Tryin' to walk through the pain
+
+****
+
+And when I lost my grip
+
+And I hit the floor
+
+Yeah, I thought I could leave
+
+But couldn't get out the door
+
+I was so sick n' tired
+
+Of livin' a lie
+
+I was wishing that I would die
+
+****
+
+It's amazing
+
+With the blink of an eye
+
+You finally see the light
+
+It's amazing
+
+That when the moment arrives
+
+You know you'll be alright
+
+It's amazing
+
+And I'm saying a prayer
+
+To the desperate hearts tonight
+
+
+****
+
+
+That one last shot's a Permanent Vacation
+
+And a how high can you fly with broken wings
+
+Life's a journey - not a destination
+
+And I just can't tell just what tomorrow brings
+
+
+****
+
+
+You have to learn to crawl
+
+Before you learn to walk
+
+But I just couldn't listen
+
+To all that righteous talk
+
+I was out on the street
+
+Just tryin' to survive
+
+Scratchin' to stay alive
+
+
+****
+
+
+``To all of you people out there
+
+Wherever you are - remember:
+
+The light at the end of the tunnel
+
+May be you - goodnight''
+\end{center}
+

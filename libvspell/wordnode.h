@@ -20,6 +20,10 @@
 #include "mystring.h"
 #endif
 
+#define ALL_LEAVES 0						// all leaves
+#define MAIN_LEAF 1							// normal leaves
+#define CASE_LEAF 2							// lower-to-realcase leaves
+
 class Node;
 class BranchNode;
 class LeafNode;
@@ -43,7 +47,7 @@ protected:
 public:
   virtual ~BranchNode() {}
   bool is_leaf() const { return false; }
-  void get_leaves(std::vector<LeafNode*> &nodes) const;
+  void get_leaves(std::vector<LeafNode*> &nodes,uint mask = MAIN_LEAF) const;
   void get_branches(strid,std::vector<BranchNode*> &nodes) const;
   BranchNode* get_branch(strid) const;
   const node_map& get_nodes() const { return nodes; }
@@ -57,11 +61,17 @@ class LeafNode:public Node
 protected:
   strid id;			// word id
 	std::vector<strid> syllables;
+	uint bitmask;
 public:
+	LeafNode():bitmask(0) {}
   virtual ~LeafNode() {}
   bool is_leaf() const { return true; }
   strid get_id() const { return id; }
   void set_id(const std::vector<strid> &sy);
+
+	uint get_mask() const { return bitmask; }
+	void set_mask(uint maskval,bool mask = true);
+	bool filter(uint mask) const { return (bitmask & mask) == mask; }
 
   uint get_syllable_count() const { return syllables.size(); }
   void get_syllables(std::vector<strid> &_syllables) const { _syllables = syllables; }
@@ -88,6 +98,7 @@ class WordArchive
 protected:
 	NodeRef root;
 	void add_entry(std::vector<std::string> toks);
+	void add_case_entry(std::vector<std::string> toks);
 
 public:
 	WordArchive();

@@ -5,3 +5,5 @@ Xây dựng hàm WordNode::recalculate()
 Pruning dựa trên tổng xác suất bé hơn một ngưỡng nào đó.
 Thống kê các thông tin liên quan đến DISTANCE_THRESOLD, ED_THRESOLD.
 Cài fuzzy match kiểu mới.
+Chỉnh lại dictionary. Lưu index thay vì string. Tạo index cho string và map từ string sang index
+Thêm ngram.

@@ -5310,29 +5310,97 @@ Phần kiểm tra viết hoa khá khó khăn.
 \section{Hướng phát triển}
 \label{sec:todo}
 
-%% Viết lại từ đầu :-D
+\begin{itemize}
+\item Loại bỏ SRILM.
+\item Các hướng cải tiến EM.
+\item Tư tưởng cơ bản hiện thời là phát sinh mọi trường hợp tương tự
+  với trường hợp đang xét và hy vọng giải pháp đúng cũng nằm trong
+  đó. Cách này có hai điểm cần bàn:
+  \begin{itemize}
+  \item Khi nào nên phát sinh, khi nào không? Nói cách khác, khi nào
+    ta ``cảm thấy'' chỗ đó có thể bị sai? Statistic/Genetic approach?
+  \item Khi phát sinh, nên đánh giá tầm quan trọng của các cách phát
+    sinh  cho hợp lý, không nên đánh đồng như hiện nay. How can i do
+    that?
+  \end{itemize}
 
-%% \begin{itemize}
-%% \item Các hướng cải tiến EM.
-%% \item Tư tưởng cơ bản hiện thời là phát sinh mọi trường hợp tương tự
-%%   với trường hợp đang xét và hy vọng giải pháp đúng cũng nằm trong
-%%   đó. Cách này có hai điểm cần bàn:
-%%   \begin{itemize}
-%%   \item Khi nào nên phát sinh, khi nào không? Nói cách khác, khi nào
-%%     ta ``cảm thấy'' chỗ đó có thể bị sai? Statistics/Genetic approach?
-%%   \item Khi phát sinh, nên đánh giá tầm quan trọng của các cách phát
-%%     sinh  cho hợp lý, không nên đánh đồng như hiện nay. How can i do
-%%     that? 
-%%   \end{itemize}
-%% \item Ngoài cách đang làm, còn hướng nào khác không? Liệu speech
-%%   recognition/OCR có ý kiến nào hay không? Cần tìm hiểu mọi thứ liên
-%%   quan đến ``error tolerance''
-%% \item \verb#Syllable::to_str()# output sai từ ``của''.
-%% \item Từ điển bao gồm hai loại viết hoa ``Việt Nam'' và ``A di đà
-%%   phật''. Nên phát sinh thêm loại ``A Di Đà Phật'' luôn. Làm sao chuẩn
-%%   hoá cả hai càng tốt. Chỉ cần lưu ``a di đà phật'' là đủ.
-%% \item \verb#Syllable::parse()# sẽ gặp vấn đề với chữ hoa.
-%% \end{itemize}
+  Tách từ không đúng thì bắt lỗi sai. Mà phát sinh quá nhiều thì có
+  thể tách từ sẽ sai do có nhiều câu đúng trong đó (giả sử LM hoàn
+  hảo). 
+
+  Chuyện phát sinh là chuyện hơi kẹt. Do hiện thời chỉ dựa trên lỗi
+  phát âm nên số lượng ít. Nếu áp dụng thêm các lỗi khác (đặc biệt là
+  lỗi bàn phím) thì số lượng sẽ tăng đáng kể và {\em xuất hiện những
+  câu đúng mới} (giống như việc loại bỏ dấu, sau đó thêm dấu vô sẽ có
+  nhiều câu hợp lý). 
+  \begin{itemize}
+  \item Cách đầu tiên là chỉ phát sinh khi cần thiết ---
+    khá khó vì làm sao biết chỗ nào cần phát sinh?
+  \item Cách khác là lợi dụng đặc điểm của bắt lỗi chính tả. Khác với
+    tách từ thuần túy, lưới từ bắt lỗi chính tả chứa nhiều từ cùng độ
+    dài (cùng một ``khuôn''). Làm cách nào đó để nhóm những từ này
+    lại, tránh lãng phí khi truy tìm nhiều cách trên cùng một khuôn. 
+  \end{itemize}
+\item Ngoài cách đang làm, còn hướng nào khác không? Liệu speech
+  recognition/OCR có ý kiến nào hay không? Cần tìm hiểu mọi thứ liên
+  quan đến ``error tolerance''
+\end{itemize}
+
+\section{Khi nào cần phát sinh}
+
+Cách đầu tiên là dựa trên thông tin thống kê, tìm xem giá trị trung
+bình của liên kết giữa các từ là bao nhiêu. Nếu liên kết trong lưới từ
+thấp hơn ngưỡng này thì phát sinh từ mới.
+
+Áp dụng CSS để phát sinh thêm từ ???
+
+Trước hết, tạo lưới từ cơ sở. Sau đó duyệt qua từng cách tách từ, áp
+dụng CSS để tạo thêm một số từ liên quan.
+\begin{itemize}
+\item Thay thế từ bằng từ do CSS đề nghị --> ảnh hưởng đến CSS ở các
+  chỗ khác. Giải pháp genetic hay phân nhánh. Tách làm hai lưới từ
+  (một cũ, một mới) sau đó lại áp dụng CSS trên các cách khác ???
+\item Thêm vào thay vì thay thế --> ``càng rộng thì càng dễ sai''
+\end{itemize}
+
+Chọn đại một cách tách từ, sau đó giao cho CSS. CSS được mở rộng để không
+chỉ thay từ, mà thay cả ranh giới từ.
+
+\section{Áp dụng context-sensitive spelling checking}
+
+Các giải pháp spelling checking đều dựa trên câu tách từ sẵn. Xét theo
+quan điểm của lưới từ là chọn một đường đi, sau đó áp dụng spelling
+checking. Để áp dụng CSS ta có thể đưa nó vô lưới từ thay vì chỉ nằm
+trên một đường đi duy nhất trên lưới từ. Nói cách khác, ta chuyển từ
+đồ thì ``một đường'' thành một đồ thị đúng nghĩa.
+
+Với các phương pháp sử dụng từ ngữ cảnh, thay vì chỉ xét những từ nằm
+trên đường đi, ta xét những từ nằm trên các đường đi khác nhau --
+trong một phạm vi nhất định. Khi chọn được một từ thì cũng đồng nghĩa
+giới hạn số lưới từ có khả năng lại.
+
+Với các phương pháp dùng collocation, ta cũng có thể mở rộng ra lưới
+từ, tìm trên nhiều đường thay vì chỉ một đường.
+
+Vấn đề đối với việc áp dụng những phương pháp này là khả năng ``đoán
+sai''. Ví dụ, có một từ trong lưới từ có ảnh hưởng lớn đến quyết định
+chọn từ khác. Khi từ đó được sử dụng, nó sẽ loại bỏ các cách tách từ
+không chứ nó. Nếu từ đó {\em không} phải là từ đúng thì coi như ta đã
+suy luận dựa trên những chứng cớ không đáng tin cậy (độ tin cậy?).
+
+Có thể duyệt từng cách tách từ, áp dụng CSS. Sau đó làm sao biết nên
+dùng cách tách từ nào ??? Lại dùng ngram?
+
+Túm lại có ba vấn đề:
+\begin{itemize}
+\item Nếu duyệt từng cách tách từ, số lượng sẽ rất lớn. Cần có cách
+  loại bớt những cách tách từ nhảm nhí.
+\item Nếu duyệt toàn bộ thì đối với mỗi cách tách từ sẽ có những phát
+  hiện lỗi khác nhau. Cần LM hay cái gì đó khác để biết được nên dùng
+  cách tách từ nào (hoặc dùng hết :)
+\item Cải tiến CSS bằng cách áp dụng lưới từ nhiều hơn, không bị buộc
+  trên một đường đi nhất định.
+\end{itemize}
 
 \appendix\eject\addcontentsline{toc}{part}{Phụ lục}
 \chapter{Dữ liệu thử nghiệm}

@@ -33,22 +33,16 @@ void WordState::add_word(set<WordEntry> &we,LeafNode*leaf)
 
 void WordState::collect_words(set<WordEntry> &we)
 {
-	std::vector<LeafNode*> leaves;
-	uint iii,nnn;
-	dnode.node->get_leaves(leaves,MAIN_LEAF);
-	nnn = leaves.size();
-	for (iii = 0;iii < nnn;iii ++)
-		add_word(we,leaves[iii]);
+	LeafNode *leaf = dnode.node->get_leaf(sarch["<mainleaf>"]);
+	if (leaf)
+		add_word(we,leaf);
 }
 
 void UpperWordState::collect_words(set<WordEntry> &we)
 {
-	std::vector<LeafNode*> leaves;
-	uint iii,nnn;
-	dnode.node->get_leaves(leaves,CASE_LEAF);
-	nnn = leaves.size();
-	for (iii = 0;iii < nnn;iii ++)
-		add_word(we,leaves[iii]);
+	LeafNode *leaf = dnode.node->get_leaf(sarch["<caseleaf>"]);
+	if (leaf)
+		add_word(we,leaf);
 }
 
 void WordState::get_first(WordStates &states,uint _pos)
@@ -82,7 +76,7 @@ void LowerWordState::get_next(WordStates &states)
 	BranchNode *branch = dnode.node->get_branch(get_sarch()[s2]);
 	if (branch == NULL)
 		return;
-	cerr << "Lower: " << get_lowercased_syllable(get_sarch()[sent[i].get_cid()]) << endl;
+	//cerr << "Lower: " << get_lowercased_syllable(get_sarch()[sent[i].get_cid()]) << endl;
 	states.push_back(this);
 	// change the info
 	dnode = branch;
@@ -144,7 +138,7 @@ void FuzzyWordState::get_next(WordStates &states)
 		BranchNode::node_map::const_iterator pnode;
 		for (pnode = range.first;pnode != range.second;++pnode)
 			if (!pnode->second->is_leaf()) {
-				cerr << "Fuzzy: " << iter->to_std_str() << endl;
+				//cerr << "Fuzzy: " << iter->to_std_str() << endl;
 				FuzzyWordState *s = new FuzzyWordState(*this);
 
 				// change the info

@@ -20,10 +20,6 @@
 #include "mystring.h"
 #endif
 
-#define ALL_LEAVES 0						// all leaves
-#define MAIN_LEAF  1						// normal leaves
-#define CASE_LEAF  2						// lower-to-realcase leaves
-
 class Node;
 class BranchNode;
 class LeafNode;
@@ -39,7 +35,7 @@ public:
 class BranchNode:public Node
 {
 public:
-  typedef std::multimap<strid,NodeRef> node_map;
+  typedef std::map<strid,NodeRef> node_map;
   typedef std::pair<node_map::const_iterator,node_map::const_iterator> const_np_range;
   typedef std::pair<node_map::iterator,node_map::iterator> np_range;
 protected:
@@ -47,7 +43,8 @@ protected:
 public:
   virtual ~BranchNode() {}
   bool is_leaf() const { return false; }
-  void get_leaves(std::vector<LeafNode*> &nodes,uint mask = MAIN_LEAF) const;
+  LeafNode* get_leaf(strid leaf) const;
+  void get_leaves(std::vector<LeafNode*> &nodes) const;
   void get_branches(strid,std::vector<BranchNode*> &nodes) const;
   BranchNode* get_branch(strid) const;
   const node_map& get_nodes() const { return nodes; }
@@ -99,12 +96,15 @@ protected:
 	NodeRef root;
 	void add_entry(std::vector<std::string> toks);
 	void add_case_entry(std::vector<std::string> toks);
+	std::vector<strid> leaf_id;
 
 public:
 	WordArchive();
 	BranchNode* get_root() { return (BranchNode*)root.get(); }
 	bool load(const char *filename);
 	LeafNode* add_special_entry(strid);
+	void register_leaf(strid leaf);
+	const std::vector<strid>& get_leaf_id() const { return leaf_id; }
 };
 LeafNode* get_special_node(int);
 

@@ -3,16 +3,28 @@
 #include <utility>
 
 using namespace std;
+static strid mainleaf_id,caseleaf_id;
 
-
-void BranchNode::get_leaves(std::vector<LeafNode*> &_nodes,uint mask) const
+LeafNode* BranchNode::get_leaf(strid leaf) const
 {
-	const_np_range range;
-	range = nodes.equal_range(sarch["<leaf>"]);
 	node_map::const_iterator iter;
-	for (iter = range.first;iter != range.second; ++iter)
-		if (iter->second->is_leaf() && ((LeafNode*)&*iter->second)->filter(mask))
+	iter = nodes.find(leaf);
+	if (iter != nodes.end())
+		return((LeafNode*)iter->second.get());
+	else
+		return NULL;
+}
+
+void BranchNode::get_leaves(std::vector<LeafNode*> &_nodes) const
+{
+	const vector<strid> leaf_id = warch.get_leaf_id();
+	node_map::const_iterator iter;
+	uint i,n = leaf_id.size();
+	for (i = 0;i < n;i ++) {
+		iter = nodes.find(leaf_id[i]);
+		if (iter != nodes.end())
 			_nodes.push_back((LeafNode*)iter->second.get());
+	}
 }
 
 void BranchNode::get_branches(strid _id,std::vector<BranchNode*> &_nodes) const
@@ -59,6 +71,10 @@ BranchNode* BranchNode::add_path(std::vector<strid> toks)
 
 WordArchive::WordArchive():root(new BranchNode)
 {
+	mainleaf_id = sarch["<mainleaf>"];
+	caseleaf_id = sarch["<caseleaf>"];
+	register_leaf(mainleaf_id);
+	register_leaf(caseleaf_id);
 }
 
 bool WordArchive::load(const char* filename)
@@ -114,8 +130,8 @@ LeafNode* WordArchive::add_special_entry(strid tok)
 	vector<strid> toks;
 	toks.push_back(tok);
 	leaf->set_id(toks);
-	leaf->set_mask(MAIN_LEAF);
-	get_root()->add(sarch["<leaf>"],noderef);
+	//leaf->set_mask(MAIN_LEAF);
+	get_root()->add(mainleaf_id,noderef);
 	return leaf;
 }
 
@@ -139,8 +155,8 @@ void WordArchive::add_entry(vector<string> toks)
 	BranchNode* branch = get_root()->add_path(path);
 	NodeRef noderef(new LeafNode);
 	LeafNode *leaf = (LeafNode*)noderef.get();
-	leaf->set_mask(MAIN_LEAF);
-	branch->add(sarch["<leaf>"],noderef);
+	//leaf->set_mask(MAIN_LEAF);
+	branch->add(mainleaf_id,noderef);
 	leaf->set_id(syllables);
 
 }
@@ -185,9 +201,15 @@ void WordArchive::add_case_entry(vector<string> toks2)
 	BranchNode* branch = get_root()->add_path(path);
 	NodeRef noderef(new LeafNode);
 	LeafNode *leaf = (LeafNode*)noderef.get();
-	leaf->set_mask(CASE_LEAF);
-	branch->add(sarch["<leaf>"],noderef);
+	//leaf->set_mask(CASE_LEAF);
+	branch->add(caseleaf_id,noderef);
 	leaf->set_id(real_syllables);
+}
+
+void WordArchive::register_leaf(strid id)
+{
+	if (find(leaf_id.begin(),leaf_id.end(),id) == leaf_id.end())
+		leaf_id.push_back(id);
 }
 
 void LeafNode::set_mask(uint maskval,bool mask)

@@ -455,19 +455,28 @@ bool Text::word_check()
 				ok = subok;
 			} else {
 				string s;
-				uint ii,nn = sylls.size();
-				for (ii = 0;ii < nn;ii ++) {
-					if (ii)
-						s += "_";
-					s += sarch[sylls[ii]];
-				}
-				ok = sarch.in_dict(s);
+				BranchNode *branch = warch.get_root();
+				for (ii = 0;ii < len && branch;ii ++)
+					branch = branch->get_branch(st[seg[i].pos+ii].get_cid());
 
-				// don't care if the "true" word is lower-cased and the original one is valid upper-cased
-				if (!ok &&
-						(is_all_capitalized_word(sylls2) ||
-						 (is_first_capitalized_word(sylls2) && is_lower_cased_word(sylls3))))
-					ok = true;
+				if (branch) {
+					LeafNode* leaf;
+					leaf = branch->get_leaf(sarch["<mainleaf>"]);
+					sylls.clear();
+					leaf->get_syllables(sylls);
+					strid_string sylls3;
+					sylls3.resize(sylls.size());
+					for (ii = 0;ii < sylls3.size();ii ++)
+						sylls3[ii] = sarch[get_unstd_syllable(sarch[sylls[ii]])];
+
+					ok = sylls2 == sylls3;
+
+					// don't care if the "true" word is lower-cased and the original one is valid upper-cased
+					if (!ok &&
+							(is_all_capitalized_word(sylls2) ||
+							 (is_first_capitalized_word(sylls2) && is_lower_cased_word(sylls3))))
+						ok = true;
+				}
 			}
 		}
 

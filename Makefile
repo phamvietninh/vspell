@@ -5,7 +5,7 @@ distance.o: distance.cpp distance.h
 	$(CXX) -c $< -I. -g -o $@
 wfst: wfst.o distance.o wfst-test.o
 	$(CXX) $^ -o $@
-wfst-test.o: wfst-test.cpp distance.h
+wfst-test.o: wfst-test.cpp distance.h wfst.h
 	$(CXX) -c $< -I. -g -o $@
 distance-test.o: distance-test.cpp distance.h
 	$(CXX) -c $< -I. -g -o $@

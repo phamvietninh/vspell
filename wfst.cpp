@@ -10,6 +10,10 @@
 
 using namespace std;
 
+#define ED_THRESOLD 1
+#define DISTANCE_THRESOLD 1	// total distances without pruning
+
+
 void Sentence::standardize()
 {
 }
@@ -98,7 +102,7 @@ bool WordNode::load(const string &filename)
 WordNodePtr WordNode::create_next(const string &str)
 {
   //  nodes[str].reset(new WordNode);
-  nodes[str] = new WordNode;
+  nodes[str] = new WordNode(str);
   return nodes[str];
 }
 
@@ -114,20 +118,26 @@ void WordNode::fuzzy_get_next(const string &str,vector<WordNodePtr>& _nodes) con
   const char *str_data = str.data();
   int str_len = str.size();
   int ed_value;
-  int thresold = 1;
   for (iter = nodes.begin();iter != nodes.end(); ++iter) {
+#ifdef USE_EXACT_MATCH
+    if (iter->first == str) {
+      _nodes.push_back(iter->second);
+      break;
+    }
+#else
     int iter_size = iter->first.size();
-    if (thresold > 0 &&
-	(iter_size - str_len >= thresold ||
-	 str_len - iter_size >= thresold))
+    if (ED_THRESOLD > 0 &&
+	(iter_size - str_len >= ED_THRESOLD ||
+	 str_len - iter_size >= ED_THRESOLD))
       continue;
 
     ed_value = ed(iter->first.data(),iter_size,str_data,str_len);
     //cerr << boost::format("%s <> %s => %d\n") % str % iter->first % ed_value;
-    if (ed_value <= thresold) {	// if (iter->first == str)
+    if (ed_value <= ED_THRESOLD) {	// if (iter->first == str)
       //cerr << iter->first << "<>" << str << " => " << ed_value << endl;
       _nodes.push_back(iter->second);
     }
+#endif
   }
   //cerr << str << " -> " << _nodes.size() << endl;
 }
@@ -145,7 +155,7 @@ std::string Sentence::const_iterator::operator++(int)
 class SegmentationComparator
 {
 public:
-  bool operator() (const WFST::Segmentation &seg1,const WFST::Segmentation &seg2) {
+  bool operator() (const Segmentation &seg1,const Segmentation &seg2) {
     return seg1.prob < seg2.prob;
   }
 };
@@ -158,117 +168,125 @@ void WFST::segment_best(const Sentence &_sent,Segmentation &seps)
 
   // sort by prob
   sort(segms.begin(),segms.end(),SegmentationComparator());
-
-  for (vector<Segmentation>::iterator i = segms.begin();i != segms.end(); ++i) {
-    cerr << endl;
-    for (vector<Separator>::iterator ii = i->sep_list.begin();ii != i->sep_list.end(); ++ii) {
-      cerr << ii->anchor << " ";
-    }
-  }
-
+  vector<Segmentation>::iterator i;
+  for (i = segms.begin();i != segms.end(); ++i)
+    i->print(_sent);
 }
 
-struct Trace
-{
-  int next,fuzzy_thresold;
-  WFST::Segmentation segm;
-  WordNodePtr node;
-};
+// WFST (Weighted Finite State Transducer) implementation
+// TUNE: think about genetic/greedy. Vietnamese is almost one-syllable words..
+// we find where is likely a start of a word, then try to construct word
+// and check if others are still valid words.
 
-#define FUZZY_THRESOLD 1
+// the last item is always the incompleted item. We will try to complete
+// a word from the item. If we reach the end of sentence, we will remove it
+// from segs
 
 template <class OutputIterator>
 void WFST::segment_all(const Sentence &sent,OutputIterator iter)
 {
-
-  int nr_syllables = sent.get_syllable_number();
+  int nr_syllables = sent.get_syllable_count();
+  vector<Segmentation> segs;	// used to store all incomplete seg
   int i;
-  vector<Trace> traces;
   int count = 0;
   
-  Trace start_trace;
-  start_trace.next = 0;
-  start_trace.node = wl;
-  start_trace.fuzzy_thresold = 0;
+  //Segmentation start_seg;
+  segs.push_back(Segmentation()); // empty seg
 
-  traces.push_back(start_trace);
+  while (!segs.empty()) {
+    // get one
+    Segmentation seg = segs.back();
+    segs.pop_back();
+    //cerr << segs.size() << endl;
 
-  while (!traces.empty()) {
-    // examine one
-    Trace trace = traces.back();
-    traces.pop_back();
-    cerr << traces.size() << endl;
+    int next_syllable = seg.items.size();
+    WordNodePtr state;
+    if (next_syllable == 0 ||
+	seg.items[next_syllable-1].flags & SEGM_SEPARATOR)
+      state = wl;
+    else
+      state = seg.items[next_syllable-1].state;
 
     // segmentation completed. throw it away
     // TUNE: do we need these? -> yes we do
-    // in case of partial segmentations
-    if (trace.next == nr_syllables)
+    // in case of bad/incomplete segmentations
+    if (next_syllable == nr_syllables)
       continue;
 
-    Sentence::Syllable syll = sent[trace.next];
+    const Sentence::Syllable &syll = sent[next_syllable];
     //cerr << "<" << *syll << ">" << endl;
 
-    // get next node. INFO: fuzzy match here
-    vector<WordNodePtr> next_nodes;
-    if (trace.fuzzy_thresold > FUZZY_THRESOLD) {
-      WordNodePtr node = trace.node->get_next(*syll);
+    // get next state.
+    vector<WordNodePtr> next_states;
+    if (seg.distance > DISTANCE_THRESOLD) {
+      // too many operations
+      // use exact matching instead of fuzzy one to keep segs small
+      WordNodePtr node = state->get_next(*syll);
       if (node != NULL)
-	next_nodes.push_back(node);
+	next_states.push_back(node);
     } else
-      trace.node->fuzzy_get_next(*syll,next_nodes);
+      state->fuzzy_get_next(*syll,next_states);
 
-    int next_nodes_size = next_nodes.size();
+    int next_states_size = next_states.size();
 
-    if (next_nodes_size == 0)
+    if (next_states_size == 0)	// nothing to continue
       continue;
 
-    if (next_nodes_size > 1)
-      trace.fuzzy_thresold ++;
+    if (next_states_size > 1)	// for pruning
+      seg.distance ++;		// FIXME: += item.distance?
 
-    vector<WordNodePtr>::iterator next_nodes_iter;
-    for (next_nodes_iter = next_nodes.begin();
-	 next_nodes_iter != next_nodes.end();
-	 ++next_nodes_iter) {
-      WordNodePtr next_node(*next_nodes_iter); 
+    vector<WordNodePtr>::iterator next_states_iter;
+    for (next_states_iter = next_states.begin();
+	 next_states_iter != next_states.end();
+	 ++next_states_iter) {
+      WordNodePtr next_state(*next_states_iter); 
 
-      // start a new trace based on "trace"
-      Trace new_trace = trace;
-      new_trace.node = next_node;
-      new_trace.next ++;
-      traces.push_back(new_trace); // put it into stack
-      //cerr << "new trace" << endl;
-
-
-      float prob = next_node->get_prob();
-      if (prob < 0)		// not the final state
-	continue;		// move on
-
-      // got a final state
-      new_trace.node = wl;	// reset node
-      Separator sep;		// create a separator
-      sep.anchor = new_trace.next-1;
-      sep.prob = prob;
-      new_trace.segm.sep_list.push_back(sep); // add a new separator
-
-      // if the new trace is completed, save it
-      if (new_trace.next == nr_syllables) {
-	vector<Separator>::iterator sepiter;
-	vector<Separator>& seplist = new_trace.segm.sep_list;
-	new_trace.segm.prob = 0;
-	// calculate the prob sum
-	for (sepiter = seplist.begin();
-	     sepiter != seplist.end();
-	     ++sepiter) {
-	  new_trace.segm.prob += sepiter->prob;
-	}
-	*iter++ = new_trace.segm;	// save it.
-	//cerr << "--> " << count++ << endl;
-      } else {
-	traces.push_back(new_trace);
-	//cerr << "add new trace" << endl;
+      if (!next_state->is_next_empty()) {
+	// New segmentation for longer incomplete word
+	Segmentation newseg;
+	newseg = seg;
+	newseg.items.push_back(Segmentation::Item());
+	Segmentation::Item &item = newseg.items.back();
+	item.state = next_state;	// move to the next node
+	item.distance = 0/*FIXME*/;
+	segs.push_back(newseg);
       }
-    }
-  }
+
+      float prob = next_state->get_prob();
+      if (prob >= 0) {		// a final state
+	// New segmentation for longer incomplete word
+	Segmentation newseg;
+	newseg = seg;
+	newseg.items.push_back(Segmentation::Item());
+	Segmentation::Item &item = newseg.items.back();
+	item.state = next_state;	// move to the next node
+	item.distance = 0/*FIXME*/;
+	item.flags |= SEGM_SEPARATOR;
+	if (newseg.items.size() == nr_syllables)
+	  *iter++ = newseg;
+	else
+	  segs.push_back(newseg);
+      }
+    } // end for (moving to new state)
+  } // end while
 }
 
 
+void Segmentation::print(const Sentence &st)
+{
+  int i,n = st.get_syllable_count();
+  /*
+  for (i = 0;i < n;i ++) {
+    cout << *st[i] << " ";
+    if (items[i].flags & SEGM_SEPARATOR)
+      cout << "| ";
+  }
+  cout << endl;
+  */
+  for (i = 0;i < n;i ++) {
+    cout << items[i].state->get_syllable() << " ";
+    if (items[i].flags & SEGM_SEPARATOR)
+      cout << "| ";
+  }
+  cout << endl;
+}

@@ -1,6 +1,10 @@
 #ifndef __WORDNODE_H__		// -*- tab-width: 2 mode: c++ -*-
 #define __WORDNODE_H__
 
+#ifndef __TYPES_H__
+#include "types.h"
+#endif
+
 #ifndef __DICTIONARY_H__
 #include "dictionary.h"
 #endif

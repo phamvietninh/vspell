@@ -5,6 +5,32 @@ using namespace std;
 
 void sentences_split(const string &_input,vector<string> &output)
 {
+	Tokens tokens;
+	::tokenize(_input,tokens);
+
+	int i,n = tokens.size();
+
+	string str;
+	
+	for (i = 0;i < n;i ++) {
+		str += tokens[i].value;
+
+		if (tokens[i].is_token) {
+			int jj,nn = tokens[i].value.size();
+			for (jj = 0;jj < nn;jj ++)
+				if (viet_isalpha(tokens[i].value[jj]))
+					break;
+			if (jj == nn) {
+				output.push_back(str);
+				str = "";
+			}
+		}
+	}
+
+	if (!str.empty())
+		output.push_back(str);
+
+	/*
   // candidates are ? ! .
   // . is ambiguous
   string input = _input;
@@ -37,6 +63,7 @@ void sentences_split(const string &_input,vector<string> &output)
 
   if (!input.empty())
     output.push_back(input);
+	*/
 }
 
 void Sentence::standardize()

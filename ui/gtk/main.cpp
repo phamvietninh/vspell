@@ -168,6 +168,7 @@ static void button_spell_callback (GtkWidget *button, gpointer data)
 
 	vspell.check(buffer);
 	set_state(false);
+	text_reset(textbuffer_main);
 }
 
 static void button_ignore_all_callback(GtkWidget *button,gpointer data)
@@ -390,12 +391,17 @@ bool MyText::ui_syllable_check()
 bool MyText::ui_word_check()
 {
 	unsigned i,n = suggestions.size();
+	int pos,pos2,count;
+
 	for (i = 0;i < n;i ++) {
 		show_wrong_words(i);
 		// query
+		count = seg[suggestions[i].id].node->get_syllable_count();
+		pos = (*seg.we)[seg[suggestions[i].id].id].pos;
+		pos2 = pos+count-1;
 		int from,len;
-		from = st[suggestions[i].id].start;
-		len = strlen(get_sarch()[st[suggestions[i].id].id]);
+		from = st[pos].start;
+		len = st[pos2].start+strlen(get_sarch()[st[pos2].id])-from;
 		string s = substr(from,len);
 		gtk_entry_set_text(GTK_ENTRY(spell_entry),s.c_str());
 		processed = ignore_all = ignore = false;
@@ -408,19 +414,29 @@ bool MyText::ui_word_check()
 			return true;							// force to exit
 
 		if (processed) {
-			cerr << "Input: The right one is:" << endl;
+			string s = gtk_entry_get_text(GTK_ENTRY(spell_entry));
 
-			const gchar *s = gtk_entry_get_text(GTK_ENTRY(spell_entry));
+			if (s.empty())
+				continue;
 
-			if (*s == 0)
-				continue;										// i don't accept an empty string
+			count = seg[suggestions[i].id].node->get_syllable_count();
+			pos = (*seg.we)[seg[suggestions[i].id].id].pos;
+			pos2 = pos+count-1;
 
-			replace(st[suggestions[i].id].start, // from
-							strlen(get_sarch()[st[suggestions[i].id].get_id()]), // size
-							s);					// text
-			vspell->add(get_sarch()[viet_to_viscii_force(s)]);
+			string::size_type p;
+			vector<unsigned> separators;
+			while ((p = s.find('|')) != string::npos) {
+				separators.push_back(st[pos].start+g_utf8_strlen(s.substr(0,p).c_str(),-1)+offset);
+				s.erase(p,1);
+			}
 
-			return false;
+			replace(st[pos].start, // from
+							st[pos2].start+strlen(get_sarch()[st[pos2].get_id()])-st[pos].start, // size
+							s.c_str());					// text
+			
+			// add separators after replacing the text, to have old separators removed
+			vspell->add_separators(separators);
+			return false;								// continue checking
 		}
 		return true;								// some things went wrong
 	}

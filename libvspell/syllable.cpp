@@ -229,6 +229,8 @@ const char *syll_exist = "Exist";
 typedef vector<Syllable> confusion_set;
 vector<confusion_set> confusion_sets;
 
+string viet_tolower(const string &str);	// hack
+
 bool syllable_init()
 {
 	int i,len = strlen(case_table[0]);
@@ -653,10 +655,13 @@ bool Syllable::parse(const char *str)
 		for (k = 0;k < len;k ++) {
 			// look up into diacritic_table
 			for (j = 1;j < 6;j ++) {
-				char *pos = strchr(diacritic_table[j],syllable[k]);
+				char *pos = strchr(diacritic_table[j],viet_tolower(syllable[k]));
 				if (pos != NULL) {
 					int ipos = pos - diacritic_table[j];
-					syllable[k] = diacritic_table[0][ipos];	// remove diacritic
+					if (viet_toupper(syllable[k]) == syllable[k])
+						syllable[k] = viet_toupper(diacritic_table[0][ipos]);	// remove diacritic
+					else
+						syllable[k] = diacritic_table[0][ipos];	// remove diacritic
 					components[Diacritic] = j;
 					break;
 				}
@@ -673,7 +678,7 @@ bool Syllable::parse(const char *str)
 		int pattern_len = strlen(pattern);
 
 		if (len > pattern_len &&
-				syllable.substr(len-pattern_len) == pattern) {
+				viet_tolower(syllable.substr(len-pattern_len)) == pattern) {
 			components[Last_Consonant] = i;
 			syllable.erase(len-pattern_len);
 			break;
@@ -688,7 +693,7 @@ bool Syllable::parse(const char *str)
 		int pattern_len = strlen(pattern);
 
 		if (len >= pattern_len && 	// equal is possible
-				syllable.substr(0,pattern_len) == pattern) {
+				viet_tolower(syllable.substr(0,pattern_len)) == pattern) {
 			components[First_Consonant] = i;
 			syllable.erase(0,pattern_len);
 			break;
@@ -729,7 +734,7 @@ bool Syllable::parse(const char *str)
 		int pattern_len = strlen(pattern);
 
 		if (len >= pattern_len && 	// equal is possible
-				syllable.substr(len-pattern_len) == pattern) {
+				viet_tolower(syllable.substr(len-pattern_len)) == pattern) {
 			components[Vowel] = i;
 			syllable.erase(len-pattern_len);
 			break;
@@ -745,7 +750,7 @@ bool Syllable::parse(const char *str)
 		char *pattern = padding_vowels[i];
 		//int pattern_len = strlen(pattern);
 
-		if (syllable == pattern) {
+		if (viet_tolower(syllable) == pattern) {
 			components[Padding_Vowel] = i;
 			syllable = "";
 			break;
@@ -842,6 +847,15 @@ int viet_tolower(int ch)	// must be sure ch is a character
 	return full_case_table[0][(unsigned char)(char)ch];
 }
 
+string viet_tolower(const string &str)
+{
+	string s(str);
+	int n = str.size();
+	for (int i = 0;i < n;i ++)
+		s[i] = viet_tolower(s[i]);
+	return s;
+}
+
 bool viet_isupper(int ch)
 {
 	return viet_isalpha(ch) && full_case_table[1][ch] == ch;
@@ -883,10 +897,13 @@ string get_dic_syllable(const string &str)
 
 	for (i = 0;i < n;i ++) {
 		pair<char,unsigned char> p;
-		p = full_diacritic_table[(unsigned char)str[i]];
+		//p = full_diacritic_table[(unsigned char)str[i]];
+		p = full_diacritic_table[(unsigned char)viet_tolower(str[i])];
 		if (p.first > 0) {
 			string ret = char(p.first+'0')+str;
 			ret[i+1] = diacritic_table[0][p.second];
+			if (viet_toupper(str[i]) == str[i])
+				ret[i+1] = viet_toupper(ret[i+1]);
 			return ret;
 		}
 	}
@@ -896,7 +913,7 @@ string get_dic_syllable(const string &str)
 string get_std_syllable(const string &str)
 {
 	string s = get_dic_syllable(str);
-	if (sarch.in_dict(s))
+	if (sarch.in_dict(s) || sarch.in_dict(get_lowercased_syllable(s)))
 		return s;
 	else
 		return str;
@@ -904,9 +921,7 @@ string get_std_syllable(const string &str)
 
 string get_lowercased_syllable(const string &str)
 {
-	string s(str);
-	transform(s.begin(),s.end(),s.begin(),viet_tolower);
-	return s;
+	return viet_tolower(str);
 }
 /*
 	}

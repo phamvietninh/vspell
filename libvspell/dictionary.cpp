@@ -41,9 +41,18 @@ bool dic_init(WordNodePtr _root)
 	ed_init();
 	myroot = _root;
 	sarch["<unused>"]; // 0, don't use
-	unk_id = sarch[get_dic_syllable("<unk>")];	// should be in Dictionary::load
-	start_id = sarch[get_dic_syllable("<s>")];	// should be in Dictionary::load
-	stop_id = sarch[get_dic_syllable("</s>")];	// should be in Dictionary::load
+	unk_id = sarch[get_dic_syllable("<unk>")];
+	start_id = sarch[get_dic_syllable("<s>")];
+	stop_id = sarch[get_dic_syllable("</s>")];
+	vector<string> toks(3);
+	toks[0] = "<unk>";
+	toks[1] = "N";
+	toks[2] = "0";
+	myroot->add_entry(toks);
+	toks[1] = "<s>";
+	myroot->add_entry(toks);
+	toks[1] = "</s>";
+	myroot->add_entry(toks);
 	// if 
 	return true;
 }
@@ -135,75 +144,86 @@ bool WordNode::load(const char* filename)
 		if (toks.size() < 3)
 			toks.push_back("0");	// assume 0
 
-		start = 0;
-		len = toks[0].size();
-		WordNodePtr node(this),cnode(this);
-		vector<VocabIndex> syllables;
-		vector<VocabIndex> csyllables;
-		while (start < len) {
-			pos = toks[0].find(' ',start);
-			if (pos == string::npos)
-				pos = len;
-			string s = toks[0].substr(start,pos-start);
-			VocabIndex id = sarch[get_dic_syllable(s)];
-			syllables.push_back(id);
-			WordNodePtr next = node->get_next(id);
-			if (!next) {							// create new
-				next = node->create_next(id);
-			}
-			node = next;
+		add_entry(toks);
 
+		nr_lines ++;
+	}
+
+	return true;
+}
+
+void WordNode::add_entry(vector<string> toks)
+{
+	int start,len,pos;
+	start = 0;
+	len = toks[0].size();
+	WordNodePtr node(this);//,cnode(this);
+	vector<VocabIndex> syllables;
+	//vector<VocabIndex> csyllables;
+	while (start < len) {
+		pos = toks[0].find(' ',start);
+		if (pos == string::npos)
+			pos = len;
+		string s = toks[0].substr(start,pos-start);
+		VocabIndex id = sarch[get_dic_syllable(s)];
+		syllables.push_back(id);
+		WordNodePtr next = node->get_next(id);
+		if (!next) {							// create new
+			next = node->create_next(id);
+		}
+		node = next;
+
+		/*
 			transform(s.begin(),s.end(),s.begin(),viet_tolower);
 			VocabIndex cid = sarch[get_dic_syllable(s)];
 			csyllables.push_back(cid);
 			WordNodePtr cnext = cnode->get_next(cid);
 			if (!cnext) {							// create new
-				cnext = cnode->create_next(cid);
+			cnext = cnode->create_next(cid);
 			}
 			cnode = cnext;
-			start = pos+1;
-		}
-
-		if (toks[2].find(' ') != string::npos)
-			toks[2].erase(toks[2].find(' '));
-
-		// reconstruct word id
-		string word;
-		int i,nr_syllables = syllables.size();
-		for (i = 0;i < nr_syllables;i ++) {
-			if (i)
-				word += "_";
-			word += sarch[syllables[i]];
-		}
-
-		node->info.reset(new WordInfo);
-		node->info->id = sarch[word];
-		node->info->syllables.resize(nr_syllables+1);
-		node->info->syllables[nr_syllables] = Vocab_None;
-		//cerr << "Word " << toks[0] << "(" << node->info->id << "| ";
-		for (int i = 0;i < nr_syllables;i ++) {
-			node->info->syllables[i] = syllables[i];
-			//cerr << node->info->syllables[i] << ",";
-		}
-		//cerr << endl;
-		node->set_prob(atof(toks[2].c_str()));
-
-		if (csyllables != syllables) {
-			transform(word.begin(),word.end(),word.begin(),viet_tolower);
-			cnode->info.reset(new WordInfo);
-			cnode->info->id = sarch[word];
-			nr_syllables = csyllables.size();
-			cnode->info->syllables.resize(nr_syllables+1);
-			cnode->info->syllables[nr_syllables] = Vocab_None;
-			for (i = 0;i < nr_syllables;i ++)
-				cnode->info->syllables[i] = csyllables[i];
-			cnode->set_prob(atof(toks[2].c_str()));
-		} else
-			cnode->info = node->info;
-		nr_lines ++;
+		*/
+		start = pos+1;
 	}
 
-	return true;
+	if (toks[2].find(' ') != string::npos)
+		toks[2].erase(toks[2].find(' '));
+
+	// reconstruct word id
+	string word;
+	int i,nr_syllables = syllables.size();
+	for (i = 0;i < nr_syllables;i ++) {
+		if (i)
+			word += "_";
+		word += sarch[syllables[i]];
+	}
+
+	node->info.reset(new WordInfo);
+	node->info->id = sarch[word];
+	node->info->syllables.resize(nr_syllables+1);
+	node->info->syllables[nr_syllables] = Vocab_None;
+	//cerr << "Word " << toks[0] << "(" << node->info->id << "| ";
+	for (int i = 0;i < nr_syllables;i ++) {
+		node->info->syllables[i] = syllables[i];
+		//cerr << node->info->syllables[i] << ",";
+	}
+	//cerr << endl;
+	node->set_prob(atof(toks[2].c_str()));
+
+	/*
+		if (csyllables != syllables) {
+		transform(word.begin(),word.end(),word.begin(),viet_tolower);
+		cnode->info.reset(new WordInfo);
+		cnode->info->id = sarch[word];
+		nr_syllables = csyllables.size();
+		cnode->info->syllables.resize(nr_syllables+1);
+		cnode->info->syllables[nr_syllables] = Vocab_None;
+		for (i = 0;i < nr_syllables;i ++)
+		cnode->info->syllables[i] = csyllables[i];
+		cnode->set_prob(atof(toks[2].c_str()));
+		} else
+		cnode->info = node->info;
+	*/
 }
 
 bool WordNode::save(const char* filename)

@@ -64,18 +64,22 @@ void Words::construct(const Sentence &sent)
 			const WordState &ws = (*states1)[ii];
 
 			WordNodePtr exact_node = ws.dnode.node->get_next(sent[i].get_cid());
+			WordNodePtr lowercase_node = ws.dnode.node->get_next(sarch[get_lowercased_syllable(sarch[sent[i].get_cid()])]);
 			vector<WordNode::DistanceNode> nodes;
 			ws.dnode.node->fuzzy_get_next(sent[i].get_cid(),nodes);
 			if (exact_node && 
 					find(nodes.begin(),nodes.end(),exact_node) == nodes.end())
 				nodes.push_back(exact_node);
+			if (lowercase_node && 
+					find(nodes.begin(),nodes.end(),lowercase_node) == nodes.end())
+				nodes.push_back(lowercase_node);
 
 			nnn = nodes.size();
 			for (iii = 0;iii < nnn;iii ++) {
 				states2->push_back(ws);	// inherit from the current state
 				WordState &ws2 = states2->back();
 				ws2.dnode = nodes[iii];
-				if (nodes[iii].node != exact_node)
+				if (nodes[iii].node != exact_node && nodes[iii].node != lowercase_node)
 					ws2.fuzid |=  1 << k;
 				
 				// get completed words

@@ -140,9 +140,9 @@ void Words::construct(const Sentence &sent)
 	w.we = boost::shared_ptr<WordEntries>(new WordEntries);
 	w.we->reserve(n);
 	copy(we.begin(),we.end(),back_insert_iterator<vector<WordEntry> >(*w.we));
-	for (i = 0;i < n;i ++)
+	for (i = 0;i < n;i ++) {
 		(*w.we)[i].id = i;
-
+	}
 	// build Words structure
 	w.construct();
 }

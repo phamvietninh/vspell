@@ -56,7 +56,7 @@ void mark_proper_name(Sentence &st)
     if (last_names.find(st[npos].id) != last_names.end()) {
       // mark as a personal name.
       st[npos].span = nlen;	// skip next nlen syllables.
-      st[npos].sid = sarch["<propername>"];//proper_name_id;
+      st[npos].cid = sarch["<propername>"];//proper_name_id;
     }
 
     // check for other proper names

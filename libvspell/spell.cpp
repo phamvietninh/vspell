@@ -37,11 +37,11 @@ void spell_check1(Sentence &st,Suggestions &sugg)
 		if (sarch.in_dict(id))
 			continue;
 
-		st[i].sid = unk_id;
+		st[i].cid = unk_id;
 
 		VocabString s = sarch[id];
 		if (strlen(s) == 1 && !viet_isalpha(s[0])) {
-			st[i].sid = sarch["<PUNCT>"];
+			st[i].cid = sarch["<PUNCT>"];
 			continue;
 		}
 

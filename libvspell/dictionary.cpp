@@ -41,9 +41,9 @@ bool dic_init(WordNodePtr _root)
 	ed_init();
 	myroot = _root;
 	sarch["<unused>"]; // 0, don't use
-	unk_id = sarch["<unk>"];	// should be in Dictionary::load
-	start_id = sarch["<s>"];	// should be in Dictionary::load
-	stop_id = sarch["</s>"];	// should be in Dictionary::load
+	unk_id = sarch[get_std_syllable("<unk>")];	// should be in Dictionary::load
+	start_id = sarch[get_std_syllable("<s>")];	// should be in Dictionary::load
+	stop_id = sarch[get_std_syllable("</s>")];	// should be in Dictionary::load
 	// if 
 	return true;
 }
@@ -145,19 +145,19 @@ bool WordNode::load(const char* filename)
 			if (pos == string::npos)
 				pos = len;
 			string s = toks[0].substr(start,pos-start);
-			VocabIndex id = sarch[/*get_std_syllable*/(s)];
+			VocabIndex id = sarch[get_std_syllable(s)];
 			syllables.push_back(id);
 			WordNodePtr next = node->get_next(id);
-			if (!next) {		// create new
+			if (!next) {							// create new
 				next = node->create_next(id);
 			}
 			node = next;
 
 			transform(s.begin(),s.end(),s.begin(),viet_tolower);
-			VocabIndex cid = sarch[/*get_std_syllable*/(s)];
+			VocabIndex cid = sarch[get_std_syllable(s)];
 			csyllables.push_back(cid);
 			WordNodePtr cnext = cnode->get_next(cid);
-			if (!cnext) {		// create new
+			if (!cnext) {							// create new
 				cnext = cnode->create_next(cid);
 			}
 			cnode = cnext;

@@ -173,13 +173,7 @@ void Sentence::tokenize()
 
 			if (jj < nn) {							// a token
 				string &s = tokens[i].value;
-				sy.sid = sy.id = sarch[s];
-				//sy.sid = sarch[get_std_syllable(s)];
-				//sy.iid = sy.sid;
-				transform(s.begin(),s.end(),s.begin(),viet_tolower);
-				sy.scid = sy.cid = sarch[s];
-				//sy.scid = sarch[get_std_syllable(s)];
-				//sy.icid = sy.scid;
+				sy.cid = sy.id = sarch[s];
 				syllables.push_back(sy);
 			}
 		}

@@ -211,16 +211,14 @@ public:
     unsigned int start;
     strid id;										/// real string
 		strid cid;									/// lowercased string
-		strid scid;									/// standardized, lowercased string
-		strid sid;									/// standardized string
 		//strid iid,icid;
     //std::string::iterator start,end;
     Sentence *sent_;
     unsigned int category;
     unsigned int span;
 
-    strid get_id() const { return sid; }
-    strid get_cid() const { return scid; }
+    strid get_id() const { return id; }
+    strid get_cid() const { return cid; }
   };
 
 private:

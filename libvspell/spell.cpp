@@ -488,6 +488,11 @@ bool Text::word_check()
 	for (i = 0;i < n;i ++) {
 		vector<strid> sylls;
 		strid_string sylls2;
+		
+		// temporary fix: ignore <prop> errors
+		if (seg[i].node == get_special_node(PROPER_NAME_ID))
+			continue;
+		
 		int ii,len = seg[i].node->get_syllable_count();
 		seg[i].node->get_syllables(sylls);
 
@@ -501,7 +506,7 @@ bool Text::word_check()
 		}
 
 		// in user dict
-		bool ok = vspell->in_dict(sylls2);
+		bool ok = subok || vspell->in_dict(sylls2);
 
 		if (!ok) {
 			strid_string sylls3;

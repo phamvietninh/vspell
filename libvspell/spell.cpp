@@ -327,7 +327,12 @@ bool Text::sentence_check(const char *pp)
 	//cerr << w << endl;
 
 	PFS pfs;
-	pfs.segment_best(w,seg);
+	Path path;
+	WordDAG dag(&w);
+	pfs.search(dag,path);
+	seg.resize(path.size());
+	copy(path.begin(),path.end(),seg.begin());
+	seg.we = w.we;
 	//cerr << seg << endl;
 	
 	// word checking

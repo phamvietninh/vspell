@@ -1,18 +1,34 @@
-#include "pfs.h"		// -*- tab-width: 2 -*-
+#include "bellman.h"		// -*- tab-width: 2 -*-
+#include <values.h>
 
 using namespace std;
 
-class HeapValue : public vector<float> {
-public:
-	bool operator() (uint v1,uint v2) {
-	  return (*this)[v1] > (*this)[v2];
-	}
-	
-};
-
-/*
 void PFS::segment_best(const Lattice &w,Segmentation &seps)
 {
+	uint i,n;
+	for (i = 0;i < n;i ++)
+		if (matrix[x][i]) {
+			length[i] = matrix[x][i];
+			last[i] = x;
+		} else {
+			length[i] = MAXINT;
+			last[i] = -1;
+		}
+
+	//    length[x] = 0;
+
+	for (cont = 1,k = 0; cont && k < n;k ++) {
+		cont = 0;
+		for (j = 0;j < n;j ++)
+			for (i = 0;i < n;i ++)
+				if (length[i] != MAXINT && matrix[i][j] &&
+						length[j] > length[i] + matrix[i][j]) {
+					length[j] = length[i] + matrix[i][j];
+					last[j] = i;
+					cont = 1;
+				}
+	}
+
 	vector<uint> back_traces;
 	vector<bool> seen;						// true if a node is seen
 	vector<uint> candidates;				// examining nodes
@@ -120,100 +136,6 @@ void PFS::segment_best(const Lattice &w,Segmentation &seps)
 		} else
 			break;
 	}
-	reverse(seps.begin(),seps.end());
-
-	//cerr << "done" << endl;
-}
-*/
-
-void PFS::search(const DAG &dag,Path &seps)
-{
-	vector<uint> back_traces;
-	vector<bool> seen;						// true if a node is seen
-	vector<uint> candidates;				// examining nodes
-	uint v;
-	HeapValue val;
-	uint n = dag.node_count();
-
-	val.resize(n+1);
-	back_traces.resize(n+1);
-	seen.resize(n+1);
-	candidates.reserve(n+1);
-
-	vector<uint> next_nodes;
-	v = dag.node_begin();
-	back_traces[v] = v;
-	val[v] = 0;
-	seen[v] = true;
-	dag.get_next(dag.node_begin(),next_nodes);
-	int ii,nn = next_nodes.size();
-	for (ii = 0; ii < nn;ii ++) {
-		v = next_nodes[ii];
-		candidates.push_back(v);
-		push_heap(candidates.begin(),candidates.end(),val);
-		seen[v] = true;
-		val[v] = 0;
-		back_traces[v] = dag.node_begin();
-	}
-
-	// while there is a node to examine
-	while (!candidates.empty()) {
-
-		// get a node
-		pop_heap(candidates.begin(),candidates.end(),val);
-		v = candidates.back();
-		candidates.pop_back();
-
-		//cerr << "got " << (*w.we)[v].node << " " << val[v] << endl;
-
-		next_nodes.clear();
-		dag.get_next(v,next_nodes);
-
-		uint vv;
-		nn = next_nodes.size();
-		float value,add;
-		for (ii = 0;ii < nn;ii ++) {
-		  vv = next_nodes[ii];
-		  add = dag.edge_value(vv,v);
-		  value = val[v] + add;
-		  //cerr << "examine " << vv << "(" << wers[ii]->node << ")";
-
-		  if (!seen[vv]) {
-				candidates.push_back(vv);
-				seen[vv] = true;
-				val[vv] = value;
-				push_heap(candidates.begin(),candidates.end(),val);
-				back_traces[vv] = v;
-				//cerr << " add " << val[vv] << "=" << v << "+"<< add;
-		  } else {
-				if (val[vv] > value) {
-					val[vv] = value;
-					back_traces[vv] = v;
-
-					// re-heap if necessary
-					vector<uint>::iterator iter = find(candidates.begin(),candidates.end(),vv);
-					while (true) {
-						push_heap(candidates.begin(),iter,val);
-						if (iter != candidates.end())
-							++iter;
-						else
-							break;
-					}
-					//cerr << " val " << val[vv] << "=" << v << "+"<< add;
-				}
-		  }
-		  //cerr << endl;
-		}
-	}
-
-	v = dag.node_end();
-	if (!seen[v])
-		return;											// ARGH! NO WAY TO THE END!!!
-
-	do {
-		seps.push_back(v);
-		v = back_traces[v];
-	} while (v != back_traces[v]);
 	reverse(seps.begin(),seps.end());
 
 	//cerr << "done" << endl;

@@ -11,7 +11,7 @@ int main()
 {
   string str;
 
-  dic_init(new WordNode(sarch["<root>"]));
+  dic_init(new WordNode(get_sarch()["<root>"]));
   
   while (getline(cin,str)) {
     vector<string> output;

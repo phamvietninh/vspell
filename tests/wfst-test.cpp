@@ -14,19 +14,21 @@ void print_all_words(const Lattice &words);
 int main(int argc,char **argv)
 {
   PFS wfst;
-  dic_init(argc > 1 ? new WordNode(sarch["<root>"]) : new FuzzyWordNode(sarch["<root>"]));
+  dic_init(argc > 1 ? 
+	   new WordNode(get_sarch()["<root>"]) : 
+	   new FuzzyWordNode(get_sarch()["<root>"]));
   ed_init();
 
   cerr << "Loading... ";
   get_root()->load("wordlist");
   File f("ngram","rt",0);
   if (!f.error())
-	  ngram.read(f);
+	  get_ngram().read(f);
   cerr << "done" << endl;
 
-  sarch.set_blocked(true);
+  get_sarch().set_blocked(true);
 
-  sarch.dump();
+  get_sarch().dump();
 
   /*
     cerr << "Saving...";
@@ -34,7 +36,7 @@ int main(int argc,char **argv)
     cerr << "done" << endl;
   */
 
-  wfst.set_wordlist(get_root());
+  //wfst.set_wordlist(get_root());
   vector<Sentence> sentences;
 
 /*
@@ -84,10 +86,17 @@ int main(int argc,char **argv)
 	Lattice words;
 	words.construct(st);
 	Segmentation seg(words.we);
+	/*
 	if (argc > 2)
 	  wfst.segment_best_no_fuzzy(words,seg);
 	else
 	  wfst.segment_best(words,seg);
+	*/
+	Path path;
+	WordDAG dag(&words);
+	wfst.search(dag,path);
+	seg.resize(path.size());
+	copy(path.begin(),path.end(),seg.begin());
 	seg.pretty_print(cout,st) << endl;
 	//	sarch.clear_rest();
       }

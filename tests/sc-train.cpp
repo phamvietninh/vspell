@@ -28,8 +28,8 @@ int main(int argc,char **argv)
 	const char *str;
 
 	dic_init(nofuz ? 
-		 new WordNode(sarch["<root>"]) : 
-		 new FuzzyWordNode(sarch["<root>"]));
+		 new WordNode(get_sarch()["<root>"]) : 
+		 new FuzzyWordNode(get_sarch()["<root>"]));
 
 	cerr << "Loading... ";
 	str = "wordlist.wl";
@@ -37,17 +37,17 @@ int main(int argc,char **argv)
 	str = (boost::format("ngram.%s") % oldres).str().c_str();
 	File f(str,"rt",0);
 	if (!f.error())
-		ngram.read(f);
+		get_ngram().read(f);
 	else
 		cerr << "Ngram loading error..." << endl;
 	cerr << "done" << endl;
 
-	sarch.set_blocked(true);
+	get_sarch().set_blocked(true);
 
 	string s;
 	int i,ii,iii,n,nn,nnn,z;
 	int count = 0;
-	NgramFractionalStats stats(sarch.get_dict(),2);
+	NgramFractionalStats stats(get_sarch().get_dict(),2);
 	while (getline(cin,s)) {
 		count ++;
 		if (count % 200 == 0)
@@ -72,13 +72,13 @@ int main(int argc,char **argv)
 
 	cerr << "Calculating... ";
 	//estimate(ngram,stats);
-	ngram.estimate(stats,NULL);
+	get_ngram().estimate(stats,NULL);
 	//wfst.enable_ngram(true);
 
 	cerr << "Saving... ";
-	str = (boost::format("ngram.%s") % newres).str().c_str();
+	str = (boost::format("get_ngram().%s") % newres).str().c_str();
 	File ff(str,"wt");
-	ngram.write(ff);
+	get_ngram().write(ff);
 	cerr << endl;
 	/*
 	  for (int i = 0;i < 50;i ++) {
@@ -100,7 +100,7 @@ void estimate(Ngram &ngram,NgramFractionalStats &stats)
 	 * thing. Good Turing discounting with the specified min and max counts
 	 * for all orders.
 	 */
-	unsigned order = ngram.setorder(0);
+	unsigned order = get_ngram().setorder(0);
 	Discount *discounts[order];
 	unsigned i;
 	Boolean error = false;
@@ -121,7 +121,7 @@ void estimate(Ngram &ngram,NgramFractionalStats &stats)
 	}
 	
 	if (!error) {
-		error = !ngram.estimate((NgramCounts<FloatCount>&)stats, discounts);
+		error = !get_ngram().estimate((NgramCounts<FloatCount>&)stats, discounts);
 	}
 	
 	for (i = 1; i <= order; i++) {

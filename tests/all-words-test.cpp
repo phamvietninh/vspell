@@ -16,7 +16,7 @@ void apply_separators(const Sentence &st,set<WordEntry> &wes,vector<unsigned> &s
   int i,n = st.get_syllable_count();
 
   for (i = 0;i < n-1 && sep < seps.size();i ++) {
-    int p = offset+st[i].start+strlen(sarch[st[i].get_id()]);
+    int p = offset+st[i].start+strlen(get_sarch()[st[i].get_id()]);
     if (p <= seps[sep] && seps[sep] <= offset+st[i+1].start) {
       apply_separator(wes,i);
       sep ++;
@@ -41,13 +41,13 @@ int main(int argc,char **argv)
     if (!strcmp(argv[i],"seps")) has_seps = true;
   }
 
-  dic_init(fuzzy ? new FuzzyWordNode(sarch["<root>"]) : new WordNode(sarch["<root>"]));
+  dic_init(fuzzy ? new FuzzyWordNode(get_sarch()["<root>"]) : new WordNode(get_sarch()["<root>"]));
 
   cerr << "Loading... ";
   get_root()->load("wordlist");
   cerr << "done" << endl;
 
-  sarch.set_blocked(true);
+  get_sarch().set_blocked(true);
 
   wfst.set_wordlist(get_root());
 
@@ -112,10 +112,10 @@ int main(int argc,char **argv)
 	    if (i)
 	      cout << " ";
 	    Syllable sy;
-	    if (sy.parse(sarch[syll[ii]]))
+	    if (sy.parse(get_sarch()[syll[ii]]))
 	      cout << sy.to_str();
 	    else
-	      cout << sarch[syll[ii]];
+	      cout << get_sarch()[syll[ii]];
 	  }
 	} else
 	  cout << "UNK";
@@ -154,7 +154,7 @@ int main(int argc,char **argv)
 
       cout << "}" << endl;
     }
-    sarch.clear_rest();
+    get_sarch().clear_rest();
   }
     
   return 0;

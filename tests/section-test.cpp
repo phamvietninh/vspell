@@ -7,13 +7,13 @@ using namespace std;
 int main(int argc,char **argv)
 {
   WFST wfst;
-  dic_init(argc > 1 ? new WordNode(sarch["<root>"]) : new FuzzyWordNode(sarch["<root>"]));
+  dic_init(argc > 1 ? new WordNode(get_sarch()["<root>"]) : new FuzzyWordNode(get_sarch()["<root>"]));
 
   cerr << "Loading... ";
   get_root()->load("wordlist.wl");
   cerr << "done" << endl;
 
-  sarch.set_blocked(true);
+  get_sarch().set_blocked(true);
 
   wfst.set_wordlist(get_root());
 
@@ -40,7 +40,7 @@ int main(int argc,char **argv)
       //sects2.construct(w);
       //cout << sects1 << endl;
       //cout << sects2 << endl;
-      //sarch.clear_rest();
+      //get_sarch().clear_rest();
     }
   }
     

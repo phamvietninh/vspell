@@ -90,13 +90,13 @@ void find_path(const Lattice &w)
 
 int main(int argc,char **argv)
 {
-  dic_init(argc > 1 ? new WordNode(sarch["<root>"]) : new FuzzyWordNode(sarch["<root>"]));
+  dic_init(argc > 1 ? new WordNode(get_sarch()["<root>"]) : new FuzzyWordNode(get_sarch()["<root>"]));
 
   cerr << "Loading... ";
   get_root()->load("wordlist.wl");
   cerr << "done" << endl;
 
-  sarch.set_blocked(true);
+  get_sarch().set_blocked(true);
 
   string s;
   int count = 0;

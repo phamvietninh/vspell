@@ -30,7 +30,7 @@ int main(int argc,char **argv)
 
 	dic_init(nofuz ? 
 		 new WordNode(get_sarch()["<root>"]) : 
-		 new FuzzyWordNode(sarch["<root>"]));
+		 new FuzzyWordNode(get_sarch()["<root>"]));
 
 	cerr << "Loading... ";
 	//str = (boost::format("wordlist.wl.%s") % oldres).str().c_str();
@@ -39,19 +39,19 @@ int main(int argc,char **argv)
 	str = (boost::format("ngram.%s") % oldres).str().c_str();
 	File f(str,"rt",0);
 	if (!f.error())
-		ngram.read(f);
+		get_ngram().read(f);
 	else
 		cerr << "Ngram loading error..." << endl;
 	cerr << "done" << endl;
 
-	sarch.set_blocked(true);
+	get_sarch().set_blocked(true);
 
 	//wfst.set_wordlist(get_root());
 
 	string s;
 	int i,ii,iii,n,nn,nnn,z;
 	int count = 0;
-	NgramStats stats(sarch.get_dict(),2);
+	NgramStats stats(get_sarch().get_dict(),2);
 	while (getline(cin,s)) {
 		count ++;
 		if (count % 200 == 0)
@@ -71,17 +71,24 @@ int main(int argc,char **argv)
 			//cerr << words << endl;
 			Segmentation seg(words.we);
 			PFS wfst;
+			/* // pfs don't distinguish
 			if (nofuz2)
 				wfst.segment_best_no_fuzzy(words,seg);
 			else
 				wfst.segment_best(words,seg);
+			*/
+			Path path;
+			WordDAG dag(&words);
+			wfst.search(dag,path);
+			seg.resize(path.size());
+			copy(path.begin(),path.end(),seg.begin());
 
 			//seg.pretty_print(cout,st) << endl;
 
 			n = seg.size();
 			VocabIndex *vi = new VocabIndex[n+3];
-			vi[0] = start_id;
-			vi[n+1] = stop_id;
+			vi[0] = get_id(START_ID);
+			vi[n+1] = get_id(STOP_ID);
 			vi[n+2] = Vocab_None;
 			for (i = 0;i < n;i ++) {
 				vi[i+1] = seg[i].node.node->get_id();
@@ -108,7 +115,7 @@ int main(int argc,char **argv)
 	cerr << "Calculating... ";
 	//get_root()->get_next(unk_id)->get_b() = 0;
 	//get_root()->recalculate();
-	ngram.estimate(stats);
+	get_ngram().estimate(stats);
 	//wfst.enable_ngram(true);
 
 	cerr << "Saving... ";
@@ -117,7 +124,7 @@ int main(int argc,char **argv)
   
 	str = (boost::format("ngram.%s") % newres).str().c_str();
 	File ff(str,"wt");
-	ngram.write(ff);
+	get_ngram().write(ff);
 	cerr << endl;
 	/*
 	  for (int i = 0;i < 50;i ++) {

@@ -110,4 +110,64 @@ void SoftCounter::count(const Lattice &w,NgramFractionalStats &stats)
 		*stats.insertCount(vi) += fc;
 	}
 }
+/*
+void SoftCounter::count(const DAG &dag,NgramFractionalStats &stats)
+{
+	vector<float> Sleft,Sright;
+	vector<vector<uint> > prev;
+	int i,n,v,vv;
+	float sum = 0;
+	VocabIndex vi[3];
+	float fc;
 
+	Sleft.resize(dag.node_count());
+	Sright.resize(dag.node_count());
+	prev.resize(dag.node_count());
+
+	deque<uint> traces;
+	dag.get_next(dag.node_begin(),traces);
+	// first pass: Sleft
+	while (!traces.empty()) {
+		v = traces.first();
+		traces.pop_first();
+		std::vector<uint> nexts;
+		dag.get_next(v,nexts);
+		n = nexts.size();
+
+		for (i = 0;i < n;i ++) {
+			vv = nexts[i];
+			add = Sleft[v]*dag.edge_value(vv,v);
+			Sleft[vv] += add;
+					
+			// init prev references for Sright phase
+			prev[vv].push_back(v);
+			traces.push_back(vv);
+		}
+	}
+
+	// second pass: Sright
+	Sright[dag.node_count()-1] = 1;
+	dag.push_back(dag.node_end()); // the last v above
+	while (!traces.empty()) {
+		vv = traces.first();
+		traces.pop_first();
+		n = prev[vv].size();
+		for (i = 0;i < n;i ++) {
+			// wers[ii] is the first node (W).
+			v = prev[vv][i];
+			traces.push_back(v);
+
+			add = Sright[v]*dag.edge_value(vv,v);
+			Sright[vv] += add;
+
+			// collect fractional counts
+			fc = Sleft[vv]*add/sum; // P(v/vv)
+			vi[0] = vv;
+			vi[1] = v;
+			vi[2] = Vocab_None;
+			*stats.insertCount(vi) += fc;
+		}
+	}
+}
+
+*/

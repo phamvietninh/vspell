@@ -9,16 +9,16 @@ using namespace std;
 
 int main(int argc,char **argv)
 {
-  dic_init(argc > 1 ? new WordNode(sarch["<root>"]) : new FuzzyWordNode(sarch["<root>"]));
+  dic_init(argc > 1 ? new WordNode(get_sarch()["<root>"]) : new FuzzyWordNode(get_sarch()["<root>"]));
 
   cerr << "Loading... ";
   get_root()->load("wordlist.wl");
 
   File f("ngram","rt");
-  ngram.read(f);
+  get_ngram().read(f);
   cerr << "done" << endl;
 
-  sarch.set_blocked(true);
+  get_sarch().set_blocked(true);
 
   string s;
   while (getline(cin,s)) {
@@ -43,7 +43,7 @@ int main(int argc,char **argv)
 	for (int i = ngram_length-1;i < seg.size();i ++) {
 	  for (int j = 0;j < ngram_length-1;j++)
 	    vi[j] = seg[i-1-j].node.node->get_id();
-	  seg.prob += -ngram.wordProb(seg[i].node.node->get_id(),vi);
+	  seg.prob += -get_ngram().wordProb(seg[i].node.node->get_id(),vi);
 	}
       
 	cout << seg << " " << seg.prob << endl;

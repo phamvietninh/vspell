@@ -36,7 +36,7 @@ int main(int argc,char **argv)
     Sentence st(s);
     st.standardize();
     st.tokenize();
-    Words words,w2;
+    Lattice words,w2;
     w2.construct(st);
     //w2.based_on(words);
     if (!dot)

@@ -110,7 +110,7 @@ bool find_capital_words(Sentence &st,int start,int &pos,int &len)
 {
 	int i, sz = st.get_syllable_count();
 	bool found = false;
-	string sent = st.get_sentence();
+	string sent = st.get();
 	for (i = start;i < sz;i ++) {
 		if (viet_isupper(sent[st[i].start])) {
 			if (!found) {

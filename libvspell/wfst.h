@@ -27,19 +27,19 @@ struct Section {
 	uint segment;
 	uint start;
 	uint len;
-	void segment_best(const Words&,Segmentation &final_seg);
+	void segment_best(const Lattice&,Segmentation &final_seg);
 };
 
 class Sections: public std::vector<Section> {
 public:
 	Sentence const * st;					/// This is used for operator<< only
-	void construct(const Words &words);
+	void construct(const Lattice &words);
 	friend std::ostream& operator << (std::ostream &os,const Sections &s);
 };
 
 
 /**
-	 Segmentor takes a Sentence, a Words and a range, then try to generate
+	 Segmentor takes a Sentence, a Lattice and a range, then try to generate
 	 all possible Segmentation.
  */
 
@@ -54,11 +54,11 @@ private:
 	};
 	int nr_syllables;
 	std::vector<Trace> segs;
-	Words const *_words;
+	Lattice const *_words;
 	int from,to;
 
 public:
-	void init(const Words &words,
+	void init(const Lattice &words,
 						int from,
 						int to);
 	bool step(Segmentation &seg);
@@ -81,8 +81,8 @@ public:
 
 	void enable_ngram(bool enable = true) { ngram_enabled = enable; }
 
-	void segment_best(const Words &words,Segmentation &seps);
-	void segment_best_no_fuzzy(const Words &words,Segmentation &seps);
+	void segment_best(const Lattice &words,Segmentation &seps);
+	void segment_best_no_fuzzy(const Lattice &words,Segmentation &seps);
 	void segment_all(const Sentence &sent,std::vector<Segmentation> &result);
 
 	//private:
@@ -91,7 +91,7 @@ public:													// for testing purpose
 																 int len,
 																 Segmentation& final_seg);
 	// variables needed when run wfst
-	Words const *p_words;
+	Lattice const *p_words;
 };
 
 #endif

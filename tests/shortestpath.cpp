@@ -12,7 +12,7 @@ public:
   
 };
 
-void find_path(const Words &w)
+void find_path(const Lattice &w)
 {
   vector<int> back_traces;
   vector<bool> seen;
@@ -110,7 +110,7 @@ int main(int argc,char **argv)
       Sentence st(ss[i]);
       st.standardize();
       st.tokenize();
-      Words words;
+      Lattice words;
       words.construct(st);
       find_path(words);
     }

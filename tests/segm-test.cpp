@@ -30,7 +30,7 @@ int main(int argc,char **argv)
       Sentence st(ss[ii]);
       st.standardize();
       st.tokenize();
-      Words words;
+      Lattice words;
       Segmentation seg;
       Segmentor segtor;
       words.construct(st);

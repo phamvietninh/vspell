@@ -10,7 +10,7 @@ public:
 	
 };
 
-void PFS::segment_best(const Words &w,Segmentation &seps)
+void PFS::segment_best(const Lattice &w,Segmentation &seps)
 {
 	vector<uint> back_traces;
 	vector<bool> seen;						// true if a node is seen

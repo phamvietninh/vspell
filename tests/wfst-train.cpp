@@ -66,7 +66,7 @@ int main(int argc,char **argv)
 			st.tokenize();
 			if (!st.get_syllable_count())
 				continue;
-			Words words;
+			Lattice words;
 			words.construct(st);
 			//cerr << words << endl;
 			Segmentation seg(words.we);

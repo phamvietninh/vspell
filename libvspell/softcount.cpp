@@ -5,7 +5,7 @@ using namespace std;
 /**
 	 No short description.
  */
-void SoftCounter::count(const Words &w,NgramFractionalStats &stats)
+void SoftCounter::count(const Lattice &w,NgramFractionalStats &stats)
 {
 	vector<float> Sleft,Sright;
 	vector<vector<uint> > prev;

@@ -87,7 +87,7 @@ public:
 	 Store WordInfos(s) started at specified positions.
  */
 
-class Words:public std::vector<WordInfos*> {
+class Lattice:public std::vector<WordInfos*> {
 public:
 
 	boost::shared_ptr<WordEntries> we;
@@ -167,36 +167,36 @@ public:
 		return (*(*this)[i])[l]->fuzzy_match[f]->node;
 	}
 
-	~Words();											// WARN: destroy all.
+	~Lattice();											// WARN: destroy all.
 
 	/**
-		 Construct Words based on member we.
+		 Construct Lattice based on member we.
 		 we must be valid.
 	 */
 
 	void construct();	
 
 	/**
-		 Construct Words based on another Words.
+		 Construct Lattice based on another Lattice.
 		 Only exact matches are copied.
-		 \param w specify the "template" Words
+		 \param w specify the "template" Lattice
 	 */
 
-	void based_on(const Words &w);
+	void based_on(const Lattice &w);
 
 	/**
-		 Add WordEntry w into Words.
+		 Add WordEntry w into Lattice.
 	 */
 
 	void add(WordEntry &w);
   
-	friend std::ostream& operator << (std::ostream& os,const Words &w);
+	friend std::ostream& operator << (std::ostream& os,const Lattice &w);
 }; 
-// Words[from][len].fuzzy_match[i]
+// Lattice[from][len].fuzzy_match[i]
 
 /**
 	 Sentence is used to store a sequence of syllables.
-	 Sentence and Words will keep all necessary info for a spelling checker.
+	 Sentence and Lattice will keep all necessary info for a spelling checker.
 	 "Sentence" here is not exactly a sentence. It's just a part of sentence
 	 separated by punctuation.
  */
@@ -229,9 +229,10 @@ private:
   void tokenize_punctuation(const std::string &s,std::vector<std::string> &ss);
 
 public:
+	Sentence() {}
   Sentence(const std::string &st):sent_(st) {}
-  void set_sentence(const std::string &st) { sent_ = st; syllables.clear(); }
-  std::string get_sentence() { return sent_; }
+  void set(const std::string &st) { sent_ = st; syllables.clear(); }
+  std::string get() { return sent_; }
   void tokenize();
   void standardize();
   unsigned int get_syllable_count() const { return syllables.size(); }
@@ -260,8 +261,8 @@ struct Segmentation : public std::vector<uint>
   Segmentation(boost::shared_ptr<WordEntries> _we = boost::shared_ptr<WordEntries>()):
 		we(_we),
 		prob(0),
-		distance(0)
-	{}
+		distance(0)	{}
+
 	Segmentation(const Segmentation&seg):std::vector<uint>(seg) {
 		prob = seg.prob;
 		distance = seg.distance;

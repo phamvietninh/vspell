@@ -34,9 +34,9 @@ struct WordState {
 	\param sent specify the input sentence
 	\param w must be cleared before calling this function
 */
-void Words::construct(const Sentence &sent)
+void Lattice::construct(const Sentence &sent)
 {
-	Words &w = *this;
+	Lattice &w = *this;
 	int i,n,ii,nn,k,nnn,iii;
 	vector<bool> marks;
 	set<WordEntry> we;
@@ -127,15 +127,15 @@ void Words::construct(const Sentence &sent)
 	for (i = 0;i < n;i ++) {
 		(*w.we)[i].id = i;
 	}
-	// build Words structure
+	// build Lattice structure
 	w.construct();
 }
 
 /**
-	 Post-process after initialize core member of Words
+	 Post-process after initialize core member of Lattice
  */
 
-void Words::construct()
+void Lattice::construct()
 {
 	int i_we,n_we = we->size();
 
@@ -143,9 +143,9 @@ void Words::construct()
 		add((*we)[i_we]);
 }
 /**
-	 Dump a Words
+	 Dump a Lattice
  */
-ostream& operator << (ostream &os, const Words &w)
+ostream& operator << (ostream &os, const Lattice &w)
 {
 	int i, nn = w.get_word_count();
 	for (i = 0;i < nn;i ++) {
@@ -161,7 +161,7 @@ ostream& operator << (ostream &os, const Words &w)
 	return os;
 }
 
-Words::~Words()
+Lattice::~Lattice()
 {
 	int pos,nr_pos = get_word_count();
 	for (pos = 0;pos < nr_pos;pos ++) {
@@ -181,13 +181,13 @@ std::ostream& operator << (std::ostream &os,const WordEntry &we)
 
 
 /**
-	 Construct a Words based on another Words. 
+	 Construct a Lattice based on another Lattice. 
 	 Keep only exact matches.
  */
 
-void Words::based_on(const Words &w)
+void Lattice::based_on(const Lattice &w)
 {
-	Words &me = *this;
+	Lattice &me = *this;
 	we = w.we;
 	me.st = w.st;
 
@@ -204,9 +204,9 @@ void Words::based_on(const Words &w)
 	}
 }
 
-void Words::add(WordEntry &w)
+void Lattice::add(WordEntry &w)
 {
-	Words &me = *this;
+	Lattice &me = *this;
 	while (me.size() <= w.pos)
 		me.push_back(new WordInfos);
 

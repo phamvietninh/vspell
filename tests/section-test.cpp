@@ -30,9 +30,9 @@ int main(int argc,char **argv)
       Sentence st(ss[i]);
       st.standardize();
       st.tokenize();
-      Words words;
+      Lattice words;
       words.construct(st);
-      //Words w;
+      //Lattice w;
       //w.based_on(words);
       //cerr << words << endl;
       Sections sects1,sects2;

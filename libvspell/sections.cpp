@@ -38,12 +38,12 @@ std::ostream& operator << (std::ostream &os,const Sections &me)
 }
 
 /**
- Split Words into Sections
+ Split Lattice into Sections
  \param words input
  \param sects output
  */
 
-void Sections::construct(const Words &words)
+void Sections::construct(const Lattice &words)
 {
 	Sections& sects = *this;
 
@@ -132,13 +132,13 @@ std::ostream& Segmentation::pretty_print(std::ostream &os,const Sentence &st)
 	return os;
 }
 
-void Section::segment_best(const Words &w,Segmentation &final_seg)
+void Section::segment_best(const Lattice &w,Segmentation &final_seg)
 {
 	Segmentation seg(w.we);
 	Segmentor segtor;
 	final_seg.prob = 1000000;
 
-	segtor.init(w,								// Words
+	segtor.init(w,								// Lattice
 							start,						// from
 							start+len-1);			// to
 

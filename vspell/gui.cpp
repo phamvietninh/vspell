@@ -192,7 +192,7 @@ void sentence_process(const char *pp)
 {
 	// preprocess
 	Sentence st(pp);
-	Words words;
+	Lattice words;
 	Suggestions sugg;
 	st.standardize();
 	st.tokenize();

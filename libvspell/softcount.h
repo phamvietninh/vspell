@@ -55,7 +55,7 @@ public:
 class SoftCounter
 {
 public:
-	void count(const Words &words,NgramFractionalStats &stats);
+	void count(const Lattice &words,NgramFractionalStats &stats);
 };
 
 #endif

@@ -100,7 +100,7 @@ bool Generator::step(vector<uint> &_pos,uint &_len)
 typedef vector<Segmentations> Segmentation2;
 
 /**
-	Generate new Words info based on misspelled position info.
+	Generate new Lattice info based on misspelled position info.
 	Call WFST::get_sections() to split into sections
 	then call WFST::segment_all1() to do real segmentation.
 	\param pos contains possibly misspelled position.
@@ -109,14 +109,14 @@ typedef vector<Segmentations> Segmentation2;
 
 void WFST::generate_misspelled_words(const vector<uint> &pos,int len,Segmentation &final_seg)
 {
-	const Words &words = *p_words;
-	Words w;
+	const Lattice &words = *p_words;
+	Lattice w;
 
 	w.based_on(words);
 	
 	// 2. Compute the score, jump to 1. if score is too low (pruning 1)
 
-	// create new (more compact) Words structure
+	// create new (more compact) Lattice structure
 	int i,n = words.get_word_count();
 	for (i = 0;i < len;i ++) {
 		const WordEntryRefs &fmap = words.get_fuzzy_map(pos[i]);
@@ -164,23 +164,23 @@ void WFST::generate_misspelled_words(const vector<uint> &pos,int len,Segmentatio
 
 /**
 	Create the best segmentation for a sentence.
-	\param words store Words info
+	\param words store Lattice info
 	\param seps return the best segmentation
  */
 
-void WFST::segment_best(const Words &words,Segmentation &seps)
+void WFST::segment_best(const Lattice &words,Segmentation &seps)
 {
 	//int i,ii,n,nn;
 
 	p_words = &words;
 
 	// in test mode, generate all positions where misspelled can appear, 
-	// then create a new Words for them, re get_sections, 
+	// then create a new Lattice for them, re get_sections, 
 	// create_base_segmentation and call segment_all1 for each sections.
 
 	// 1. Generate mispelled positions (pruning 0 - GA)
 	// 2. Compute the score, jump to 1. if score is too low (pruning 1)
-	// 3. Make a new Words based on the original Words
+	// 3. Make a new Lattice based on the original Lattice
 	// 4. Call get_sections
 	// 5. Call create_base_segmentation
 	// 6. Call segment_all1 for each sections.
@@ -210,11 +210,11 @@ void WFST::segment_best(const Words &words,Segmentation &seps)
 	Create the best segmentation for a sentence. The biggest difference between
 	segment_best and segment_best_no_fuzzy is that segment_best_no_fuzzy don't
 	use Generator. It assumes there is no misspelled position at all.
-	\param words store Words info
+	\param words store Lattice info
 	\param seps return the best segmentation
  */
 
-void WFST::segment_best_no_fuzzy(const Words &words,Segmentation &seps)
+void WFST::segment_best_no_fuzzy(const Lattice &words,Segmentation &seps)
 {
 	p_words = &words;
 
@@ -234,7 +234,7 @@ void WFST::segment_best_no_fuzzy(const Words &words,Segmentation &seps)
 // obsolete
 void WFST::segment_all(const Sentence &sent,vector<Segmentation> &result)
 {
-	Words words;
+	Lattice words;
 	words.construct(sent);
 	//	segment_all1(sent,words,0,sent.get_syllable_count(),result);a
 	/*
@@ -272,7 +272,7 @@ public:
 
 
 
-void Segmentor::init(const Words &words,
+void Segmentor::init(const Lattice &words,
 										 int from,
 										 int to)
 {
@@ -290,7 +290,7 @@ void Segmentor::init(const Words &words,
 
 bool Segmentor::step(Segmentation &result)
 {
-	const Words &words = *_words;
+	const Lattice &words = *_words;
 	//	const Sentence &sent = *_words->st;
 	while (!segs.empty()) {
 		// get one

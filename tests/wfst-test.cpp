@@ -10,7 +10,7 @@
 
 using namespace std;
 
-void print_all_words(const Words &words);
+void print_all_words(const Lattice &words);
 int main(int argc,char **argv)
 {
   PFS wfst;
@@ -81,7 +81,7 @@ int main(int argc,char **argv)
 	st.tokenize();
 	if (!st.get_syllable_count())
 		continue;
-	Words words;
+	Lattice words;
 	words.construct(st);
 	Segmentation seg(words.we);
 	if (argc > 2)

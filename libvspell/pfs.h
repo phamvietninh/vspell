@@ -42,8 +42,8 @@ public:
 
 	void enable_ngram(bool enable = true) { ngram_enabled = enable; }
 
-	void segment_best(const Words &words,Segmentation &seps);
-	void segment_best_no_fuzzy(const Words &words,Segmentation &seps) { segment_best(words,seps); }
+	void segment_best(const Lattice &words,Segmentation &seps);
+	void segment_best_no_fuzzy(const Lattice &words,Segmentation &seps) { segment_best(words,seps); }
 	void segment_all(const Sentence &sent,std::vector<Segmentation> &result);
 
 	//private:
@@ -52,7 +52,7 @@ public:													// for testing purpose
 																 int len,
 																 Segmentation& final_seg);
 	// variables needed when run wfst
-	Words const *p_words;
+	Lattice const *p_words;
 };
 
 #endif

@@ -31,6 +31,16 @@
 \newfloat{algo}{htbp}{loa}[chapter]
 \floatname{algo}{Thuật toán}
 
+\usepackage{varioref}
+\def\reftextfaceafter{ở trang kế tiếp}
+\def\reftextfacebefore{ở trang đối diện}
+\def\reftextafter{ở trang kế tiếp}
+\def\reftextbefore{ở trang trước}
+\def\reftextcurrent{ở trang này}
+\def\reftextfaraway#1{ở trang~\pageref{#1}}
+\def\reftextpagerange#1#2{ở các trang~\pageref{#1}--\pageref{#2}}%
+\def\reftextlabelrange#1#2{\ref{#1} đến~\ref{#2}}%
+
 \newcommand{\note}[1]{\underline{#1}}
 \newcommand{\comment}[1]{}
 
@@ -529,7 +539,7 @@ nhau, chia làm hai bậc:
 \end{itemize}
 
 Các thành tố của âm tiết tiếng Việt và quan hệ hai bậc giữa các thành
-tố được trình bày trong hình~\ref{fig:cautrucamtiet}.
+tố được trình bày trong hình~\vref{fig:cautrucamtiet}.
 
 \begin{figure}[htbp]
   \centering
@@ -1290,7 +1300,7 @@ không ghi phụ âm đầu có thể có âm đầu là âm tắt thanh hầu \
 
 Âm đệm do các âm vị bán nguyên âm \textipa{/-u-/} đảm nhiệm.
 
-Âm chính do các âm vị nguyêm âm đảm nhiệm như trong bảng~\ref{tab:nguyenam}.
+Âm chính do các âm vị nguyêm âm đảm nhiệm như trong bảng~\vref{tab:nguyenam}.
 
 %\begin{savenotes}
   \begin{table}[htbp]
@@ -1313,7 +1323,7 @@ không ghi phụ âm đầu có thể có âm đầu là âm tắt thanh hầu \
 %\end{savenotes}
 
 Âm cuối do các âm vị phụ âm bán nguyên âm đảm nhiệm như trong
-bảng~\ref{tab:amcuoi}. 
+bảng~\vref{tab:amcuoi}. 
 
 \begin{table}[htbp]
   \centering
@@ -1333,7 +1343,7 @@ bảng~\ref{tab:amcuoi}.
   \label{tab:amcuoi}
 \end{table}
 
-Trên chữ viết, các âm vị âm đầu được thể hiện như trong bảng~\ref{tab:phuamdau}
+Trên chữ viết, các âm vị âm đầu được thể hiện như trong bảng~\vref{tab:phuamdau}.
 
 %\begin{savenotes}
   \begin{table}[htbp]
@@ -1561,7 +1571,7 @@ cấu trúc dữ liệu như bảng băm hoặc cấu trúc dữ liệu dạng c
 
 Với những lỗi sai dạng lỗi từ vựng, ta phải dùng một số phương pháp
 khác phức tạp hơn để phát hiện (chi tiết trong
-phần~\ref{sec:context-spelling}). 
+phần~\vref{sec:context-spelling}). 
 
 \subsection{Các sai lầm của trình bắt lỗi chính tả}
 
@@ -1585,7 +1595,7 @@ những lỗi này thường đòi hỏi phải hiểu văn bản (ít nhất l�
 văn bản) để có thể phát hiện lỗi. Những dạng lỗi từ vựng, lỗi cú pháp
 thường rơi vào dạng này. Tuy nhiên vẫn có một số lỗi chính tả rơi vào
 loại này. Những loại lỗi này được phát hiện nhờ những chương trình bắt
-lỗi chính tả cảm ngữ cảnh (xem phần~\ref{sec:context-spelling}).
+lỗi chính tả cảm ngữ cảnh (xem phần~\vref{sec:context-spelling}).
 
 %~\cite{Golding95,Golding96,Golding99}
 
@@ -1604,7 +1614,7 @@ cũng khá phức tạp. Ngoài ra, đôi khi các chữ được viết hoa ho�
 để nhấn mạnh, để làm tiêu đề~\ldots{}
 
 Thuật toán để xử lý trường hợp chữ hoa, chữ thường có thể được mô tả
-như trong thuật toán~\ref{algo:capital}.
+như trong thuật toán~\vref{algo:capital}.
 \begin{algo}
 \caption{Xử lý chữ hoa, chữ thường}
 \label{algo:capital}
@@ -1638,7 +1648,7 @@ từ nào là thích hợp thường đòi hỏi phải hiểu về nội dung c
 đang xem (đối với con người). Đối với máy tính, việc hiểu văn bản, đến
 nay vẫn là một vấn đề khó. Tuy nhiên, máy tính cũng có khả năng tìm ra
 kết quả đối với một số trường hợp lỗi thông dụng (chi tiết trong phần
-\ref{sec:context-spelling}). Việc tìm ra chỉ một kết quả duy nhất đưa
+\vref{sec:context-spelling}). Việc tìm ra chỉ một kết quả duy nhất đưa
 đến một thuận lợi đáng kể. Bởi vì chỉ có một kết quả, không cần phải lựa
 chọn, nên ta có thể tạo ra chương trình bắt lỗi chính tả (và sửa lỗi
 chính tả) tự động. Việc tạo ra một chương trình bắt lỗi chính tả tự
@@ -1649,7 +1659,7 @@ Trong trường hợp không thể đưa ra duy nhất một đề nghị, ta c�
 ra một danh sách các từ ``có khả năng'' để người dùng chọn lựa. Yêu
 cầu đặt ra là từ đúng phải nằm trong danh sách từ lựa chọn. Và tốt hơn
 nữa là từ đúng nên được đặt trên cùng danh sách để gây sự chú ý của
-người dùng (chi tiết trong phần \ref{sec:sort-candidates}). Để đảm
+người dùng (chi tiết trong phần \vref{sec:sort-candidates}). Để đảm
 bảo từ đúng nằm trong danh sách, ta cần tìm hiểu nguyên nhân dẫn đến
 lỗi, sau đó cố gắng phục hồi lỗi để tạo lại những từ có khả năng. Do
 có nhiều nguyên nhân khác nhau dẫn đến lỗi chính tả, nên cũng có nhiều
@@ -1833,7 +1843,7 @@ thước nhất định, chương trình di chuyển cửa sổ mỗi
 danh từ một lần, từ đầu câu cho đến hết, khử nhập nhằng cho danh từ ở
 chính giữa cửa sổ, xem các danh từ còn lại trong cửa sổ là ngữ
 cảnh. Đặt cửa sổ các danh từ là $W$ và danh từ chính giữa cửa sổ là
-$w$, ta có thuật toán~\ref{algo:CD}.
+$w$, ta có thuật toán~\vref{algo:CD}.
 
 \begin{algo}
 \caption{Khử nhập nhằng danh từ dùng CD}
@@ -2523,7 +2533,7 @@ sau:
 
 \subsection{Mô hình TBL}
 
-Mô hình TBL (xem thêm phần~\ref{sec:tbl-spell}) cũng có thể được áp
+Mô hình TBL (xem thêm phần~\vref{sec:tbl-spell}) cũng có thể được áp
 dụng để tách từ tiếng Trung Quốc~\cite{palmer}. 
 
 Mô hình TBL có thể được áp dụng cho nhiều bài toán khác nhau. Tùy vào
@@ -2661,7 +2671,7 @@ ngôn ngữ học, do đó phần nào hạn chế kết quả cuối cùng.
 \section{Mô hình chung}
 
 Việc bắt lỗi chính tả của một văn bản được xử lý lần lượt qua các bước
-(xem hình~\ref{fig:overall-model}), bao gồm ba khối chính là:
+(xem hình~\vref{fig:overall-model}), bao gồm ba khối chính là:
 \begin{itemize}
 \item Khối tiền xử lý.
   Tách văn bản thành những đoạn ngắn. Tách
@@ -2701,7 +2711,7 @@ Việc bắt lỗi chính tả của một văn bản được xử lý lần l�
 \subsection{Tiền xử lý}
 
 Phần tiền xử lý bao gồm nhiều công đoạn, bắt đầu bằng phần tách các
-token (``tiếng'') (\ref{sec:preprocess:token}), và các phần tiền xử lý
+token (``tiếng'') (\vref{sec:preprocess:token}), và các phần tiền xử lý
 khác như đánh dấu các số, các ký hiệu~\ldots
 
 Do đây là tiền xử lý trên dữ liệu không chính xác, nên một số công
@@ -3073,7 +3083,7 @@ Với những phím hai ký tự như phím `\texttt{2}' (`\texttt{2}' và
 `\texttt{@}') thì \texttt{@} sẽ được thêm 
 vào tập các phím lân cận với \texttt{2} và ngược lại.
 
-Danh sách cụ thể được nêu trong bảng~\ref{tab:neighbor-keys}.
+Danh sách cụ thể được nêu trong bảng~\vref{tab:neighbor-keys}.
 
 \begin{table}[htbp]
   \centering
@@ -3174,7 +3184,7 @@ sau bước trên, để nếu gõ nhầm phím dấu kế bên thì vẫn có t
 lại.
 
 Bộ gõ VNI và TELEX được sử dụng như trong
-bảng~\ref{tab:vni-telex}. Nguyên tắc của các bộ gõ được cài đặt không
+bảng~\vref{tab:vni-telex}. Nguyên tắc của các bộ gõ được cài đặt không
 quá cầu kỳ, do yêu cầu chỉ là để phục hồi lỗi. Các phím dấu của mỗi bộ
 gõ sẽ được duyệt qua chữ, từ vị trí của phím dấu về đầu chữ. Nếu phím
 dấu có thể kết hợp được với ký tự đang được duyệt, ta xem như đã phục
@@ -3207,7 +3217,7 @@ nhầm các phím dấu.
 Các chữ được phát sinh sẽ được so sánh với từ điển tiếng. Nếu chữ nằm trong từ
 điển, ta cho chữ vào danh sách đề nghị. Ngược lại, chữ bị hủy bỏ.
 
-Tóm lại, thuật toán~\ref{algo:keyb} để phục hồi lỗi bàn phím.
+Tóm lại, thuật toán~\vref{algo:keyb} để phục hồi lỗi bàn phím.
 \begin{algo}
 \caption{Phục hồi lỗi bàn phím}
 \label{algo:keyb}
@@ -3260,7 +3270,7 @@ Tóm lại, thuật toán~\ref{algo:keyb} để phục hồi lỗi bàn phím.
   \begin{enumerate}
   \item Duyệt lần lượt từng ký tự trong chữ, từ trái sang phải.
   \item Ở từng vị trí, thay thế ký tự đang xét bằng ký tự lân cận (như
-    trong bảng~\ref{tab:neighbor-keys}). Lưu chữ vào danh sách.
+    trong bảng~\vref{tab:neighbor-keys}). Lưu chữ vào danh sách.
   \end{enumerate}
 \end{algo}
 
@@ -3307,20 +3317,20 @@ quốc ngữ, một số âm tố không thể kết hợp với nhau. Đây là
 chủ yếu của lỗi loại này.
 
 Lỗi phát âm sẽ được trình bày cụ thể trong
-phần~\ref{sec:realword:recover:sound}. Phần này chỉ nêu ra những điểm
+phần~\vref{sec:realword:recover:sound}. Phần này chỉ nêu ra những điểm
 riêng của lỗi phát âm --- non-word.
 
 Với loại lỗi này, ta cần phân tích cấu trúc âm tiết tiếng Việt. Sau
 khi phân tích cấu trúc âm tiết tiếng Việt, ta sẽ thay thế từng thành
 phần của âm tiết bằng một thành phần khác có cách phát âm giống như
 thành phần được thay thế. Thuật toán lỗi phát âm như trong thuật
-toán~\ref{algo:error:nonword}.
+toán~\vref{algo:error:nonword}.
 \begin{algo}
 \caption{Phục hồi lỗi phát âm (non-word)}
 \label{algo:error:nonword}
   \begin{enumerate}
   \item Phân tích cấu trúc âm tiết.
-  \item Tạo danh sách âm tiết~\ref{algo:syllable-candidate-list}, bao
+  \item Tạo danh sách âm tiết~\vref{algo:syllable-candidate-list}, bao
     gồm các âm tiết có phát âm tương tự với âm tiết ban đầu.
   \item Lọc lại danh sách, những âm tiết không có tront từ điển tiếng
     bị loại bỏ.
@@ -3330,16 +3340,16 @@ toán~\ref{algo:error:nonword}.
 \subsection{Sắp xếp danh sách từ đề nghị}
 \label{sec:nonword:sort-candidates}
 
-Như đã nói trong phần~\ref{sec:sort-candidates}, có nhiều cách để sắp
+Như đã nói trong phần~\vref{sec:sort-candidates}, có nhiều cách để sắp
 xếp danh sách từ đề nghị. Do không thể sử dụng các thông tin cú pháp,
 ngữ nghĩa, giải pháp được áp dụng là dùng mô hình ngôn ngữ (được dùng
-khi bắt lỗi real-word --- phần~\ref{sec:language-model}) sẽ được dùng
+khi bắt lỗi real-word --- phần~\vref{sec:language-model}) sẽ được dùng
 để đánh giá các từ đề nghị, cùng với việc loại bỏ các chữ không cùng
 chữ hoa/thường với chữ gốc và áp dụng thống kê tần số sử dụng của mỗi
 từ.
 
 Giải pháp được áp dụng như sau trong thuật
-toán~\ref{algo:nonword:sort}.
+toán~\vref{algo:nonword:sort}.
 \begin{algo}
 \caption{Sắp xếp danh sách từ đề nghị (non-word)}
 \label{algo:nonword:sort}
@@ -3369,7 +3379,7 @@ lưới từ, được nối với những từ cuối cùng trong câu.
 Lưới từ chứa tất cả 
 các từ có khả năng xuất hiện trong câu. Các từ được liên kết với nhau
 theo trật tự như trong câu. Khi duyệt từ nút gốc đến nút đích, ta sẽ
-được một cách tách từ cho câu. Hình~\ref{fig:wordlattice} thể hiện một
+được một cách tách từ cho câu. Hình~\vref{fig:wordlattice} thể hiện một
 lưới từ.
 
 \begin{figure}[htbp]
@@ -3382,7 +3392,7 @@ lưới từ.
 Ngoài lưới từ cơ bản như mô tả ở trên, ta có thể mở rộng lưới từ để
 chứa thêm những từ có khả năng, phát sinh từ công đoạn phục hồi lỗi,
 nhằm xác định xem từ nào là đúng nhất. Lưới từ này gọi là lưới từ mở
-rộng (hình~\ref{fig:wordlattice1}). 
+rộng (hình~\vref{fig:wordlattice1}). 
 
 \begin{figure}[htbp]
   \centering
@@ -3392,7 +3402,7 @@ rộng (hình~\ref{fig:wordlattice1}).
 \end{figure}
 
 Một dạng khác của lưới từ, gọi là lưới~2-từ  (xem
-hình~\ref{fig:wordlattice2}). Trong loại lưới từ này, 
+hình~\vref{fig:wordlattice2}). Trong loại lưới từ này, 
 mỗi nút không phải là một từ mà là hai từ đứng liền nhau. Hai nút nối
 liền nhau thì từ bên phải của nút bên trái và từ bên trái của nút bên
 phải là một. Nói cách khác, một cặp nút nối với nhau bằng một cạnh
@@ -3429,7 +3439,7 @@ lần lượt qua các cạnh để tìm  ra các từ. Duyệt i từ 1 đến 
 Thuật toán tạo lưới~2-từ được nêu trong \cite{Ravishankar}. Thuật toán
 sẽ tạo ra lưới $n$-từ từ lưới $n-1$-từ. Lưới từ cơ bản nên trên được
 xem như là lưới 1-từ. Thuật toán được tóm tắt lại như trong thuật
-toán~\ref{algo:extend-lattice}.
+toán~\vref{algo:extend-lattice}.
 
 \begin{algo}
 \caption{Tạo lưới $n$-từ từ lưới $(n-1)$-từ}
@@ -3464,13 +3474,13 @@ vào những từ có khả năng đúng, sau đó mới có thể tách từ. P
 hồi lỗi, thêm từ vào lưới từ để tạo lưới từ mở rộng là nội dung của
 công đoạn này.
 
-Như đã xét ở phần~\ref{sec:nonword:candidate-list}, có 4 loại lỗi chủ
+Như đã xét ở phần~\vref{sec:nonword:candidate-list}, có 4 loại lỗi chủ
 yếu là lỗi bàn phím, lỗi OCR, lỗi nhận dạng tiếng nói, lỗi phát âm (và
 các loại lỗi còn lại). Cả bốn loại lỗi này đều có thể gây ra lỗi
 real-word. Tuy nhiên, lỗi real-word chủ yếu là lỗi phát âm, lỗi bàn
 phím chiếm rất ít, phần còn lại là lỗi OCR và lỗi nhận dạng tiếng
 nói. Phần này chủ yếu tập trung vào lỗi phát âm. Lỗi bàn phím được
-trình bày trong phần~\ref{sec:nonword:recover:keyboard}.
+trình bày trong phần~\vref{sec:nonword:recover:keyboard}.
 
 %% Phần này được sử dụng trong lúc tạo lưới từ và kiểm tra chính
 %% tả. Mục đích là, cho trước một từ, phát sinh những từ ``gần giống''
@@ -3511,7 +3521,7 @@ Lưới từ sau khi mở rộng có hai đặc điểm sau:
 
 Đối với vấn đề đầu tiên, ta có thể thay đổi giá trị các cạnh nối đến
 từ đó để phản ánh sự khác biệt. Ví dụ, trong
-hình~\ref{fig:wordlattice1}, ta có thể biến đổi giá trị các cạnh nối
+hình~\vref{fig:wordlattice1}, ta có thể biến đổi giá trị các cạnh nối
 đến từ ``xinh'' bằng cách giảm 0,2\% giá trị của các cạnh nối đến từ
 ``xinh'' đó. Vậy, bất cứ cách tách từ nào chứa từ xinh cũng sẽ bị giảm
 một khoảng giá trị nhất định, so với các cách tách từ chứa từ ``sinh''
@@ -3662,7 +3672,7 @@ XXX
 %% \end{algo}
 
 %% Ví dụ: tính độ sai khác giữa chữ ``thắng'' và ``tắgn''. Ta tính các
-%% giá trị như bảng~\ref{tab:ed-example}. Vậy có hai khác biệt giữa hai
+%% giá trị như bảng~\vref{tab:ed-example}. Vậy có hai khác biệt giữa hai
 %% chữ. Khác biệt thứ nhất là xoá ký tự `h'. Khác biệt thứ hai là hoán vị
 %% hay ký tự `n' và `g'.
 
@@ -3690,7 +3700,7 @@ XXX
 tiếng. Một tiếng bao gồm âm đầu, vần và thanh. Vần gồm âm đệm, âm
 chính và âm cuối. Trong các thành phần của tiếng, âm chính là bắt buộc
 phải có. Các thành phần còn lại có thể không có. Ta có thể biểu diễn
-cấu trúc âm tiếng theo sơ đồ trạng thái như hình~\ref{fig:syllable}.
+cấu trúc âm tiếng theo sơ đồ trạng thái như hình~\vref{fig:syllable}.
 
 \begin{figure}[htbp]
   \centering
@@ -3700,7 +3710,7 @@ cấu trúc âm tiếng theo sơ đồ trạng thái như hình~\ref{fig:syllabl
 \end{figure}
 
 Ta có thể phân tích tiếng dùng FST. Tuy nhiên, qua
- hình~\ref{fig:syllable} có thể thấy chỉ có tám cách để hình thành
+ hình~\vref{fig:syllable} có thể thấy chỉ có tám cách để hình thành
 tiếng. Cài đặt theo tám cách này đơn giản và hiệu quả hơn dùng FST
 tổng quát. 
 %Việc sắp xếp thứ tự áp dụng từng cách và một số heuristic
@@ -3855,13 +3865,13 @@ Viterbi.
 \label{sec:realword:spelling-checking}
 
 Sau khi tách từ xong, việc bắt lỗi chính tả cũng giống như phần bắt
-lỗi chính tả non-word~(\ref{sec:nonword:spelling-checking}).
+lỗi chính tả non-word~(\vref{sec:nonword:spelling-checking}).
 
 \subsection{Lập danh sách từ đề nghị}
 \label{sec:realword:candidate-list}
 
 Việc lập danh sách từ đề nghị tương tự như lập danh sách từ đề nghị
-khi bắt lỗi non-word~(\ref{sec:nonword:candidate-list}). Tuy nhiên, ta
+khi bắt lỗi non-word~(\vref{sec:nonword:candidate-list}). Tuy nhiên, ta
 sẽ sử dụng từ điển thay vì dùng từ điển tiếng.
 
 Việc phục hồi lỗi trong bước này là không cần thiết vì đã được thực
@@ -3869,7 +3879,7 @@ hiện trong phần tách từ.
 
 %% Do tiếng Việt đọc sao ghi vậy,
 %% nên bước chuyển từ từ sang âm có thể bỏ qua. Bước còn lại là áp dụng
-%% thuật toán đo độ hiệu chỉnh giữa hai từ như đã nêu trong~\ref{algo:ed}
+%% thuật toán đo độ hiệu chỉnh giữa hai từ như đã nêu trong~\vref{algo:ed}
 %% Ta có thể so sánh từng ký tự, hoặc so sánh theo âm (ví dụ, ``th'' thay
 %% vì ``t'' và ``h'').
 
@@ -3890,7 +3900,7 @@ ranh giới từ chỉ là hiệu ứng phụ. Do đã chọn được câu hợ
 từ đúng nhất chính là từ nằm trong câu được chọn này. Do đó, từ nằm
 trên câu được chọn cần được ưu tiên sắp ở đầu danh sách từ đề
 nghị. Những từ còn lại có thể được sắp xếp như trong
-phần~\ref{sec:nonword:sort-candidates}.
+phần~\vref{sec:nonword:sort-candidates}.
 
 \section{Huấn luyện}
 \label{sec:training}
@@ -3926,8 +3936,8 @@ tiền xử lý, theo sau là các bước Tạo lưới từ và Tách từ. Tr
 tách từ, ta chỉ cần dùng PFS thay vì Bellman-Ford vì lưới từ không có
 trọng số âm.
 
-%% Tiền xử lý giống như phần~\ref{sub:preprocess}
-%% Tạo Lưới từ giống như phần~\ref{sub:lattice}, nhưng chỉ xét những từ nào thực sự
+%% Tiền xử lý giống như phần~\vref{sub:preprocess}
+%% Tạo Lưới từ giống như phần~\vref{sub:lattice}, nhưng chỉ xét những từ nào thực sự
 %% có trong câu, sử dụng lưới từ thay vì lưới từ mở rộng.
 
 Nếu dùng PFS để tách từ, ta chỉ có 1 cách tách từ tốt nhất. Việc đếm
@@ -4090,14 +4100,14 @@ $$
 \end{enumerate}
 \end{algo}
 
-Thuật toán~\ref{algo:sc1:pleft} được dùng để tính $P^{left}$. Thuật
+Thuật toán~\vref{algo:sc1:pleft} được dùng để tính $P^{left}$. Thuật
 toán tương tự được áp dụng để tính $P^{right}$.  Sau khi tính được
 $P^{left}$ và $P^{right}$, ta có thể tính fractional 
 count cho các từ trong câu bằng cách duyệt tất cả các nút trong lưới từ,
 cộng thêm vào $\displaystyle\frac{P(W)}{P^{left}(tail)}$ cho từ
 $C$. Thực tế, ta sẽ lồng bước này vào trong thuật toán tính
 $P^{right}$, vì thuật toán cũng phải duyệt qua tất cả các từ~(thuật
-toán~\ref{algo:sc1:pright}). 
+toán~\vref{algo:sc1:pright}). 
 
 \begin{algo}\caption{Tính $P^{right}$}
 \label{algo:sc1:pright}
@@ -4163,8 +4173,8 @@ $P(W/W_{+1})$. Nếu có nhiều hơn một cạnh, ta cần dùng cách khác �
 tính $P(W/W')$. Với thuật toán tính $P^{right}$ hiện có, ta cộng dồn
 $p(W/W')P^{right}$ vào cho $P^{right}(W)$. Vậy trong quá trình cộng
 dồn ta có thể tính ngay $P(W/W')$ bằng cách nhân giá trị cộng dồn với
-$P^{left}(W)$. Thuật toán~\ref{algo:sc2:pleft}
-và~\ref{algo:sc2:pright} là thuật toán cải tiến để tính  $P^{left}$ và
+$P^{left}(W)$. Thuật toán~\vref{algo:sc2:pleft}
+và~\vref{algo:sc2:pright} là thuật toán cải tiến để tính  $P^{left}$ và
 $P^{right}$.
 
 \begin{algo}\caption{Tính $P^{left}$ cho bi\-gram}
@@ -4255,37 +4265,55 @@ tiếng. Sau khi chuẩn hoá, từ sẽ thành ``\verb@5hoc_0sinh@''.
 \subsection{Từ điển}
 
 Từ điển được lưu ở dạng văn bản, mỗi dòng tương ứng với một từ. Trong
-bộ nhớ, từ điển sử dụng cây đa nhánh (lớp \verb@WordNode@). Trong lớp
-\verb@WordNode@, \verb@nodes@ sẽ chứa con trỏ đến các nút kế tiếp. Duyệt
-từ nút gốc (truy cập thông qua hàm \verb@get_root()@) cho đến hết, ta
-sẽ được danh sách tiếng hình thành từ. Với mỗi nút, ngoài việc chứa
-liên kết trỏ đến các nút con, còn có một số thông tin về từ (đối với
-những nút lá) bao gồm xác suất uni\-gram của từ đó, strid của từ~\ldots
+bộ nhớ, từ điển sử dụng cây đa nhánh (lớp \verb@Node@). \verb@Node@
+gồm hai lớp dẫn xuất là \verb@BranchNode@ (nhánh) và \verb@LeafNode@
+(lá). Hàm \verb@Node::is_leaf()@ được dùng để xác định nút nhánh, nút
+lá. Trong lớp \verb@BranchNode@, \verb@nodes@ sẽ chứa con trỏ đến
+các nút kế tiếp kèm theo chữ tương ứng được dùng để chuyển qua nút đó. Duyệt 
+từ nút gốc (truy cập thông qua hàm \verb@WordArchive::get_root()@) cho đến hết, ta
+sẽ được danh sách tiếng hình thành từ. Chữ được dùng để chuyển qua nút
+lá từ nút nhánh là \verb@<mainleaf>@ (với nút lá cơ bản),
+\verb@<caseleaf>@~\ldots
 
-Một số hàm thường dùng bao gồm:
+
+Để tiết kiệm bộ nhớ, tất cả các danh sách từ khác nhau trong chương
+trình được trộn chung vào một cây \verb@BranchNode@ duy nhất được quản
+lý bởi \verb@WordArchive@. Các nút lá khác nhau sẽ phản ánh từ trong
+các danh sách khác nhau. Ví dụ, nút \verb@<mainleaf>@ được dùng để lưu
+từ trong từ điển từ. Trong khi nút \verb@<caseleaf>@ được dùng để lưu
+từ viết hoa của từ viết thường tương ứng (khi duyệt cây bằng từ viết
+thường, nhưng lá là từ viết hoa).
+
+Lớp \verb@WordArchive@ chứa nút gốc của cây và một số hàm linh tinh để
+thao tác trên cây.
+
+Một số hàm thường dùng trong \verb@BranchNode@ bao gồm:
 \begin{itemize}
-\item \verb@get_syllable()@: Strid của tiếng của nút hiện tại.
+\item \verb@get_leaf()@: lấy nút lá với id của nút lá cho trước
+  (\verb@<mainleaf>@ hoặc \verb@<caseleaf>@~\ldots)
+\item \verb@get_leaves()@: lấy tất cả các nút lá (các nút lá phải được
+  đăng ký bằng \verb@WordArchive::register_leaf()@)
+\item \verb@get_branch()@: lấy nhánh dựa trên id cho trước.
+\end{itemize}
+
+Một số hàm thường dùng trong \verb@LeafNode@ bao gồm:
+\begin{itemize}
 \item \verb@get_id()@: Strid của từ.
-\item \verb@get_prob()@: Lấy xác suất uni\-gram của từ.
 \item \verb@get_syllables()@: Danh sách strid của các tiếng hình thành
   nên từ.
 \item \verb@get_syllable_count()@: Số strid hình thành nên từ.
-\item \verb@get_next()@: Trả về nút con với strid cho trước.
-\item \verb@fuzzy_get_next()@: Trả về danh sách nút con gần giống với
-  strid cho trước. Hàm này có thể sẽ được cài đặt để áp dụng so sánh
-  mờ.
+\item \verb@set_id()@: đặt strid cho nút.
+\end{itemize}
+
+Các hàm thường dùng trong \verb@WordArchive@ bao gồm:
+\begin{itemize}
+\item \verb@get_root()@: Lấy \verb@BranchNode@ của nút gốc.
 \item \verb@load()@: Xây dựng cây từ điển từ tập tin.
 \item \verb@save()@: Lưu cây từ điển vào tập tin.
 \end{itemize}
 
-Lớp \verb@WordNode@ cài đặt hàm \verb@fuzzy_get_next()@ hoàn toàn giống
-với \verb@get_next()@. Để có thể so sánh mờ, ta sử dụng lớp
-\verb@FuzzyWordNode@ kế thừa từ \verb@WordNode@. Lớp này bao gồm hàm
-\verb@fuzzy_get_next_with_syllable()@ dùng để trả về danh sách các từ có
-phát âm gần giống với từ cho trước, được dùng để cài đặt hàm \verb@fuzzy_get_next()@.
-
 Từ điển tiếng không được lưu trực tiếp vào tập tin mà sẽ được phát
-sinh tự động khi nạp từ điển từ. Thực ra, hàm \verb@WordNode::load()@
+sinh tự động khi nạp từ điển từ. Thực ra, hàm \verb@WordArchive@::load()@
 khi được gọi sẽ lưu các tiếng vào \verb@StringArchive@, đồng thời đánh
 dấu tiếng đó thuộc từ điển tiếng. Sau đó, ta có thể xác định một chữ
 có phải thuộc về từ điển tiếng hay không nhờ hàm
@@ -4415,7 +4443,7 @@ Mô hình ngôn ngữ được sử dụng là tri\-gram. Mô hình ngôn ngữ 
 \label{sub:preprocess:token}
 
 Chương trình sử dụng flex để tách token. Các quy tắc flex được áp dụng
-được liệt kê trong hình~\ref{fig:flex-token}.
+được liệt kê trong hình~\vref{fig:flex-token}.
 \begin{figure}[htbp]
   \centering
 \begin{verbatim}
@@ -4475,53 +4503,89 @@ chương trình cố gắng nối thêm tiếng mới vào danh sách những t�
 hoàn chỉnh nếu được. Nếu từ hoàn chỉnh, từ sẽ được đưa vào danh sách
 (nhưng không bị xóa khỏi danh sách từ chưa hoàn chỉnh, vì có thể có
 những từ dài hơn). Nếu không thể gắn thêm tiếng mới vào từ, từ đó sẽ
-bị loại bỏ khỏi danh sách từ chưa hoàn chỉnh. Đồng thời các tiếng đó
-cũng được đưa vào danh sách từ chưa hoàn chỉnh như là những tiếng bắt
+bị loại bỏ khỏi danh sách từ chưa hoàn chỉnh. Ngoài ra, mỗi khi chuyển
+sang tiếng mới, tiếng đó cũng được đưa vào danh sách từ chưa hoàn
+chỉnh như là những tiếng bắt 
 đầu từ mới. Công việc được thực hiện cho đến khi quét hết chiều dài
-câu~(thuật toán~\ref{algo:pre_construct}). \verb@pre_construct()@ dựa
-vào hàm \verb@WordState::get_next()@ và \verb@WordState::get_first()@
-để thực hiện chuyển từ một state cũ ($states1$) sang state kế tiếp
-($states2$). Mỗi lớp khác nhau dẫn xuất từ \verb@WordState@ sẽ có cách
-chuyển qua state mới khác nhau. Nhờ vậy ta có thể tiến hành thu thập
-từ theo nhiều cách khác nhau. Tất cả các lớp dẫn xuất từ
-\verb@WordState@ tham gia vào \verb@pre_construct()@ được lưu vào một
-danh sách \verb@WordStateFactories@ chuyển cho \verb@pre_construct()@
-nhờ đó \verb@pre_construct()@ biết cần phải sử dụng những lớp nào.
-
-\begin{algo}
-  \caption{Lattice::pre\_construct()}
-  \label{algo:pre_construct}
-  \begin{enumerate}
-  \item Xóa $states2$.
-  \item Duyệt $i$ từ tiếng đầu tiên đến hết câu.
-    \begin{enumerate}
-    \item Thêm state mới (bắt đầu tại vị trí $i$) vào $states2$
-      (\verb@WordStateFactory::create_new()@). 
-    \item Chuyển state cũ (trong $states1$) sang $states2$ mới (\verb@WordState::get_next()@).
-    \item Duyệt tất cả các state trong $states2$, nếu tìm thấy từ hoàn
-      chỉnh thì thêm vào danh sách \verb@WordEntry@ $we$.
-    \item Hoán vị $states1$ và $states2$.
-    \end{enumerate}
-  \item Xóa $states1$. Trả về $we$.
-  \end{enumerate}
-\end{algo}
+câu~(thuật toán~\vref{algo:pre_construct}).
 
 Cấu trúc \verb@WordState@ được dùng để lưu một từ chưa hoàn chỉnh
 trong danh sách các từ chưa hoàn chỉnh. Cấu trúc này bao gồm vị trí
 bắt đầu từ, mã \verb@fuzid@ của từ, và con trỏ đến nút của tiếng cuối cùng
-hiện thời của từ trong cây từ điển. Con trỏ này sẽ được chuyển cho
-\verb@WordNode::get_next()@ để tìm ra những tiếng kế tiếp giúp hình
+hiện thời của từ trong cây từ điển. Con trỏ này sẽ được 
+\verb@WordState::get_next()@ dùng để tìm ra những tiếng kế tiếp giúp hình
 thành nên từ. Thành phần \verb@fuzid@ được cập nhật sau mỗi khi thêm
 tiếng mới vào từ, cho biết đó là tiếng chính xác trên câu, hay tiếng
 gần giống với tiếng trên câu (phát sinh nhờ so sánh mờ). Mỗi bit trong
 \verb@fuzid@ tượng trưng cho một tiếng trong từ.
 
-Hai lớp chính được dùng là lớp \verb@ExactWordState@ và lớp
-\verb@LowerWordState@. Lớp đầu chỉ thực hiện chuyển sang state kế nếu
-tiếng kế tiếp hoàn toàn trùng khớp với tiếng kế tiếp của từ. Lớp sau
-sẽ chuyển state nếu cách viết thường của tiếng kế tiếp giống với tiếng
-kế tiếp của từ. Lớp sau được dùng để không phân biệt chữ hoa/chữ
-thường khi tìm từ.
+Việc tìm từ dựa trên lớp \verb@WordState@ với hai hàm chính là
+\verb@WordState::get_next()@ và \verb@WordState::collect_words()@. Hàm
+\verb@get_next()@ khi được gọi sẽ tạo ra các đối tượng
+\verb@WordState@ mới tương ứng với tiếng kế tiếp được nhận, sau đó tự
+hủy chính nó. \verb@collect_words@ sẽ thu thập tất cả các nút lá có
+thể có tại vị trí tiếng đang xét và đưa vào lưới từ. Các lớp dẫn xuất
+khác nhau từ \verb@WordState@ có các cách tìm kiếm từ khác nhau. Các
+lớp này sẽ được đề cập bên dưới.
+
+Mỗi lớp dẫn xuất \verb@WordState@ có một lớp dẫn xuất
+\verb@WordStateFactory@ tương ứng, được dùng để tạo ra đối tượng dẫn
+xuất \verb@WordState@. Hàm \verb@WordStateFactory::create_new()@ trong
+lớp dẫn xuất sẽ tạo ra đối tượng dẫn xuất \verb@WordState@ tương ứng
+với lớp đó. Danh sách các đối tượng \verb@WordStateFactory@ được
+chuyển cho \verb@pre_construct()@ 
+nhờ đó \verb@pre_construct()@ biết cần phải sử dụng những lớp nào.
+
+\begin{algo}
+  \caption{Lattice::pre\_construct()}
+  \label{algo:pre_construct}
+
+  $states1$ và $states2$ chứa danh sách các \verb@WordState@, được
+  khởi động là rỗng.
+
+  \begin{enumerate}
+  \item Duyệt $i$ từ tiếng đầu tiên đến hết câu.
+    \begin{enumerate}
+    \item Xóa $states2$.
+    \item Thêm state mới (bắt đầu tại vị trí $i$) vào $states2$
+      (\verb@WordStateFactory::create_new()@). 
+    \item Chuyển state cũ (trong $states1$) sang $states2$ mới (\verb@WordState::get_next()@).
+    \item Tạo từ từ những state trong $states2$
+      (\verb@WordState::collect_words()@), thêm vào \verb@WordEntry@ $we$.
+a    \item Hoán vị $states1$ và $states2$.
+    \end{enumerate}
+  \item Xóa $states1$. Trả về $we$.
+  \end{enumerate}
+\end{algo}
+
+
+\paragraph{Tìm từ chính xác} được thực hiện bởi lớp
+\verb@ExactWordState@. Lớp này sử dụng cid của các tiếng trong câu để
+tìm, không hề thực hiện các biến đổi nào trong quá trình tìm kiếm. Nút
+lá được dùng là nút \verb@<mainleaf>@.
+
+
+
+\paragraph{Tìm từ không phân biệt hoa thường} được thực hiện bởi lớp
+\verb@LowerWordState@. Lớp này so sánh dựa trên chữ viết thường của
+các tiếng trong câu. Nút lá được dùng là \verb@<mainleaf>@.
+
+
+\paragraph{Tìm từ viết hoa bị viết sai} được thực hiện bởi lớp
+\verb@UpperWordState@. Lớp này thực hiện tìm kiếm giống như
+\verb@LowerWordState@. Tuy nhiên sử dụng nút lá \verb@<caseleaf>@ thay
+vì \verb@<mainleaf>@. Trong quá trình tạo từ điển, các chữ viết hoa sẽ
+tạo ra các nút \verb@<caseleaf>@, trong đó đường đi đến
+\verb@<caseleaf>@ là chữ thường chữ không phải chữ viết hoa.
+
+
+\paragraph{Tìm từ giống cách phát âm} được thực hiện bởi lớp
+\verb@FuzzyWordState@. Lớp này thực hiện tìm kiếm dựa trên tất cả các
+tiếng có phát âm giống với tiếng tương ứng trong câu. Sau đó trả về
+các nút lá \verb@<mainleaf>@. Việc tìm tiếng giống phát âm dựa trên
+tập nhẫm lẫn được lấy thông qua hàm \verb@get_confusion_sets@. Xem
+thêm phần~\vref{sec:impl:fuzzy-cmp} để biết cách hoạt động của
+\verb@FuzzyWordState::get_next()@. 
 
 Hàm \verb@post_construct()@ thực hiện nốt những gì còn lại để tạo nên
 lưới từ, bao gồm việc duyệt qua lưới từ, thêm các nút (như $UNK$)
@@ -4576,7 +4640,7 @@ lưới~2-từ thành mã nút trong lưới từ \verb@WordDAG@.
 
 Bổ sung lưới từ dựa theo lỗi phát âm được thực hiện ngay trong
 \verb@pre_construct()@ thông qua lớp \verb@FuzzyWordState@~(xem thêm
-phần~\ref{sec:impl:phonetic-error}).
+phần~\vref{sec:impl:phonetic-error}).
 
 
 Lớp \verb@PenaltyDAG@ được dẫn xuất từ lớp \verb@DAG@. Lớp này điều
@@ -4602,8 +4666,8 @@ Giá trị $w$ được sử dụng trong chương trình minh hoạ là $0.05$.
 \subsection{Tìm cách tách từ tốt nhất}
 
 
-Thuật toán~\ref{algo:pfs} trình bày cài đặt PFS. 
-Thuật toán~\ref{algo:bellman} trình bày cài đặt Bellman-Ford kèm chuẩn hoá.
+Thuật toán~\vref{algo:pfs} trình bày cài đặt PFS. 
+Thuật toán~\vref{algo:bellman} trình bày cài đặt Bellman-Ford kèm chuẩn hoá.
 
 
 \begin{algo}
@@ -4689,7 +4753,7 @@ Tìm đường
   \item $cont \leftarrow true$
   \end{enumerate}
 \end{enumerate}
-Lấy danh sách các nút tương tự như thuật toán~\ref{algo:pfs}.
+Lấy danh sách các nút tương tự như thuật toán~\vref{algo:pfs}.
 \end{algo}
 
 \subsection{Lỗi phát âm}
@@ -4703,7 +4767,7 @@ một chuỗi của một âm tiết, sau đó tách âm tiết này ra và đi�
 tin vào \verb@Syllable::components@.
 
 \subsubsection{Tìm các tiếng tương tự cách phát âm}
-
+\label{sec:impl:fuzzy-cmp}
 Việc tìm các tiếng tương tự cách phát âm được cài đặt trong lớp
 \verb@Syllable@ và hàm
 \verb@FuzzyWordState::get_next()@. Lớp
@@ -4757,6 +4821,9 @@ Những chữ liên tiếp nhau nằm trong danh sách này được coi là m�
 riêng. Hàm \verb@mark_proper_name()@ bổ sung những nút $PROP$ vào lưới
 từ cho những tên riêng được tìm ra.
 
+Những từ viết hoa sai chính tả được bổ sung thêm vào lưới từ dựa vào
+lớp \verb@UpperWordState@.
+
 \subsection{Lỗi bàn phím}
 
 Lỗi bàn phím được cài đặt thông qua các lớp \verb@KeyRecover@,
@@ -4807,11 +4874,11 @@ Các hàm quan trọng trong lớp \verb@Text@:
 \item \verb@sentence_check()@: Tiến hành kiểm tra chính tả một
   câu. Trả về \verb@true@ nếu không còn lỗi. Hàm này thực hiện hầu như
   toàn bộ công đoạn bắt lỗi chính tả, mô tả trong thuật
-  toán~\ref{algo:Text::sentence_check}.
+  toán~\vref{algo:Text::sentence_check}.
 \item \verb@syllable_check()@: Kiểm lỗi tiếng. Trả về \verb@true@ nếu
-  không còn lỗi~(thuật toán~\ref{algo:Text::syllable_check}).
+  không còn lỗi~(thuật toán~\vref{algo:Text::syllable_check}).
 \item \verb@word_check()@: Kiểm lỗi từ. Trả về \verb@true@ nếu
-  không còn lỗi~(thuật toán~\ref{algo:Text::word_check}).
+  không còn lỗi~(thuật toán~\vref{algo:Text::word_check}).
 \item \verb@replace()@: Thay thế một chuỗi con trong đoạn văn bản đang
   xét.
 \item \verb@substr()@: Lấy một chuỗi con trong đoạn văn bản đang xét.
@@ -4915,7 +4982,7 @@ Các hàm thường dùng trong \verb@VSpell@:
 \item \verb@cleanup()@: Hủy bỏ toàn bộ dữ liệu của đối tượng, chuẩn bị để
   hủy bỏ đối tượng.
 \item \verb@check()@: tiến hành kiểm lỗi chính tả cho một đoạn văn
-  bản~(thuật toán~\ref{algo:VSpell::check}). Văn bản được dùng ở dạng
+  bản~(thuật toán~\vref{algo:VSpell::check}). Văn bản được dùng ở dạng
   UTF-8. 
 \item \verb@set_penalty()@: Đặt trọng số $w$ cho lớp \verb@PenaltyDAG@.
 \item \verb@get_penalty()@: Lấy trọng số $w$ của lớp
@@ -4971,7 +5038,7 @@ tách từ khác ``\mybox{ông} \mybox{quan} \mybox{tài} \mybox{thật}
 \mybox{đấy}''.
 
 Separator được sử dụng trong phần hiệu chỉnh lưới từ. Sau khi đã hoàn
-tất tạo lưới từ, thuật toán~\ref{algo:Text::apply_separators} sẽ duyệt qua toàn bộ lưới từ, loại bỏ bất
+tất tạo lưới từ, thuật toán~\vref{algo:Text::apply_separators} sẽ duyệt qua toàn bộ lưới từ, loại bỏ bất
 cứ từ nào vi phạm separator.
 \begin{algo}
 \caption{Text::apply\_separators()}
@@ -4999,7 +5066,7 @@ liên quan đến xử lý văn bản như AbiWord, OpenOffice, GEdit,
 Evolution~\ldots
 
 Chương trình có giao diện như trong
-hình~\ref{fig:vspell-gtk-ui}. Sau khi nhập liệu, ta nhấn nút
+hình~\vref{fig:vspell-gtk-ui}. Sau khi nhập liệu, ta nhấn nút
 ``Check''. Chương trình kiểm lỗi hai giai đoạn: kiểm lỗi tiếng và kiểm
 lỗi từ. Phần được kiểm tra sẽ được tô sẫm. Các từ nhiều tiếng được
 gạch dưới. Những từ/tiếng bị sai được
@@ -5018,8 +5085,8 @@ sau đó nhấn nút ``Enter'' bên cạnh.
 
 vspell-gtk tạo lớp \verb@MyText@ dẫn xuất từ \verb@Text@. Các hàm
 \verb@ui_syllable_check()@ và \verb@ui_word_check()@ được cài đặt như
-trong thuật toán~\ref{algo:MyText::ui_syllable_check}
-và~\ref{algo:MyText::ui_word_check}. \verb@MyText@ có thêm vài hàm phụ
+trong thuật toán~\vref{algo:MyText::ui_syllable_check}
+và~\vref{algo:MyText::ui_word_check}. \verb@MyText@ có thêm vài hàm phụ
 để hiển thị như \verb@show_wrong_syllables()@,
 \verb@show_wrong_words()@ và \verb@show_words()@.
 
@@ -5187,7 +5254,7 @@ tin nhập là danh sách từ, danh sách tiếng, n\-gram (nếu có). Thông 
 xuất là n\-gram mới.
 
 Quy trình xử lý của trình huấn luyện được nêu trong thuật
-toán~\ref{algo:training}. Chương trình được lặp đi lặp lại nhiều lần. 
+toán~\vref{algo:training}. Chương trình được lặp đi lặp lại nhiều lần. 
 
 \begin{algo}
   \caption{Quy trình huấn luyện}
@@ -5307,7 +5374,7 @@ Phần kiểm tra viết hoa khá khó khăn.
 Chương trình được huấn luyện dựa trên ngữ liệu từ các bài báo của mạng
 VnExpress.net. Ngữ liệu sử dụng có kích thước 12283822 byte, bao gồm
 2602105 chữ, khoảng 379000 
-câu\footnote{xem phần~\ref{sec:model:sentence-segmentation}  để biết
+câu\footnote{xem phần~\vref{sec:model:sentence-segmentation}  để biết
   các quy tắc tách câu}. Trình huấn luyện chạy trong vòng 13 phút,
 trung bình khoảng 485 câu một giây. Dữ
 liệu xuất bao gồm 76682 uni\-gram, 446513 bi\-gram, 1101256 tri\-gram với

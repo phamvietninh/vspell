@@ -110,8 +110,12 @@ int main(int argc,char **argv)
 						vi[i] = get_id(STOP_ID);
 					else {
 						vi[i] = ((WordEntry*)dag.node_info(path[i]))->node.node->get_id();
-						if (!sarch.in_dict(vi[i]))
+						/*
+						if (!sarch.in_dict(vi[i])) {
+							cerr << ">>" << ccount << " " << count << " " << vi[i] << endl;
 							vi[i] = get_id(UNK_ID);
+						}
+						*/
 					}
 					//cerr << "<" << sarch[vi[i]] << "> ";
 				}

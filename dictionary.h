@@ -70,6 +70,12 @@ namespace Dictionary {
 			WordNodePtr node;
 			int distance;
 			DistanceNode(WordNodePtr _node = NULL):node(_node),distance(0) {}
+			int operator == (const DistanceNode &dn1) const {
+				return dn1.node == node;
+			}
+			int operator < (const DistanceNode &dn1) const {
+				return (int)node+distance < (int)dn1.node+dn1.distance;
+			}
 		};
 
 #ifdef TRAINING

@@ -1,4 +1,4 @@
-#include <gtk/gtk.h> // -*- tab-width: 2 coding: viscii -*-
+#include <gtk/gtk.h> // -*- tab-width:2 coding: viscii mode: c++ -*-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -117,10 +117,7 @@ static void button_reset_callback (GtkWidget *button, gpointer data)
   GtkTextIter start,end;
   gtk_text_buffer_get_start_iter(textbuffer_main,&start);
   gtk_text_buffer_get_end_iter(textbuffer_main,&end);
-	gtk_text_buffer_remove_tag_by_name (textbuffer_main, "mispelled",
-																			&start,&end);
-	gtk_text_buffer_remove_tag_by_name (textbuffer_main, "word",
-																			&start,&end);
+	gtk_text_buffer_remove_all_tags (textbuffer_main, &start,&end);
 }
 
 void print_all_words(const Words &words);
@@ -162,7 +159,7 @@ static void button_spell_callback (GtkWidget *button, gpointer data)
 	}
 
 	// try segmentation
-	if (n == 0) {
+	if (/*n == 0*/1) {
 		WFST wfst;
 		wfst.set_wordlist(Dictionary::get_root());
 		wfst.get_all_words(st,words);
@@ -191,6 +188,7 @@ static void button_spell_callback (GtkWidget *button, gpointer data)
 		}
 
 		// word checking
+		sugg.clear();
 		Spell::check2(st,seg,sugg);
 		
 		// show mispelled words
@@ -302,10 +300,16 @@ void button_search_callback(GtkWidget *button, gpointer data)
 	GtkWidget *entry_search = GTK_WIDGET(data);
 	const char *text = gtk_entry_get_text(GTK_ENTRY(data));
 
-	istringstream is(viet_to_viscii(text));
+	string is(viet_to_viscii(text));
+	int p = 0;
 	string s;
 	vector<strid> ids;
-	while (is >> s) {
+	while (p < is.size()) {
+		int pp = is.find(' ',p);
+		if (pp == string::npos)
+			pp = is.size();
+		s = is.substr(p,pp-p);
+		p = pp+1;
 		strid id = sarch[s];
 		if (!sarch.in_dict(id)) {
 			char *str = g_strdup_printf("%s not found",viet_to_utf8(s.c_str()));

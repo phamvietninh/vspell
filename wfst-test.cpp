@@ -8,6 +8,7 @@
 
 using namespace std;
 
+void print_all_words(const Words &words);
 int main()
 {
   WFST wfst;
@@ -76,6 +77,7 @@ int main()
       Segmentation seg;
       Words words;
       wfst.get_all_words(st,words);
+      print_all_words(words);
       wfst.segment_best(st,words,seg);
       seg.print(cerr,st);
       Dictionary::sarch.clear_rest();

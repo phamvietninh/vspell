@@ -247,12 +247,19 @@ void WFST::get_all_words(const Sentence &sent,Words &words)
 				winfo.fuzzy_match.push_back(dn);
 			}
 
+			// remove duplicated items
+			sort(winfo.fuzzy_match.begin(),winfo.fuzzy_match.end());
+			winfo.fuzzy_match.erase(unique(winfo.fuzzy_match.begin(),
+																		 winfo.fuzzy_match.end()),
+															winfo.fuzzy_match.end());
+
 			k ++;
 		}
 		// remove the last if it is empty
 		while (!winfos.empty() && winfos.back().fuzzy_match.empty())
 			winfos.pop_back();
 	}
+
 }
 
 void print_all_words(const Words &words)

@@ -329,8 +329,15 @@ bool Text::sentence_check(const char *pp)
 		return false;
 
 	//w.construct(st);
-	set<WordEntry> wes;
-	w.pre_construct(st,wes);
+	set<WordEntry> wes;	
+	WordStateFactories factories;
+	ExactWordStateFactory exact;
+	LowerWordStateFactory lower;
+	FuzzyWordStateFactory fuzzy;
+	factories.push_back(&exact);
+	factories.push_back(&lower);
+	factories.push_back(&fuzzy);
+	w.pre_construct(st,wes,factories);
 	mark_proper_name(st,wes);
 	apply_separators(wes);
 	w.post_construct(wes);
@@ -697,11 +704,11 @@ bool get_case_syllable_candidates(const char *input,Candidates &output, float v)
 
 	uint i,n = strlen(input);
 	// check for upper-case chars
-	for (i = 0;i < n;i ++)
+	for (i = n-1;i >= 0;i --)
 		if (viet_toupper(input[i]) == input[i])
 			break;
 
-	if (i >= n || n < 2)
+	if (i <= 0 || n < 2)					// ignore if the only upper char is the first one.
 		return false;
 
 	string s;

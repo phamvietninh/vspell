@@ -53,6 +53,7 @@ typedef WordEntry* WordEntryRef;
 typedef std::vector<WordEntry> WordEntries;
 typedef std::vector<WordEntryRef> WordEntryRefs;
 
+
 /**
 	 Store WordInfo(s) which have a specified length
  */
@@ -63,6 +64,46 @@ public:
 	unsigned int exact_len;
 	WordEntryRefs fuzzy_map; /// contains all WordEntry which are fuzzy at this position
 	WordEntryRefs we;	/// contains all WordEntry which started at this pos
+};
+
+class WordState;
+typedef std::vector<WordState*> WordStates;
+
+/**
+	Store information used by WFST::get_all_words().
+	This is a self-destroy object. get_next(), get_first() will destroy itself if necessary.
+*/
+class WordState {
+protected:
+	WordState(const WordState&);
+
+public:
+	/**
+		 the currently processing node
+	 */
+	WordNode::DistanceNode dnode;
+	const Sentence &sent;
+	//bool survive;
+
+	int fuzid;
+	int pos;
+	WordState(const Sentence &st):fuzid(0),sent(st),pos(0) {}
+	virtual void get_first(WordStates &states,uint pos);
+	virtual void get_next(WordStates &states,uint pos) = 0;	// you have to delete your self after this if your task is done
+};
+
+
+struct WordStateFactory {
+	virtual void create_new(WordStates &states,uint pos,const Sentence &st) const = 0;
+};
+
+typedef std::vector<WordStateFactory*> WordStateFactories;
+
+#define WORDSTATEFACTORY(CLASS)\
+struct CLASS##Factory:public WordStateFactory { \
+	virtual void create_new(WordStates &states,uint pos,const Sentence &st) const {\
+		(new CLASS(st))->get_first(states,pos);\
+	}\
 };
 
 /**
@@ -79,7 +120,7 @@ public:
 	Sentence const * st;
 
 	void construct(const Sentence &st);
-	void pre_construct(const Sentence &st,std::set<WordEntry> &wes);
+	void pre_construct(const Sentence &st,std::set<WordEntry> &wes,const WordStateFactories &f);
 	void post_construct(std::set<WordEntry> &wes);
 
 	/// Get the number of available positions, from 0 to n-1
@@ -144,6 +185,31 @@ public:
   
 	friend std::ostream& operator << (std::ostream& os,const Lattice &w);
 }; 
+
+struct ExactWordState:public WordState {
+	ExactWordState(const Sentence &st):WordState(st) {}
+	void get_next(WordStates &states,uint pos);
+};
+WORDSTATEFACTORY(ExactWordState);
+
+struct LowerWordState:public WordState {
+	LowerWordState(const Sentence &st):WordState(st) {}
+	void get_next(WordStates &states,uint pos);
+};
+WORDSTATEFACTORY(LowerWordState);
+
+struct FuzzyWordState:public WordState {
+	FuzzyWordState(const Sentence &st):WordState(st) {}
+	void get_next(WordStates &states,uint pos);
+};
+WORDSTATEFACTORY(FuzzyWordState);
+
+struct CaseWordState:public WordState {
+	CaseWordState(const Sentence &st):WordState(st) {}
+	void get_next(WordStates &states,uint pos);
+};
+WORDSTATEFACTORY(CaseWordState);
+
 
 /**
 	 Sentence is used to store a sequence of syllables.

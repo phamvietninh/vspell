@@ -69,6 +69,7 @@ public:
 
 	VocabIndex get_syllable() const { return id; }
 	virtual WordNodePtr get_next(strid str) const;
+	const node_map& get_nodes() const { return *nodes; }
 	void inc_a() { ASSERT(info.get()); info->a++; }
 	void inc_b() { ASSERT(info.get()); info->b++; }
 	int& get_a() { ASSERT(info.get()); return info->a; }

@@ -8,26 +8,108 @@
 #include <boost/format.hpp>
 #include <set>
 #include "propername.h"
+#ifndef _SArray_cc_
+#include <libsrilm/SArray.cc>
+#endif
 
 
 using namespace std;
 
+WordState::WordState(const WordState &ws):dnode(ws.dnode),sent(ws.sent),fuzid(ws.fuzid),pos(ws.pos)
+{
+}
 
-/**
-	Store information used by WFST::get_all_words()
-*/
-struct WordState {
+void WordState::get_first(WordStates &states,uint _pos)
+{
+	dnode.node = get_root();
+	pos = _pos;
+	get_next(states,pos);
+}
 
-	/**
-		 the currently processing node
-	 */
-	WordNode::DistanceNode dnode;
+void ExactWordState::get_next(WordStates &states,uint i)
+{
+	WordNodePtr exact_node = dnode.node->get_next(sent[i].get_cid());
+	if (exact_node == NULL)
+		return;
+	cerr << "Exact: " << get_sarch()[sent[i].get_cid()] << endl;
+	states.push_back(this);
+	// change the info
+	dnode = exact_node;
+}
 
-	int fuzid;
-	int pos;
+void LowerWordState::get_next(WordStates &states,uint i)
+{
+	WordNodePtr exact_node;
+	exact_node = dnode.node->get_next(get_sarch()[get_lowercased_syllable(get_sarch()[sent[i].get_cid()])]);
+	if (exact_node == NULL)
+		return;
+	cerr << "Lower: " << get_lowercased_syllable(get_sarch()[sent[i].get_cid()]) << endl;
+	states.push_back(this);
+	// change the info
+	dnode = exact_node;
+}
 
-	WordState(const WordNode::DistanceNode &n):dnode(n),fuzid(0) {}
-};
+void FuzzyWordState::get_next(WordStates &states,uint _i)
+{
+	vector<confusion_set>& confusion_sets = get_confusion_sets();
+	int i,j,m,n = confusion_sets.size();
+	bool ret = false;
+	set<Syllable> syllset,syllset2;
+	Syllable _syll;
+
+	_syll.parse(get_sarch()[sent[_i].get_cid()]);
+
+	syllset2.insert(_syll);
+	while (!syllset2.empty()) {
+		const Syllable sy = *syllset2.begin();
+		syllset2.erase(syllset2.begin());
+		
+		if (syllset.find(sy) != syllset.end())
+			continue;								// we already matched&applied this syllable
+
+		//cerr << sy << endl;
+		syllset.insert(sy);
+		
+		
+		vector<Syllable> sylls;
+		// match & apply
+		for (i = 0;i < n;i ++) {
+			m = confusion_sets[i].size();
+			for (j = 0;j < m;j ++)
+				if (confusion_sets[i][j].match(sy)) {
+					//cerr << "Match " << i << " " << j << endl;
+					break;
+				}
+			if (j < m) {
+				for (j = 0;j < m;j ++) {
+					confusion_sets[i][j].apply(sy,sylls);
+					//cerr << "Apply " << i << " " << j << endl;
+				}
+			}
+		}
+		copy(sylls.begin(),sylls.end(), inserter(syllset2,syllset2.begin()));
+	}
+		
+	// move to _nodes
+	//copy(syllset.begin(),syllset.end(),ostream_iterator<Syllable>(cerr)); cerr << endl;
+	set<Syllable>::iterator iter;
+	for (iter = syllset.begin();iter != syllset.end(); ++ iter) {
+		//cerr << iter->to_std_str() << endl;
+		string str = get_lowercased_syllable(iter->to_std_str());
+		WordNodePtr* pnode = dnode.node->get_nodes().find(get_sarch()[str]);
+		if (pnode) {
+			cerr << "Fuzzy: " << iter->to_std_str() << endl;
+			WordState *s = new FuzzyWordState(*this);
+
+			// change the info
+			s->dnode.node = *pnode;
+			states.push_back(s);
+			//cerr << nodes[ii] << endl;
+		}
+	}
+		
+	delete this;
+}
 
 /**
 	Find all possible words. The whole process is divided into two
@@ -42,7 +124,14 @@ struct WordState {
 void Lattice::construct(const Sentence &sent)
 {
 	set<WordEntry> wes;
-	pre_construct(sent,wes);
+	WordStateFactories factories;
+	ExactWordStateFactory exact;
+	LowerWordStateFactory lower;
+	FuzzyWordStateFactory fuzzy;
+	factories.push_back(&exact);
+	factories.push_back(&lower);
+	factories.push_back(&fuzzy);
+	pre_construct(sent,wes,factories);
 	mark_proper_name(sent,wes);
 	post_construct(wes);
 }
@@ -51,17 +140,18 @@ void Lattice::construct(const Sentence &sent)
 	The first phase of lattice creation. Create all possible words to we.
  */
 
-void Lattice::pre_construct(const Sentence &sent,set<WordEntry> &we)
+void Lattice::pre_construct(const Sentence &sent,set<WordEntry> &we,const WordStateFactories &f)
 {
 	Lattice &w = *this;
 	int i,n,ii,nn,k,nnn,iii;
+	int fi,fn = f.size();
 
 	//cerr << "construct\n";
 
 	w.st = &sent;
 
-	vector<WordState> states1;
-	vector<WordState> states2;
+	WordStates states1;
+	WordStates states2;
 	states1.reserve(10);
 	states2.reserve(10);
 
@@ -69,47 +159,36 @@ void Lattice::pre_construct(const Sentence &sent,set<WordEntry> &we)
 
 	for (i = 0;i < n;i ++) {
 
-		states1.push_back(WordNode::DistanceNode(get_root()));
-		states1.back().pos = i;
 		states2.clear();
 
+		// new states
+		for (fi = 0;fi < fn;fi ++)
+			f[fi]->create_new(states2,i,sent);
+
+		// move old states to new states
 		nn = states1.size();
-		for (ii = 0;ii < nn;ii ++) {
-			const WordState &ws = states1[ii];
+		for (ii = 0;ii < nn;ii ++)
+			// state1[ii].get_next() have to delete itself if necessary.
+			states1[ii]->get_next(states2,i);
 
-			WordNodePtr exact_node = ws.dnode.node->get_next(sent[i].get_cid());
-			WordNodePtr lowercase_node = ws.dnode.node->get_next(get_sarch()[get_lowercased_syllable(get_sarch()[sent[i].get_cid()])]);
-			vector<WordNode::DistanceNode> nodes;
-			ws.dnode.node->fuzzy_get_next(sent[i].get_cid(),nodes);
-			if (exact_node && 
-					find(nodes.begin(),nodes.end(),exact_node) == nodes.end())
-				nodes.push_back(exact_node);
-			if (lowercase_node && 
-					find(nodes.begin(),nodes.end(),lowercase_node) == nodes.end())
-				nodes.push_back(lowercase_node);
-
-			nnn = nodes.size();
-			for (iii = 0;iii < nnn;iii ++) {
-				states2.push_back(ws);	// inherit from the current state
-				WordState &ws2 = states2.back();
-				ws2.dnode = nodes[iii];
-				if (nodes[iii].node != exact_node && nodes[iii].node != lowercase_node)
-					ws2.fuzid |=  1 << k;
-				
-				// get completed words
-				if (ws2.dnode.node->get_prob() >= 0) {
-					WordEntry e;
-					e.pos = ws2.pos;
-					e.len = i-ws2.pos+1;
-					e.fuzid = ws2.fuzid;
-					e.node = ws2.dnode;
-					we.insert(e);
-				}
+		// get completed words
+		nn = states2.size();
+		for (ii = 0;ii < nn;ii ++) 
+			if (states2[ii]->dnode.node->get_prob() >= 0) {
+				WordEntry e;
+				e.pos = states2[ii]->pos;
+				e.len = i-states2[ii]->pos+1;
+				e.fuzid = states2[ii]->fuzid;
+				e.node = states2[ii]->dnode;
+				we.insert(e);
 			}
-		}
-		
+
 		states1.swap(states2);
 	}
+
+	nn = states1.size();
+	for (ii = 0;ii < nn;ii ++)
+		delete states1[ii];
 }
 
 /**

@@ -994,7 +994,8 @@ string get_lowercased_syllable(const string &str)
 
 bool operator < (const Syllable &s1,const Syllable &s2)
 {
-	for (int i = 0;i < 5;i ++) {
+	int i;
+	for (i = 0;i < 4;i ++) {
 		if (s1.scomponents[i] == s2.scomponents[i])
 			continue;
 		if (s1.scomponents[i] > s2.scomponents[i])
@@ -1002,17 +1003,23 @@ bool operator < (const Syllable &s1,const Syllable &s2)
 		if (s1.scomponents[i] < s2.scomponents[i])
 			return true;
 	}
-	return false;
+	i = 4;
+	if (s1.components[i] == s2.components[i])
+		return false;
+	if (s1.components[i] > s2.components[i])
+		return false;
+	if (s1.components[i] < s2.components[i])
+		return true;
 }
 
 bool operator == (const Syllable &s1,const Syllable &s2)
 {
-	for (int i = 0;i < 5;i ++) {
+	for (int i = 0;i < 4;i ++) {
 		if (s1.scomponents[i] == s2.scomponents[i])
 			continue;
 		return false;
 	}
-	return true;
+	return s1.components[4] == s2.components[4];
 }
 
 /*

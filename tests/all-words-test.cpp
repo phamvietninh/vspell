@@ -233,7 +233,14 @@ int main(int argc,char **argv)
     st.tokenize();
     Lattice words,w2;
     set<WordEntry> wes;
-    w2.pre_construct(st,wes);
+    WordStateFactories factories;
+    ExactWordStateFactory exact;
+    LowerWordStateFactory lower;
+    FuzzyWordStateFactory fuzzy;
+    factories.push_back(&exact);
+    factories.push_back(&lower);
+    factories.push_back(&fuzzy);
+    w2.pre_construct(st,wes,factories);
     mark_proper_name(st,wes);
     if (has_seps)
       apply_separators(st,wes,seps);

@@ -1,8 +1,8 @@
 digraph wordlattice {
 	rankdir=LR
 	fontname=arial;
-	head [label=""];
-	tail [label=""];
+	head [label="head"];
+	tail [label="tail"];
 	spline=true;
 	style=dashed;
 		hoc1 [label="{|học}" shape=record];

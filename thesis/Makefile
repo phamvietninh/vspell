@@ -1,4 +1,4 @@
-main.pdf: main.tex wordlattice.png wordlattice1.png
+main.pdf: main.tex wordlattice.png wordlattice1.png wordlattice2.png
 	pdflatex $<
 	pdflatex $<
 %.png: %.dot

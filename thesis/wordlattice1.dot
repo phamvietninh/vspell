@@ -1,8 +1,8 @@
 digraph wordlattice {
 	rankdir=LR
 	fontname=arial;
-	head [label=""];
-	tail [label=""];
+	head [label="head"];
+	tail [label="tail"];
 	style=invis;
 	subgraph cluster_l1 {
 		hoc1 [label="học"];

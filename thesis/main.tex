@@ -97,10 +97,12 @@ Scratchin' to stay alive
 
 
 "To all of you people out there
+
 Wherever you are - remember:
+
 The light at the end of the tunnel
+
 May be you - goodnight" 
-  
 \end{center}
 
 \chapter{Thông tin nền}
@@ -109,21 +111,19 @@ May be you - goodnight"
 \section{Tổng quan về lỗi chính tả}
 
 Văn bản nhập vào thường hay bị lỗi. Các nguyên nhân gây ra lỗi là:
+Theo \cite{Chang} thì lỗi là:
 \begin{itemize}
-\item Do quá trình nhập bị sai (gõ nhầm, lỗi OCR ...)
-  \begin{itemize}
-  \item Sai do gõ nhầm các phím gần nhau
-  \item Sai do nhận dạng OCR sai (các ký tự có hình dạng giống nhau)
-  \end{itemize}
-\item Do lầm lẫn giữa cách đọc và cách viết
-\item Do hiểu sai dẫn đến viết sai.
+\item Giống phiên âm
+\item Giống hình dạng
+\item Cách gõ tương tự nhau
+\item Giống nghĩa
 \end{itemize}
 
-Luận văn này chỉ giải quyết hai lỗi đầu.
+Luận văn này chỉ giải quyết ba lỗi đầu.
 
 \section{Xử lý lỗi chính tả}
 
-Có hai hướng chính.
+Có hai hướng chính:
 \begin{itemize}
 \item Tìm lỗi, đề nghị cách sửa chữa.
 \item Tự động sửa lỗi.
@@ -136,7 +136,7 @@ từ đề nghị.
 
 Tự động sửa lỗi chủ yếu dựa trên một tập các từ hay bị lỗi (then-than,
 there-their \ldots). Sử dụng ngữ cảnh xung quanh để xác định từ đúng
-hay sai. Cách này chỉ áp dụng với nguyên nhân lỗi thứ ba. 
+hay sai.
 
 Đối với ngôn ngữ đơn lập như tiếng Việt, vấn đề mới phát sinh là không
 thể xác định rõ ràng ranh giới từ. Với tiếng Anh và các ngôn ngữ biến
@@ -150,7 +150,7 @@ nhau. Cách đầu tiên đơn giản là tìm ranh giới từ cho tiếng Vi�
 đó chuyển về bài toán bắt lỗi chính tả của tiếng Anh. Cách khác
 là bắt lỗi mà không cần tách từ. XXX
 Cách nữa dựa trên ý tưởng ``phân tích cú pháp câu, nếu ta không thể
-phân tích cú pháp của câu, nghĩa là câu đó sai chính tả''.
+phân tích cú pháp của câu, nghĩa là câu đó sai chính tả'' (\cite{iccc}).
 
 Luận văn này làm theo hướng tách từ, sau đó xác định lỗi chính tả.
 
@@ -163,24 +163,42 @@ tả.
 \cite{Oflazer} khi xử lý hình thái trong tiếng Thổ Nhĩ Kỳ gặp trường
 hợp khá giống với trường hợp này. Tác giả phải tách hình thái từ
 trong điều kiện từ đó bị sai chính tả. Do đặc tính
-ngôn ngữ chấp dính\footnote{agglunative language}, số tiếp vĩ ngữ
+ngôn ngữ chắp dính\footnote{agglunative language}, số tiếp vĩ ngữ
 nhiều, liên tiếp nhau, gây khó khăn cho việc nhận dạng tiếp vĩ ngữ,
 cũng như không thể phân biệt những tiếng nào hợp thành một từ trong
 một chuỗi tiếng trong tiếng Việt. Tác giả dùng một hàm độ đo, tạo ra
 các tiếp đầu ngữ có khả năng thay thế dựa trên độ đo này, sau đó sử
 dụng WFST để tìm chuỗi tiếp vĩ ngữ thích hợp nhất.
 
-Nhận dạng tiếng nói tiếng Anh cũng gặp trường hợp tương tự. Sau công
+Nhận dạng tiếng nói tiếng Anh cũng gặp trường hợp tương tự
+\cite{Ravishankar}. Sau công 
 đoạn xử lý âm thanh, ta nhận dạng được một chuỗi các âm tiết
 (phoneme). Phải làm cách nào đó để nhóm các âm tiết này thành từ. Do
 âm thanh thường bị nhiễu, nên các âm tiết có thể không chính xác hoàn
 toàn.
 
+\cite{Chang} Có thể dùng nhiều LM khác nhau như character
+bigram, word bigram, inter-word character bigram (IWCB), POS bigram,
+word class bigram. Các bước thực hiện:
+\begin{enumerate}
+\item Input and Clause Segmentation. Dùng cách ký tự như `?' `!' `,'
+  `:' `.' \ldots{} để tách.
+\item Composite Confusing Character Stubstitution. 
+\item Language Model Evaluation. Xài Modified-IWCB và SA-class
+  bigram. IWCB là, những từ cùng ký tự đầu tiên được nhóm thành 1
+  class, những từ cùng ký tự cuối cùng được nhóm thành class. Bigram
+  dựa trên hai nhóm này. ``Modified'' là tính luôn word freq. SA-class
+  bigram dùng SA algorithm để nhóm.
+\item Comparision and Correction.
+\item Output.
+\end{enumerate}
+
+
 Dựa trên hai cái này, có thể thấy giải pháp cho việc tách từ khi bị
 sai chính tả, là phát sinh một loạt các từ có khả năng thay thế, với
 hy vọng trong tập từ này sẽ có từ đúng chính tả, thay thế từ sai chính
 tả ban đầu. Sau đó sử dụng tách từ tìm một cách tách tốt nhất. Sau khi
-tìm được cách tách từ, ta có thể tra từ điển để tìm xem từ nào bi sai.
+tìm được cách tách từ, ta có thể tra từ điển để tìm xem từ nào bị sai.
 
 
 \subsection{Tách từ}
@@ -188,18 +206,27 @@ tìm được cách tách từ, ta có thể tra từ điển để tìm xem t�
 Bài toán tách từ cho ngôn ngữ đơn lập đã được đặt ra từ lâu, chủ yếu
 để giải quyết cho tiếng Hoa, tiếng Nhật. 
 
-Chao-Huang Chang sử dụng WFST để tách từ. Training bằng EM dựa trên
+\cite{Sproat} sử dụng WFST để tách từ, huấn luyện bằng EM dựa trên
 cách tách từ đúng nhất.
 
+\cite{wordseg} sử dụng giải pháp tương tự như \cite{Sproat} nhưng cải
+tiến bằng cách cáp dụng Neural Networks để giải quyết nhập nhằng dựa
+vào POS. Nghiên cứu đề cập đến một số vấn đề tiền xử lý tiếng Việt như
+xác định tên riêng, từ láy, phân tích hình thái.
+
 \cite{Ravishankar} đề nghị tạo ra lưới từ\footnote{word lattice} sau
-đó sử dụng thuật toán tìm đường đi ngắn nhất để giải quyết.
+đó sử dụng thuật toán tìm đường đi ngắn nhất để tìm cách tách từ tốt
+nhất dựa trên 2-gram hoặc 3-gram.
 
-Le An Ha sử dụng ngram để tách từ.
+\cite{LAH} sử dụng n-gram và lập trình quy hoạch động để tách từ,
+không dùng từ điển. Giải pháp này tương tự như \cite{softcount}, tuy
+nhiên chỉ tính xác suất cách tách từ tốt nhất thay vì tính tổng xác
+suất mọi cách tách từ như trong \cite{softcount}.
 
-Chuynu Kit kết hợp ngram, lập trình quy hoạch động để tách từ. Xài
-soft-count thay vì ``hard-count'' như Chang. Chunyu còn đề nghị dùng
-case-based learning.
 
+\cite{Chunyu} kết hợp ngram, lập trình quy hoạch động để tách từ. Xài
+soft-count thay vì ``hard-count'' như \cite{Chang}. \cite{Chunyu} còn
+đề nghị dùng case-based learning.
 
 \subsection{Huấn luyện tách từ}
 
@@ -212,9 +239,21 @@ trên dữ liệu thô.
 Thuật toán thường dùng nhất để huấn luyện trên dữ liệu thô là thuật
 toán EM. Nhiều người đã cố gắng cải tiến EM theo nhiều cách khác nhau
 nhằm nâng cao chất lượng huấn luyện, đồng thời hạn chế những khuyết
-điểm của EM.
+điểm của EM. 
 
+\cite{self-supervised} đề nghị cách giải quyết hạn chế ``tối ưu cục
+bộ'' của EM, bằng cách phân phối lại từ vựng sau mỗi lần chạy và khởi
+động lại EM với điểm khởi đầu tốt hơn.
 
+\cite{text-tiling} sử dụng một lượng nhỏ ngữ liệu huấn luyện có chất
+lượng cao (\textit{seed set}) và một lượng lớn ngữ liệu có chất lượng
+không thật bảo đảm (\textit{training set}), xử lý qua 4 bước:
+\begin{enumerate}
+\item \textbf{Phân đoạn training set}
+\item \textbf{Phân hạng training set}
+\item \textbf{Tổ hợp training set}
+\item \textbf{Language model pruning}
+\end{enumerate}
 
 \chapter{Cài đặt}
 
@@ -322,7 +361,7 @@ sau:
 \end{array}
 \end{equation}
 
-XXXX. cho ví dụ.
+XXXX. cho ví dụ, ghi thuật toán.
 
 \subsection{Tạo lưới từ}
 \label{sub:lattice}
@@ -382,13 +421,28 @@ tạo lưới 2-từ được nêu trong \cite{Ravishankar}, được tóm tắt
 \end{enumerate}
 
 Các lưới n-từ có đặc điểm là tăng nhanh số nút và số cạnh, nhưng số
-tầng vẫn không đổi (Đồ thị ``mập'' ngày càng nhanh, nhưng ``cao''
+tầng vẫn không đổi (Đồ thị càng ngày càng ``mập'', nhưng ``cao''
 không nổi ;-) )
 
+
+\subsubsection{Lưu lưới từ}
+
+Các nút trong lưới từ được lưu tập trung vào một mảng
+(WordEntries). Truy cập nút được thực hiện thông qua index của mảng
+này. Mỗi nút chứa các thông tin về từ của nút đó, bao gồm vị trí từ,
+số tiếng, index trong WordEntries\ldots{}
+
+Words là một mảng tương ứng với vị trí từng tiếng trong câu. Vị trí
+của mỗi tiếng sẽ được liên kết với một danh sách các từ bắt đầu tại
+tiếng đó. Ta có thể coi danh sách này như danh sách các cạnh nối từ
+nút đang xét đến các nút kế tiếp.
+
+
 \subsection{Tách từ}
+\label{sub:wordseg}
 
 Dùng thuật toán tìm kiếm theo độ ưu tiên\footnote{Priority-First
-  Search} để tìm đường đi ngắn nhất trên đồ thị. Khoảng cách giữa hai
+  Search---PFS} để tìm đường đi ngắn nhất trên đồ thị. Khoảng cách giữa hai
   điểm trong đồ thị là xác suất 2-gram của hai từ.
 
 Để áp dụng 3-gram thay vì 2-gram, ta sẽ sử dụng lưới 2-từ. Sau đó áp
@@ -403,7 +457,8 @@ XXXX. Nếu WFST cộng viterbi, beam pruning ...
 
 \subsection{Tìm từ thay thế}
 
-Đối với tiếng Anh, bước này dùng thuật toán như doublephone. Ý tưởng
+Đối với tiếng Anh, bước này dùng thuật toán như doublephone, Soundex \cite{soundex},
+Phonetex \cite{phonetex}. Ý tưởng 
 là dựa vào heuristic, thay thế các nhóm ký tự trong từ thành một ký
 hiệu tương trưng cho một âm. Sau đó so sánh độ hiệu chỉnh giữa âm của
 từ sai và các âm của từ trong từ điển. Do tiếng Việt đọc sao ghi vậy,
@@ -411,8 +466,11 @@ nên bước chuyển từ từ sang âm có thể bỏ qua. Bước còn lại 
 thuật toán đo độ hiệu chỉnh giữa hai từ như đã nêu trong \ref{algo:ed}
 Ta có thể so sánh từng ký tự, hoặc so sánh theo âm (ví dụ, ``th'' thay
 vì ``t'' và ``h'').
+
 Chương trình sẽ liệt kê XXXX (chọn theo tiêu chí nào?, 10 từ lớn nhất
 hay sao đây)
+
+XXXX. thuật toán tính ed.
 
 
 \section{Trình huấn luyện}
@@ -427,8 +485,10 @@ có trong câu.
 
 
 \subsection{Đếm từ}
+\label{sub:wordcount}
 
-Nếu dùng PFS để tách từ, ta chỉ có 1 cách tách từ tốt nhất.
+Nếu dùng PFS để tách từ, ta chỉ có 1 cách tách từ tốt nhất. Việc đếm
+từ sẽ dựa trên cách tách từ này.
 
 Như đã nói, có thể dùng WFST hoặc dùng thuật toán trong
 \cite{softcount} (tạm gọi là thuật toán ``soft-count'') để tách
@@ -455,21 +515,199 @@ Luận văn này thuật toán soft-count để đếm mọi cách tách từ. S
 thực tế không kết xuất ra một cách tách từ cụ thể nào (và do vậy nên
 cũng không thể áp dụng để tìm cách tách từ tốt nhất được!). Thay vào
 đó, thuật toán đếm mọi từ thể có. Thuật toán được mô tả trong
-\cite{softcount} không dùng từ được. Mọi chuỗi con trong câu đều được
-cho là từ. Điểm này, xét một mặt, là điểm mạnh vì không cần dùng từ
+\cite{softcount} không dùng từ điển. Mọi chuỗi con trong câu đều được
+cho là từ. Điểm này, vừa là điểm mạnh vì không cần dùng từ
 điển, nhưng cũng là điểm yếu vì yếu tố này làm giảm độ chính xác một
 cách đáng kể (khoảng 20\verb#%#, như kết quả trong \cite{softcount}).
 
-Giả sử câu S có n cách
-tách từ khác nhau, xác suất mỗi cách tách từ là
-$p(1),p(2),\ldots,p(n)$.
+Giả sử câu S có $n$ tiếng, $2^{n-1}$ cách tách từ khác nhau, xác suất
+mỗi cách tách từ là $p(1),p(2),\ldots,p(n)$.
 Với mỗi từ trong một cách tách từ, ta cộng thêm một khoảng
 $\displaystyle\frac{p(i)}{\sum_{i=1}^n{p(i)}}$ cho từ đó. Soft-count dùng
 lập trình quy hoạch động để thực hiện quá trình này.
 
 Thuật toán được dùng ở đây là thuật toán soft-count, được hiệu chỉnh
-sử dụng từ điển để hạn chế những từ không phải là từ. 
+sử dụng từ điển và lưới từ để hạn chế những từ không phải là từ.
 
+Cho lưới từ của câu S. Gọi $L(W)$ là tập những từ nối đến nút
+$W$. Tương tự, $R(W)$ là tập những từ được nối đến từ nút $W$.
+Với mỗi nút $W$ trong S, tổng xác suất các cách tách từ có chứa nút
+$W$ là:
+$$P(W)=P^{left}(W)p(W)P^{right}(W)$$
+Trong đó:
+\begin{itemize}
+\item $P^{left}(W)$ là tổng xác suất các cách tách từ tính từ đầu câu
+  đến $W$.
+\item $P^{right}(W)$ là tổng xác suất các cách tách từ tính từ $W$ đến
+  hết câu.
+\end{itemize}
+
+$$
+P^{left}(W) = \left\{
+    \begin{array}{ll}
+      p(W)&\text{nếu W là nút head}\\
+      \displaystyle\sum_{W' \in L(W)}p(W')P^{left}(W')&\text{ngược lại}\\
+    \end{array}
+  \right.
+$$
+
+Tương tự
+
+$$
+P^{right}(W) = \left\{
+    \begin{array}{ll}
+      p(W)&\text{nếu W là nút tail}\\
+      \displaystyle\sum_{W' \in R(W)}p(W')P^{right}(W')&\text{ngược lại}\\
+    \end{array}
+  \right.
+$$
+
+Thuật toán tính $P^{left}$ như sau:
+\begin{enumerate}
+\item Đặt $P^{left}(head) = p(head)$
+\item Đặt $P^{left}(W) = 0$ với mọi $W$ còn lại.
+\item Duyệt lần lượt các nút $W$ theo thứ tự từ trái sang phải, tính
+  theo vị trí bắt đầu của $W$ trong câu.
+  Với mỗi $W$ tìm được, cộng thêm $p(W)$ vào $P^{left}(W')\quad
+  W' \in R(W)$
+\end{enumerate}
+
+Thuật toán tương tự được áp dụng để tính $P^{right}$.
+
+Sau khi tính được $P^{left}$ và $P^{right}$, ta có thể tính fractional
+count cho các từ trong câu bằng cách duyệt tất cả các nút trong lưới từ,
+cộng thêm vào $\displaystyle\frac{P(W)}{P^{left}(tail)}$ cho từ
+$C$. Thực tế, ta sẽ lồng bước này vào trong thuật toán tính
+$P^{right}$, vì thuật toán cũng phải duyệt qua tất cả các từ.
+
+Vậy thuật toán tính $P^{right}$ là:
+\begin{enumerate}
+\item Đặt $P^{right}(tail) = p(tail)$
+\item Đặt $P^{right}(W) = 0$ với mọi nút còn lại.
+\item Duyệt tất cả các nút $W$ từ phải sang trái, tính theo vị trí kết
+  thúc của $W$ trong câu.
+  \begin{enumerate}
+  \item Với mỗi $W$ tìm được, cộng thêm $p(W)$ vào
+    $P^{right}(W')\quad W' \in L(W)$
+  \item Tính fractional count cho $W$ theo công thức
+    $\displaystyle\frac{P^{left}(W)p(W)P^{right}(W)}{P^{left}(tail)}$
+  \end{enumerate}
+\end{enumerate}
+
+
+Tuy nhiên, thuật toán trên (cũng như thuật toán gốc) sử dụng
+uni-gram, trong khi trình bắt lỗi lại dùng 2-gram. Để cho phép thuật
+toán dùng 2-gram, ta có thể tạo một lưới 2-từ như cách của
+\cite{Ravishankar} khi muốn tách từ dựa trên 3-gram. Tuy nhiên, để áp
+dụng cách này với 3-gram đòi hỏi phải tạo lưới 3-từ! Số lượng nút
+trong lưới 3-từ nhiều hơn nhiều so với lưới từ gốc, làm giảm tính hiệu
+quả của thuật toán. 
+
+Thay vì vậy, thuật toán được hiệu chỉnh để áp dụng 2-gram với lưới từ
+thông thường. Thay vì dùng giá trị nút để tính, ta dùng giá trị cạnh
+để tính. $p(W)$ sẽ được thay bằng $p(W/W')$.
+
+$$P(W)=P^{left}(W)P^{right}(W)$$
+
+$$
+P^{left}(W) = \left\{
+    \begin{array}{ll}
+      p(W)&\text{nếu W là nút head}\\
+      \displaystyle\sum_{W' \in L(W)}p(W/W')P^{left}(W')&\text{ngược lại}\\
+    \end{array}
+  \right.
+$$
+
+Tương tự
+
+$$
+P^{right}(W) = \left\{
+    \begin{array}{ll}
+      p(W)&\text{nếu W là nút tail}\\
+      \displaystyle\sum_{W' \in R(W)}p(W'/W)P^{right}(W')&\text{ngược lại}\\
+    \end{array}
+  \right.
+$$
+
+Với cách tính này, ta có thể dùng lưới từ cùng với 2-gram. Để tính
+3-gram, ta dùng lưới 2-từ. 
+
+\subsection{Tính n-gram}
+
+N-gram được tính như thông thường. Sử dụng backoff chuẩn.
+
+\chapter{Kết luận}
+\label{cha:conclusion}
+
+\section{Hạn chế}
+\begin{itemize}
+\item Không sử dụng những thông tin cấp cao hơn.
+\end{itemize}
+
+\section{Hướng phát triển}
+
+
+
+\begin{thebibliography}{99}
+\bibitem{Ravishankar}Mosur K. Ravishankar. Efficient Algorithms for
+  Speech Recognition, PhD thesis, 1996.
+\bibitem{Oflazer}Kemal Oflazer. Error-tolerant Finite State
+  Recognition with Applications to Morphological Analysis and Spelling
+  Correction, 1996.
+\bibitem{LAH}Le An Ha. A method for word segmentation in
+  Vietnamese.
+\bibitem{Chang}Chao-Huang Chang. A New Approach for
+  Automatic Chinese Spelling Correction. 
+\bibitem{Sproat}Richard Sproat, William Gale, Chilin Shih, Nancy
+  Chang. A Stochastic Finite-State Word-Segmentation Algorithm for
+  Chinese.
+\bibitem{Chunyu}Chunyu Kit, Zhiming Xu, Jonathan
+  J. Webster. Integrating Ngram Model and Case-based Learning For
+  Chinese Word Segmentation.
+\bibitem{softcount}Xianping Ge, Wanda Pratt,
+  Padhraic Smyth. Discovering Chinese Words from Unsegmented Text.
+\bibitem{text-tiling}Jianfeng Gao, Hai-Feng Wang, Mingjing Li, Kai-Fu
+  Lee. A Unified Approach to Statistical Language Modeling for
+  Chinese.
+\bibitem{}Nianwen Xue.Chinese Word Segmentation as Character Tagging.
+\bibitem{self-supervised}Fuchun Peng and Dale Schuurmans. Self-Supervised Chinese
+  Word Segmentation.
+\bibitem{phonetex}Victoria J. Hodge, Jim Austin, An Evaluation of
+  Phonetic Spell Checkers
+\bibitem{soundex}K. Kukich. Techniques for Automatically Correcting
+  Words in Text, 1992.
+\bibitem{}Cláudio L. Lucchesi and Tomasz Kowaltowski. Applications of
+  Finite Automata Representing Large Vocabularies.
+\bibitem{}Bo-Hyun Yun, Min-Jeung Cho, Hae-Chang Rim. Segmenting Korean
+  Compound Nouns using Statistical Information and a Preference Rule.
+\bibitem{}Roger I. W. Spooner and Alistair D. N. Edwards. User
+  Modelling for Error Recovery: A Spelling Checker for Dyslexic Users
+\bibitem{}Theppitak Karoonboonyanan, Virach Sornlertlamvanich,
+  Surapant Meknavin. A Thai Soundex System for Spelling Correction.
+\bibitem{}Justin Zobel and Philip Dart. Finding Approximate Matches in
+  Large Lexicons.
+\bibitem{}Sun Maosong, Shen Dayang, Huang Changning. CSeg\&Tag1.0: A
+  Practical Word Segmenter and POS Tagger for Chinese Texts.
+\bibitem{wordseg}Đinh Điền, Hoàng Kiếm, Nguyễn Văn Toàn. Vietnamese Word
+  Segmentation.
+\bibitem{}Bidyut Baran Chaudhuri. Reversed word dictionary and
+  phonetically similar word grouping based spell-checker to Banglaa
+  text
+\bibitem{}Timothy Gambell, Charles D. Yang. Scope and Limits of
+  Statistical Learning in Word Segmentation.
+\bibitem{iccc}Andi Wu, George Heidorn, Zixin Jiang, Terence
+  Peng. Correction of Erroneous Characters in Chinese Sentence
+  Analysis
+\bibitem{}Fuchun Peng, Xiangji Huang, Dale Schuurmans, Shaojun
+  Wang. Text Clasification in Asian Languages without Word
+  Segmentation. 
+\bibitem{}Yalin Wang, Ihsin T. Phillips, Robert
+  Haralick. Statistical-based Approach to Word Segmentation.
+\bibitem{}Combining Syntactical And Statistical Language Constraints
+  in Context-dependent Language Models for Interactive Speech Applications.
+\end{thebibliography}
+
+\end{document}
 Giả sử câu S có $n$ tiếng $c_1,c_2,\ldots,c_n$, có $|S|$ cách tách từ
 $S_1,S_2,\ldots,S_{|S|}$ và cách tách từ  $S_i$ được
 tách thành $|S_i|$ từ $W_{i_1},W_{i_2},\ldots,W_{i_{|S_i|}}$ với 
@@ -498,7 +736,7 @@ Ta sẽ dùng quy hoạch động để tính $P_i^{left}$ và $P_i^{right}$
 
 $$
 P_i^{left} = \left\{
-  \begin{array}{l r}
+  \begin{array}{lr}
     1 & i=1\\
     p(W_i) & i=2\\
     \sum_{j=1}^{i-1}p(c_j\ldots c_{i-1})P_j^{left} & i>2
@@ -545,32 +783,6 @@ Vậy thuật toán tính $P^{right}$ là:
   \end{enumerate}
 \end{enumerate}
 
-Tuy nhiên, thuật toán trên (cũng như thuật toán gốc) sử dụng
-uni-gram, trong khi trình bắt lỗi lại dùng 2-gram. Để cho phép thuật
-toán dùng 2-gram, ta có thể tạo một lưới 2-từ như cách của
-Ravishankar. Tuy nhiên, để áp dụng cách này với 3-gram đòi hỏi phải
-tạo lưới 3-từ! Số lượng nút trong lưới 3-từ nhiều hơn nhiều so với
-lưới từ gốc, làm giảm tính hiệu quả của thuật toán.
-
-Thay vì vậy, thuật toán được hiệu chỉnh để áp dụng 2-gram với lưới từ
-thông thường. 
-$$
-P_i^{left}(W_{i,l}) = \left\{
-  \begin{array}{l r}
-    p(\phi) & i<1\\
-    \sum_{j=1}^{i-1}p(c_j\ldots c_{i-1}/c_k\ldots c_j)P_j^{left} & i>2
-  \end{array}
-\right.
-$$
-
-
-Ta thay $p(W_i)$ bằng 
-$$p'(W_i)=\sum_{\forall j, j+|W_j|=i}p(W_i/W_j)$$
-Và
-$$P(W_i) = P_{i}^{left}P_{i+|W_i|}^{right}$$
-
-Phần còn lại của thuật toán không đổi. Với cách tính này, ta có thể
-dùng lưới từ cùng với 2-gram. Để tính 3-gram, ta dùng lưới 2-từ.
 
 Ví dụ: câu ``học sinh học sinh học'' có 8 cách tách từ
 \begin{verbatim}
@@ -628,40 +840,3 @@ P_3(\Zhs) &= P_3^{left}(\Zhs)P_3^{right}(\Zhs)\\
  &=p(\Zhs_1,\Zhs_3,\Zh_5)+p(\Zh_1,\Zs_2,\Zhs_3,\Zh_5)
 \end{array}
 $$
-
-Bản cài đặt thật sự có một chút khác biệt, do sử dụng hệ đếm từ 0 chứ
-không phải từ 1.
-
-\subsection{Tính ngram}
-
-
-
-
-
-\chapter{Kết luận}
-\label{cha:conclusion}
-
-\begin{thebibliography}{99}
-\bibitem{Ravishankar}Mosur K. Ravishankar, Efficient Algorithms for
-  Speech Recognition, PhD thesis, 1996.
-\bibitem{Oflazer}Kemal Oflazer, Error-tolerant Finite State
-  Recognition with Applications to Morphological Analysis and Spelling
-  Correction, 1996.
-\bibitem{LAH}Le An Ha, A method for word segmentation in
-  Vietnamese.
-\bibitem{CHC}Chao-Huang Chang, A New Approach for
-  Automatic Chinese Spelling Correction. 
-\bibitem{Casebased}Chunyu Kit, Zhiming Xu, Jonathan
-  J. Webster, Integrating Ngram Model and Case-based Learning For
-  Chinese Word Segmentation.
-\bibitem{softcount}Xianping Ge, Wanda Pratt,
-  Padhraic Smyth, Discovering Chinese Words from Unsegmented Text.
-\bibitem{Jianfeng}Jianfeng Gao, Hai-Feng Wang, Mingjing Li, Kai-Fu
-  Lee, A Unified Approach to Statistical Language Modeling for
-  Chinese.
-\bibitem{}Nianwen Xue,Chinese Word Segmentation as Character Tagging.
-\bibitem{}Fuchun Peng and Dale Schuurmans, Self-Supervised Chinese
-  Word Segmentation.
-\end{thebibliography}
-
-\end{document}

@@ -32,7 +32,7 @@
 \maketitle
 \begin{titlepage}
   \begin{center}
-    \Large BLAH
+    \Large Lời cảm ơn
   \end{center}
 balh blah blah
 balh blah blah
@@ -44,7 +44,7 @@ balh blah blah
 balh blah blah
 
 \begin{flushright}
-  blah blah
+  Nguyễn Thái Ngọc Duy
 \end{flushright}
 \end{titlepage}
 \tableofcontents
@@ -225,8 +225,9 @@ chính tả, vừa gõ nhầm chữ này bằng chữ khác, vừa gõ dư chữ
 Giả định người dùng chỉ sử dụng một trong hai cách gõ tiếng Việt là
 VNI hoặc TELEX.
 
-Văn bản tiếng Việt được coi là thuần Việt. Những từ nước ngoài, các ký
-hiệu đều bị coi là sai chính tả.
+Văn bản tiếng Việt được coi là thuần Việt. Không kiểm tra chính tả đối
+với những từ nước ngoài. Những từ nước ngoài và các ký hiệu khác đều
+bị coi là sai chính tả. 
 
 \section{Đặc điểm}
 
@@ -257,6 +258,13 @@ bởi khoảng trắng, không phải các từ. Điều này dẫn đến một
 mới: tách từ trong tiếng Việt. Do tiếng Việt là ngôn ngữ nói sao viết
 vậy, nên rất ít khi gặp lỗi sai về tiếng. Đa số các lỗi chính tả là
 lỗi sai từ, nên việc xác định đâu là từ cực kỳ quan trọng.
+
+Vấn đề càng trở nên khó khăn hơn khi phải thực hiện cùng lúc hai bài
+toán là tách từ tiếng Việt và kiểm tra chính tả. Thật sự là tách từ
+tiếng Việt trước, sau đó bắt lỗi chính tả. Tuy nhiên, do khi tách từ
+thường ngầm định là dữ liệu đúng chính xác. Nên khi phải tách từ trước
+bước kiểm tra chính tả, ngầm định trên không còn đúng. Bài toán tách
+từ trở thành một bài toán khác, phức tạp hơn.
 
 Do tài nguyên ngữ liệu tiếng Việt, đặc biệt là ngữ liệu tiếng Việt
 trên máy tính vẫn còn hạn chế, đề tài này chỉ sử dụng các cách hình
@@ -291,9 +299,31 @@ từ điển. Nếu từ không có trong từ điển nghĩa là sai chính t�
 đưa ra những gợi ý thích hợp.
 
 Bài toán đặt ra một bái toán con khác là tách từ tiếng Việt trong điều
-kiện văn bản bị sai chính tả. Cách giải quyết bài toán này là tạo ra
+kiện văn bản bị sai chính tả. Cách giải quyết bài toán này là phát sinh
 mọi cách tách từ có thể, sử dụng tập nhầm lẫn, và sau đó áp dụng mô hình
-ngôn ngữ để tìm ra cách tách từ đúng nhất.
+ngôn ngữ để tìm ra cách tách từ đúng nhất. Tập nhầm lẫn được phát sinh
+dựa vào nguồn gốc gây lỗi. Các lỗi về phát âm sẽ dựa trên các thói
+quen phát âm của từng vùng để tạo tập nhầm lẫn. Các lỗi về nhập liệu
+sẽ dựa trên các nghiên cứu về lỗi nhập liệu để đưa ra tập nhầm lẫn
+tương ứng.
+
+
+\section{Bố cục luận văn}
+
+Luận văn được chia thành các chương sau:
+\begin{itemize}
+\item Chương 1 giới thiệu chung về luận văn, các vấn đề cần giải
+  quyết, đặc điểm, phạm vi của bài toán và hướng giải quyết.
+\item Chương 2 trình bày cơ sở lý thuyết ngôn ngữ học.
+\item Chương 3 trình bày cơ sở lý thuyết toán học/tin học. Các mô hình
+  được áp dụng để giải quyết bài toán.
+\item Chương 4 trình bày mô hình đề nghị.
+\item Chương 5 trình bày các chi tiết khi cài đặt chương trình.
+\item Chương 6 tóm tắt luận văn, các kết quả đạt được, tìm hiểu các
+  đặc điểm của mô hình   cũng như chương trình cài đặt, các hạn chế và
+  các hướng giải quyết   trong tương lai.
+\item Phần phụ lục trình bày tùm lum hết.
+\end{itemize}
 
 \chapter{Cơ sở lý thuyết ngôn ngữ}
 \label{cha:vietnamese}
@@ -691,16 +721,361 @@ thanh hầu \textipa{/h-,P-/} và phụ âm mặt lưỡi sau \textipa{/k-/}, v�
 
 \subsubsection{Âm chính}
 
+Âm chính trong âm tiết tiếng Việt có thể là một nguyên âm đơn hoặc một
+nguyên âm đôi.
+
+
+\paragraph{Nguyên âm đơn}
+
+Tiếng Việt có 11 nguyên âm đơn làm âm chính. Căn cứ vào vị trí lưỡi,
+hình dáng môi, các nguyên âm đơn được chia ra:
+\begin{itemize}
+\item Các nguyên âm giòng trước không tròn môi: \textipa{/i, e, E/}.
+\item Các nguyên âm giòng sau không tròn môi: \textipa{/W, 7, \v{7},
+    a, \v{a}/}.
+\item Các nguyên âm giòng sau tròn môi: \textipa{/u, o, O/}.
+\end{itemize}
+
+Căn cứ vào độ mở miệng, co thể chia thành:
+\begin{itemize}
+\item Các nguyên âm có độ mở miệng hẹp: \textipa{/i, W, u/}.
+\item Các nguyên âm có độ mở trung bình: \textipa{/e, 7, \v{7}, o/}.
+\item Các nguyên âm có độ mở rộng: \textipa{/E, a, \v{a}, O/}.
+\end{itemize}
+
+Căn cứ vào âm sắc, có thể chia ra:
+\begin{itemize}
+\item Các nguyên âm bổng: \textipa{/i, e, E/}.
+\item Các nguyên âm trung bình: \textipa{/W, 7, \v{7}, a, \v{a}/}.
+\item Các nguyên âm trầm: \textipa{/u, o, O/}.
+\end{itemize}
+
+Căn cứ vào trường độ, có thể chia ra:
+\begin{itemize}
+\item Các nguyên âm dài: \textipa{/i, e, E, W, 7, a, u, o, O/}.
+\item Các nguyên âm ngắn: \textipa{/\v{7}, \v{a}/}.
+\end{itemize}
+
+
+\paragraph{Nguyên âm đôi}
+
+Ngoài 11 nguyên âm đơn, còn có 3 nguyên âm đôi âm vị tính là
+\textipa{/ie, W7, uo/}.
+
 \subsubsection{Âm cuối}
 
+Âm cuối là yếu tố kết thúc âm tiết. Các âm tiết trong tiếng Việt có
+thể kết thúc bằng cách biến đổi âm sắc của âm chính do động tác khép
+lại của bộ máy phát âm, làm cho nó bổng hơn hoặc trầm hơn. Âm cuối
+trong trường hợp này là hai bán nguyên âm \textipa{/-u/} và
+\textipa{/-i/}. Âm tiết tiếng Việt còn có thể kết thúc bằng động tác
+khép của bộ máy phát âm với một phụ âm tắc (mũi hoặc miệng).
+
+Hệ thống âm cuối trong tiếng Việt gồm có 2 bán nguyên âm và 6 phụ
+âm. Sau phụ âm bao gồm: \textipa{/m, p, n, t, N, k/}.
+
+
+\subsubsection{Quy luật phân bố của các âm cuối sau âm chính}
+
+Về mặt phân bố, các bán nguyên âm cuối \textipa{/-u/} và
+\textipa{/-i/} chỉ xuất hiện sau các nguyên âm không cùng âm sắc với
+nó. Bán nguyên âm cuối \textipa{/-i/} chỉ xuất hiện sau các bán nguyên
+âm không phải giòng trước. Bán nguyên âm cuối \textipa{/-u/} chỉ xuất
+hiện sau các bán nguyên âm không tròn môi. Sự kết hợp giữa nguyên âm
+và bán nguyên âm cuối, giống như sự kết hợp giữa âm đệm và nguyên âm
+làm âm chính, tuân theo quy luật dị hoá. Theo đó, các âm có cấu âm
+giống nhau hoặc gần nhau không bao giờ được phân bố cạnh nhau.
+
+Có thể hình dung khả năng kết hợp giữa nguyên âm làm âm chính với hai
+bán nguyên âm cuối \textipa{/-i/} và \textipa{/-u/} như sau:
+\begin{itemize}
+\item Các nguyên âm có thể đứng trước bán nguyên âm \textipa{/-i/} bao
+  gồm các âm biểu hiện bởi các chữ: ư, ươ, ơ, â, a, ă, u, uô, ô, o.
+\item Các nguyên âm có thể đứng trước bán nguyên âm \textipa{/-u/} bao
+  gồm các âm biểu hiện bởi các chữ: i, iê, ê, e, ư, ươ, ơ, â, a, ă.
+\end{itemize}
+
+Các phụ âm cuối khác, nói chung được phân bố đều đặn sau các nguyên
+âm, trừ hai âm cuối mũi \textipa{/-m, -p/} không xuất hiện sau
+\textipa{/W/}.
+
+
+\subsubsection{Sự thể hiện của nguyên âm và phụ âm trong các tiếng địa
+  phương}
+
+Trong phương ngữ Nam Bộ, các nguyên âm đôi \textipa{/ie, W7, uo/} khi
+kết hợp với các âm cuối \textipa{/-i, -u, -m, -p/} được thể hiện thành
+các nguyên âm đơn \textipa{/i, W, u/}. Ví dụ, ``chuối'' --- ``chúi'',
+``bưởi'' --- ``bửi'', ``tiếp'' --- ``típ''.
+
+Ở một vài địa phương thuộc phương ngữ Trung Bộ, các nguyên âm đôi được
+thể hiện bằng các nguyên âm cùng dòng, độ mở rộng. Ví dụ, ``người''
+--- ``ngài'', ``ruột'' --- ``rọt'', ``miếng'' --- ``méng''.
+
+Hai phụ âm cuối \textipa{/-n, -t/} được thể hiện thành \textipa{/-N,
+  -k/} trong phương ngữ Nam Bộ, khi chúng đi sau các nguyên âm đơn và
+đôi, trừ \textipa{/i, e/} là hai nguyên âm giòng trước, độ mở hệp và
+trung bình. Ví dụ, ``đen'' -- ``đeng'', ``đét'' --- ``đéc''.
+
+Sau ba nguyên âm giòng trước \textipa{/i, e, E/}, hai phụ âm
+\textipa{/-N, -k/} được thể hiện trong các phương ngữ Nam Bộ thành
+\textipa{/-n, -t/}, đồng thời các nguyên âm này có cấu âm lui về phía
+sau nhiều hơn so với các nguyên âm trong phương ngữ Bắc Bộ, trở thành
+các nguyên âm giòng giữa nghe gần giống như ư, ơ (hoặc â) và ă.
+
+Điểm đáng lưu ý là trong phương ngữ Nam Bộ, sau \textipa{/i, e/} hai
+âm cuối \textipa{/-n, -t/} vẫn được phát âm không đổi. Sự khác biệt
+trong các vần này giữa phương ngữ Bắc Bộ và Nam Bộ xảy ra ở nguyên âm.
+
+Trong phương ngữ Nam Bộ không có các âm cuối \textipa{/-\textltailn,
+  -c/}. Âm cuối này được phát âm thành \textipa{/-n, -t/}.
 
 \subsection{Thanh điệu}
+
+Thanh điệu là đặc trưng ngôn điệu của âm tiết. Người ta gọi thanh điệu
+là âm vị siêu đoạn tính. Số lượng thanh điệu trong tiếng Việt khác
+nhau giữa các tiếng địa phương. Số lượng nhiều nhất là 6 thanh trong
+phát âm Hà Nội, hay trong các tiếng Bắc nói chung, và được phản ánh
+trên chữ viết. Đó là các thanh: sắc, huyền, ngã, hỏi, nặng, và thanh
+không dấu.
+
+Trong các tiếng địa phương từ Thanh Hoá trở vào Nam thường chỉ có năm
+thanh, thanh ngã trùng với thanh hỏi (trong một số vùng Thanh Hoá,
+tiếng Bình Trị Thiên, Nam Trung Bộ và Nam Bộ), hoặc thanh ngã trùng
+với thanh nặng (trong tiếng vùng Nghệ An, Hà Tĩnh). Ngoài ra trong một
+vài thổ ngữ lẻ tẻ ở Nghệ Anh và Quảng Bình chỉ có 4 thanh điệu.
+
+
+\subsubsection{Sự phân bố của thanh điệu}
 
 
 
 
 
 \section{Từ}
+
+Khái niệm từ, mặc dù nghe qua rất thông dụng, dễ hiểu, nhưng định
+nghĩa chính xác thế nào là từ không đơn giản. Từ trước đến nay đã có
+nhiều định nghĩa về từ được đưa ra. Các định nghĩa đều đúng, tuy nhưng
+không hoàn chỉnh. Viện sĩ L. V. Sherba thừa nhận rằng: ``Trong thực
+tế, từ là gì? Thiết nghĩ rằng trong các ngôn ngữ khác nhau, từ sẽ khác
+nhau. Do đó, tất sẽ không có khái niệm từ nói chung''\footnote{Nguyễn
+  Kim Thản, {\em Nguyên cứu ngữ pháp tiếng Việt}. NXB GD, 1997. Trang 28}.
+Chính vì tính đa dạng và phức tạp của từ mà ột số nhà ngôn ngữ học
+chối bỏ khái niệm từ, hoặc né tránh định nghĩa từ một cách chính
+thức. Nhà ngôn ngữ học Ferdinand de Saussure đã nhận xét: ``\ldots
+Ngôn ngữ có tính chất kỳ lạ và đáng kinh ngạc là không có những thực
+thể thoạt nhìn có thể thấy ngay được, thế nhưng người ta vẫn biết chắc
+là nó tồn tại, và chính sự giao lưu giữa những thực thế đó đã làm
+thành ngôn ngữ. Trong số những thực thể đó có cái mà ngôn ngữ học vẫn
+gọi là từ.''. Theo ông thì ``\ldots Từ là một đơn vị luôn luôn ám ảnh
+toàn bộ tư tưởng chúng ta như một cái gì đó trọng tâm trong toàn bộ cơ
+cấu ngôn ngữ, mặc dù khái niệm này khó định nghĩa''.
+
+
+\subsection{Định nghĩa từ}
+
+Thời Hy Lạp cổ đại, trường phái ngôn ngữ Alexandri đã định nghĩa: ``\textit{Từ
+là đơn vị nhỏ nhất trong chuỗi lời nói}''. Ngoài ra A. Meillet trong
+``\textit{Ngôn ngữ học lịch sử và ngôn ngữ học đại cương}'' đã định nghĩa: ``\textit{Từ
+là kết quả của sự kết hợp một ý nghĩa nhất định với một tổ hợp các âm
+tố nhất định, có thể có một công dụng ngữ pháp nhất định}''.
+
+Theo E. Sapir thì ``\textit{Từ là một đoạn nhỏ nhất có ý nghĩa, hoàn toàn có
+khả năng độc lập và bản thân có thể làm thành câu tối giản}''. 
+
+Theo L. Bloomfield thì từ là ``\textit{một hình thái tự do nhất}''.
+
+Theo B. Golovin thì từ là ``\textit{đơn vị nhỏ nhất có ý nghĩa của ngôn ngữ,
+được vận dụng độc lập, tái hiện tự do trong lời nói để xây dựng nên
+câu}''.  
+
+Theo Solncev thì ``\textit{Từ là đơn vị ngôn ngữ có tính hai mặt: âm và
+nghĩa. Từ có khả năng độc lập về cú pháp khi sử dụng trong lời}''. 
+
+Theo B. Trơ-nơ-ka thì ``\textit{Từ là đơn vị nhỏ nhất có ý nghĩa, được cấu tạo
+bằng âm vị và có khả năng thay đổi vị trí và thay thế lẫn nhau trong
+câu}''. 
+
+Theo Lục Chí Vỹ thì ``\textit{Từ là đơn vị nhỏ nhất có thể vận dụng tự do
+trong câu}''. 
+Theo một số tác giả khác của Trung Quốc thì ``\textit{Từ là đơn vị từ vựng, là
+đơn vị vật liệu kiến trúc của ngôn ngữ, và cũng là đơn vị nhỏ nhất có
+khả năng vận dụng tư do trong lời nói}''. 
+
+Theo V. G. Admoni thì ``\textit{Từ là đơn vị ngữ pháp, do hình vị cấu tạo nên,
+dùng để biểu thị đối tượng, quá trình, tính chất và những mối quan hệ
+trong hiện thực, có tính đặc thù rõ rệt và có khả năng kiến lập nhiều
+mối quan hệ đa dạng với nhau}''. 
+
+Theo R. A. Bunđagôp thì ``\textit{Từ là đơn vị nhỏ nhất và độc lập, có hình
+thức vật chất (vỏ âm thanh và hình thức) và có nghĩa, có tính chất
+biện chứng và lịch sử}''.
+
+Đối với tiếng Việt, cũng có một số định nghĩa từ được đưa ra. Theo
+M. B. Émeneau thì ``\textit{Từ bao giờ cũng tự do về mặt âm vị học, nghĩa là
+có thể miêu tả bằng những danh từ của sự phân phối các âm vị và bằng
+những thanh điệu}''\footnote{Nguyễn Thiện Giáp. {\em Từ và nhận diện từ
+  tiếng Việt}. NXB GD, Hà Nội 1996. Trang 17}. Émeneau đã dựa trên mặt
+ngữ âm để định nghĩa từ, xem mỗi từ trước hết là nhữngâm tiết. Với
+quan niệm như vậy chủ yếu dựa vào tính hoàn chỉnh về mặt âm thanh và
+trong thực tế thì người Việt luôn có khuynh hướng mong đợi mỗi tiếng
+như vậy sẽ mang một nghĩa nào đó và coi đó như ``từ''.
+
+Theo Trương Văn Trình và Nguyễn Hiến Lê thì ``\textit{Từ là âm có nghĩa, dùng
+trong ngôn ngữ để diễn tả một ý đơn giản nhất, nghĩa là ý không thể
+phân tích ra được}''. Định nghĩa này chủ yếu dựa vào tính nhất thể của
+nghĩa, nghĩa là mỗi từ có một nghĩa tối giản nào đó, và nghĩa của từ
+có tính võ đoán và tính thành ngữ.
+
+Lê Văn Lý cho rằng từ tiếng Việt ``\textit{là một tín hiệu ngữ âm có thể cấu
+tạo bằng một âm vị hay sự kết hợp với âm vị, mà sự phát âm chỉ tiến
+hành trong một lần, hoặc là một âm tiết mà chữ viết biểu thị bằng một
+đơn vị tách rời và có một ý nghĩa hiểu được}''\footnote{Nguyễn
+  Kim Thản, {\em Nguyên cứu ngữ pháp tiếng Việt}. NXB GD, 1997. Trang
+  30}. Định nghĩa này dựa vào cả ba mặt: ngữ âm, chữ viết và ý
+nghĩa. Tuy nhiên định nghĩa này mâu thuẫn với định nghĩa từ ghép của
+chính tác giả, vì tác giả định nghĩa từ ghép dựa trên chức năng ngữ
+pháp và gồm nhiều âm tiết.
+
+Theo Phan Khôi thì ``\textit{Từ là một lời để tỏ ra một khái niệm trong khi
+nói}''. Theo Nguyễn Lân thì ``\textit{Từ là những tiếng có nghĩa, tức là mỗi khi
+nghe thấy, trong óc chúng ta đều có một khái niệm}''. Nếu xem từ tương
+đương với khái niệm thì những từ hình thái như à, ư, nhỉ, nhé~\ldots
+hay những hư từ như cũng, với, bởi~\ldots sẽ mang khái niệm gì? Trên
+thực tế, từ và khái niệm không tương ứng 1-1 với nhau. Có những khái
+niệm có thể biểu thị bằng nhiều từ.
+
+Theo Nguyễn Kim Thản thì ``\textit{Từ là đơn vị cơ bản của ngôn ngữ, có thể
+tách khỏi các đơn vị khác của lời nói để vận dụng một cách độc lập và
+là một khối hoàn chỉnh về mặt ý nghĩa (từ vựng hay ngữ pháp) và cấu
+tạo}''. Quan niệm của ông về ``đơn vị cơ bản'' là những đơn vị có số
+lượng hữu hạn để thông báo, trao đổi tư tưởng cho nhau. Đơn vị này
+phải có nghĩa, và khi sử dụng, người sử dụng phải có ý thức về
+nó. Chính vì vậy mà đơn vị cơ bản này không thể là câu (vì số lượng
+câu là vô hạn) và cũng không thể là âm tiết (vì nhiều âm tiết không có
+nghĩa và khi sử dụng, người sử dụng không ý thức về nó). Vậy đơn vị cơ
+bản là cái gì đó nhỏ hơn câu và lớn hơn âm tiết.
+
+Theo Hồ Lê thì ``\textit{Từ là đơn vị ngữ ngôn có chức năng định danh phi liên
+kết hiện thực, hoặc chức năng mô phỏng tiếng động, có khả năng kết hợp
+tự do, có tính vững chắc về cấu tạo và tính nhất thể về ý
+nghĩa}''. Theo ông, từ khác với âm tiết chủ yếu về mặt ý nghĩa. Từ có
+ý nghĩa ngữ ngôn, còn âm tiết thì chỉ có ý nghĩa tiền ngữ ngôn. Từ
+khác từ tố ở khả năng kết hợp. Từ có khả năng kết hợp tự do trong lời
+nói, còn từ tố thì chỉ có khả năng kết hợp hạn chế. Từ khác với cụm từ
+tự do bởi tính vững chắc về cấu tạo, tính nhất thể về ý nghĩa và bởi
+chức năng định danh phi liên kết hiện thực. Từ khác cụm từ cố định
+(thành ngữ, ngạn ngữ) chủ yếu bởi chức năng định danh phi liên kết
+hiện thực của nó.
+
+Đái Xuân Ninh chủ trương không định nghĩa từ, vì ``từ trước đến nay,
+trong ngôn ngữ học đại cương cũng như trong tiếng nói cụ thể như tiếng
+Việt, chưa có một định nghĩa nào thỏa đáng cả''. Theo ông thì ``đứng
+về mặt chức năng và cấu trúc của ngôn ngữ, chỉ cần xác định đơn vị từ
+và mối quan hệ của nó với các đơn vị khác trong tiếng nói''. Ông cho
+rằng ta có thể nhận diện từ một cách khái quát như sau: ``\textit{Từ
+  là đơn vị cơ bản của cấu trúc ngôn ngữ ở giữa hình vị và cụm từ. Nó
+  được cấu tạo bằng một hay nhiều đơn vị ở hàng ngay sau nó tức là
+  hình vị và lập thành một khối hoàn chỉnh}''.
+
+
+Nguyễn Tài Cẩn, tuy không định nghĩa trực tiếp từ tiếng Việt, nhưng
+ông đã chứng minh những tính chất đặc biệt của ``tiếng'', một đơn vị
+mà ông coi chính là hình vị và có tính năng rất gần với ``từ'', nó
+cũng chính là ``từ đơn'' và là thành tố trực tiếp để tạo nên ``từ
+ghép''. Theo ông, mọi đặc thù về từ pháp của tiếng Việt bắt nguồn từ
+tính đơn lập của tiếng Việt mà thể hiện rõ nét nhất là qua một đơn vị
+đặc biệt, đó chính là tiếng. Quan điểm này cũng được Cao Xuân Hạo đồng
+tình. 
+
+Kế thừa quan điểm coi tiếng gần trùng với từ. Nguyễn Thiện Giáp đã
+phát triển tư tưởng này lên đến mực cực đoan là coi tiếng trong tiếng
+Việt chính là từ trong các ngôn ngữ Ấn-Âu. Theo ông ``\textit{Nếu quan
+  niệm từ không chỉ là đơn vị ngôn ngữ học mà còn là đơn vị tâm
+  lý-ngôn ngữ học, nếu chú ý đến tính nhiều mặt của từ và đặc điểm của
+  từ trong từng ngôn ngữ, nếu nhận diện từ căn cứ vào những quan hệ
+  đối lập trong nội bộ từng ngôn ngữ thì cái đơn vị gọi là ``tiếng''
+  của Việt ngữ có đủ tư cách để được gọi là ``từ''}''. Như vậy Nguyễn
+Thiện Giáp đã không sử dụng đến khái niệm hình vị trong tiếng Việt
+(đơn vị dùng để cấu tạo từ trong các ngôn ngữ Ấn-Âu). Trong quan niệm
+về từ của ông, ông chủ yếu dựa trên các tiêu chí nhận diện thuộc về
+hình thức mà không nhấn mạnh tiêu chí về ngữ nghĩa và khả năng độc lập
+về ngữ pháp.
+
+\subsection{Đặc điểm của từ}
+
+Từ các định nghĩa trên, có thể rút ra các đặc điểm chính của từ nói
+chung như sau:
+\begin{itemize}
+\item Về hình thức, từ phải là một khối về cấu tạo (chính tả, ngữ
+  âm~\ldots).
+\item Về nội dung, từ phải có ý nghĩa hoàn chỉnh.
+\item Về khả năng, từ có khả năng hoạt động tự do và độc lập về cú
+  pháp.
+\end{itemize}
+
+Đối với từ tiếng Việt, ta có thể rút ra những đặc điểm của từ tiếng
+Việt so với các ngôn ngữ thuộc loại hình khác.
+Tiếng Việt là một ngôn ngữ đơn lập với các đặc điểm chính như sau:
+\begin{itemize}
+\item Trong hoạt động ngôn ngữ, từ không biến đổi hình thái. Ý nghĩa
+  ngữ pháp nằm ở ngoài từ. 
+\item Phương thức ngữ pháp chủ yếu là trật tự từ và từ hư.
+\item Tồn tại một đơn vị đặc biệt là hình tiết mà vỏ ngữ âm của nó
+  trùng khít với âm tiết. Đơn vị đó còn được gọi là tiếng.
+\item Không có hiện tượng cấu tạo từ bằng cách ghép thêm phụ tố vào
+  gốc từ.
+\end{itemize}
+
+%% Khái niệm ``đơn vị cơ bản'' trong ngôn ngữ phải giống như trong các
+%% ngành khác. Đó là những đơn vị mang đầy đủ các đòi hỏi về những tính
+%% chất phải có trong khái niệm ``cơ bản''. Chính vì vậy, trong ngôn ngữ
+%% học, khi nói đến ``đơn vị cơ bản'' thì số lượng đơn vị ấy phải không
+%% được quá nhiều mà của không được quá ít. Chiều dài của ``đơn vị cơ
+%% bản'' cũng không thể quá dài hoặc quá ngắn. Tuy nhiên đây chỉ là điều
+%% kiện ban đầu để xem xét đơn vị cơ bản. Đơn vị cơ bản cần phải thoả mãn
+%% nhiều điều kiện khác như kết cấu, nội dung~\ldots
+
+%% Xét về hình thức đơn vị ``tiếng'' trong tiếng Việt, ta thấy đơn vị này
+%% thoả mãn các điều kiện ban đầu của một đơn vị cơ bản về số lượng cũng
+%% như chiều dài. Số lượng tiếng thường dùng khoảng 8.200 tiếng, tối đa
+%% khoảng 40.000 tiếng. Chiều dài trung bình của một tiếng vào khoảng 4-5
+%% chữ cái, tối đa khoảng 7 chữ cái.
+
+\subsection{Các quan niệm về hình vị và từ trong tiếng Việt}
+
+Đối với từ trong tiếng Việt, đến nay có một số quan điểm như sau:
+\begin{itemize}
+\item Coi mọi tiếng đều là từ (Nguyễn Thiện Giáp). Điều này thuận tiện
+  trong xử lý nhưng không đúng với tiêu chí ngôn ngữ học đại cương vì
+  có nhiều tiếng không có nghĩa, như ``phê'' trong ``cà phê'', ``bù''
+  trong ``bù nhìn''~\ldots
+\item Coi tiếng chưa hẳn là từ (đa số các nhà Việt ngữ học). Trong số
+  này chia thành ba nhóm sau:
+  \begin{itemize}
+  \item Xem tiếng là hình vị. Quan niệm có thể chấp nhận được nếu coi
+    hình vị là hình vị tiếng Việt (gồm tha hình vị và á hình vị)
+  \item Xem tiếng lớn hơn hình vị (Trần Ngọc Thêm, Lưu Văn
+    Lang~\ldots) cho là tiếng có những hình vị (khuôn vần).
+  \item Xem tiếng nhỏ hơn hoặc bằng hình vị. Đa số các tiếng đều là
+  hình vị, ngoại trừ ``hấu'' trong ``dưa hấu'', ``bù'' trong ``bù
+  nhìn''~\ldots vì những tiếng này không có nghĩa. Quan điểm này được
+  nhiều người chấp nhận.
+  \end{itemize}
+\item Xem tiếng châu Âu (Anh, Pháp~\ldots) cái nào là từ thì trong
+  tiếng Việt cái đó là từ. Quan điểm này chưa xét đến sự khác biệt về
+  sự từ vựng hoá giữa hai ngôn ngữ do khác biệt về văn hoá.
+\end{itemize}
+
+Theo quan điểm ngôn ngữ học đại cương, từ được cấu tạo bởi các hình
+vị, và hình vị chính là các đơn vị có nghĩa nhỏ nhất. Vì vậy, từ trong
+tiếng Việt cũng phải được cấu tạo bởi các hình vị nêu trên, nhưng có
+điều khác là các hình vị thành phần ở đây không hoàn toàn giống khái
+niệm hình vị của ngôn ngữ học đại cương, mà là ``hình vị tiếng Việt''
+hay còn gọi là ``hình tiết'' (hình vị + âm tiết) hay ``tiếng'' (vì chỉ
+tiếng Việt mới có đơn vị tiếng đặc biệt như vậy).
+
 
 
 \section{Từ láy}
@@ -772,7 +1147,7 @@ rất giản tiện, sử dụng vài chục ký hiệu giản tiện là có th
 được hệ thống âm thanh tiếng Việt.
 
 So với các hệ thống chữ ghi âm khác như chữ Anh, chữ Pháp thì chữ quốc
-ngữ là một hệ thống chữ viết ``còn trẻ'', mới được dùng phổ biến hơn
+ngữ là một hệ thống ``chữ viết trẻ'', mới được dùng phổ biến hơn
 một thế kỷ nay, nên giữa chữ và âm tương đối có sự phù hợp.
 
 Nguyên tắc chính tả cơ bản của chữ quốc ngữ là nguyên tắc ngữ âm học,
@@ -831,7 +1206,7 @@ không ghi phụ âm đầu có thể có âm đầu là âm tắt thanh hầu \
 
 Âm chính do các âm vị nguyêm âm đảm nhiệm như trong bảng~\ref{tab:nguyenam}.
 
-\begin{savenotes}
+%\begin{savenotes}
   \begin{table}[htbp]
     \centering
 
@@ -849,7 +1224,7 @@ không ghi phụ âm đầu có thể có âm đầu là âm tắt thanh hầu \
     \caption{Bảng nguyên âm}
     \label{tab:nguyenam}
   \end{table}
-\end{savenotes}
+%\end{savenotes}
 
 Âm cuối do các âm vị phụ âm bán nguyên âm đảm nhiệm như trong
 bảng~\ref{tab:phuamcuoi} và bảng~\ref{tab:bannguyenamcuoi}. 
@@ -982,10 +1357,22 @@ Theo~\cite{LoiChinhTa} thì:
   tắt, viết thuật ngữ.
 \end{verse}
 
-\chapter{Cơ sở toán học}
+\chapter{Cơ sở tin học}
 \label{cha:math}
 \minitoc\newpage
 
+% typographic errors
+
+%% Lỗi gõ sai được xử lý bằng thuật toán soundex~\cite{soundex}. Ý tưởng
+%% của thuật toán này dựa trên các nghiên cứu về nguyên nhân gây ra
+%% lỗi. Theo~\cite{soundex}, có bốn nguyên nhân gây ra lỗi loại này:
+%% \begin{itemize}
+%% \item Chèn một ký tự đơn.
+%% \item Xoá một ký tự đơn.
+%% \item Thay một ký tự bằng một ký tự khác.
+%% \item Hoán đổi vị trí hay ký tự kề nhau.
+%% \end{itemize}
+%% Thuật toán này
 
 \section{Bắt lỗi chính tả}
 
@@ -994,38 +1381,14 @@ nhau. Nhưng chủ yếu vấn được phân loại từ quan điểm người 
 năng phát hiện lỗi sai, và khả năng đề nghị những từ thay thế cho lỗi
 sai đó.
 
-
-\subsection{Các loại sai lầm của trình bắt lỗi chính tả}
-
-Khi bắt lỗi chính tả, trình bắt lỗi không tránh khỏi các sai lầm. Có
-thể phân ra làm hai loại sai lầm: sai lầm tích cực\footnote{false
-  positive} và sai lầm tiêu cực\footnote{false negative}.
-
-Sai lầm tích cực xảy ra khi trình bắt lỗi báo lỗi ở những từ hoàn toàn không sai
-chính tả. Sai lầm tiêu cực xảy ra khi trình bắt lỗi bỏ qua những từ bị
-sai chính tả. Nói cách khác, trình bắt lỗi cho rằng những từ sai chính
-tả này không sai. Sai lầm tích cực có thể tránh được nhờ tăng kích
-thước từ điển. Tuy nhiên đây không phải là giải pháp hoàn hảo. Việc
-tăng kích thước từ điển sẽ tốn kém. Hơn nữa, càng có nhiều từ thì việc
-đề nghị các từ thay thế càng trở nên kém hiệu quả do bị phân tán bởi
-những từ rất ít gặp, không thể tập trung vào những lỗi phổ biến.
-
-Sai lầm tiêu cực có thể xem là lỗi không phát hiện được. Phần nhiều
-những lỗi này thường đòi hỏi phải hiểu văn bản (ít nhất là một phần
-văn bản) để có thế phát hiện lỗi. Những dạng lỗi từ vựng, lỗi cú pháp
-thường rơi vào dạng này. Tuy nhiên vẫn có một số lỗi chính tả rơi vào
-loại này. Những loại lỗi này được phát hiện nhờ những chương trình bắt
-lỗi chính tả cảm ngữ cảnh (((Golding 1995, Golding and Schabes, 1996,
-Golding and Roth1999)))
-
 Giải pháp đơn giản để phát hiện lỗi chính tả là dùng một cấu trúc dữ
 liệu để lưu tất cả các từ đã biết (được lưu trong từ điển). Các dạng
 cấu trúc dữ liệu như bảng băm hoặc cấu trúc dữ liệu dạng cây có thể
-được sử dụng (((McIlroy 1982, Peterson 1980)))
+được sử dụng~\cite{McIlroy,Peterson}
 
 Có thể chia thành hai loại lỗi chính là ==orthographic và
-lỗi nhập liệu\footnote{typographic}. Lỗi nhập liệu xảy ra khi gõ không
-đúng phím cần gõ trên bàn phím. (((Damerau 1994))) xác định bốn thao
+lỗi nhập liệu\footnote{typographic error}. Lỗi nhập liệu xảy ra khi gõ không
+đúng phím cần gõ trên bàn phím. Damerau~\cite{Damerau} xác định bốn thao
 tác có thể gây ra lỗi như sau:
 \begin{itemize}
 \item Tráo đổi một cặp ký tự.
@@ -1038,26 +1401,40 @@ Damerau cho rằng 80\% các lỗi là do thực hiện thao tác trên  một l
 (một trong bốn thao tác trên).
 
 Phân loại lỗi theo các thao tác trên dẫn đến một kỹ thuật sửa lỗi đơn
-giản được dùng bởi (((Peterson 1980b))). Nếu phát hiện một từ bị sai
+giản được dùng bởi~\cite{Petersonb}. Nếu phát hiện một từ bị sai
 chính tả, ta lần lượt thực hiện lại những thao tác trên để phục hồi từ
 bị sai chính tả. Những từ được phát sinh, nếu có trong từ điển, sẽ
 được lưu vào danh sách những từ đề nghị. Kỹ thuật này thường được gọi
 là Đảo ngược lỗi\footnote{Error reversal}.
 
-Chọn từ tốt nhất trong danh sách từ đề nghị là một công việc không dễ
-dàng. (((Agirre et al 1998))) mô tả cách lựa chọn trong trường hợp
-này, có thể chia làm các nhóm như sau:
+\subsection{Các sai lầm của trình bắt lỗi chính tả}
 
-\begin{itemize}
-\item Sử dụng phân tích cú pháp để loại bỏ những từ sai từ loại, hoặc
-  sai các đặc trưng hình thái (số đếm, chữ hoa/chữ thường~\ldots)
-\item Khử nhập nhằng ngữ nghĩa để chọn từ phù hợp với ngữ cảnh nhất.
-\item Dùng thống kê để chọn từ thường xuất hiện nhất.
-\item Những từ có cách viết hoa/thường khác với từ bị sai sẽ bị loại
-  (ví dụ, nếu từ viết sai là chữ thường thì các từ đề nghị viết hoa sẽ
-  bị loại)
-\end{itemize}
+Khi bắt lỗi chính tả, trình bắt lỗi không tránh khỏi các sai lầm. Có
+thể phân ra làm hai loại sai lầm: sai lầm tích cực\footnote{false
+  positive} và sai lầm tiêu cực\footnote{false negative}.
 
+Sai lầm tích cực xảy ra khi trình bắt lỗi báo lỗi ở những từ hoàn toàn
+không sai chính tả. Sai lầm tiêu cực xảy ra khi trình bắt lỗi bỏ qua
+những từ bị sai chính tả. Nói cách khác, trình bắt lỗi cho rằng những
+từ sai chính tả này không sai. Sai lầm tích cực có thể tránh được nhờ
+tăng kích thước từ điển. Tuy nhiên đây không phải là giải pháp hoàn
+hảo. Việc tăng kích thước từ điển sẽ tốn kém. Hơn nữa, càng có nhiều
+từ thì việc đề nghị các từ thay thế càng trở nên kém hiệu quả do bị
+phân tán bởi những từ rất ít gặp, không thể tập trung vào những lỗi
+phổ biến. 
+
+Sai lầm tiêu cực có thể xem là lỗi không phát hiện được. Phần nhiều
+những lỗi này thường đòi hỏi phải hiểu văn bản (ít nhất là một phần
+văn bản) để có thế phát hiện lỗi. Những dạng lỗi từ vựng, lỗi cú pháp
+thường rơi vào dạng này. Tuy nhiên vẫn có một số lỗi chính tả rơi vào
+loại này. Những loại lỗi này được phát hiện nhờ những chương trình bắt
+lỗi chính tả cảm ngữ cảnh~\cite{Golding95,Golding96,Golding99}
+
+Trong hai loại sai lầm thì sai lầm tích cực thường gây khó chịu cho
+người sử dụng, dễ gây tâm lý không tin tưởng vào trình bắt lỗi chính
+tả. Ngược lại, sai lầm tiêu cực phản ánh tính hiệu quả của trình bắt
+lỗi chính tả. Sai lầm tiêu cực càng nhiều thì trình bắt lỗi càng kém
+hiệu quả.
 
 \subsection{Vấn đề chữ hoa/chữ thường}
 
@@ -1078,21 +1455,372 @@ cũng khá phức tạp. Ngoài ra, đôi khi các chữ được viết hoa ho�
 \item Ngược lại, từ $w$ sai.
 \end{enumerate}
 
-\subsection{Bắt lỗi chính tả truyền thống}
 
 
-\subsection{Bắt lỗi chính tả các ngôn ngữ châu Á}
+\section{Sắp xếp danh sách từ đề nghị}
 
+
+Việc chọn từ tốt nhất trong danh sách từ đề nghị là một công việc không dễ
+dàng. \cite{Agirre} mô tả cách lựa chọn trong trường hợp
+này, có thể chia làm các nhóm như sau:
+
+\begin{itemize}
+\item Sử dụng phân tích cú pháp để loại bỏ những từ sai từ loại, hoặc
+  sai các đặc trưng hình thái (số đếm, chữ hoa/chữ thường~\ldots)
+\item Khử nhập nhằng ngữ nghĩa để chọn từ phù hợp với ngữ cảnh nhất.
+\item Dùng thống kê để chọn từ thường xuất hiện nhất.
+\item Những từ có cách viết hoa/thường khác với từ bị sai sẽ bị loại
+  (ví dụ, nếu từ viết sai là chữ thường thì các từ đề nghị viết hoa sẽ
+  bị loại)
+\end{itemize}
+
+%%% Giải thích cụ thể hơn.
+
+\subsection{Văn phạm ràng buộc}
+
+%-% Constraint Grammar a Language independent system for parsing
+%-% unrestricted text.
+
+Văn phạm ràng buộc\footnote{Constraint Grammar} (CG) được thiết kế
+độc lập ngôn ngữ và là một công cụ mạnh giúp khữ nhập nhằng các văn
+bản không giới hạn. 
+
+CG có thể được xem như một tập hợp các luật mẫu-hành
+động\footnote{pattern-action rule}, không quá một luật với mỗi tag có nhập
+nhằng. Mỗi luật xác định một hoặc nhiều mẫu (các ``ràng buộc'') xác
+định khi nào tag đó không hợp lệ. Nếu thỏa một mẫu trong số các mẫu
+của luật, tag đó sẽ bị xoá. Các mẫu ngữ cảnh có thể là mẫu cục bộ hoặc
+toàn cục, có thể tham khảo những phân tích nhập nhằng hoặc không nhập
+nhằng. Thuật toán sẽ được chạy vài lần để giảm nhập nhằng từ từ, nhờ đó
+giúp các ngữ cảnh giảm nhập nhằng, hoặc không còn nhập nhằng, tạo điều
+kiện khử nhập nhằng những từ khác.
+
+Mô tả cú pháp và hình thái được mã hoá bằng tag thay vì cấu trúc đóng
+mở ngoặc. Mô tả cú pháp rất nông. Mỗi từ được gắn với một tag chức
+năng cú pháp\footnote{syntactic function tag}, quy định mô tả phụ
+thuộc về mặc chức năng.
+
+Các ràng buộc giúp tránh các dự đoán có nhiều rủi ro chứ không chọn ra
+giải pháp đúng. Do đó CG chỉ giúp giảm số lượng các nhập nhằng. Văn
+phạm ràng buộc tiếng Anh (EngCG) đã giúp cải thiện đáng kể chất 
+lượng bộ đánh nhãn từ loại tiếng Anh. Văn phạm ràng buộc giúp loại bỏ
+hầu hết các nhập nhằng có thể được.
+
+Việc áp dụng CG để khử nhập nhằng cho trình bắt lỗi chính tả là một
+công việc khó khăn vì hiện nay vẫn CG cho tiếng Việt vẫn chưa được xây
+dựng. 
+
+\subsection{Mật độ quan niệm}
+%-% Word Sense disambiguation using conceptual density 96.
+
+
+Đây thực chất là áp dụng khử nhập nhằng ngữ nghĩa dùng
+WordNet và độ đo khoảng cách giữa các khái niệm trong WordNet. Cách
+này được áp dụng cho danh từ. 
+
+WordNet là một mạng ngữ nghĩa về từ vựng tiếng Anh, bao gồm các mối
+liên hệ khác nhau giữa các từ tiếng Anh. WordNet định nghĩa các quan
+hệ khác nhau cho mỗi từ loại. Đối với danh từ thì hai loại quan hệ
+quan trọng nhất là hypernym và hyponym. A được xem là hyponym của B
+(và B là hypernym của A) nếu ta có thể nói ``A là một loại đặc biệt
+của B''. WordNet được tổ chức theo đơn vị là các synset. Synset
+(Synonym set) là một nhóm các từ đồng nghĩa có thể dùng thay thế cho
+nhau. Mỗi từ có thể thuộc nhiều synset khác nhau. Đối với mỗi từ, thì
+các synset chứa từ đó được gọi là sense. Phần danh từ trong WordNet có
+thể xem như một đồ thị của các synset và các liên hệ hypernym/hyponym
+giữa các synset đó.  
+
+Độ đo khái niệm\footnote{conceptual distance} cung cấp một nền tảng để
+đo độ giống nhau về mặt nghĩa của các từ. Độ đo khái niệm được định
+nghĩa bởi \cite{Rada} là độ dài đường đi ngắn nhất liên kết các khái
+niệm trong mạng ngữ nghĩa phân cấp.
+
+Cho một khái niệm $c$ nằm trên đỉnh cây con và $nhyp$ là số hypernym
+mỗi nút. Mật độ quan niệm\footnote{conceptual density} (CD) để khử nhập nhằng cho $c$ khi cây con của
+nó chứa $m$ sense của từ đó  như sau:
+
+$$CD(c,m)=\frac{\displaystyle\sum^{m-1}_{i=0}nhyp^{i^{0.20}}}{descendants_c}$$
+
+Trong công thức trên, tham số $0.20$ được dùng để làm trơn hệ số mũ
+$i$ khi $m$ chạy từ 1 đến số sense tổng cộng trong WordNet. Nhiều giá
+trị đã được thử cho tham số này và tham số gần $0.20$ là tốt nhất.
+
+
+\paragraph{Thuật toán khử nhập nhằng dựa trên CD}
+
+Cho cửa sổ với kích thước nhất định, chương trình di chuyển cửa sổ mỗi
+danh từ một lần, từ đầu câu cho đến hết, khử nhập nhằng cho danh từ ở
+chính giữa cửa sổ, xem các danh từ còn lại trong cửa sổ là ngữ
+cảnh. Đặt cửa sổ các danh từ là $W$ và danh từ chính giữa cửa sổ là
+$w$, ta có:
+
+\begin{algo}[Khử nhập nhằng danh từ dùng CD]
+  \begin{enumerate}
+  \item tree := compute\_tree(words\_in\_window).
+
+    Loop
+  \item tree := compute\_conceptual\_distance(tree)
+  \item concept := select\_concept\_width\_highest\_weight(tree)
+    
+    if concept = null then exitloop
+  \item tree := mark\_disambiguated\_senses(tree,concept)
+
+    endloop
+  \item output\_disambiguation\_result(tree)
+  \end{enumerate}
+\end{algo}
+
+Đầu tiên, thuật toán thể hiện một dàn các danh từ trong cửa sổ, các
+sense và hypernym của chúng (bước 1). Sau đó thuật toán tính
+CD cho mỗi khái niệm trong WordNet tương ứng với sense
+nó chứa trong cây con của nó (bước 2). Thuật toán chọn khái niệm $c$
+với CD cao nhất (bước 3) và chọn sense đúng bên dưới
+cho  những từ tương ứng (bước 4).
+
+Thuật toán tiến hành tính CD cho những sense còn lại trong dàn, tiếp
+tục khử nhập nhằng những danh từ còn lại trong cửa sổ (quay lại bước
+2, 3, 4). Khi không thể khử nhập nhằng được nữa, những sense còn lại
+của $w$ được xử lý và xuất kết quả ra (bước 5).
+
+Giải pháp CD có hạn chế là chỉ áp dụng đối với danh từ. Những loại từ
+khác, do có các mối quan hệ phức tạp hơn nhiều so với quan hệ hypernym
+của danh từ nên rất khó áp dụng. CD đôi khi không thể khử nhập nhằng
+tuyệt đối (chỉ chừa lại một kết quả) mà nhiều khi vẫn còn lại vài nhập
+nhằng. Tuy nhiên việc giảm nhập nhằng bằng CD cũng giúp ít rất nhiều
+cho trình bắt lỗi chính tả. Hạn chế quan trọng của CD khi áp dụng cho
+tiếng Việt là thiếu WordNet dành cho tiếng Việt. Việc xây dựng một
+mạng ngữ nghĩa tiếng Việt có tầm vóc như WordNet sẽ tốn rất nhiều công
+sức, chưa kể các điểm khác biệt giữa tiếng Anh và tiếng Việt đòi hỏi
+các nhà ngôn ngữ học phải xem xét lại có thể áp dụng hoàn toàn các mối quan hệ
+đã được sử dụng trong WordNet hay không, hay cần phải loại bỏ và thêm
+vào một số quan hệ khác cho phù hợp với tiếng Việt. Nói tóm lại, đây
+là một giải pháp hay tuy nhiên không thể áp dụng trong điều kiện hiện
+tại. Gần đây có nhiều đề tài nghiên cứu xây dựng WordNet tiếng
+Việt. Hy vọng có thể áp dụng CD và các giải pháp dựa trên WordNet khác
+cho tiếng Việt trong tương lai không xa.
+
+
+
+
+%%% Mays et al 91 -> trigram
+%%% Yarowsky 94 -> decision lists
+%%% Golding 96 -> hybrid method
+
+\section{Bắt lỗi chính tả các ngôn ngữ châu Á}
+
+
+Điểm đặc trưng dễ thấy giữa các ngôn ngữ châu Âu và các ngôn ngữ châu
+Á, như tiếng Trung Quốc, tiếng Nhật, tiếng Hàn Quốc~\ldots, là ranh
+giới từ. Đối với các thứ tiếng châu Âu, các cụm ký tự cách nhau bởi
+khoảng trắng cũng là từ, do đó việc tách từ rất dễ dàng (chỉ phải
+xử lý các trường hợp đặc biệt như dấu `-'~\ldots). Đối với các tiếng
+châu Á, đặc biệt là tiếng Việt, công việc phức tạp hơn nhiều. Bởi vì
+một ``từ'' như quan niệm châu Âu chỉ là một phần từ (một âm tiết trong
+tiếng Việt) trong các ngôn ngữ châu Á. Điều này đặt ra một vấn đề mà
+các chương trình bắt lỗi chính tả các thứ tiếng châu Âu chưa từng gặp
+phải: phân ranh giới từ. Bài toán tìm ranh giới từ vốn đã phức tạp
+(trong một số trường hợp, nếu không dựa vào thông tin ngữ nghĩa thì
+không thể nào tách từ), lại càng phức tạp hơn khi áp dụng trong bài
+toán bắt lỗi chính tả, vì khi đó ta phải tìm ranh giới từ khi {\em các
+từ/tiếng đầu vào có thể không đúng}. Nói cách khác, ta phải thực hiện
+tách từ trong điều kiện dữ liệu đầu vào không hoàn toàn chính xác:
+tách từ mờ. Sau khi tách từ xong, bài toán bắt lỗi chính tả trở nên
+đơn giản. Ta có thể áp dụng các kỹ thuật đã được áp dụng trên bắt lỗi
+chính tả các ngôn ngữ châu Âu dễ dàng.
+
+%%% Bắt lỗi chính tả không tách từ, có không?
 
 \section{Tách từ}
 
+%\note{Liệt kê các phương pháp tách từ}
+Bài toán tách từ cho ngôn ngữ đơn lập đã được đặt ra từ lâu, chủ yếu
+để giải quyết cho tiếng Trung Quốc, tiếng Nhật. Các thuật toán tách từ có thể
+được phân loại như sau:
 
-\subsection{Tách từ mờ}
+\begin{description}
+\item[Dựa theo luật] Bao gồm các cách sau:
+
+  \begin{itemize}
+  \item Longest Matching, Greedy Matching Models (Yuen Poowarawan, 1986;
+    Sampan Rarurom, 1991)
+  \item Mô hình khớp tối đa\footnote{Maximal Matching Model}. Mô hình
+    này được chia thành ``khớp tối đa tiến''\footnote{forward maximum
+    match} và ``khớp tối đa lùi''\footnote{backward maximum match}. Đối
+    với phương pháp này thì một từ điển hoàn chỉnh là không thể
+    thiếu. Một từ điển không hoàn chỉnh sẽ giảm hiệu suất của thuật
+    toán. Tuy nhiên, dễ thấy là khó có thể có một từ điển hoàn chỉnh
+    (đặc biệt khi các ngôn ngữ vẫn còn được tiếp tục phát triển hằng
+    ngày trong thời đại ngày nay). Mô hình này tùy thuộc nhiều vào từ
+    điển. 
+    \begin{itemize}
+    \item Thai, Sornlertlamvanich (1993).
+    \item Chinese, Chih-Hao Tsai (1996), MMSeg 2000.
+    \end{itemize}
+  \end{itemize}
+\item[Dùng thống kê]
+  Giải pháp này dựa vào ngữ cảnh từ xung quanh để đưa ra quyết định
+  thích hợp. Có hai vấn đề cần được giải quyết đối với giải pháp này:
+  độ rộng ngữ cảnh, và cách áp dụng thống kê. Ngữ cảnh càng rộng thì
+  thuật toán càng phức tạp.
+
+  Cho dù độ rộng ngữ cảnh thế nào, luôn có thể áp dụng mô hình
+  first-order HMM. Tuy nhiên giải pháp này phụ thuộc rất nhiều vào ngữ
+  liệu huấn luyện. Kết quả huấn luyện trên ngữ liệu chính trị khó có
+  thể áp dụng trên các tài liệu văn học và ngược lại. Thêm vào đó, có
+  những từ có xác suất rất cao, nhưng chỉ có chứng năng về mặt ngữ
+  pháp, làm giảm vai trò của xác suất.
+  \begin{itemize}
+  \item HMM, based on Viterbi algorithm. (Asanee Kawtraku, 1995;
+    Surapant,1995).
+  \item EM. Xianping, 1996.
+  \end{itemize}
+\item[Các cách khác]
+  Hầu hết các giải pháp khác là sự lai tạo giữa các mô hình trên và
+  các mô hình ngôn ngữ học như WFST, TBL. Thời gian xử lý
+  các giải pháp loại này trở nên đáng kể, nhưng độ chính xác đạt được
+  khá cao.
+
+  Tri thức về ngôn ngữ, thường được áp dụng cho các mô hình dựa trên
+  luật, hiếm khi được áp dụng cho những mô hình trên.
+\end{description}
+
+
+
+\subsection{Khớp tối đa}
+
+Thuật toán so khớp tối đa hoạt động như tên của chính nó. Thuật toán
+giải quyết bài toán tách từ bằng cách chọn cách tách từ nào có nhiều
+từ nhất (so khớp được nhiều nhất). Thuật toán được áp dụng để xây dựng
+chương trình tách từ tiếng Trung Quốc
+MMSEG\footnote{http://casper.beckman.uiuc.edu/~c-tsai4/chinese/wordseg/mmseg.zip}.
+Thuật toán này có nhiều biến thể khác nhau. 
+
+
+\begin{itemize}
+\item Dạng đơn giản, được dùng để giải quyết nhập nhằng từ đơn. Giả sử
+  có một chuỗi ký tự (tương đương với chuối tiếng trong tiếng Việt)
+  $C_1, C_2, \ldots C_n$. Ta bắt đầu từ đầu   chuỗi. Đầu tiên, kiểm
+  tra xem $C_1$ có phải là từ hay không, sau đó kiểm tra xem $C_1C_2$
+  có phải là từ hay không. Tiếp tục tìm cho đến khi tìm được từ dài
+  nhất. Từ có vẻ hợp lý nhất sẽ là từ dài nhất. Chọn từ đó, sau đó tìm
+  tiếp như trên trên những từ còn lại cho đến khi xác định được toàn
+  bộ chuỗi từ.
+\item Dạng phức tạp. Quy tắc của dạng này là phân đoạn có vẻ hợp lý
+  nhất là đoạn ba từ với chiều dài tối đa. Thuật toán bắt đầu như dạng
+  đơn giản. Nếu phát hiện ra những cách tách từ gây nhập nhằng (ví dụ,
+  $C_1$ là từ và $C_1C_2$ cũng là từ), ta xem các chữ kế tiếp để tìm
+  tất cả các đoạn ba từ có thể có bắt đầu với $C_1$ hoặc $C_1C_2$. Ví
+  dụ ta được những đoạn sau: 
+  \begin{itemize}
+  \item $C_1\quad C_2\quad C_3C_4$
+  \item $C_1C_2\quad C_3C_4\quad C_5$
+  \item $C_1C_2\quad C_3C_4\quad C_5C_6$
+  \end{itemize}
+  Chuỗi dài nhất sẽ là chuỗi thứ ba. Vậy từ
+  đầu tiên của chuỗi thứ ba ($C_1C_2$) sẽ được chọn. Thực hiện lại các
+  bước cho đến khi được chuỗi từ hoàn chỉnh. Cách này đạt được độ
+  chính xác 99.69\%~\cite{ChenLiu}.
+\end{itemize}
+
+
+\subsection{Áp dụng HMM}
+
+
+\subsection{Áp dụng WFST}
+
+
+
+\subsection{Áp dụng TBL}
+
+
+\subsection{Áp dụng mô hình Source-Channel cải tiến}
+
+Mô hình này được đề nghị trong~\cite{sc}.
+
+Đặt $S$ là một câu tiếng Trung Quốc, hay là một chuỗi các ký tự (tương
+đương chuỗi tiếng trong tiếng Việt). Với mỗi cách tách từ $W$ có thể
+có, chọn cách tách từ tốt nhất $W^*$, tương ứng với xác suất điều kiện
+$P(W|S)$:
+$$W^*=\underset{w}{argmax}P(W|S)$$
+Theo công thức Bayes, bỏ mẫu số là hằng số, ta được:
+$$W^*=\underset{w}{argmax}P(W)P(S|W)$$
+Ta định nghĩa lớp từ $C$ như sau:
+\begin{itemize}
+\item Mỗi từ được định nghĩa như một lớp.
+\item Mỗi từ dẫn xuất hình thái được định nghĩa như một lớp.
+\item Mỗi loại factoids được định nghĩa như một lớp. Ví dụ, các biểu
+  thức thời gian thuộc về lớp TIME.
+\item Mỗi loại tên riêng thuộc về một lớp. Ví dụ, tên người thuộc lớp PN.
+\end{itemize}
+
+Ta chuyển công thức trên qua các lớp từ:
+$$C^*=\underset{c}{argmax}P(C)P(S|C)$$
+Công thức trên là công thức cơ bản của mô hình source-channel cho tách
+từ tiếng Trung Quốc. Mô hình giả định câu S được phát sinh như sau:
+Đầu tiên, một người chọn một chuỗi khái niệm (ví dụ, lớp từ $C$) để
+xuất ra, theo xác suất $P(C)$. Sau đó người đó cố gắng thể hiện các
+khái niệm đó bằng chuỗi các ký tự, theo xác suất $P(S|C)$.
+
+Mô hình source-channel có thể được hiểu theo một cách khác: $P(C)$ là
+mô hình thống kê dự đoán xác suất của chuỗi lớp từ. Nó chỉ ra khả năng
+một lớp từ xuất hiện, dựa trên một ngữ cảnh cho trước. Vậy $P(C)$ còn
+được hiểu như {\em mô hình ngữ cảnh}. $P(S|C)$ là mô hình phát sinh,
+dự đoán khả năng một chuỗi ký tự được phát sinh dựa trên lớp từ cho
+trước. Vậy $P(S|C)$ còn được hiểu như {\em mô hình lớp}.
+
+Mặc dù mô hình ngữ cảnh và mô hình lớp có thể được kết hợp bằng một
+phép nhân đơn giản. Tuy nhiên nếu thêm trọng số thì kết quả tốt
+hơn. Lý do là có một số mô hình lớp dự đoán kết quả rất không chính
+xác. Hơn nữa, các mô hình lớp của các lớp từ khác nhau được xây dựng
+theo những cách khác nhau. Vì vậy xác suất mô hình lớp khác nhau nhiều
+giữa các mô hình lớp. Một cách để cân bằng những xác suất này là thêm
+vào một trọng số $CW$ cho mỗi mô hình lớp để điều chỉnh xác suất
+$P(S|C)$ thành $P(S|C)^{CW}$
+
+Với mô hình đã có, thao tác tách từ bao gồm hai bước:
+\begin{enumerate}
+\item Cho chuỗi S, phát sinh mọi cách tách từ có thể có. Mỗi cách tách
+  từ được đánh nhãn lớp từ và xác suất lớp $P(S'|C)$ với $S'$ là bất
+  kỳ chuỗi con nào của $S$.
+\item Thuật toán tìm kiếm Viterbi được áp dụng để chọn cách tách từ có
+  khả năng nhất theo công thức nêu trên.
+\end{enumerate}
+
+
+\subsubsection{Huấn luyện}
+
+Nếu có một dữ liệu được tách từ sẵn, công việc trở nên rất dễ
+dàng. Tuy nhiên, việc xây dựng một ngữ liệu tách từ sẵn đủ lớn sẽ tốn
+rất nhiều công sức (đặc biệt là các mô hình thống kê thường đòi hỏi
+lượng ngữ liệu cực kỳ lớn, lớn hơn rất nhiều so với các mô hình dựa
+trên luật). Để đơn giản vấn đề, ngữ liệu này được xây dựng tự động như
+sau:
+\begin{enumerate}
+\item Khởi đầu, sử dụng một bộ tách từ sẵn có (có thể áp dụng các
+  thuật giải đơn giản, không cần huấn luyện, như Longest matching,
+  Maximum matching~\ldots)
+\item Sử dụng mô hình đề nghị để tách từ ngữ liệu huấn luyện.
+\item Tái huấn luyện mô hình dựa trên kết quả tách từ có được ở bước
+  2. Bước 2-3 có thể được lặp lại nhiều lần  cho đến khi hiệu suất của
+  mô hình ngừng tăng.
+\end{enumerate}
+
+%%% give some comments about source-channel models.
+
+%%% Giải thích rõ hơn về các mô hình
+
+
+\section{Tách từ mờ}
+
+Như đã nói trên, bài toán tách từ không đơn thuần là tách từ đúng như
+nghĩa ban đầu, mà là tách từ trong điều kiện dữ liệu đầu vào có khả
+năng bị sai. Nói cách khác, đây là bài toán tách từ có khả năng chịu
+lỗi\footnote{error-tolerant word segmentation}.
 
 Điều hiển nhiên dễ thấy là nếu câu bị sai chính tả thì ta không thể
 tách từ đúng được. Vấn đề ở đây là phải tách từ trong câu bị sai chính
 tả. Do đó không thể áp dụng trực tiếp các thuật toán tách từ thông
-thường. 
+thường.
 
 \cite{Oflazer} khi xử lý hình thái trong tiếng Thổ Nhĩ Kỳ gặp trường
 hợp khá giống với trường hợp này. Tác giả phải tách hình thái từ
@@ -1105,8 +1833,8 @@ các tiếp đầu ngữ có khả năng thay thế dựa trên độ đo này, 
 dụng WFST\footnote{Weighted Finite State Transducer} để tìm chuỗi tiếp
 vĩ ngữ thích hợp nhất.
 
-Bài toán nhận dạng tiếng nói trong tiếng Anh cũng gặp trường hợp tương tự
-(\cite{Ravishankar}). Sau công đoạn xử lý âm thanh, ta nhận được
+Bài toán nhận dạng tiếng nói trong tiếng Anh cũng gặp trường hợp tương
+tự~\cite{Ravishankar}. Sau công đoạn xử lý âm thanh, ta nhận được 
 một chuỗi các âm tiết (phoneme). Ta phải chuyển nhóm âm tiết này thành
 chuỗi từ. Do âm thanh thường bị nhiễu, nên các âm tiết có thể
 không chính xác hoàn toàn. Ngoài ra, do đặc tính của tiếng Anh nên
@@ -1118,8 +1846,8 @@ Theo~\cite{Chang}, có thể dùng nhiều Language Model khác nhau như
 character bigram, word bigram, inter-word character bigram (IWCB), POS
 bigram, word class bigram. Các bước thực hiện:
 \begin{enumerate}
-\item Tách đoạn. Dùng cách ký tự như `?' `!' `,'
-  `:' `.'~\ldots{} để tách.
+\item Tách đoạn. Dùng cách ký tự như \fbox{?} \fbox{!} \fbox{,}
+  \fbox{:} \fbox{.}~\ldots{} để tách.
 \item Thay thế các ký tự nhập nhằng. 
 \item Lượng giá Mô hình Ngôn ngữ. Tác giả sử dụng một phiên bản của
   IWCB và SA-class bigram. IWCB là, những từ cùng ký tự đầu tiên được
@@ -1139,9 +1867,33 @@ tìm được cách tách từ, ta có thể tra từ điển để tìm xem t�
 
 
 
-\subsection{Huấn luyện tách từ}
+\section{Huấn luyện tách từ}
 
+Nếu có dữ liệu đã được đánh dấu sẵn các ranh giới từ, công việc đơn
+giản chỉ là áp dụng các công thức thống kê để tính ra các giá trị cần
+thiết.
 
+Tuy nhiên, với điều kiện hiện tại, khó có thể tìm được một khối lượng
+ngữ liệu lớn đã được tác từ sẵn, do đó cần phải tìm giải pháp tính
+được các tham số cần thiết từ ngữ liệu chưa được tách từ (nói cách
+khác là ngữ liệu thô).
+
+Thuật toán EM\footnote{Estimation Maximum} thường được áp dụng để vượt
+qua khó khăn này~\cite{softcount,((()))}. Trên lý thuyết, áp dụng
+thuật toán EM đảm bảo kết quả sẽ hội tụ, và kết quả ở mỗi vòng lặp sau
+sẽ tốt hơn hoặc bằng kết quả của vòng lặp trước. Theo \cite{xxx}, ta
+chỉ cần lặp khoảng 5-7 vòng lặp là đủ.
+
+Do thuật toán EM cũng có nhiều hạn chế (đặc biệt là hạn chế tối ưu cục
+bộ), nhiều giải pháo đã được đưa ra để khắc phụ các hạn chế
+này~\cite{xxx}. 
+
+Một giải pháp khác là áp dụng HMM\footnote{Mô hình Markov ẩn ---
+Hidden Markov Model} để tìm ra ranh giới từ, sau đó áp dụng các công
+thức thống kê thông thường. Giải pháp này gặp hạn chế bởi chính
+HMM, vì HMM không phát huy được một số đặc trưng của tách từ mà chỉ
+áp dụng như một mô hình HMM nói chung, do đó phần nào hạn chế kết
+quả cuối cùng. 
 
 
 
@@ -1152,7 +1904,7 @@ tìm được cách tách từ, ta có thể tra từ điển để tìm xem t�
 % \note{Phân loại lỗi, nguyên nhân gây lỗi}
 
 
-\section{Lỗi chính tả}
+ \section{Lỗi chính tả}
 
 
 \subsection{Phân loại lỗi}
@@ -1193,7 +1945,7 @@ Theo~\cite{LoiChinhTa}, lỗi bao gồm các loại sau:
 \end{itemize}
 
 \section{Xử lý lỗi chính tả}
-%Nêu tổng quan, nói cụ thể hơn ở phần sau ``previous work''
+%%% Nêu tổng quan, nói cụ thể hơn ở phần sau ``previous work''
 
 Với \cite{Tuoi} thì việc xử lý lỗi bao gồm:
 \begin{itemize}
@@ -1246,55 +1998,6 @@ từ điển.
 
 
 \subsection{Tách từ}
-
-\note{Liệt kê các phương pháp tách từ}
-
-Bài toán tách từ cho ngôn ngữ đơn lập đã được đặt ra từ lâu, chủ yếu
-để giải quyết cho tiếng Trung Quốc, tiếng Nhật. Các thuật toán tách từ có thể
-được phân loại như sau:
-
-\begin{description}
-\item[Dựa theo luật] 
-  \begin{itemize}
-  \item Longest Matching, Greedy Matching Models (Yuen Poowarawan, 1986;
-    Sampan Rarurom, 1991)
-  \item Maximal Matching Models. This model is divided into ``forward
-    maximum match'' and ``backward maximum match'', for which the fully
-    comprehensive dictionary is indispensible. However, it is obvious
-    that there is no comprehensive dictionary and depending on different
-    contexts that this model requires suitable dictionaries.
-    \begin{itemize}
-    \item Thai, Sornlertlamvanich (1993).
-    \item Chinese, Chih-Hao Tsai (1996), MMSeg 2000.
-    \end{itemize}
-  \end{itemize}
-\item[Dùng thống kê]
-  This approach on the word context in considering
-  the information of the neighboring words to issue revelant
-  decisions. There are two points to be resolved for this approach,
-  which are the context width and applied statistical method. As far
-  as the context is concerned the wider the more complex.
-
-  As far as the context is concerned, the first-order HMM has always
-  been applied. However, this method greatly depends on the corpus for
-  its training. In case one method is applicable for the political
-  corpus, it can not be applied to literal ones. In addition, there
-  are some words of high probability but of syntactical function only,
-  which lessens the role of probability.
-  \begin{itemize}
-  \item HMM, based on Viterbi algorithm. (Asanee Kawtraku, 1995;
-    Surapant,1995).
-  \item EM. Xianping, 1996.
-  \end{itemize}
-\item[Các cách khác]
-  Most of these approaches are hybrid in combination with such other
-  linguistic models as WFST, TBL (Julia, 1996). However, due to the
-  requirement of various manipulation, the processing becomes quite
-  time-consuming but it accuracy proves to be high.
-
-  However, the linguistic knowledge, which is applied in the
-  rule-based models, is rarely found in all the above models.
-\end{description}
 
 \cite{Sproat} sử dụng WFST để tách từ, huấn luyện bằng EM dựa trên
 cách tách từ đúng nhất.
@@ -1906,7 +2609,7 @@ cũng không thể áp dụng để tìm cách tách từ tốt nhất được!
 \cite{softcount} không dùng từ điển. Mọi chuỗi con trong câu đều được
 cho là từ. Điểm này, vừa là điểm mạnh vì không cần dùng từ
 điển, nhưng cũng là điểm yếu vì yếu tố này làm giảm độ chính xác một
-cách đáng kể (khoảng 20\verb#%#, như kết quả trong \cite{softcount}).
+cách đáng kể (khoảng 20\%, như kết quả trong \cite{softcount}).
 
 Giả sử câu S có $n$ tiếng, $2^{n-1}$ cách tách từ khác nhau, xác suất
 mỗi cách tách từ là $p(1),p(2),\ldots,p(n)$.
@@ -2248,91 +2951,94 @@ Viết lại từ đầu :-D
 \item \verb#Syllable::parse()# sẽ gặp vấn đề với chữ hoa.
 \end{itemize}
 
+\appendix
+\chapter{Blah}
 
-\chapter{Phụ lục}
+\bibliographystyle{alpha}
+\bibliography{reference}
 
-\begin{thebibliography}{}
-\bibitem{Ravishankar}Mosur K. Ravishankar. 1996. {\em Efficient Algorithms for
-  Speech Recognition.} PhD thesis. %CMU-CS-96-143.ps
-\bibitem{Oflazer}Kemal Oflazer. 1996. {\em Error-tolerant Finite State
-  Recognition with Applications to Morphological Analysis and Spelling
-  Correction.} %oflazer96errortolerant.ps.gz
-\bibitem{LAH}Le An Ha. {\em A method for word segmentation in
-  Vietnamese.} %Ha-03.pdf
-\bibitem{Chang}Chao-Huang Chang. {\em A New Approach for
-  Automatic Chinese Spelling Correction.} %a-new-approach-for.ps
-\bibitem{Sproat}Richard Sproat, William Gale, Chilin Shih, Nancy
-  Chang. {\em A Stochastic Finite-State Word-Segmentation Algorithm for
-  Chinese.} ACL Vol 22 N3.%J96-3004.pdf
-\bibitem{Chunyu}Chunyu Kit, Zhiming Xu, Jonathan
-  J. Webster. {\em Integrating Ngram Model and Case-based Learning For
-  Chinese Word Segmentation.}%tsdx.ps.gz
-\bibitem{softcount}Xianping Ge, Wanda Pratt,
-  Padhraic Smyth. {\em Discovering Chinese Words from Unsegmented
-  Text.}%mlwordsigir.ps
-\bibitem{text-tiling}Jianfeng Gao, Hai-Feng Wang, Mingjing Li, Kai-Fu
-  Lee. {\em A Unified Approach to Statistical Language Modeling for
-  Chinese.}%icassp00.pdf
-\bibitem{}Nianwen Xue.{\em Chinese Word Segmentation as Character
-  Tagging.}%paper2.pdf
-\bibitem{self-supervised}Fuchun Peng and Dale Schuurmans. {\em Self-Supervised Chinese
-  Word Segmentation.}%IDA01.pdf
-\bibitem{phonetex}Victoria J. Hodge, Jim Austin. {\em An Evaluation of
-  Phonetic Spell Checkers}%an-evaluation-of-phonetic.ps.gz
-\bibitem{soundex}K. Kukich. 1992. {\em Techniques for Automatically Correcting
-  Words in Text.}
-\bibitem{}Cláudio L. Lucchesi and Tomasz Kowaltowski. {\em Applications of
-  Finite Automata Representing Large Vocabularies.}%lucchesi92applications.ps.gz
-\bibitem{}Bo-Hyun Yun, Min-Jeung Cho, Hae-Chang Rim. {\em Segmenting Korean
-  Compound Nouns using Statistical Information and a Preference
-  Rule. }%PACLING97.ps 
-\bibitem{}Roger I. W. Spooner and Alistair D. N. Edwards. {\em User
-  Modelling for Error Recovery: A Spelling Checker for Dyslexic
-  Users}%spooner97user.ps.gz 
-\bibitem{}Theppitak Karoonboonyanan, Virach Sornlertlamvanich,
-  Surapant Meknavin. {\em A Thai Soundex System for Spelling Correction.}%tsdx.ps.gz
-\bibitem{}Justin Zobel and Philip Dart. {\em Finding Approximate Matches in
-  Large Lexicons.}%zobel95finding.ps.gz
-\bibitem{}Sun Maosong, Shen Dayang, Huang Changning. {\em CSeg\&Tag1.0: A
-  Practical Word Segmenter and POS Tagger for Chinese Texts.}%A97-1018.pdf
-\bibitem{wordseg}Đinh Điền, Hoàng Kiếm, Nguyễn Văn Toàn. {\em Vietnamese Word
-  Segmentation.}%0047-02.pdf
-\bibitem{}Bidyut Baran Chaudhuri. {\em Reversed word dictionary and
-  phonetically similar word grouping based spell-checker to Bangla
-  text.}%bangla.pdf
-\bibitem{}Timothy Gambell, Charles D. Yang. {\em Scope and Limits of
-  Statistical Learning in Word Segmentation.}%gambell_yang.pdf
-\bibitem{iccc}Andi Wu, George Heidorn, Zixin Jiang, Terence
-  Peng. {\em Correction of Erroneous Characters in Chinese Sentence
-  Analysis.}%ICCC-2001.pdf
-\bibitem{}Fuchun Peng, Xiangji Huang, Dale Schuurmans, Shaojun
-  Wang. {\em Text Clasification in Asian Languages without Word
-  Segmentation.}%IRAL2003.pdf 
-\bibitem{}Yalin Wang, Ihsin T. Phillips, Robert
-  Haralick. {\em Statistical-based Approach to Word Segmentation.}%wordicpr.pdf
-\bibitem{}{\em Combining Syntactical And Statistical Language Constraints
-  in Context-dependent Language Models for Interactive Speech
-  Applications.}%K026.pdf
-\bibitem{LoiChinhTa}TS. Lê Trung Hoa. 2002. {\em Lỗi chính tả và cách khắc phục. NXB Khoa
-  học Xã hội.} 
-\bibitem{LoiTuVung}PGS. Hồ Lê, TS. Trần Thị Ngọc Lang, Tô Đình Nghĩa. 2002. {\em Lỗi từ
-  vựng và cách khắc phục.} NXB Khoa học Xã hội.
-\bibitem{Tuoi}PTS. Phan Thị Tươi, KS. Nguyễn Hứa Phùng, KS. Huỳnh Vụ
-  Như Liên, KS. Phạm Quyết Thắng. 1998. {\em Bắt lỗi chinh tả tự động cho
-  tiếng Việt bằng máy tính.}
-\bibitem{worddef}Đinh Điền. 2000. {\em Từ tiếng Việt.} VNU-HCMC.
-\bibitem{}Andrew R. Golding. 1995. {\em A Bayesian hybrid method for
-    context-sensitive spelling correction}. Proceedings of the Third
-    Workshop on Very Large Corpora, pages 39-53.
-\bibitem{}Andrew R. Golding and Dan Roth. 1999. {\em A Winnow-based
-    approach to context-sensitive correction}. Machine Learning,
-    Special issue on Machine Learning and Natural Language Processing,
-    34:107-130.
-\bibitem{}Andrew R. Golding and Yves Schabes. 1996. {\em Combining
-    trigram-based and feature-based methods for context-sensitive
-    spelling correction}. Proceedings of the 34th Annual Meeting of
-    the Association for Computational Linguistics.
-\end{thebibliography}
+%% \begin{thebibliography}{}
+%% \bibitem{Ravishankar}Mosur K. Ravishankar. 1996. {\em Efficient Algorithms for
+%%   Speech Recognition.} PhD thesis. %CMU-CS-96-143.ps
+%% \bibitem{Oflazer}Kemal Oflazer. 1996. {\em Error-tolerant Finite State
+%%   Recognition with Applications to Morphological Analysis and Spelling
+%%   Correction.} %oflazer96errortolerant.ps.gz
+%% \bibitem{LAH}Le An Ha. {\em A method for word segmentation in
+%%   Vietnamese.} %Ha-03.pdf
+%% \bibitem{Chang}Chao-Huang Chang. {\em A New Approach for
+%%   Automatic Chinese Spelling Correction.} %a-new-approach-for.ps
+%% \bibitem{Sproat}Richard Sproat, William Gale, Chilin Shih, Nancy
+%%   Chang. {\em A Stochastic Finite-State Word-Segmentation Algorithm for
+%%   Chinese.} ACL Vol 22 N3.%J96-3004.pdf
+%% \bibitem{Chunyu}Chunyu Kit, Zhiming Xu, Jonathan
+%%   J. Webster. {\em Integrating Ngram Model and Case-based Learning For
+%%   Chinese Word Segmentation.}%tsdx.ps.gz
+%% \bibitem{softcount}Xianping Ge, Wanda Pratt,
+%%   Padhraic Smyth. {\em Discovering Chinese Words from Unsegmented
+%%   Text.}%mlwordsigir.ps
+%% \bibitem{text-tiling}Jianfeng Gao, Hai-Feng Wang, Mingjing Li, Kai-Fu
+%%   Lee. {\em A Unified Approach to Statistical Language Modeling for
+%%   Chinese.}%icassp00.pdf
+%% \bibitem{}Nianwen Xue.{\em Chinese Word Segmentation as Character
+%%   Tagging.}%paper2.pdf
+%% \bibitem{self-supervised}Fuchun Peng and Dale Schuurmans. {\em Self-Supervised Chinese
+%%   Word Segmentation.}%IDA01.pdf
+%% \bibitem{phonetex}Victoria J. Hodge, Jim Austin. {\em An Evaluation of
+%%   Phonetic Spell Checkers}%an-evaluation-of-phonetic.ps.gz
+%% \bibitem{soundex}K. Kukich. 1992. {\em Techniques for Automatically Correcting
+%%   Words in Text.}
+%% \bibitem{}Cláudio L. Lucchesi and Tomasz Kowaltowski. {\em Applications of
+%%   Finite Automata Representing Large Vocabularies.}%lucchesi92applications.ps.gz
+%% \bibitem{}Bo-Hyun Yun, Min-Jeung Cho, Hae-Chang Rim. {\em Segmenting Korean
+%%   Compound Nouns using Statistical Information and a Preference
+%%   Rule. }%PACLING97.ps 
+%% \bibitem{}Roger I. W. Spooner and Alistair D. N. Edwards. {\em User
+%%   Modelling for Error Recovery: A Spelling Checker for Dyslexic
+%%   Users}%spooner97user.ps.gz 
+%% \bibitem{}Theppitak Karoonboonyanan, Virach Sornlertlamvanich,
+%%   Surapant Meknavin. {\em A Thai Soundex System for Spelling Correction.}%tsdx.ps.gz
+%% \bibitem{}Justin Zobel and Philip Dart. {\em Finding Approximate Matches in
+%%   Large Lexicons.}%zobel95finding.ps.gz
+%% \bibitem{}Sun Maosong, Shen Dayang, Huang Changning. {\em CSeg\&Tag1.0: A
+%%   Practical Word Segmenter and POS Tagger for Chinese Texts.}%A97-1018.pdf
+%% \bibitem{wordseg}Đinh Điền, Hoàng Kiếm, Nguyễn Văn Toàn. {\em Vietnamese Word
+%%   Segmentation.}%0047-02.pdf
+%% \bibitem{}Bidyut Baran Chaudhuri. {\em Reversed word dictionary and
+%%   phonetically similar word grouping based spell-checker to Bangla
+%%   text.}%bangla.pdf
+%% \bibitem{}Timothy Gambell, Charles D. Yang. {\em Scope and Limits of
+%%   Statistical Learning in Word Segmentation.}%gambell_yang.pdf
+%% \bibitem{iccc}Andi Wu, George Heidorn, Zixin Jiang, Terence
+%%   Peng. {\em Correction of Erroneous Characters in Chinese Sentence
+%%   Analysis.}%ICCC-2001.pdf
+%% \bibitem{}Fuchun Peng, Xiangji Huang, Dale Schuurmans, Shaojun
+%%   Wang. {\em Text Clasification in Asian Languages without Word
+%%   Segmentation.}%IRAL2003.pdf 
+%% \bibitem{}Yalin Wang, Ihsin T. Phillips, Robert
+%%   Haralick. {\em Statistical-based Approach to Word Segmentation.}%wordicpr.pdf
+%% \bibitem{}{\em Combining Syntactical And Statistical Language Constraints
+%%   in Context-dependent Language Models for Interactive Speech
+%%   Applications.}%K026.pdf
+%% \bibitem{LoiChinhTa}TS. Lê Trung Hoa. 2002. {\em Lỗi chính tả và cách khắc phục. NXB Khoa
+%%   học Xã hội.} 
+%% \bibitem{LoiTuVung}PGS. Hồ Lê, TS. Trần Thị Ngọc Lang, Tô Đình Nghĩa. 2002. {\em Lỗi từ
+%%   vựng và cách khắc phục.} NXB Khoa học Xã hội.
+%% \bibitem{Tuoi}PTS. Phan Thị Tươi, KS. Nguyễn Hứa Phùng, KS. Huỳnh Vụ
+%%   Như Liên, KS. Phạm Quyết Thắng. 1998. {\em Bắt lỗi chinh tả tự động cho
+%%   tiếng Việt bằng máy tính.}
+%% \bibitem{worddef}Đinh Điền. 2000. {\em Từ tiếng Việt.} VNU-HCMC.
+%% \bibitem{}Andrew R. Golding. 1995. {\em A Bayesian hybrid method for
+%%     context-sensitive spelling correction}. Proceedings of the Third
+%%     Workshop on Very Large Corpora, pages 39-53.
+%% \bibitem{}Andrew R. Golding and Dan Roth. 1999. {\em A Winnow-based
+%%     approach to context-sensitive correction}. Machine Learning,
+%%     Special issue on Machine Learning and Natural Language Processing,
+%%     34:107-130.
+%% \bibitem{}Andrew R. Golding and Yves Schabes. 1996. {\em Combining
+%%     trigram-based and feature-based methods for context-sensitive
+%%     spelling correction}. Proceedings of the 34th Annual Meeting of
+%%     the Association for Computational Linguistics.
+%% \end{thebibliography}
 
 
 \end{document}

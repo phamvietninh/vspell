@@ -39,7 +39,7 @@ void Words::construct(const Sentence &sent)
 	vector<strid> syll;
 	set<WordEntry> we;
 
-	cerr << "construct\n";
+	//cerr << "construct\n";
 
 	w.st = &(Sentence&)sent;
 
@@ -136,7 +136,7 @@ void Words::construct(const Sentence &sent)
 	//copy(we.begin(),we.end(),ostream_iterator<WordEntry>(cerr));
 	// copy to real _we
 	n = we.size();
-	w.we = new WordEntries;
+	w.we = boost::shared_ptr<WordEntries>(new WordEntries);
 	w.we->reserve(n);
 	copy(we.begin(),we.end(),back_insert_iterator<vector<WordEntry> >(*w.we));
 	for (i = 0;i < n;i ++)

@@ -63,6 +63,8 @@ void Sections::construct(const Words &words)
 		for (ii = 0;ii < nn-2;ii ++)
 			bound[ii+i] = 1;
 	}
+	if (!bound.size())
+		return;
 	bound[bound.size()-1] = 1; // it's obvious there is a boundary in the end
 
 	//copy(bound.begin(),bound.end(),ostream_iterator<int>(cerr," "));

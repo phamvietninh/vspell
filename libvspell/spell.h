@@ -16,6 +16,10 @@
 #include <string>
 #endif
 
+#ifndef BOOST_SHARED_PTR_HPP_INCLUDED
+#include <boost/shared_ptr.hpp>
+#endif
+
 class Sentence;
 
 /**
@@ -56,6 +60,7 @@ struct WordInfo {
 	WordEntryRefs fuzzy_match;	 
 };
 
+/*
 class MonitoredWordEntryRefs:public WordEntryRefs {
 public:
 	void push_back(const WordEntryRef &w) {
@@ -63,7 +68,7 @@ public:
 		WordEntryRefs::push_back(w);
 	}
 };
-
+*/
 /**
 	 Store WordInfo(s) which have a specified length
  */
@@ -72,7 +77,7 @@ class WordInfos : public std::vector<WordInfo*> {
 public:
 	WordInfos();
 	int exact_len;
-	MonitoredWordEntryRefs fuzzy_map; /// contains all WordEntry which are fuzzy at this position
+	WordEntryRefs fuzzy_map; /// contains all WordEntry which are fuzzy at this position
 	WordEntryRefs we;	/// contains all WordEntry which started at this pos
 };
 
@@ -83,7 +88,7 @@ public:
 class Words:public std::vector<WordInfos*> {
 public:
 
-	WordEntries *we;
+	boost::shared_ptr<WordEntries> we;
 	Sentence *st;
 
 	void construct(const Sentence &st);
@@ -245,7 +250,7 @@ typedef Sentence* SentenceRef;
 
 struct Segmentation : public std::vector<int> 
 {
-	WordEntries *we;							/// WordEntries associated with Segmentation
+	boost::shared_ptr<WordEntries> we; /// WordEntries associated with Segmentation
   float prob;										/// total prob
   int distance;									/// total distance
 

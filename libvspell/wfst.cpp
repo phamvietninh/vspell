@@ -185,6 +185,7 @@ void WFST::generate_misspelled_words(const vector<int> &pos,int len)
 					vi[j] = seg[ii-1-j].node.node->get_id();
 				seg.prob += -ngram.wordProb(seg[ii].node.node->get_id(),vi);
 			}
+			delete[] vi;
 
 			seg2[i/*sects[i].segment*/].push_back(seg); // need sort
 
@@ -203,14 +204,18 @@ void WFST::generate_misspelled_words(const vector<int> &pos,int len)
 		while (z.step(vals)) {
 			// merge seg to base seg.
 			seg.clear();
+			seg.prob = 0;
 			for (int ii = 0;ii < vals.size();ii ++) {
 				//cerr << ii << " " << vals[ii] << endl;
+				int iii,nnn = seg2[ii][vals[ii]].size();
+				
 				copy(seg2[ii][vals[ii]].begin(),
 						 seg2[ii][vals[ii]].end(),
 						 back_insert_iterator< Segmentation >(seg));
+				seg.prob += seg2[ii][vals[ii]].prob;
 			}
 
-			cout << seg << " " << seg.prob << endl;
+			//cout << seg << " " << seg.prob << endl;
 			// 6.1. Recompute the score after each section processed. (pruning 2)
 		}
 		z.done();

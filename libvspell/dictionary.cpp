@@ -164,10 +164,10 @@ bool WordNode::load(const char* filename)
 		if (toks[2].find(' ') != string::npos)
 			toks[2].erase(toks[2].find(' '));
 
-		node->info = new WordInfo;
+		node->info.reset(new WordInfo);
 		node->info->id = sarch[toks[0]];
 		int i,nr_syllables = syllables.size();
-		node->info->syllables = new VocabIndex[nr_syllables+1];
+		node->info->syllables.resize(nr_syllables+1);
 		node->info->syllables[nr_syllables] = Vocab_None;
 		//cerr << "Word " << toks[0] << "(" << node->info->id << "| ";
 		for (int i = 0;i < nr_syllables;i ++) {
@@ -179,10 +179,10 @@ bool WordNode::load(const char* filename)
 
 		if (csyllables != syllables) {
 			transform(toks[0].begin(),toks[0].end(),toks[0].begin(),viet_tolower);
-			cnode->info = new WordInfo;
+			cnode->info.reset(new WordInfo);
 			cnode->info->id = sarch[toks[0]];
 			nr_syllables = csyllables.size();
-			cnode->info->syllables = new VocabIndex[nr_syllables+1];
+			cnode->info->syllables.resize(nr_syllables+1);
 			cnode->info->syllables[nr_syllables] = Vocab_None;
 			for (i = 0;i < nr_syllables;i ++)
 				cnode->info->syllables[i] = csyllables[i];
@@ -265,7 +265,7 @@ void WordNode::set_prob(float _prob)
 
 int WordNode::get_syllable_count() const
 {
-	ASSERT(info != NULL);
+	ASSERT(info.get());
 	int n;
 	for (n = 0;info->syllables[n] != Vocab_None;n ++);
 	return n;
@@ -273,7 +273,7 @@ int WordNode::get_syllable_count() const
 
 void WordNode::get_syllables(vector<strid> &syllables) const
 {
-	ASSERT(info != NULL);
+	ASSERT(info.get());
 	int n;
 	for (n = 0;info->syllables[n] != Vocab_None;n ++)
 		syllables.push_back(info->syllables[n]);
@@ -432,7 +432,7 @@ strid StringArchive::operator[] (VocabString s)
 		vi = rest->getIndex(s);
 		if (vi == Vocab_None) {
 			int i = rest->addWord(s)+dict.numWords();
-			cerr << "New word " << s << " as " << i << endl;
+			//cerr << "New word " << s << " as " << i << endl;
 			return i;
 		}
 		return vi+dict.numWords();

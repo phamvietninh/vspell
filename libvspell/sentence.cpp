@@ -1,5 +1,6 @@
 #include "sentence.h"						// -*- tab-width: 2 -*-
 #include "spell.h"
+#include "tokenize.h"
 using namespace std;
 
 void sentences_split(const string &_input,vector<string> &output)
@@ -121,40 +122,26 @@ void Sentence::tokenize_punctuation(const string &s,vector<string> &ret)
 
 void Sentence::tokenize()
 {
-	string &st = sent_;
-	int pos = 0,len = st.size();
-	bool started = false;					// we have found start of a new word
+	Tokens tokens;
+	::tokenize(sent_,tokens);
+
+	int i,n = tokens.size();
+
 	Syllable sy;
 	sy.span = 1;
 	sy.sent_ = this;
 	sy.sid = -1;
-
-	while (pos < len) {
-		if (started) {
-			pos = st.find(' ',sy.start);
-			if (pos == string::npos)
-				pos = len;
-			vector<string> ss;
-			int i,n;
-			tokenize_punctuation(st.substr(sy.start,pos-sy.start),ss);
-			n = ss.size();
-			for (i = 0;i < n;i ++) {
-				string &s = ss[i];
-				sy.id = sarch[s];
-				transform(s.begin(),s.end(),s.begin(),viet_tolower);
-				sy.cid = sarch[s];
-				syllables.push_back(sy);
-				sy.start += s.size();
-			}
-			started = false;
-		} else {
-			if (st[pos] == ' ')
-				pos++;
-			else {
-				started = true;
-				sy.start = pos;
-			}
+	
+	for (i = 0;i < n;i ++) {
+		if (tokens[i].is_token) {
+			string &s = tokens[i].value;
+			sy.id = sarch[s];
+			transform(s.begin(),s.end(),s.begin(),viet_tolower);
+			sy.cid = sarch[s];
+			syllables.push_back(sy);
+			sy.start += s.size();
 		}
+		sy.start += tokens[i].value.size();
 	}
 }
 

@@ -7,8 +7,7 @@
 #include <spell.h>
 #include <sentence.h>
 #include <wordnode.h>
-#include <wfst.h>
-
+#include <pfs.h>
 using namespace std;
 
 static GtkTextTagTable *tagtable_main;
@@ -147,10 +146,10 @@ void text_show_words(const Sentence &st,const Segmentation &seg)
 	int n,cc,i,nn;
 	GtkTextIter start,end;
 
-	n = seg.items.size();
+	n = seg.size();
 	cc = 0;
 	for (i = 0;i < n;i ++) {
-		nn = seg.items[i].state->get_syllable_count();
+		nn = seg[i].node.node->get_syllable_count();
 		if (nn == 1) {
 			cc += nn;
 			continue;
@@ -175,9 +174,9 @@ void text_show_wrong_words(const Sentence &st,const Segmentation &seg,const Sugg
 	for (i = 0;i < n;i ++) {
 		int id = sugg[i].id;
 		for (cc = ii = 0;ii < id;ii ++)
-			cc += seg.items[ii].state->get_syllable_count();
+			cc += seg[ii].node.node->get_syllable_count();
 
-		nn = seg.items[id].state->get_syllable_count();
+		nn = seg[id].node.node->get_syllable_count();
 
 		int from = st[cc].start;
 		int to = st[cc+nn-1].start+strlen(sarch[st[cc+nn-1].id]);
@@ -193,7 +192,6 @@ void sentence_process(const char *pp)
 {
 	// preprocess
 	Sentence st(pp);
-	Segmentation seg;
 	Words words;
 	Suggestions sugg;
 	st.standardize();
@@ -207,14 +205,18 @@ void sentence_process(const char *pp)
 
 	// try segmentation
 	if (/*n == 0*/1) {
-		WFST wfst;
-		wfst.enable_ngram();
-		wfst.set_wordlist(get_root());
-		wfst.get_all_words(st,words);
-		words.print();
-		wfst.segment_best(st,words,seg);
+		PFS pfs;
+		//wfst.enable_ngram();
+		//wfst.set_wordlist(get_root());
+		//wfst.get_all_words(st,words);
+		words.construct(st);
+		cerr << words << endl;
+		//words.print();
+		//wfst.segment_best(st,words,seg);
+		Segmentation seg(words.we);
+		pfs.segment_best(words,seg);
 			
-		seg.print(cerr,st);
+		cerr << seg << endl;
 
 		// show segmentation
 		text_show_words(st,seg);
@@ -226,10 +228,12 @@ void sentence_process(const char *pp)
 		// show mispelled words
 		text_show_wrong_words(st,seg,sugg);
 	}
+
 }
 
 static void button_spell_callback (GtkWidget *button, gpointer data)
 {
+
   GtkTextIter start,end;
   gtk_text_buffer_get_start_iter(textbuffer_main,&start);
   gtk_text_buffer_get_end_iter(textbuffer_main,&end);
@@ -264,7 +268,8 @@ int main(int argc,char **argv)
 {
   gtk_init(&argc,&argv);
 
-  dic_init(new FuzzyWordNode(sarch["<root>"]));
+	//	sarch["<root>"];
+	dic_init(new FuzzyWordNode(sarch["<root>"]));
 
   cerr << "Loading dictionary... ";
   get_root()->load("wordlist.wl");

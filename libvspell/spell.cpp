@@ -13,6 +13,7 @@
 #include "shuffle.h"
 #include "penalty.h"
 #include "bellman.h"
+#include <math.h>
 
 // stolen from glib
 typedef unsigned int guint32;
@@ -222,11 +223,18 @@ bool VSpell::init()
 	cerr << "done" << endl;
 	cerr << "Loading ngram... ";
 	File f("ngram","rt");
-	if (!f.error())
+	if (!f.error()) {
 		get_ngram().read(f);
-	else
+		cerr << "done" << endl;
+	} else
 		cerr << "Ngram loading error. The result may be incorrect" << endl;
-	cerr << "done" << endl;
+	cerr << "Loading syngram... ";
+	File ff("syngram","rt");
+	if (!ff.error()) {
+		get_syngram().read(ff);
+		cerr << "done" << endl;
+	}	else
+		cerr << "Syllable Ngram loading error. The result may be incorrect" << endl;
 	get_sarch().set_blocked(true);
 	return true;
 }
@@ -679,7 +687,7 @@ char_traits_strid::copy(char_traits_strid::char_type* __s1,
 
 */
 
-void get_phonetic_syllable_candidates(const char *input,std::set<std::string> &output)
+void get_phonetic_syllable_candidates(const char *input,Candidates &output,float v)
 {
 	vector<confusion_set>& confusion_sets = get_confusion_sets();
 	int i,j,m,n = confusion_sets.size();
@@ -720,34 +728,34 @@ void get_phonetic_syllable_candidates(const char *input,std::set<std::string> &o
 	for (iter = syllset.begin();iter != syllset.end(); ++ iter) {
 		string s = iter->to_std_str();
 		string ss = get_lowercased_syllable(s);
-		cerr << s << endl;
+		//cerr << s << endl;
 		if (get_sarch().in_dict(get_sarch()[s]) ||
 				get_sarch().in_dict(get_sarch()[ss]))
-			output.insert(iter->to_str());
+			output.insert(iter->to_str(),v+1);
 	}
 }
 
-void get_syllable_candidates(const char *input,std::set<std::string> &output)
+void get_syllable_candidates(const char *input,Candidates &output,float v)
 {
 	Syllable syll;
 	string s,s2;
 	set<string> s3;
 	set<string>::iterator s3i;
 
-	get_phonetic_syllable_candidates(input,output);
+	get_phonetic_syllable_candidates(input,output,v);
 
 	KeyRecover keyr;
 	keyr.init(input);
 	while (keyr.step(s)) {
 		s2 = get_std_syllable(s);
 		if (s2 != s && syll.parse(s2.c_str()))
-			output.insert(syll.to_str());
+			output.insert(syll.to_str(),v);
 		s3.clear();
 		im_recover(s.c_str(),s3);
 		for (s3i = s3.begin(); s3i != s3.end(); ++ s3i) {
 			s2 = get_std_syllable(*s3i);
 			if (s2 != *s3i && syll.parse(s2.c_str()))
-				output.insert(syll.to_str());
+				output.insert(syll.to_str(),v);
 		}
 	}
 	keyr.done();
@@ -760,7 +768,7 @@ void get_syllable_candidates(const char *input,std::set<std::string> &output)
 		if (syll.parse(s.c_str())) {
 			s = syll.to_str();
 			if (syll.parse(s2.c_str())) {
-				output.insert(s + string(" ") + syll.to_str());
+				output.insert(s + string(" ") + syll.to_str(),v);
 			}
 		}
 	}
@@ -770,13 +778,13 @@ void get_syllable_candidates(const char *input,std::set<std::string> &output)
 	while (inserter.step(s)) {
 		s2 = get_std_syllable(s);
 		if (s2 != s && syll.parse(s2.c_str()))
-			output.insert(syll.to_str());
+			output.insert(syll.to_str(),v);
 		s3.clear();
 		im_recover(s.c_str(),s3);
 		for (s3i = s3.begin(); s3i != s3.end(); ++ s3i) {
 			s2 = get_std_syllable(*s3i);
 			if (s2 != *s3i && syll.parse(s2.c_str()))
-				output.insert(syll.to_str());
+				output.insert(syll.to_str(),v);
 		}
 	}
 	inserter.done();
@@ -786,13 +794,13 @@ void get_syllable_candidates(const char *input,std::set<std::string> &output)
 	while (eraser.step(s)) {
 		s2 = get_std_syllable(s);
 		if (s2 != s && syll.parse(s2.c_str()))
-			output.insert(syll.to_str());
+			output.insert(syll.to_str(),v);
 		s3.clear();
 		im_recover(s.c_str(),s3);
 		for (s3i = s3.begin(); s3i != s3.end(); ++ s3i) {
 			s2 = get_std_syllable(*s3i);
 			if (s2 != *s3i && syll.parse(s2.c_str()))
-				output.insert(syll.to_str());
+				output.insert(syll.to_str(),v);
 		}
 	}
 	eraser.done();
@@ -802,59 +810,107 @@ void get_syllable_candidates(const char *input,std::set<std::string> &output)
 	while (transposer.step(s)) {
 		s2 = get_std_syllable(s);
 		if (s2 != s && syll.parse(s2.c_str()))
-			output.insert(syll.to_str());
+			output.insert(syll.to_str(),v);
 		s3.clear();
 		im_recover(s.c_str(),s3);
 		for (s3i = s3.begin(); s3i != s3.end(); ++ s3i) {
 			s2 = get_std_syllable(*s3i);
 			if (s2 != *s3i && syll.parse(s2.c_str()))
-				output.insert(syll.to_str());
+				output.insert(syll.to_str(),v);
 		}
 	}
 	transposer.done();
 }
 
-void get_left_syllable_candidates(const char *input,const char *left,std::set<std::string> &output)
+void get_left_syllable_candidates(const char *input,const char *left,Candidates &output)
 {
 	// merge
 	string s;
 	s = string(left)+string(input);
-	get_syllable_candidates(s.c_str(),output);
+	get_syllable_candidates(s.c_str(),output,10);
 
 	// cut one char from input
 	if (strlen(input) > 1) {
 		s = string(input+1);
-		get_syllable_candidates(s.c_str(),output);
+		get_syllable_candidates(s.c_str(),output,10);
 	}
 
 	// insert one char from left to input
 	if (strlen(left)) {
 		s = string(" ") + string(input);
 		s[0] = left[strlen(left)-1];
-		get_syllable_candidates(s.c_str(),output);
+		get_syllable_candidates(s.c_str(),output,10);
 	}
 }
 
-void get_right_syllable_candidates(const char *input,const char *right,std::set<std::string> &output)
+void get_right_syllable_candidates(const char *input,const char *right,Candidates &output)
 {
 	// merge
 	string s;
 	s = string(input)+string(right);
-	get_syllable_candidates(s.c_str(),output);
+	get_syllable_candidates(s.c_str(),output,10);
 
 	// cut one char from input
 	if (strlen(input) > 1) {
 		s = string(input);
 		s.resize(strlen(input)-1);
-		get_syllable_candidates(s.c_str(),output);
+		get_syllable_candidates(s.c_str(),output,10);
 	}
 
 	// insert one char from right to input
 	if (strlen(right)) {
 		s = string(input)+string(" ");
 		s[s.size()-1] = right[0];
-		get_syllable_candidates(s.c_str(),output);
+		get_syllable_candidates(s.c_str(),output,10);
 	}
 }
 
 
+
+void Candidates::insert(const std::string &s,float f)
+{
+	Candidate c;
+	c.candidate = s;
+	c.priority = f;
+	set<Candidate>::iterator iter = candidates.find(c);
+	if (iter != candidates.end()) {
+		if (iter->priority < c.priority)
+			candidates.erase(iter);
+		else
+			return;
+	}
+	candidates.insert(c);
+}
+
+bool Candidates::CandidateComparator::operator()(const std::string &s1,const std::string &s2)
+{
+	set<Candidate>::iterator i1,i2;
+	Candidate c1,c2;
+	c1.candidate = s1;
+	c2.candidate = s2;
+	i1 = c.candidates.find(c1);
+	i2 = c.candidates.find(c2);
+	if (i1->priority != i2->priority)
+		return i1->priority > i2->priority;
+	float f1,f2;
+	VocabIndex v;
+	v = Vocab_None; 
+	f1 = -get_syngram().wordProb(get_sarch()[get_std_syllable(s1)],&v);
+	f2 = -get_syngram().wordProb(get_sarch()[get_std_syllable(s2)],&v);
+	//cerr << f1 << "<>" << f2 << endl;
+	return f1 > f2;	// we want reverse order
+}
+
+void Candidates::get_list(std::vector<std::string> &v)
+{
+	uint i,n = candidates.size();
+	v.resize(n);
+	set<Candidate>::iterator iter;
+	n = 0;
+	for (iter = candidates.begin();iter != candidates.end();++iter)
+		if (get_sarch().in_dict(get_dic_syllable(iter->candidate))) {
+			v[n++] = iter->candidate;
+		}
+	v.resize(n);
+	sort(v.begin(),v.end(),CandidateComparator(*this));
+}

@@ -1,7 +1,7 @@
 LDADD = $(top_builddir)/libvspell/libvspell.a $(top_builddir)/libsrilm/libsrilm.a
 INCLUDES = -I$(top_builddir)/libsrilm  -I$(top_builddir)/libvspell @VSPELL_CFLAGS@
 
-bin_PROGRAMS = dictionary-test syllable-test wfst-train\
+bin_PROGRAMS = dictionary-test syllable-test wfst-train sytrain\
 	distance-test sentence-test wfst-test\
 	section-test all-words-test posgen-test\
 	segm-test tokenize-test shortestpath\
@@ -23,6 +23,8 @@ syllable_test_SOURCES = syllable-test.cpp
 syllable_test_LDADD = $(LDADD)
 wfst_train_SOURCES = wfst-train.cpp
 wfst_train_LDADD = $(LDADD)
+sytrain_SOURCES = sytrain.cpp
+sytrain_LDADD = $(LDADD)
 sc_train_SOURCES = sc-train.cpp
 sc_train_LDADD = $(LDADD)
 wfst_test_SOURCES = wfst-test.cpp

@@ -52,6 +52,7 @@ int main(int argc,char **argv)
 	int i,ii,iii,n,nn,nnn,z;
 	int count = 0;
 	NgramStats stats(get_sarch().get_dict(),3);
+	NgramStats syllable_stats(get_sarch().get_dict(),2);
 	while (getline(cin,s)) {
 		count ++;
 		if (count % 200 == 0)
@@ -86,9 +87,17 @@ int main(int argc,char **argv)
 
 			//seg.pretty_print(cout,st) << endl;
 
+			VocabIndex *vi;
+			n = st.get_syllable_count();
+			vi = new VocabIndex[n+1];
+			vi[n] = Vocab_None;
+			for (i = 0;i < n;i ++)
+				vi[i] = st[i].get_cid();
+			syllable_stats.countSentence(vi);
+			delete[] vi;
 			n = path.size();
 			if (n > 3) {
-				VocabIndex *vi = new VocabIndex[n+1];
+				vi = new VocabIndex[n+1];
 				vi[n] = Vocab_None;
 				for (i = 0;i < n;i ++) {
 					if (path[i] == dag.node_begin())
@@ -124,6 +133,7 @@ int main(int argc,char **argv)
 	//get_root()->get_next(unk_id)->get_b() = 0;
 	//get_root()->recalculate();
 	get_ngram().estimate(stats);
+	get_syngram().estimate(syllable_stats);
 	//wfst.enable_ngram(true);
 
 	cerr << "Saving... ";
@@ -133,6 +143,9 @@ int main(int argc,char **argv)
 	str = (boost::format("ngram.%s") % newres).str().c_str();
 	File ff(str,"wt");
 	get_ngram().write(ff);
+	str = (boost::format("syngram.%s") % newres).str().c_str();
+	File fff(str,"wt");
+	get_syngram().write(fff);
 	cerr << endl;
 	/*
 	  for (int i = 0;i < 50;i ++) {

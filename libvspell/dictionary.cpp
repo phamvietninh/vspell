@@ -33,6 +33,7 @@ static strid unk_id,start_id,stop_id,punct_id,proper_name_id,poem_id,number_id;
 
 static StringArchive sarch;
 static Ngram ngram(sarch.get_dict(),3);
+static Ngram syngram(sarch.get_dict(),2);
 
 
 bool syllable_init();
@@ -597,6 +598,11 @@ StringArchive& get_sarch()
 Ngram& get_ngram()
 {
 	return ngram;
+}
+
+Ngram& get_syngram()
+{
+	return syngram;
 }
 
 strid get_id(int id)

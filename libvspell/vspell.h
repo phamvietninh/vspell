@@ -124,7 +124,36 @@ public:
 	}
 };
 
-void get_syllable_candidates(const char *input,std::set<std::string> &output);
+class Candidates
+{
+private:
+	struct Candidate
+	{
+		std::string candidate;
+		float priority;
+		friend bool operator < (const Candidate &c1,const Candidate &c2) {
+			return c1.candidate < c2.candidate;
+		}
+	};
+	std::set<Candidate> candidates;
+
+	class CandidateComparator {
+	public:
+		const Candidates &c;
+		CandidateComparator(const Candidates &cc):c(cc) {}
+		bool operator()(const std::string &s1,const std::string &s2);
+	};
+	friend class CandidateComparator;
+public:
+	void insert(const std::string &,float f = 0);
+	void get_list(std::vector<std::string> &);
+};
+
+
+void get_syllable_candidates(const char *input,Candidates &output,float val = 0);
+void get_phonetic_syllable_candidates(const char *input,Candidates &output,float val = 0);
+void get_left_syllable_candidates(const char *input,Candidates &output);
+void get_right_syllable_candidates(const char *input,Candidates &output);
 
 bool viet_utf8_to_viscii(const char *in,char *out); // pre-allocated
 bool viet_utf8_to_viscii_force(const char *in,char *out); // pre-allocated

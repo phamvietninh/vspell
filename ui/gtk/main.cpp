@@ -429,10 +429,12 @@ bool MyText::ui_syllable_check()
 		len = strlen(get_sarch()[st[suggestions[i].id].id]);
 		string s = substr(from,len);
 		gtk_entry_set_text(GTK_ENTRY(spell_entry),s.c_str());
-		set<string> candidates;
+		vector<string> candidates;
+		Candidates c;
 		candidates_reset();
-		get_syllable_candidates(get_sarch()[st[suggestions[i].id].id],candidates);
-		set<string>::iterator iter;
+		get_syllable_candidates(get_sarch()[st[suggestions[i].id].id],c);
+		c.get_list(candidates);
+		vector<string>::iterator iter;
 		for (iter = candidates.begin();iter != candidates.end();++ iter)
 			candidates_add(viet_to_utf8(iter->c_str()));
 		processed = ignore_all = ignore = false;

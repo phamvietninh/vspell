@@ -73,6 +73,7 @@ float get_word(const std::string &word);
 #define NUMBER_ID 6
 StringArchive& get_sarch();
 Ngram& get_ngram();
+Ngram& get_syngram();
 strid get_id(int id);
 
 inline bool is_syllable_exist(const std::string &syll) {

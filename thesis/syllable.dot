@@ -1,6 +1,6 @@
 digraph syllable {
 	rankdir=LR
-	fontname=arial;
+//	fontname=arial;
 	head [label=""];
 	tail [label=""];
 	style=dashed;

@@ -60,7 +60,7 @@ void ExactWordState::get_next(WordStates &states)
 	BranchNode *branch = dnode.node->get_branch(sent[i].get_cid());
 	if (branch == NULL)
 		return;
-	cerr << "Exact: " << get_sarch()[sent[i].get_cid()] << endl;
+	//cerr << "Exact: " << get_sarch()[sent[i].get_cid()] << endl;
 	states.push_back(this);
 	// change the info
 	dnode = branch;

@@ -125,13 +125,13 @@ bool WordArchive::load(const char* filename)
 
 LeafNode* WordArchive::add_special_entry(strid tok)
 {
-	NodeRef noderef(new LeafNode);
-	LeafNode *leaf = (LeafNode*)noderef.get();
+	// special nodes don't need to be added to BranchNode.
+	// Currently freeing special nodes is responsibility of caller
+	LeafNode *leaf = new LeafNode;
 	vector<strid> toks;
 	toks.push_back(tok);
 	leaf->set_id(toks);
 	//leaf->set_mask(MAIN_LEAF);
-	get_root()->add(mainleaf_id,noderef);
 	return leaf;
 }
 

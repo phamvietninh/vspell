@@ -15,6 +15,8 @@ class MyText : public Text
 public:
 	MyText(VSpell* vs):Text(vs) {}
 
+	bool word_check();
+
 protected:
 	virtual bool ui_syllable_check();
 	virtual bool ui_word_check();
@@ -44,6 +46,7 @@ static GtkWidget *ignore_button,*ignore_all_button,*spell_button,*open_button;
 static GtkListStore *list_store;
 static MyTextFactory myfactory;
 static VSpell vspell(myfactory);
+static bool word_boundaries;
 
 static void text_reset(GtkTextBuffer *textbuffer_main)
 {
@@ -93,7 +96,7 @@ void MyText::show_words()
 	cc = 0;
 	for (i = 0;i < n;i ++) {
 		nn = seg[i].node.node->get_syllable_count();
-		if (nn == 1) {
+		if (nn == 1 && !word_boundaries) {
 			cc += nn;
 			continue;
 		}
@@ -160,9 +163,11 @@ static void set_state(bool spellcheck)
 		return;
 
 	is_checking = spellcheck;
-	gtk_text_buffer_get_start_iter(textbuffer_main,&start);
-	gtk_text_buffer_get_end_iter(textbuffer_main,&end);
-	gtk_text_buffer_remove_all_tags (textbuffer_main, &start,&end);
+	if (is_checking || !word_boundaries) {
+		gtk_text_buffer_get_start_iter(textbuffer_main,&start);
+		gtk_text_buffer_get_end_iter(textbuffer_main,&end);
+		gtk_text_buffer_remove_all_tags (textbuffer_main, &start,&end);
+	}
 	
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(textview_main),!is_checking);
 	gtk_widget_set_sensitive(GTK_WIDGET(open_button),!is_checking);
@@ -186,7 +191,8 @@ static void button_spell_callback (GtkWidget *button, gpointer data)
 
 	vspell.check(buffer);
 	set_state(false);
-	gtk_text_buffer_set_text (textbuffer_main, vspell.get_utf8_text().c_str(),strlen(vspell.get_utf8_text().c_str()));
+	if (!word_boundaries)
+		gtk_text_buffer_set_text (textbuffer_main, vspell.get_utf8_text().c_str(),strlen(vspell.get_utf8_text().c_str()));
 
 }
 
@@ -238,6 +244,40 @@ candidates_row_activated (GtkTreeView *treeview,
 	gtk_entry_set_text(GTK_ENTRY(spell_entry),s);
 }
 
+void strict_spelling_checking_cb(GtkToggleButton *b,VSpell *vspell)
+{
+	bool state = gtk_toggle_button_get_active(b);
+	vspell->set_strict_word_checking(state);
+	//gtk_toggle_button_set_active(b,state);
+}
+
+void length_normalization_cb(GtkToggleButton *b,VSpell *vspell)
+{
+	bool state = gtk_toggle_button_get_active(b);
+	vspell->set_normalization(state);
+	//gtk_toggle_button_set_active(b,state);
+}
+
+void penalty_modification_cb(GtkEntry *b,VSpell *vspell)
+{
+	const char *s = gtk_entry_get_text(b);
+	float val;
+	if (sscanf(s,"%f",&val) == 1)
+		vspell->set_penalty(val);
+}
+
+void trigram_cb(GtkToggleButton *b,VSpell *vspell)
+{
+	bool state = gtk_toggle_button_get_active(b);
+	vspell->set_trigram(state);
+	//gtk_toggle_button_set_active(b,state);
+}
+
+void word_boundaries_cb(GtkToggleButton *b,VSpell *vspell)
+{
+	word_boundaries = gtk_toggle_button_get_active(b);
+	//gtk_toggle_button_set_active(b,state);
+}
 
 int main(int argc,char **argv)
 {
@@ -249,15 +289,23 @@ int main(int argc,char **argv)
 	vspell.set_penalty(0.05);
 	vspell.set_normalization(true);
 	vspell.set_trigram(true);
+	word_boundaries = true;
 
 	GtkWidget *window_main = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_container_set_border_width(GTK_CONTAINER(window_main),10);
 	gtk_window_set_default_size(GTK_WINDOW(window_main),400,200);
 	g_signal_connect(window_main,"destroy",G_CALLBACK(window_destroy_callback),NULL);
 
-	GtkWidget *vbox_main = gtk_vbox_new(FALSE,10);
-	gtk_container_add(GTK_CONTAINER(window_main),vbox_main);
+	GtkWidget *notebook = gtk_notebook_new();
+	GtkWidget *page1,*page2;
+	gtk_container_add(GTK_CONTAINER(window_main),notebook);
 
+	GtkWidget *vbox_main = gtk_vbox_new(FALSE,10);
+	page1 = vbox_main;
+	gtk_container_set_border_width(GTK_CONTAINER(page1),10);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook),page1,gtk_label_new("Main"));
+
+	/*
 	// Search box
 	GtkWidget *hbox_search = gtk_hbox_new(FALSE,10);
 	gtk_box_pack_start(GTK_BOX(vbox_main),hbox_search,FALSE,TRUE,0);
@@ -272,6 +320,7 @@ int main(int argc,char **argv)
 	log_main = gtk_label_new("");
 	gtk_label_set_line_wrap(GTK_LABEL(log_main),true);
 	gtk_box_pack_start(GTK_BOX(vbox_main),log_main,FALSE,FALSE,0);
+	*/
 	
 	// Text box+Spell box
 	GtkWidget *paned = gtk_hpaned_new();
@@ -363,6 +412,40 @@ int main(int argc,char **argv)
 	GtkWidget *button_exit = gtk_button_new_with_mnemonic("_Exit");
 	g_signal_connect(button_exit,"clicked",G_CALLBACK(button_exit_callback),NULL);
 	gtk_box_pack_start(GTK_BOX(hbox_command),button_exit,FALSE,TRUE,0);
+
+	vbox_main = gtk_vbox_new(FALSE,10);
+	page2 = vbox_main;
+	gtk_container_set_border_width(GTK_CONTAINER(page2),10);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook),page2,gtk_label_new("Settings"));
+	w = gtk_check_button_new_with_label("Strict spelling checking");
+	gtk_box_pack_start(GTK_BOX(vbox_main),w,FALSE,FALSE,0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w),vspell.get_strict_word_checking());
+	g_signal_connect(G_OBJECT(w),"toggled",G_CALLBACK(strict_spelling_checking_cb),&vspell);
+
+	w = gtk_check_button_new_with_label("Length normalization");
+	gtk_box_pack_start(GTK_BOX(vbox_main),w,FALSE,FALSE,0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w),vspell.get_normalization());
+	g_signal_connect(G_OBJECT(w),"toggled",G_CALLBACK(length_normalization_cb),&vspell);
+
+	w = gtk_check_button_new_with_label("Trigram");
+	gtk_box_pack_start(GTK_BOX(vbox_main),w,FALSE,FALSE,0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w),vspell.get_trigram());
+	g_signal_connect(G_OBJECT(w),"toggled",G_CALLBACK(trigram_cb),&vspell);
+
+	w = gtk_check_button_new_with_label("Show word boundaries");
+	gtk_box_pack_start(GTK_BOX(vbox_main),w,FALSE,FALSE,0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w),word_boundaries);
+	g_signal_connect(G_OBJECT(w),"toggled",G_CALLBACK(word_boundaries_cb),&vspell);
+
+	GtkWidget *hbox = gtk_hbox_new(FALSE,10);
+	gtk_box_pack_start(GTK_BOX(vbox_main),hbox,FALSE,FALSE,0);
+	gtk_box_pack_start(GTK_BOX(hbox),gtk_label_new("Penalty modification"),FALSE,FALSE,0);
+	w = gtk_entry_new();
+	gtk_box_pack_start(GTK_BOX(hbox),w,FALSE,FALSE,0);
+	char buff[100];
+	sprintf(buff,"%f",vspell.get_penalty());
+	gtk_entry_set_text(GTK_ENTRY(w),buff);
+	g_signal_connect(G_OBJECT(w),"changed",G_CALLBACK(penalty_modification_cb),&vspell);
 
 	set_state(false);
 
@@ -541,4 +624,12 @@ bool MyText::ui_word_check()
 		return true;								// some things went wrong
 	}
 	return !is_checking;
+}
+
+bool MyText::word_check()
+{
+	bool ret = Text::word_check();
+	if (word_boundaries)
+		show_words();
+	return ret;
 }

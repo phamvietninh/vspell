@@ -40,9 +40,9 @@ public:
 	Text(VSpell *v):vspell(v) {}
 	virtual ~Text() {}
 
-	bool sentence_check(const char *pp);
-	bool syllable_check();
-	bool word_check();
+	virtual bool sentence_check(const char *pp);
+	virtual bool syllable_check();
+	virtual bool word_check();
 
 	void replace(unsigned from,unsigned size,const char *utf8_text);
 	std::string substr(unsigned from,unsigned size);

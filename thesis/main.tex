@@ -1595,6 +1595,8 @@ cho tiếng Việt trong tương lai không xa.
 
 
 \subsection{Mô hình TBL}
+\label{sec:tbl-spell}
+
 
 TBL\footnote{Transformation-based Learning} mô hình học có giám sát,
 được Eric Brill đưa ra vào năm 1993. Đây là mô hình học luật dựa trên
@@ -1888,6 +1890,7 @@ trong Luận văn Tách từ tiếng Việt\footnote{Nguyễn Văn Toàn, Nguy�
 %% công sức. Đây là một điểm yếu (và cũng là điểm mạnh) của TBL.
 
 \subsection{Mô hình Source-Channel cải tiến}
+%-% cws-ACL03.pdf
 
 Mô hình này được đề nghị trong~\cite{sc}.
 
@@ -1940,7 +1943,6 @@ Với mô hình đã có, thao tác tách từ bao gồm hai bước:
   khả năng nhất theo công thức nêu trên.
 \end{enumerate}
 
-
 \subsubsection{Huấn luyện}
 
 Nếu có một dữ liệu được tách từ sẵn, công việc trở nên rất dễ
@@ -1962,6 +1964,25 @@ sau:
 %%% give some comments about source-channel models.
 
 %%% Giải thích rõ hơn về các mô hình
+
+\subsection{Mô hình TBL}
+
+Mô hình TBL (xem thêm phần~\ref{sec:tbl-spell}) cũng có thể được áp
+dụng để tách từ tiếng Trung Quốc~\cite{palmer}. 
+
+Mô hình TBL có thể được áp dụng cho nhiều bài toán khác nhau. Tùy vào
+các hành động cụ thể của mẫu luật mà cách áp dụng sẽ khác nhau. Mẫu luật
+áp dụng cho TBL sử dụng các hành động sau:    
+\begin{itemize}
+\item Nối hai ký tự (tiếng).
+\item Tách hai ký tự.
+\item Trượt ranh giới từ sang ký tự kế bên. 
+\end{itemize}
+
+Trình tách từ baseline, có thể áp dụng cách khớp tối đa.
+
+
+%\subsection{Tách từ bằng bộ đánh nhãn}
 
 
 \section{Tách từ mờ}

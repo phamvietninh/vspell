@@ -1,6 +1,8 @@
 EXT = .png
-main$(EXT): main.tex wordlattice$(EXT) wordlattice1$(EXT) wordlattice2$(EXT) syllable$(EXT) overall.png
+main$(EXT): main.tex wordlattice$(EXT) wordlattice1$(EXT) wordlattice2$(EXT) syllable$(EXT) overall.png test.tex
 	pdflatex $<&& pdflatex $<
+test.tex:../tests/data.test
+	perl ../scripts/testdoc-extract.pl < $< > $@
 %.png: %.dot
 	DOTFONTPATH=. dot -Tpng -o $@ $<
 %.mp: %.dot

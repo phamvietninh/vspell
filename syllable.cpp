@@ -2,8 +2,11 @@
 #include <string>
 #include <iostream>
 #include <string.h>
+#include "dictionary.h"
 
 using namespace std;
+
+namespace Dictionary {
 
 char *vowels[] = {
   "iª","yª","ia",
@@ -35,15 +38,6 @@ char *padding_vowels[] = {
   NULL
 };
 
-enum diacritics {
-  none = 0,
-  acute,
-  grave,
-  hook,
-  tilde,
-  dot  
-};
-
 char *diacritic_table[6] = {
   "a©¨eªio«¬u_y",
   "¸Ê¾ĞÕİãèíóøı",
@@ -57,23 +51,6 @@ char *case_table[2] = {
   "¸µ¶·¹©ÊÇÈÉË¨¾»¼½ÆĞÌÎÏÑªÕÒÓÔÖİ×ØÜŞãßáâä«èåæçé¬íêëìîóïñòô_øõö÷ùıúûüş®", 
   "ƒ€‚„¢$ÄÂÃ†¡À¯º¿…Š‡ˆ‰‹£ÚÅÍÙŒ‘•’“”–¤ÿÛàğ—¥›˜™šœŸ¦q§", 
 };
-
-class Syllable {
-public:
-  int 		first_consonant;
-  int 		padding_vowel;
-  int 		vowel;
-  int 		last_consonant;
-  diacritics 	diacritic;
-
-  bool parse(const char *str);
-  void standardize(std::string str);
-};
-
-int viet_toupper(int ch);
-int viet_tolower(int ch);
-bool viet_isupper(int ch);
-bool viet_islower(int ch);
 
 // we assumes str is a valid syllable ;)
 bool Syllable::parse(const char *str)
@@ -212,6 +189,7 @@ void Syllable::standardize(std::string syllable)
 
 }
 */
+/*
 int main()
 {
   Syllable i;
@@ -223,7 +201,7 @@ int main()
   cout << last_consonants[i.last_consonant] << endl;
   return 0;
 }
-
+*/
 
 int viet_toupper(int ch)	// must be sure ch is a character
 {
@@ -247,4 +225,6 @@ bool viet_islower(int ch)
 {
   return (ch >= 'a' && ch <= 'z') ||
     strchr(case_table[0],ch) != NULL;
+}
+
 }

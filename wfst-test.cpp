@@ -5,16 +5,14 @@
 void main()
 {
   WFST wfst;
-  std::string root("-root-");
-  WordNodePtr wl(new WordNode(root));
-
+  Dictionary::initialize();
   ed_init();
 
   cerr << "Loading... ";
-  wl->load("wordlist.wl");
+  Dictionary::get_root()->load("wordlist.wl");
   cerr << "done" << endl;
 
-  wfst.set_wordlist(wl);
+  wfst.set_wordlist(Dictionary::get_root());
   Segmentation seg;
   Sentence st("häc sinh däc sinh häc");
   st.standardize();

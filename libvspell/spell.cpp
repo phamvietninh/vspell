@@ -507,6 +507,17 @@ void Text::replace(unsigned from,unsigned size,const char *s)
 	vspell->replace(from+offset,size,s);
 }
 
+int Text::utf8_pos(unsigned from)
+{
+	const string &utf8_text = vspell->get_utf8_text();
+	const char *p = utf8_text.c_str();
+	const char *op = p;
+	from += offset;
+	for (int i = 0;i < from && *p;i ++)
+		p = g_utf8_next_char(p);
+	return (int)(p - op);
+}
+
 string Text::substr(unsigned from,unsigned size)
 {
 	const string &utf8_text = vspell->get_utf8_text();

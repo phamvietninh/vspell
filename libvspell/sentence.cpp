@@ -224,10 +224,12 @@ std::ostream& Segmentation::pretty_print(std::ostream &os,const Sentence &st)
 	for (i = 0;i < n;i ++) {
 		if (i)
 			os << " ";
-		id = (*this)[i].node.node->get_id();
-		if (id == get_id(UNK_ID))
-			id = st[(*this)[i].pos].id;
-		os << get_sarch()[id];
+		int ii,nn = (*this)[i].len;
+		for (ii = 0;ii < nn;ii ++) {
+			if (ii)
+				os << "_";
+			os << sarch[st[(*this)[i].pos+ii].get_id()];
+		}
 	}
 	return os;
 }

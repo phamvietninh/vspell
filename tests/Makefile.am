@@ -5,7 +5,9 @@ bin_PROGRAMS = dictionary-test syllable-test wfst-train sytrain\
 	distance-test sentence-test wfst-test\
 	section-test all-words-test posgen-test\
 	segm-test tokenize-test shortestpath\
-	std-syllable sc-train keyb-test
+	std-syllable sc-train keyb-test\
+	vspell-check
+EXTRAS = data.test
 
 std_syllable_SOURCES = std-syllable.cpp
 std_syllable_LDADD = $(LDADD)
@@ -39,3 +41,5 @@ tokenize_test_SOURCES = tokenize-test.cpp
 tokenize_test_LDADD = $(LDADD)
 keyb_test_SOURCES = keyb-test.cpp
 keyb_test_LDADD = $(LDADD)
+vspell_check_SOURCES = vspell-check.cpp
+vspell_check_LDADD = $(LDADD)

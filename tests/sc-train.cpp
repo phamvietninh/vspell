@@ -30,7 +30,7 @@ int main(int argc,char **argv)
 	dic_init();
 
 	cerr << "Loading... ";
-	str = "wordlist.wl";
+	str = "wordlist";
 	warch.load(str);
 	str = (boost::format("ngram.%s") % oldres).str().c_str();
 	File f(str,"rt",0);
@@ -74,7 +74,7 @@ int main(int argc,char **argv)
 	//wfst.enable_ngram(true);
 
 	cerr << "Saving... ";
-	str = (boost::format("get_ngram().%s") % newres).str().c_str();
+	str = (boost::format("ngram.%s") % newres).str().c_str();
 	File ff(str,"wt");
 	get_ngram().write(ff);
 	cerr << endl;

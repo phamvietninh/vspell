@@ -317,7 +317,7 @@ xem từ nào là đúng nhất.
 từ điển. Nếu từ không có trong từ điển nghĩa là sai chính tả, từ đó
 đưa ra những gợi ý thích hợp.
 
-Bài toán đặt ra một bái toán con khác là tách từ tiếng Việt trong điều
+Bài toán đặt ra một bài toán con khác là tách từ tiếng Việt trong điều
 kiện văn bản bị sai chính tả. Cách giải quyết bài toán này là phát sinh
 mọi cách tách từ có thể, sử dụng tập nhầm lẫn, và sau đó áp dụng mô hình
 ngôn ngữ để tìm ra cách tách từ đúng nhất. Tập nhầm lẫn được phát sinh
@@ -1771,7 +1771,7 @@ bản không giới hạn~\cite{cg}.
 
 CG có thể được xem như một tập hợp các luật mẫu-hành
 động\footnote{pattern-action rule}, không quá một luật với mỗi tag có nhập
-nhằng. Mỗi luật xác định một hoặc nhiều mẫu (các ``ràng buộc'') xác
+nhằng. Mỗi luật bao gồm một hoặc nhiều mẫu (các ``ràng buộc'') xác
 định khi nào tag đó không hợp lệ. Nếu thỏa một mẫu trong số các mẫu
 của luật, tag đó sẽ bị xoá. Các mẫu ngữ cảnh có thể là mẫu cục bộ hoặc
 toàn cục, có thể tham khảo những phân tích nhập nhằng hoặc không nhập
@@ -1782,7 +1782,7 @@ kiện khử nhập nhằng những từ khác.
 Mô tả cú pháp và hình thái được mã hoá bằng tag thay vì cấu trúc đóng
 mở ngoặc. Mô tả cú pháp rất nông. Mỗi từ được gắn với một tag chức
 năng cú pháp\footnote{syntactic function tag}, quy định mô tả phụ
-thuộc về mặc chức năng.
+thuộc về mặt chức năng.
 
 Các ràng buộc giúp tránh các dự đoán có nhiều rủi ro chứ không chọn ra
 giải pháp đúng. Do đó CG chỉ giúp giảm số lượng các nhập nhằng. Văn
@@ -2056,7 +2056,7 @@ hủy.
 
 Bước đầu tiên huấn luyện bộ phân lớp là thiết lập các liên kết
 giữa bộ phân lớp và các đặc trưng tích cực $F$ trong mẫu. Nếu đặc
-trựng tích cực $f \in F$ chưa được kết nối vào bộ phân lớp, và cầu là
+trưng tích cực $f \in F$ chưa được kết nối vào bộ phân lớp, và câu là
 mẫu khẳng định đối với bộ phân lớp, ta tạo một kết nối giữa đặc trưng
 đó và bộ phân lớp với giá trị trọng số khởi đầu là $0,1$. Chú ý rằng
 không có gì xảy ra với các mẫu phủ định. 
@@ -2124,9 +2124,9 @@ quá thấp).
 \item Sắp xếp các đặc trưng theo thứ tự giảm dần khả năng quyết định.
 \end{itemize}
 
-\subsection{Mô hình Tri\-Gram và Bayes}
+\subsection{Mô hình Tri\-gram và Bayes}
 
-Mô hình sửa lỗi bằng Tri\-Gram rất đơn giản. Đối với mỗi câu, các từ
+Mô hình sửa lỗi bằng Tri\-gram rất đơn giản. Đối với mỗi câu, các từ
 trong tập nhầm lẫn được thay thế cho từ tương ứng trong câu, sau đó
 tính xác suất tri\-gram của toàn bộ câu. Từ tương ứng với câu có xác
 suất lớn nhất sẽ là từ được chọn. Cho câu $W =
@@ -2154,15 +2154,15 @@ chính là ngữ cảnh của từ cần xét. Tập đặc trưng được rút
 đang xét. Các đặc trưng và cách rút trích đặc trưng tương tự như trong
 mô hình Winnow.
 
-Mô hình Tri\-Gram và Bayes, mỗi cái có điểm mạnh riêng. Mô hình tri\-gram
+Mô hình Tri\-gram và Bayes, mỗi cái có điểm mạnh riêng. Mô hình tri\-gram
 hoạt động tốt nếu những từ trong tập nhầm lẫn không cùng từ
 loại. Ngược lại, khi không thể phân biệt dựa trên từ loại, mô hình
 Bayes sẽ hoạt động tốt hơn do dựa vào các thông tin về cú pháp, ngữ
 cảnh xung quanh. Do đó, giải pháp tốt nhất là kết hợp hai mô hình này
-với nhau. Đầu tiên ta áp dụng mô hình Tri\-Gram. Trong quá trình xử lý,
+với nhau. Đầu tiên ta áp dụng mô hình Tri\-gram. Trong quá trình xử lý,
 nếu thấy mọi từ trong tập nhầm lẫn đều cùng từ loại, ta áp dụng mô
 hình Bayes. Ngược lại, ta sẽ chấp nhận kết quả của mô hình
-Tri\-Gram. Giải pháp này được áp dụng trong~\cite{Golding96}, tạo ra mô
+Tri\-gram. Giải pháp này được áp dụng trong~\cite{Golding96}, tạo ra mô
 hình Tribayes.
 
 
@@ -4213,7 +4213,7 @@ phải dùng lưới~3-từ để tính tri\-gram, nếu dùng thuật toán g�
 
 %% \subsection{Tính n\-gram}
 
-%% N\-Gram được tính như thông thường. Sử dụng backoff chuẩn. Thư viện
+%% N\-gram được tính như thông thường. Sử dụng backoff chuẩn. Thư viện
 %% SRILM được dùng để tính n\-gram.
 
 
@@ -5430,6 +5430,33 @@ Do số lượng từ ít, từ ngắn nên lỗi real-word nhiều hơn lỗi n
   quan đến ``error tolerance''
 \end{itemize}
 
+
+\section{Độ chính xác của tách từ}
+
+Tách từ dựa trên tư tưởng ``tìm ra câu đúng nhất''. Nếu ``câu đúng
+nhất'' được tìm ra không phải là câu đúng nhất thì dẫn đến tách từ
+sai. Vấn đề ở chỗ câu mà tách từ tìm ra và câu thực tế sai khác như
+thế nào. Do các từ thường ngăn (1--2 chữ) nên khả năng trùng nhau là
+rất lớn. Có mối quan hệ nào giữa việc tìm câu đúng sai và cho ra cách
+tách từ đúng hay không? $\rightarrow$ không biết.
+
+Giả định LM hoàn hảo. Nếu Lattice càng rộng thì khả năng tìm lộn sang
+câu khác càng lớn. Nên dùng Winnow để thêm dần các từ mới. Một trường
+hợp nữa là dùng Winnow để loại bỏ các từ không hợp lý, được không??
+Một Lattice lí tưởng sẽ cho ra kết quả lí tưởng.
+
+Giải pháp khác là áp dụng Winnow để sửa chữa cách tách từ sau
+cùng. Nghe hơi hoang tưởng?
+
+Sau khi chọn được cách tách từ thì nên dùng những từ trong cách tách
+từ đúng hay lại áp dụng Winnow? Rõ ràng hiện thời LM vẫn còn sai
+nhiều. Tuy nhiên, ``dường như'' các lỗi phát âm thường có chiều dài từ
+ngang nhau. Nghĩa là trong trường hợp tìm sai, khả năng tách từ đúng
+vẫn lớn. Vậy tốt hơn nên dùng Winnow?
+
+Ok. Winnow và loại bỏ các nút đáng ngờ trong lưới từ.
+
+
 \section{Khi nào cần phát sinh}
 
 Cách đầu tiên là dựa trên thông tin thống kê, tìm xem giá trị trung
@@ -5516,7 +5543,7 @@ Túm lại có ba vấn đề:
 %%   Chang. {\em A Stochastic Finite-State Word-Segmentation Algorithm for
 %%   Chinese.} ACL Vol 22 N3.%J96-3004.pdf
 %% \bibitem{Chunyu}Chunyu Kit, Zhiming Xu, Jonathan
-%%   J. Webster. {\em Integrating N\-Gram Model and Case-based Learning For
+%%   J. Webster. {\em Integrating N\-gram Model and Case-based Learning For
 %%   Chinese Word Segmentation.}%tsdx.ps.gz
 %% \bibitem{softcount}Xianping Ge, Wanda Pratt,
 %%   Padhraic Smyth. {\em Discovering Chinese Words from Unsegmented

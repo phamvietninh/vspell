@@ -44,6 +44,7 @@ public:
 	virtual bool syllable_check();
 	virtual bool word_check();
 
+	int utf8_pos(unsigned pos);
 	void replace(unsigned from,unsigned size,const char *utf8_text);
 	std::string substr(unsigned from,unsigned size);
 

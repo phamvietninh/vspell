@@ -3533,8 +3533,6 @@ Theo~\cite{LoiChinhTa}, lỗi bao gồm các loại sau:
 \subsubsection{Phân tích âm tiết}
 \label{sec:realword:syllable}
 
-XXX% Xem lại phần âm tiết để viết phần này
-
 Để phát sinh từ dựa trên lỗi phát âm, cần phân tích cấu trúc của từng
 tiếng. Một tiếng bao gồm âm đầu, vần và thanh. Vần gồm âm đệm, âm
 chính và âm cuối. Trong các thành phần của tiếng, âm chính là bắt buộc
@@ -3550,14 +3548,44 @@ cấu trúc âm tiếng theo sơ đồ trạng thái như hình~\ref{fig:syllabl
 
 Khi phân tích tiếng, có thể có một số nhập nhằng giữa các thành phần
 của tiếng. Vd, ``lúa'' bao gồm âm chính ``ua'' hay âm đệm ``u'' và âm
-chính ``a''~\ldots{}
+chính ``a''~\ldots{}. Các quy luật phân bố âm tiết được sử dụng để
+giải quyết những trường hợp này. Cụ thể ba luật sau được sử dụng:
+\begin{itemize}
+\item Âm cuối i chỉ đứng trước các âm ``ư, ươ, ơ, â, a, ă, u, uô, ô,
+  o''.
+\item Âm cuối u chỉ đứng trước các âm ``i, iê, ê, e, ư, ươ, ơ, â, a,
+  ă''.
+\item Âm đệm không đứng trước các âm ``u, uô, ô, o''.
+\end{itemize}
+Ba luật này được sử dụng để loại bỏ những trường hợp sai.
+
+Nếu chỉ sử dụng những luật này, sẽ có nhiều tiếng phân tích được,
+nhưng thực tế không tồn tại. Ví dụ, ``cỳ'', ``kông''~\ldots{} Tuy
+nhiên cách phân tích này vẫn chấp nhận được. Những tiếng sai như vậy
+sẽ được phát hiện và sửa chữa trong phần bắt lỗi non-word.
 
 Ta có thể phân tích tiếng dùng FST. Tuy nhiên, qua
- hình~\ref{fig:syllable}
- có thể thấy chỉ có tám cách để hình thành
+ hình~\ref{fig:syllable} có thể thấy chỉ có tám cách để hình thành
 tiếng. Cài đặt theo tám cách này đơn giản và hiệu quả hơn dùng FST
-tổng quát. Việc sắp xếp thứ tự áp dụng từng cách và một số heuristic
-sẽ giúp loại bỏ nhập nhằng khi phân tích tiếng. 
+tổng quát. 
+%Việc sắp xếp thứ tự áp dụng từng cách và một số heuristic
+%sẽ giúp loại bỏ nhập nhằng khi phân tích tiếng. 
+\begin{algo}\caption{Phân tích cấu trúc âm tiết}
+  Kiểm tra mẫu A, bao gồm việc phân tích âm tiết theo mẫu A. Nếu âm
+  tiết có thể phân tích theo mẫu A và không vi phạm các quy luật phân
+  bố thì chấp nhận âm tiết, dừng thuật toán.
+  \begin{enumerate}
+  \item Kiểm tra mẫu ``Âm đầu, âm chính, âm cuối''.
+  \item Kiểm tra mẫu ``Âm chính, âm cuối''. 
+  \item Kiểm tra mẫu ``Âm đầu, âm chính''. 
+  \item Kiểm tra mẫu ``Âm chính''. 
+  \item Kiểm tra mẫu ``Âm đầu, âm đệm, âm chính, âm cuối''. 
+  \item Kiểm tra mẫu ``Âm đệm, âm chính, âm cuối''. 
+  \item Kiểm tra mẫu ``Âm đầu, âm đệm, âm chính''. 
+  \item Kiểm tra mẫu ``Âm đệm, âm chính''. 
+  \item Không thể phân tích âm tiết. Dừng.
+  \end{enumerate}
+\end{algo}
 
 \subsection{Hoàn chỉnh lưới từ}
 \label{sec:lattice:competion}
@@ -3594,15 +3622,15 @@ với việc Ủy ban về Tự do Tôn giáo Quốc tế của Hoa Kỳ tổ ch
 vấn đề tôn giáo Việt Nam và việc một số tổ chức tôn giáo hải ngoại kêu
 gọi trì hoãn việc phê chuẩn Hiệp định Thương mại song phương với Việt
 Nam}''. Đây là một cây trích từ một tin tức thời sự. Khi đọc lướt qua câu
-này, ta không cảm nhận được độ dài của nó. Những câu loài này trong
-các văn bản hành chính không phải hiếm gặp. Câu này có gần XXX cách
-tách từ khác nhau, dẫn đến việc tính giá trị của từng cách tách từ một
-là điều không thực tế.
+này, ta không cảm nhận được độ dài của nó. Những câu loại này không
+phải hiếm gặp trong các văn bản hành chính. Câu này có $76101451776 \approx 76\cdot 10^9$ cách
+tách từ khác nhau ($842851528992620544 \approx 842\cdot 10^{15}$ nếu tách từ mờ), dẫn đến
+việc tính giá trị của từng cách tách từ một là điều không thực tế.
 
 Thật ra, đối với bài toán tách từ thông thường, ta có thể phân tách
 câu trên thành từng đoạn ngắn hơn, do có một số từ trong câu hoàn toàn
 không nhập nhằng trong tách từ. Những từ như thế được biểu diễn trên
-lưới từ là những điểm thắt nút XXX. Nhờ những điểm này, ta có thể tách
+lưới từ là những điểm thắt nút. Nhờ những điểm này, ta có thể tách
 câu ra thành từng đoạn ngắn hơn và xử lý từng đoạn độc lập. Cách này
 tùy thuộc vào loại mô hình ngôn ngữ được áp dụng. Với mô hình unigram,
 có thể áp dụng cách này. Với mô hình bigram hoặc cao hơn, ta cần tìm
@@ -3769,8 +3797,9 @@ trọng số âm.
 
 Nếu dùng PFS để tách từ, ta chỉ có 1 cách tách từ tốt nhất. Việc đếm
 từ sẽ dựa trên cách tách từ này. Cách này cho kết quả tương tự như bộ
-tách từ rời, trừ việc áp dụng bigram/trigram thay cho unigram.
-%XXX Bellman-Ford
+tách từ rời, trừ việc áp dụng bigram/trigram thay cho unigram. Đối với
+đồ thị có trọng số âm, thuật toán Bellman-Ford sẽ được sử dụng thay
+cho PFS.
 
 Thay vì chỉ sử dụng một cách tách từ, ta có thể thống kê trên nhiều
 cách tách từ của cùng một câu. Cách này phản ánh

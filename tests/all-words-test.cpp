@@ -125,6 +125,60 @@ void lattice_to_dot(ostream &os,Lattice &w2,bool spare,bool has_seps,bool edge_v
   os << "}" << endl;
 }
 
+void total_combinations(ostream &os,Lattice &w)
+{
+  WordEntries &wes = *w.we;
+  unsigned long long nn = wes.size();
+  vector<unsigned long long> val(nn);
+
+  vector<vector<uint> > prev;
+  int i,n = w.get_word_count(),v,vv;
+  float sum = 0;
+
+  prev.resize(nn);
+
+  for (i = 0;i < n;i ++) {
+    const WordEntryRefs &wers = w.get_we(i);
+    int ii,nn = wers.size();
+    for (ii = 0;ii < nn;ii ++) {
+      // wers[ii] is the first node (W).
+      v = wers[ii]->id;
+      if (i == 0)
+	val[v] = 1;
+      int next = wers[ii]->pos+wers[ii]->len;
+      if (next < n) {
+	const WordEntryRefs &wers2 = w.get_we(next);
+	int iii,nnn = wers2.size();
+	for (iii = 0;iii < nnn;iii ++) {
+	  //wers2[iii] is the second node (W).
+	  vv = wers2[iii]->id;
+	  prev[vv].push_back(v);
+	}
+      }
+    }
+  }
+
+  unsigned long long final_val = 0;
+  for (i = 0;i < n;i ++) {
+    const WordEntryRefs &wers = w.get_we(i);
+    int ii,nn = wers.size();
+    for (ii = 0;ii < nn;ii ++) {
+      // wers[ii] is the first node (W).
+      v = wers[ii]->id;
+      int iii,nnn = prev[v].size();
+      for (iii = 0;iii < nnn;iii ++) {
+	os << v << "(" << val[v] << ") <- "  << prev[v][iii] << "(" << val[prev[v][iii]] << ")" << endl;
+	val[v] += val[prev[v][iii]];
+      }
+      if (wers[ii]->pos+wers[ii]->len == w.get_word_count()) {
+	final_val += val[v];
+	os << "Final: " << final_val << endl;
+      }
+    }
+  }
+  cout << final_val << endl;
+}
+
 int main(int argc,char **argv)
 {
   WFST wfst;
@@ -133,6 +187,7 @@ int main(int argc,char **argv)
   bool spare = false;
   bool has_seps = false;
   bool edge_value = false;
+  bool total_comb = false;
 
   int i,n;
   vector<unsigned> seps;
@@ -143,6 +198,7 @@ int main(int argc,char **argv)
     if (!strcmp(argv[i],"spare")) spare = true;
     if (!strcmp(argv[i],"seps")) has_seps = true;
     if (!strcmp(argv[i],"edgeval")) edge_value = true;
+    if (!strcmp(argv[i],"total_comb")) total_comb = true;
   }
 
   dic_init(fuzzy ?
@@ -183,10 +239,14 @@ int main(int argc,char **argv)
       apply_separators(st,wes,seps);
     w2.post_construct(wes);
     //w2.based_on(words);
-    if (!dot)
-      cout << w2;
-    else 
-      lattice_to_dot(cout,w2,spare,has_seps,edge_value);
+    if (total_comb)
+      total_combinations(cout,w2);
+    else {
+      if (!dot)
+	cout << w2;
+      else 
+	lattice_to_dot(cout,w2,spare,has_seps,edge_value);
+    }
     get_sarch().clear_rest();
   }
     

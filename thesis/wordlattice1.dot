@@ -1,0 +1,47 @@
+digraph wordlattice {
+	rankdir=LR
+	fontname=arial;
+	head [label=""];
+	tail [label=""];
+	style=invis;
+	subgraph cluster_l1 {
+		hoc1 [label="học"];
+		hocsinh1 [label="học sinh"];
+	}
+	subgraph cluster_l2 {
+		subgraph cluster_l21 {
+		style=dashed;
+		sinh2 [label="sinh"];
+		xinh2 [label="xinh"];
+		}
+		sinhhoc2 [label="sinh học"];
+	}
+	subgraph cluster_l3 {
+		hoc3 [label="học"];
+		hocsinh3 [label="học sinh"];
+	}
+	subgraph cluster_l4 {
+		subgraph cluster_l41 {
+		style=dashed;
+		sinh4 [label="sinh"];
+		xinh4 [label="xinh"];
+		}
+		sinhhoc4 [label="sinh học"];
+	}
+	subgraph cluster_l5 {
+		hoc5 [label="học"];
+	}
+	head -> hoc1;
+	head -> hocsinh1;
+	hoc1 -> {sinh2 sinhhoc2 xinh2};
+	hocsinh1 -> { hoc3 hocsinh3};
+	sinh2 -> { hoc3 hocsinh3};
+	xinh2 -> {hoc3 hocsinh3};
+	sinhhoc2 -> {sinh4 xinh4 sinhhoc4};
+	hoc3 -> {sinh4 sinhhoc4 xinh4};
+	hocsinh3 -> hoc5;
+	sinh4 -> hoc5;
+	xinh4 -> hoc5;
+	sinhhoc4 -> tail;
+	hoc5 -> tail;
+}

@@ -1,0 +1,53 @@
+digraph wordlattice {
+	rankdir=LR
+	fontname=arial;
+	head [label=""];
+	tail [label=""];
+	spline=true;
+	style=dashed;
+		hoc1 [label="{|học}" shape=record];
+		hocsinh1 [label="{|học sinh}" shape=record];
+		hoc1sinh2 [label="{học|sinh}" shape=record];
+		hoc1sinhhoc2 [label="{học|sinh học}" shape=record];
+	subgraph cluster_hoc3 {
+		hocsinh1hoc3 [label="{học sinh|học}" shape=record];
+		sinh2hoc3 [label="{sinh|học}" shape=record];
+	};
+	subgraph cluster_hocsinh3 {
+		hocsinh1hocsinh3 [label="{học sinh|học sinh}" shape=record];
+		sinh2hocsinh3 [label="{sinh|học sinh}" shape=record];
+	};
+	subgraph cluster_sinh4 {
+		sinhhoc2sinh4 [label="{sinh học|sinh}" shape=record];
+		hoc3sinh4 [label="{học|sinh}" shape=record];
+	};
+	subgraph cluster_sinhhoc4 {
+		sinhhoc2sinhhoc4 [label="{sinh học|sinh học}" shape=record];
+		hoc3sinhhoc4 [label="{học|sinh học}" shape=record];
+	};
+	subgraph cluster_hoc5 {
+		hocsinh3hoc5 [label="{học sinh|học}" shape=record];
+		sinh4hoc5 [label="{sinh|học}" shape=record];
+	};
+	subgraph cluster_tail {
+		hoc5 [label="{học|}" shape=record];
+		sinhhoc4 [label="{sinh học|}" shape=record];
+	};
+	head -> {hoc1 hocsinh1};
+	hoc1 -> {hoc1sinh2 hoc1sinhhoc2};
+	hocsinh1 -> {hocsinh1hocsinh3 hocsinh1hoc3};
+	hoc1sinh2 -> {sinh2hocsinh3 sinh2hoc3};
+	hoc1sinhhoc2 -> {sinhhoc2sinhhoc4 sinhhoc2sinh4};
+	hocsinh1hoc3 -> {hoc3sinh4 hoc3sinhhoc4};
+	hocsinh1hocsinh3 -> {hocsinh3hoc5};
+	sinh2hoc3 -> {hoc3sinh4 hoc3sinhhoc4};
+	sinh2hocsinh3 -> {hocsinh3hoc5};
+	sinhhoc2sinh4 -> {sinh4hoc5};
+	sinhhoc2sinhhoc4 -> sinhhoc4;
+	hoc3sinh4 -> sinh4hoc5;
+	hoc3sinhhoc4 -> sinhhoc4;
+	hocsinh3hoc5 -> hoc5;
+	sinh4hoc5 -> hoc5;
+	sinhhoc4 -> tail;
+	hoc5 -> tail;
+}

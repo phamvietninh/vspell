@@ -1,7 +1,10 @@
 \documentclass[a4paper]{book}
+\usepackage[hmargin={2cm,2cm}]{geometry}
+\usepackage[pdftex]{graphicx}
+\usepackage{amsmath}
 \usepackage[utf8]{vietnam}
-\title{Luận văn tốt nghiệp}
-\author{Nguyễn Thái Ngọc Duy}
+\title{Luận văn tốt nghiệp\\A B C}
+\author{Nguyễn Thái Ngọc Duy\\0012020}
 \begin{document}
 \maketitle
 
@@ -9,7 +12,7 @@
 \label{cha:intro}
 
 
-\chapter{Background}
+\chapter{Thông tin nền}
 \label{cha:background}
 
 \section{Tổng quan về lỗi chính tả}
@@ -17,6 +20,10 @@
 Văn bản nhập vào thường hay bị lỗi. Các nguyên nhân gây ra lỗi là:
 \begin{itemize}
 \item Do quá trình nhập bị sai (gõ nhầm, lỗi OCR ...)
+  \begin{itemize}
+  \item Sai do gõ nhầm các phím gần nhau
+  \item Sai do nhận dạng OCR sai (các ký tự có hình dạng giống nhau)
+  \end{itemize}
 \item Do lầm lẫn giữa cách đọc và cách viết
 \item Do hiểu sai dẫn đến viết sai.
 \end{itemize}
@@ -56,13 +63,14 @@ phân tích cú pháp của câu, nghĩa là câu đó sai chính tả''.
 
 LV này làm theo hướng tách từ, sau đó xác định lỗi chính tả.
 
-\section{Previous works}
+\section{Những nghiên cứu về tách từ và bắt lỗi chính tả theo hướng
+tách từ}
 
 Điều hiển nhiên dễ thấy là nếu câu bị sai chính tả thì ta không thể
 tách từ đúng được. Vấn đề ở đây là phải tách từ trong câu bị sai chính
 tả.
 
-Oflazer khi xử lý tách tiếp vĩ ngữ trong tiếng Thổ Nhĩ Kỳ gặp trường
+\cite{Oflazer} khi xử lý tách tiếp vĩ ngữ trong tiếng Thổ Nhĩ Kỳ gặp trường
 hợp khá giống với trường hợp này. Tác giả phải tách các tiếp vĩ ngữ
 tiếng Thổ Nhĩ Kỳ trong điều kiện từ đó bị sai chính tả. Do đặc tính
 ngôn ngữ chấp dính (agglunative) nên khó có thể phân biệt đâu là tiếp
@@ -90,10 +98,10 @@ Bài toán tách từ cho ngôn ngữ đơn lập đã được đặt ra từ l
 để giải quyết cho tiếng Hoa, tiếng Nhật. 
 
 Chao-Huang Chang sử dụng WFST để tách từ. Training bằng EM dựa trên
-segmentation đúng nhất.
+cách tách từ đúng nhất.
 
-Mosur K. Ravishankar đề nghị tạo ra ``word lattice'' sau đó sử dụng
-thuật toán tìm đường đi ngắn nhất để giải quyết.
+\cite{Ravishankar} đề nghị tạo ra lưới từ\footnote{word lattice} sau
+đó sử dụng thuật toán tìm đường đi ngắn nhất để giải quyết.
 
 Le An Ha sử dụng ngram để tách từ.
 
@@ -102,18 +110,271 @@ soft-count thay vì ``hard-count'' như Chang. Chunyu còn đề nghị dùng
 case-based learning.
 
 
-\subsection{Training tách từ}
+\subsection{Huấn luyện tách từ}
 
+Có thể huấn luyện dựa trên dữ liệu mẫu, hoặc dữ liệu thô. Do hầu hết
+các phương pháp tách từ đều dựa trên ngram ($n\ge 1$) nên rất cần có
+khối lượng dữ liệu huấn luyện lớn nhằm bao quát hết các gram. Dữ liệu
+mẫu thường không đủ để huấn luyện. Giải pháp chủ yếu là huấn luyện dựa
+trên dữ liệu thô.
 
+Thuật toán thường dùng nhất để huấn luyện trên dữ liệu thô là thuật
+toán EM. Nhiều người đã cố gắng cải tiến EM theo nhiều cách khác nhau
+nhằm nâng cao chất lượng huấn luyện, đồng thời hạn chế những khuyết
+điểm của EM.
 
 
 
 \chapter{Cài đặt}
 
+Chương trình gồm hai phần: phần bắt lỗi chính tả và phần huấn luyện.
+
+\section{Trình bắt lỗi chính tả}
+
+\subsection{Tiền xử lý}
+\label{sub:preprocess}
+
+Dựa vào flex để tách thành các token. Sau đó dựa vào các dấu ngắt câu
+để ngắt câu ra thành từng đoạn để xử lý. Mỗi đoạn sẽ được xử lý độc
+lập với nhau. ``Đoạn'' có thể là một câu, nhưng cũng có thể là một
+phần của câu. Luận văn này sẽ dùng từ ``câu'' để ám chỉ ``đoạn''. Nếu
+các thông tin ở mức cao hơn được sử dụng (như thông tin cú pháp, ngữ
+nghĩa ...) thì phải thật sự xử lý trên câu chứ không phải trên
+đoạn. 
+
+Kết quả là một mảng các chuỗi token.
+
+
+\subsection{Tạo lưới từ}
+\label{sub:lattice}
+Lưới từ\footnote{word lattice} là một đồ thị có hướng, liệt kê tất cả
+các từ có khả năng xuất hiện trong câu. Các từ được liên kết với nhau
+theo trật tự trong câu. Khi duyệt từ nút gốc đến nút đích, ta sẽ được
+một cách tách từ cho câu.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{wordlattice}
+  \caption{Lưới từ của câu ``Học sinh học sinh học''}
+  \label{fig:wordlattice}
+\end{figure}
+
+Khi tạo lưới từ trong chương trình bắt lỗi chính tả, thuật toán không
+chỉ phát sinh những từ được tạo từ đoạn, mà còn những từ {\em có thể
+có} được phát sinh từ đoạn.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{wordlattice1}
+  \caption{Lưới từ mở rộng của câu ``Học sinh học sinh học''}
+  \label{fig:wordlattice1}
+\end{figure}
+
+Lưới từ được tạo bằng thuật toán Viterbi. Mỗi tiếng trong câu được
+duyệt qua để tìm ra tất cả các từ có thể có trong đoạn. Sau đó tập hợp
+các từ này lại. 
+
+Ngoài lưới từ, ta có thể tạo lưới 2-từ từ lưới từ. Lưới 2-từ là đồ thị
+có hướng mà mỗi nút là một cặp 2 từ đi liền nhau trong câu. Thuật toán
+tạo lưới 2-từ được nêu trong EASR. Xin được ghi lại ở đây:
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{wordlattice2}
+  \caption{Lưới 2-từ của câu ``Học sinh học sinh học''}
+  \label{fig:wordlattice2}
+\end{figure}
+
+\begin{enumerate}
+\item Nếu nút ($w$) có $n$ từ đứng liền trước nó ($w_i$),
+  $i=1,2,\ldots,n$ trong lưới từ gốc, nó sẽ được lặp lại $n$ lần trong
+  lưới từ mới, tên là ($w_{i}w$), tương ứng với $i=1,2,\ldots,n$.
+\item Nếu ($w_i$) nối với ($w_j$) trong lưới từ gốc, nối tất cả
+  ($w_xw_i$) với ($w_iw_j$) $x$ bất kỳ.
+\item Giá trị của ($w_iw_j$) là giá trị của cạnh ($w_i$) ($w_j$) trong
+  lưới từ cũ.
+\item Giá trị của cạnh ($w_iw_j$) ($w_jw_k$) là 3-gram của $w_i$, $w_j$
+  và $w_k$.
+\end{enumerate}
+
+Các lưới n-từ có đặc điểm là tuy tăng về số nút và số cạnh, nhưng số
+tầng vẫn không đổi.
+
+\subsection{Tìm cách tách từ tốt nhất}
+
+Dùng thuật toán tìm kiếm theo độ ưu tiên\footnote{Priority-First
+  Search} để tìm đường đi ngắn nhất trên đồ thị. Khoảng cách giữa hai
+  điểm trong đồ thị là xác suất 2-gram của hai từ.
+
+Để áp dụng 3-gram thay vì 2-gram, ta sẽ sử dụng lưới 2-từ. Sau đó áp
+dụng thuật toán PFS cho đồ thị.
+
+Cách làm này không thể thực hiện với n-gram ($n > 3$) vì số nút
+trong đồ thị sẽ tăng đáng kể. Trong trường hợp đó ta nên sử dụng
+thuật toán A*
+
+
+\subsection{Tìm từ sai chính tả và đề nghị từ thay thế}
+
+So sánh từng từ với từ điển để nhận ra từ sai. Sau đó dùng giải pháp
+của tiếng Anh để tìm từ thay thế.
+
+
+\section{Trình huấn luyện}
+
+\subsection{Tiền xử lý}
+Giống như phần \ref{sub:preprocess}
+
+
+\subsection{Tạo Lưới từ}
+Giống như phần \ref{sub:lattice}, nhưng chỉ xét những từ nào thực sự
+có trong câu.
+
+
+\subsection{Đếm số từ}
+
+Nếu dùng PFS để tách từ, ta chỉ có 1 cách tách từ tốt nhất.
+
+Như đã nói, có thể dùng WFST hoặc XYZZY để tách từ. WFST phải dùng kèm
+với beam pruning để tránh bùng nổ số tổ hợp các cách tách từ. Sau khi
+dùng WFST, ta có n cách tách từ, có thể đếm fraction count trên các
+cách tách từ này.
+
+Dùng thuật toán XYZZY để đếm mọi alignment. XYZZY hoàn toàn không kết
+xuất ra một cách tách từ cụ thể nào. Thuật toán XYZZY gốc đếm mọi từ
+thể có mà không cần dùng từ điển. Thuật toán được dùng ở đây sử dụng
+từ điển để hạn chế những từ không phải là từ. Giả sử câu S có n cách
+tách từ khác nhau, xác suất mỗi cách tách từ là $p(1) \ldots
+p(n)$. Với mỗi từ trong một cách tách từ, ta cộng thêm một khoảng
+$\displaystyle\frac{p(i)}{\sum_{i=1}^n{p(i)}}$ cho từ đó. XYZZT dùng
+lập trình quy hoạch động để thực hiện quá trình này.
+
+Giả sử câu S có $n$ tiếng $c_1\ldots c_n$, có $|S|$ cách tách từ
+$S_1\ldots S_{|S|}$ và cách tách từ  $S_i$ được
+tách thành $|S_i|$ từ $C_{i_1}\ldots C_{i_{|S_i|}}$ với 
+$C_i$ là một từ xác định bắt đầu ở tiếng thứ $i$ chứa $|C_i|$ tiếng, và
+$i_j$ là vị trí từ thứ $j$ trong cách tách câu $i$.
+
+Ta có:
+$$p(i)=\sum_{j=1}^{|S_i|}{p(C_{i_j})}$$
+
+Một câu sẽ được tách thành:
+$$P(C_i) = P_{i}^{left}p(C_{i})P_{i+|C_i|}^{right}$$
+
+$P_i^{left}$ là xác suất tất cả các tổ hợp từ có thể có từ 
+tiếng thứ nhất đến tiếng thứ $i$.
+
+$P_{i}^{right}$ là xác suất tất cả các tổ hợp từ có thể có từ tiếng
+thứ  $i$ đến hết câu. 
+
+$|C|$ là số tiếng của từ $C$
+
+Dễ thấy, với mỗi từ $C$ trong câu $S$, fraction count của từ sẽ là
+$\displaystyle\frac{P(C)}{\sum_i^{|S|}p(i)}$
+
+$\displaystyle\sum_i^{|S|}p(i)$ cũng chính là $P_{n+1}^{left}$ theo
+định nghĩa $P_i^{left}$.
+
+Ta sẽ dùng quy hoạch động để tính $P_i^{left}$ và $P_i^{right}$
+
+$$
+P_i^{left} = \left\{
+  \begin{array}{l r}
+    1 & i=1\\
+    p(C_i) & i=2\\
+    \sum_{j=1}^{i-1}p(c_j\ldots c_{i-1})P_j^{left} & i>2
+  \end{array}
+\right.
+$$
+
+$$
+p(c_i\ldots c_j) = \left\{
+  \begin{array}{ll}
+    p(C_i)&\text{nếu } c_i\ldots c_j \text{ tạo thành } C_i\\
+    0&\text{ngược lại}
+  \end{array}
+\right.
+$$
+
+Thuật toán tính $P^{left}$ như sau:
+\begin{enumerate}
+\item Đặt $P_1^{left} = 1$
+\item Đặt $P_i^{left} = 0\quad \forall i \in [2\ldots n+1]$
+\item Duyệt i từ 1 đến n, tìm tất cả các từ $C_i$ (do tại có thể có
+  nhiều từ bắt đầu tại tiếng $i$).
+  Với mỗi từ $C_i$ tìm được, cộng thêm $p(C_i)$ vào $P_{i+|C_i|}^{left}$
+\end{enumerate}
+
+Thuật toán tương tự được áp dụng để tính $P^{right}$.
+
+Sau khi tính được $P^{left}$ và $P^{right}$, ta có thể tính fraction
+count trong câu bằng cách duyệt tất cả các từ có thể có trong câu,
+cộng thêm vào $\displaystyle\frac{P(C)}{P_{n+1}^{left}}$ cho từ
+$C$. Thực tế, ta sẽ lồng bước này vào trong thuật toán tính
+$P^{right}$, vì thuật toán cũng phải duyệt qua tất cả các từ.
+
+Vậy thuật toán tính $P^{right}$ là:
+\begin{enumerate}
+\item Đặt $P_{n+1}^{right} = 1$
+\item Đặt $P_i^{right} = 0\quad \forall i \in [1\ldots n]$
+\item Duyệt i từ n+1 đến 1.
+  \begin{enumerate}
+  \item tìm tất cả các từ $C_j$ sao cho $j+|C_j|=i$.
+    Với mỗi từ $C_j$ tìm được, cộng thêm $p(C_j)$ vào
+    $P_j^{right}$
+  \item Tính fraction count cho tất cả các từ $C_i$ ($i \le n$)
+  \end{enumerate}
+\end{enumerate}
+
+Tuy nhiên, thuật toán trên (cũng như thuật toán gốc) sử dụng
+uni-gram, trong khi trình bắt lỗi lại dùng 2-gram. Để cho phép thuật
+toán dùng 2-gram, ta có thể tạo một lưới 2-từ như cách của
+Ravishankar. Tuy nhiên, để áp dụng cách này với 3-gram đòi hỏi phải
+tạo lưới 3-từ! Số lượng nút trong lưới 3-từ nhiều hơn nhiều so với
+lưới từ gốc, làm giảm tính hiệu quả của thuật toán.
+
+Thay vì vậy, thuật toán được hiệu chỉnh để áp dụng 2-gram với lưới từ
+thông thường. Ta thay $p(C_i)$ bằng 
+$$p'(C_i)=\sum_{\forall j, j+|C_j|=i}p(C_i/C_j)$$
+Và
+$$P(C_i) = P_{i}^{left}P_{i+|C_i|}^{right}$$
+
+Phần còn lại của thuật toán không đổi. Với cách tính này, ta có thể
+dùng lưới từ cùng với 2-gram. Để tính 3-gram, ta dùng lưới 2-từ.
+
+Bản cài đặt thật sự có một chút khác biệt, do sử dụng hệ đếm từ 0 chứ
+không phải từ 1.
+
+\subsection{Tính ngram}
+
+
+
+
 
 \chapter{Kết luận}
 \label{cha:conclusion}
 
-
+\begin{thebibliography}{99}
+\bibitem{Ravishankar}Mosur K. Ravishankar, Efficient Algorithms for
+  Speech Recognition, PhD thesis, 1996.
+\bibitem{Oflazer}Kemal Oflazer, Error-tolerant Finite State
+  Recognition with Applications to Morphological Analysis and Spelling
+  Correction, 1996.
+\bibitem{LAH}Le An Ha, A method for word segmentation in
+  Vietnamese.
+\bibitem{CHC}Chao-Huang Chang, A New Approach for
+  Automatic Chinese Spelling Correction. 
+\bibitem{Casebased}Chunyu Kit, Zhiming Xu, Jonathan
+  J. Webster, Integrating Ngram Model and Case-based Learning For
+  Chinese Word Segmentation.
+\bibitem{Xianping}Xianping Ge, Wanda Pratt,
+  Padhraic Smyth, Discovering Chinese Words from Unsegmented Text.
+\bibitem{Jianfeng}Jianfeng Gao, Hai-Feng Wang, Mingjing Li, Kai-Fu
+  Lee, A Unified Approach to Statistical Language Modeling for
+  Chinese.
+\bibitem{}Nianwen Xue,Chinese Word Segmentation as Character Tagging.
+\bibitem{}Fuchun Peng and Dale Schuurmans, Self-Supervised Chinese
+  Word Segmentation.
+\end{thebibliography}
 
 \end{document}

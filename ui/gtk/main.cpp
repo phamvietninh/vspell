@@ -173,7 +173,7 @@ static void button_spell_callback (GtkWidget *button, gpointer data)
 
 static void button_ignore_all_callback(GtkWidget *button,gpointer data)
 {
-	set_state(false);
+	//set_state(false);
 	ignore_all = true;
 }
 

@@ -28,7 +28,7 @@ typedef SArray<strid,float> syllable_dict_type;
 typedef SArrayIter<strid,float> syllable_dict_iterator;
 syllable_dict_type syllable_dict;
 WordNodePtr myroot;
-strid unk_id,start_id,stop_id,punct_id,proper_name_id;
+strid unk_id,start_id,stop_id,punct_id,proper_name_id,poem_id,number_id;
 
 StringArchive sarch;
 Ngram ngram(sarch.get_dict(),2);
@@ -39,18 +39,24 @@ bool syllable_init();
 bool dic_init(WordNodePtr _root)
 {
 	syllable_init();
-	proper_name_init();
 	ed_init();
 	myroot = _root;
-	sarch["<unused>"]; // 0, don't use
+	sarch["<reserved>"]; // 0, don't use
 	unk_id = sarch["<unk>"];
 	start_id = sarch["<s>"];
 	stop_id = sarch["</s>"];
 	proper_name_id = sarch["<prop>"];
+	punct_id = sarch["<punct>"];
+	poem_id = sarch["<poem>"];
+	number_id = sarch["<digit>"];
 	myroot->add_entry(unk_id);
 	myroot->add_entry(start_id);
 	myroot->add_entry(stop_id);
 	myroot->add_entry(proper_name_id);
+	myroot->add_entry(punct_id);
+	myroot->add_entry(poem_id);
+	myroot->add_entry(number_id);
+	proper_name_init();
 	return true;
 }
 

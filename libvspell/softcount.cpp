@@ -13,7 +13,7 @@ void SoftCounter::count(const Words &w,NgramFractionalStats &stats)
 	//const WordEntries &we = *p_we;
 	int i,n = w.get_word_count(),v,vv;
 	float sum = 0;
-	VocabIndex vi[2];
+	VocabIndex vi[3];
 	vector<uint> ends;
 	float fc;
 
@@ -80,6 +80,11 @@ void SoftCounter::count(const Words &w,NgramFractionalStats &stats)
 
 				// collect fractional counts
 				fc = Sleft[vv]*add/sum; // P(v/vv)
+				vi[0] = vv;
+				vi[1] = v;
+				vi[2] = Vocab_None;
+				*stats.insertCount(vi) += fc;
+				vi[1] = Vocab_None;
 			}
 		}
 	}
@@ -88,12 +93,21 @@ void SoftCounter::count(const Words &w,NgramFractionalStats &stats)
 	// we can use Sright with no problems becase there is only one edge
 	// from ends[i] to the end.
 	n = ends.size();
-	for (i = 0;i < n;i ++)
+	vi[2] = Vocab_None;
+	vi[1] = stop_id;
+	for (i = 0;i < n;i ++) {
 		fc = Sleft[ends[i]]*Sright[ends[i]]/sum; 
+		vi[0] = ends[i];
+		*stats.insertCount(vi) += fc;
+	}
 
+	vi[0] = start_id;
 	const WordEntryRefs &wers = w.get_we(0);
 	n = wers.size();
-	for (i = 0;i < n;i ++)
+	for (i = 0;i < n;i ++) {
 		fc = Sleft[wers[i]->id]*Sright[wers[i]->id]/sum;
+		vi[1] = wers[i]->id;
+		*stats.insertCount(vi) += fc;
+	}
 }
 

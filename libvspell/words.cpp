@@ -109,7 +109,12 @@ void Words::construct(const Sentence &sent)
 			e.pos = i;
 			e.len = 1;
 			e.fuzid = 0;
-			e.node = get_root()->get_next(unk_id);
+			// if one starts with a cardinal number, then mark it number_id
+			string s = sarch[sent[i].get_cid()];
+			if (strchr("0123456789",s[0]) != NULL)
+				e.node = get_root()->get_next(number_id);
+			else
+				e.node = get_root()->get_next(unk_id);
 			we.insert(e);
 		}
 

@@ -169,7 +169,7 @@ void Sentence::tokenize()
 		if (tokens[i].is_token) {
 			int jj,nn = tokens[i].value.size();
 			for (jj = 0;jj < nn;jj ++)
-				if (viet_isalpha(tokens[i].value[jj]))
+				if (viet_isalpha(tokens[i].value[jj]) || viet_isdigit(tokens[i].value[jj]))
 					break;
 
 			if (jj < nn) {							// a token

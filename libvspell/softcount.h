@@ -23,7 +23,7 @@
 
 #include <libsrilm/NgramStats.h>
 
-typedef double NgramFractionalCount;
+typedef FloatCount NgramFractionalCount;
 
 class NgramFractionalStats: public NgramCounts<NgramFractionalCount>
 {

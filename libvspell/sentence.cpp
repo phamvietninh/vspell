@@ -162,15 +162,23 @@ void Sentence::tokenize()
 	sy.span = 1;
 	sy.sent_ = this;
 	sy.sid = -1;
+	sy.start = 0;
 	
 	for (i = 0;i < n;i ++) {
 		if (tokens[i].is_token) {
-			string &s = tokens[i].value;
-			sy.id = sarch[s];
-			transform(s.begin(),s.end(),s.begin(),viet_tolower);
-			sy.cid = sarch[s];
-			syllables.push_back(sy);
-			sy.start += s.size();
+			int jj,nn = tokens[i].value.size();
+			for (jj = 0;jj < nn;jj ++)
+				if (viet_isalpha(tokens[i].value[jj]))
+					break;
+
+			if (jj < nn) {							// a token
+				string &s = tokens[i].value;
+				sy.id = sarch[s];
+				transform(s.begin(),s.end(),s.begin(),viet_tolower);
+				sy.cid = sarch[s];
+				syllables.push_back(sy);
+				sy.start += s.size();
+			}
 		}
 		sy.start += tokens[i].value.size();
 	}

@@ -124,7 +124,7 @@ void Words::construct(const Sentence &sent)
 				WordEntry e;
 				e.pos = i;
 				e.len = 1;
-				e.fuzid = 1;
+				e.fuzid = 0;
 				e.node = get_root()->get_next(unk_id);
 				we.insert(e);
 			}
@@ -206,10 +206,14 @@ void Words::based_on(const Words &w)
 
 	int i_pos,n_pos = w.get_word_count();
 
+	me.resize(n_pos);
+
 	for (i_pos = 0;i_pos < n_pos;i_pos ++) {
 		int i_len,n_len = w.get_len(i_pos);
+		me[i_pos] = new WordInfos;
 		for (i_len = 0;i_len < n_len;i_len ++)
-			if ((*w[i_pos])[i_len]->exact_match)
+			if ((*w[i_pos])[i_len] && 
+					(*w[i_pos])[i_len]->exact_match)
 				add(*(*w[i_pos])[i_len]->exact_match);
 	}
 }

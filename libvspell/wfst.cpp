@@ -8,6 +8,7 @@
 #include <boost/format.hpp>
 #include <set>
 #include "posgen.h"
+#include <signal.h>
 
 using namespace std;
 
@@ -144,8 +145,10 @@ void WFST::generate_misspelled_words(const vector<int> &pos,int len)
 	for (i = 0;i < len;i ++) {
 		const WordEntryRefs &fmap = words.get_fuzzy_map(pos[i]);
 		WordEntryRefs::const_iterator iter;
-		for (iter = fmap.begin();iter != fmap.end(); ++iter)
+		for (iter = fmap.begin();iter != fmap.end(); ++iter) {
+			if (*iter == 0) kill(0,SIGSTOP);
 			w.add(**iter);
+		}
 	}
 
 	//cerr << w << endl;

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string.h>
 #include "dictionary.h"
+#include "syllable.h"
 
 using namespace std;
 /*
@@ -76,6 +77,12 @@ char *case_table[2] = {
 };
 
 char full_case_table[2][256];
+char cat_table[256];						// numeric,alpha...
+#define CAT_ALPHA 1
+#define CAT_DIGIT 2
+#define CAT_SPACE 4
+#define CAT_PUNCT 8
+#define CAT_XDIGIT 16
 
 const char *syll_empty = "Empty";
 const char *syll_exist = "Exist";
@@ -88,12 +95,20 @@ bool syllable_init()
 	int i,len = strlen(case_table[0]);
 
 	for (i = 0;i < 256;i ++) {
-		full_case_table[0][i] = isalpha(i) ? tolower(i) : 0;
-		full_case_table[1][i] = isalpha(i) ? toupper(i) : 0;
+		full_case_table[0][i] = tolower(i);
+		full_case_table[1][i] = toupper(i);
+		cat_table[i] = 0;
+		if (isalpha(i)) cat_table[i] |= CAT_ALPHA;
+		if (isspace(i)) cat_table[i] |= CAT_SPACE;
+		if (isdigit(i)) cat_table[i] |= CAT_DIGIT;
+		if (isxdigit(i)) cat_table[i] |= CAT_XDIGIT;
+		if (ispunct(i)) cat_table[i] |= CAT_PUNCT;
 	}
 	for (i = 0;i < len; i ++) {
 		full_case_table[0][(unsigned char)case_table[1][i]] = case_table[0][i];
 		full_case_table[1][(unsigned char)case_table[0][i]] = case_table[1][i];
+		cat_table[case_table[0][i]] = CAT_ALPHA;
+		cat_table[case_table[1][i]] = CAT_ALPHA;
 	}
 
 
@@ -662,19 +677,47 @@ int viet_toupper(int ch)	// must be sure ch is a character
 {
 	return full_case_table[1][(unsigned char)(char)ch];
 }
+
 int viet_tolower(int ch)	// must be sure ch is a character
 {
 	return full_case_table[0][(unsigned char)(char)ch];
 }
+
 bool viet_isupper(int ch)
 {
-	return full_case_table[1][ch] == ch;
+	return viet_isalpha(ch) && full_case_table[1][ch] == ch;
 }
 
 bool viet_islower(int ch)
 {
-	return full_case_table[0][ch] == ch;
+	return viet_isalpha(ch) && full_case_table[0][ch] == ch;
 }
+
+bool viet_isalpha(int ch)
+{
+	return cat_table[ch] & CAT_ALPHA;
+}
+
+bool viet_isdigit(int ch)
+{
+	return cat_table[ch] & CAT_DIGIT;
+}
+
+bool viet_isxdigit(int ch)
+{
+	return cat_table[ch] & CAT_XDIGIT;
+}
+
+bool viet_isspace(int ch)
+{
+	return cat_table[ch] & CAT_SPACE;
+}
+
+bool viet_ispunct(int ch)
+{
+	return cat_table[ch] & CAT_PUNCT;
+}
+
 /*
 	}
 */

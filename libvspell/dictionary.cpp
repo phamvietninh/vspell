@@ -5,9 +5,14 @@
 #include <algorithm>
 #include <vector>
 #include "dictionary.h"
+#include "wordnode.h"
 #include "distance.h"
 #include <stdlib.h>
 #include <math.h>
+#ifndef _SArray_cc_
+#include <libsrilm/SArray.cc>
+#endif
+
 
 #define ED_THRESOLD1 1
 #define ED_THRESOLD2 2
@@ -38,6 +43,15 @@ bool dic_init(WordNodePtr _root)
 	unk_id = sarch["<UNK>"];	// should be in Dictionary::load
 	// if 
 	return true;
+}
+
+void StringArchive::dump()
+{
+	FILE *fp = fopen("dic.dump","wt");
+	int i,n = dict.numWords();
+	for (i = 0;i < n;i ++)
+		fprintf(fp,"%d %s\n",i,sarch[i]);
+	fclose(fp);
 }
 
 void dic_clean()

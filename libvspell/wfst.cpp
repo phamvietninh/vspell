@@ -268,20 +268,20 @@ void WFST::get_all_words(const Sentence &sent,Words &words)
 
 }
 
-void print_all_words(const Words &words)
+void Words::print() const
 {
-	int i, nn = words.get_word_count();
+	int i, nn = get_word_count();
 	for (i = 0;i < nn;i ++) {
-		int nnn = words.get_len(i);
+		int nnn = get_len(i);
 		cerr << "From " << i << endl;
 		for (int ii = 0;ii < nnn;ii ++) {
-			int nnnn = words.get_fuzzy_count(i,ii);
+			int nnnn = get_fuzzy_count(i,ii);
 			cerr << "Len " << ii << endl;
 			for (int iii = 0;iii < nnnn;iii ++) {
-				cerr << sarch[words.get_fuzzy(i,ii,iii).node->get_id()] << " ";
-				cerr << words.get_fuzzy(i,ii,iii).node->get_syllable_count() << " ";
-				cerr << words.get_fuzzy(i,ii,iii).distance << " ";
-				cerr << words.get_fuzzy(i,ii,iii).node->get_prob() << endl;
+				cerr << get_fuzzy(i,ii,iii).node->get_id( ) << "-" << sarch[get_fuzzy(i,ii,iii).node->get_id()] << " ";
+				cerr << get_fuzzy(i,ii,iii).node->get_syllable_count() << " ";
+				cerr << get_fuzzy(i,ii,iii).distance << " ";
+				cerr << get_fuzzy(i,ii,iii).node->get_prob() << endl;
 			}
 		}
 	}

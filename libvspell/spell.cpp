@@ -41,7 +41,7 @@ void spell_check1(Sentence &st,Suggestions &sugg)
 		st[i].sid = unk_id;
 
 		VocabString s = sarch[id];
-		if (strlen(s) == 1 && !viet_isupper(s[0]) && !viet_islower(s[0])) {
+		if (strlen(s) == 1 && !viet_isalpha(s[0])) {
 			st[i].sid = sarch["<PUNCT>"];
 			continue;
 		}

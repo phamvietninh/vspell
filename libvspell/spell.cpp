@@ -234,7 +234,7 @@ bool VSpell::init()
 	if (!ff.error()) {
 		get_syngram().read(ff);
 		cerr << "done" << endl;
-	}	else
+	} else
 		cerr << "Syllable Ngram loading error. The result may be incorrect" << endl;
 	sarch.set_blocked(true);
 	return true;
@@ -330,7 +330,7 @@ bool Text::sentence_check(const char *pp)
 		return false;
 
 	//w.construct(st);
-	set<WordEntry> wes;	
+	set<WordEntry> wes;
 	WordStateFactories factories;
 	ExactWordStateFactory exact;
 	LowerWordStateFactory lower;
@@ -410,7 +410,7 @@ void Text::penalty2_construct(Segmentation &seg)
 	factories.push_back(&upper);
 	//factories.push_back(&fuzzy);
 	Lattice lattice;
-	set<WordEntry> wes;	
+	set<WordEntry> wes;
 	lattice.pre_construct(st,wes,factories);
 	mark_proper_name(st,wes);
 	//apply_separators(wes);
@@ -451,13 +451,13 @@ bool Text::syllable_check(int i)
 	if (vspell->in_dict(st[i].get_id()))
 		return true;
 
-	if (sarch.in_dict(st[i].get_cid())) {
+	string lcid = get_lowercased_syllable(sarch[st[i].get_cid()]);
+	if (sarch.in_dict(lcid)) {
 		Syllable syl;							// diacritic check
-		if (syl.parse(sarch[st[i].get_cid()])) {
-			string s = get_lowercased_syllable(syl.to_str());
-			if (get_lowercased_syllable(sarch[st[i].get_id()]) == s)
-				return true;
-		}
+		if (syl.parse(sarch[st[i].get_cid()]) && syl.to_str() == lcid)
+			return true;
+		if (is_first_capitalized_word(sarch[st[i].get_id()]))
+			return true;
 	}
 	return false;
 }
@@ -865,13 +865,13 @@ void get_phonetic_syllable_candidates(const char *input,Candidates &output,float
 	while (!syllset2.empty()) {
 		const Syllable sy = *syllset2.begin();
 		syllset2.erase(syllset2.begin());
-		
+
 		if (syllset.find(sy) != syllset.end())
 			continue;								// we already matched&applied this syllable
 
 		//cerr << sy << endl;
 		syllset.insert(sy);
-		
+
 		vector<Syllable> sylls;
 		// match & apply
 		for (i = 0;i < n;i ++) {
@@ -886,7 +886,7 @@ void get_phonetic_syllable_candidates(const char *input,Candidates &output,float
 		}
 		copy(sylls.begin(),sylls.end(), inserter(syllset2,syllset2.begin()));
 	}
-		
+
 	// move to _nodes
 	//copy(syllset.begin(),syllset.end(),ostream_iterator<Syllable>(cerr)); cerr << endl;
 	set<Syllable>::iterator iter;

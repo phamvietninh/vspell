@@ -213,6 +213,11 @@ void SoftCounter::count(const DAG &dag,NgramFractionalStats &stats)
 	//cerr << "Sright done" << endl;
 }
 
+/*
+	 A work-around because NgramFractionalStats is still buggy.
+*/
+
+
 void SoftCounter::count(const DAG &dag,NgramStats &stats)
 {
 	vector<double> Sleft,Sright;
@@ -275,7 +280,7 @@ void SoftCounter::count(const DAG &dag,NgramStats &stats)
 	double sum = Sleft[dag.node_end()];
 	if (sum == 0)
 		return;
-	cout << "Sum " << sum << endl;
+	//cout << "Sum " << sum << endl;
 
 	traces.clear();
 	traces.push_back(dag.node_end());
@@ -308,8 +313,9 @@ void SoftCounter::count(const DAG &dag,NgramStats &stats)
 			Sright[v] += add;
 
 			// collect fractional counts
-			fc = (unsigned int)((Sleft[v]*add)*100.0/sum); // P(vv/v)
-			cout << Sleft[v] << "+" << dag.edge_value(v,vv) << Sright[vv]<<  "=("<< (Sleft[v]+add)<< ")"<<((Sleft[v]+add)/sum) <<"_" << fc << endl;
+			fc = 100-(unsigned int)((Sleft[v]*add)*100.0/sum); // P(vv/v)
+			//cout << Sleft[v] << "+" << dag.edge_value(v,vv) << Sright[vv]<<  "=("<< (Sleft[v]+add)<< ")"<<((Sleft[v]+add)/sum) <<"_" << fc << endl;
+			cout << v << " " << vv << " " << fc << endl;
 			if (fc != 0) {
 				VocabIndex vi[10];
 				VocabIndex vvv;
@@ -331,6 +337,7 @@ void SoftCounter::count(const DAG &dag,NgramStats &stats)
 			}
 		}
 	}
+	cout << endl;
 	//double sum2 = Sright[dag.node_begin()];
 	//cout << sum2 << " " << (traces[ntrace-1] == dag.node_begin()) << " " << (sum2 == sum ? "Ok" : "Failed") << endl;
 	//cerr << "Sright done" << endl;

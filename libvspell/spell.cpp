@@ -330,8 +330,13 @@ bool Text::sentence_check(const char *pp)
 
 	Path path;
 	WordDAG dagw(&w);
-	PenaltyDAG pdag(&dagw,vspell->get_penalty());
+	WordDAG2 *dagw2;
 	DAG *dag = &dagw;
+	if (vspell->get_trigram()) {
+		dagw2 = new WordDAG2(&dagw);
+		dag = dagw2;
+	}
+	PenaltyDAG pdag(dag,vspell->get_penalty());
 	if (vspell->get_penalty())
 		dag = &pdag;
 
@@ -341,6 +346,10 @@ bool Text::sentence_check(const char *pp)
 	} else {
 		PFS pfs;
 		pfs.search(*dag,path);
+	}
+	if (vspell->get_trigram()) {
+		dagw2->demangle(path);
+		delete dagw2;
 	}
 	seg.resize(path.size()-2);
 	// don't copy head/tail

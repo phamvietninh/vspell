@@ -24,6 +24,107 @@ void apply_separators(const Sentence &st,set<WordEntry> &wes,vector<unsigned> &s
   }
 }
 
+void lattice_to_dot(ostream &os,Lattice &w2,bool spare,bool has_seps,bool edge_value)
+{
+  uint i,n;
+  const Sentence &st = *w2.st;
+  WordEntries &wes = *w2.we;
+  n = wes.size();
+  os << "digraph wordlattice {" << endl;
+  os << "\trankdir=LR;" << endl;
+  os << "\tstyle=invis;" << endl;
+  os << "\thead;" << endl;
+  os << "\ttail;" << endl;
+  //set<strid> nodes;
+  int old_pos = -1;
+  int cc;
+  int anchor[st.get_syllable_count()];
+  for (i = 0;i < n;i ++) {
+    //if (nodes.find(wes[i].node.node->get_id()) == nodes.end()) {
+    //nodes.insert(wes[i].node.node->get_id());
+    if (wes[i].pos != old_pos) {
+      if (wes[i].pos) {
+	os << "\t}" << endl;
+      }
+      os << "\tsubgraph cluster_" << wes[i].pos << " {" << endl;
+      old_pos = wes[i].pos;
+      cc = 0;
+    }
+
+    if (spare && cc++ == w2.get_we(wes[i].pos).size()/2)
+      //os << "\tanchor_" << wes[i].pos << " [shape=\"point\"];" << endl;
+      anchor[wes[i].pos] = i; 
+
+    os << "\tn" << i << " [label=\"";
+    std::vector<strid> syll;
+    if (wes[i].node.node) {
+      wes[i].node.node->get_syllables(syll);
+      for (std::vector<strid>::size_type ii = 0;ii < syll.size();ii ++) {
+	if (i)
+	  os << " ";
+	Syllable sy;
+	if (sy.parse(get_sarch()[syll[ii]]))
+	  os << sy.to_str();
+	else
+	  os << get_sarch()[syll[ii]];
+      }
+    } else
+      os << "UNK";
+    os << "\"];" << endl;
+
+    //}
+  }
+  os << "\t}" << endl;	// end of the last cluster
+
+  if (spare)
+    for (i = 0;i < st.get_syllable_count()-1;i ++) {
+      //os << "anchor_" << i << " -> anchor_" << (i+1) << " [style=invis, weight=10000];" << endl;
+      os << "n" << anchor[i] << " -> n" << anchor[i+1] << " [style=invis, weight=10000];" << endl;
+    }
+
+  VocabIndex vi[2];
+  vi[1] = Vocab_None;
+  float val;
+  int ii,nn;
+  for (i = 0;i < n;i ++) {
+    WordEntry &we = wes[i];
+
+    if (we.pos == 0) {
+      if (edge_value) {
+	vi[0] = get_id(START_ID);
+	val = -get_ngram().wordProb(we.node.node->get_id(),vi);
+	os << "\thead -> n" << we.id << " [ label=\"" << val << "\"];" << endl;
+      } else
+	os << "\thead -> n" << we.id << ";" << endl;
+    }
+    if (we.pos+we.len >= w2.get_word_count()) {
+      if (edge_value) {
+	vi[0] = we.node.node->get_id();
+	val = -get_ngram().wordProb(get_id(STOP_ID),vi);
+	os << "\tn" << we.id << " -> tail [ label=\"" << val << "\"];" << endl;
+      } else
+	os << "\tn" << we.id << " -> tail;" << endl;
+    } else {
+      if (spare)
+	os << "\tn" << we.id << " -> n" << anchor[(we.pos+we.len)] << ";" << endl;
+      else {
+	const WordEntryRefs &wers = w2.get_we(we.pos+we.len);
+	nn = wers.size();
+	for (ii = 0;ii < nn; ii ++) {
+	  if (edge_value) {
+	    vi[0] = we.node.node->get_id();
+	    val = -get_ngram().wordProb(wers[ii]->node.node->get_id(),vi);
+	    os << "\tn" << we.id << " -> n" << wers[ii]->id << " [label=\"" << val << "\"];" << endl;
+	  } else
+	    os << "\tn" << we.id << " -> n" << wers[ii]->id << ";" << endl;
+	}
+      }
+    }
+  }
+
+  os << "}" << endl;
+}
+
 int main(int argc,char **argv)
 {
   WFST wfst;
@@ -32,6 +133,7 @@ int main(int argc,char **argv)
   bool spare = false;
   bool has_seps = false;
   bool edge_value = false;
+
   int i,n;
   vector<unsigned> seps;
 
@@ -83,105 +185,11 @@ int main(int argc,char **argv)
     //w2.based_on(words);
     if (!dot)
       cout << w2;
-    else {
-      WordEntries &wes = *w2.we;
-      n = wes.size();
-      cout << "digraph wordlattice {" << endl;
-      cout << "\trankdir=LR;" << endl;
-      cout << "\tstyle=invis;" << endl;
-      cout << "\thead;" << endl;
-      cout << "\ttail;" << endl;
-      //set<strid> nodes;
-      int old_pos = -1;
-      int cc;
-      int anchor[st.get_syllable_count()];
-      for (i = 0;i < n;i ++) {
-	//if (nodes.find(wes[i].node.node->get_id()) == nodes.end()) {
-	//nodes.insert(wes[i].node.node->get_id());
-	if (wes[i].pos != old_pos) {
-	  if (wes[i].pos) {
-	    cout << "\t}" << endl;
-	  }
-	  cout << "\tsubgraph cluster_" << wes[i].pos << " {" << endl;
-	  old_pos = wes[i].pos;
-	  cc = 0;
-	}
-
-	if (!spare && cc++ == w2.get_we(wes[i].pos).size()/2)
-	  //cout << "\tanchor_" << wes[i].pos << " [shape=\"point\"];" << endl;
-	  anchor[wes[i].pos] = i; 
-
-	cout << "\tn" << i << " [label=\"";
-	std::vector<strid> syll;
-	if (wes[i].node.node) {
-	  wes[i].node.node->get_syllables(syll);
-	  for (std::vector<strid>::size_type ii = 0;ii < syll.size();ii ++) {
-	    if (i)
-	      cout << " ";
-	    Syllable sy;
-	    if (sy.parse(get_sarch()[syll[ii]]))
-	      cout << sy.to_str();
-	    else
-	      cout << get_sarch()[syll[ii]];
-	  }
-	} else
-	  cout << "UNK";
-	cout << "\"];" << endl;
-
-	//}
-      }
-      cout << "\t}" << endl;	// end of the last cluster
-
-      if (!spare)
-	for (i = 0;i < st.get_syllable_count()-1;i ++) {
-      	  //cout << "anchor_" << i << " -> anchor_" << (i+1) << " [style=invis, weight=10000];" << endl;
-      	  cout << "n" << anchor[i] << " -> n" << anchor[i+1] << " [style=invis, weight=10000];" << endl;
-	}
-
-      VocabIndex vi[2];
-      vi[1] = Vocab_None;
-      float val;
-      int ii,nn;
-      for (i = 0;i < n;i ++) {
-	WordEntry &we = wes[i];
-
-	if (we.pos == 0) {
-	  if (edge_value) {
-	    vi[0] = get_id(START_ID);
-	    val = -get_ngram().wordProb(we.node.node->get_id(),vi);
-	    cout << "\thead -> n" << we.id << " [ label=\"" << val << "\"];" << endl;
-	  } else
-	    cout << "\thead -> n" << we.id << ";" << endl;
-	}
-	if (we.pos+we.len >= w2.get_word_count()) {
-	  if (edge_value) {
-	    vi[0] = we.node.node->get_id();
-	    val = -get_ngram().wordProb(get_id(STOP_ID),vi);
-	    cout << "\tn" << we.id << " -> tail [ label=\"" << val << "\"];" << endl;
-	  } else
-	    cout << "\tn" << we.id << " -> tail;" << endl;
-	} else {
-	  if (!spare)
-	    cout << "\tn" << we.id << " -> n" << anchor[(we.pos+we.len)] << ";" << endl;
-	  else {
-	    const WordEntryRefs &wers = w2.get_we(we.pos+we.len);
-	    nn = wers.size();
-	    for (ii = 0;ii < nn; ii ++) {
-	      if (edge_value) {
-		vi[0] = we.node.node->get_id();
-		val = -get_ngram().wordProb(wers[ii]->node.node->get_id(),vi);
-		cout << "\tn" << we.id << " -> n" << wers[ii]->id << " [label=\"" << val << "\"];" << endl;
-	      } else
-		cout << "\tn" << we.id << " -> n" << wers[ii]->id << ";" << endl;
-	    }
-	  }
-	}
-      }
-
-      cout << "}" << endl;
-    }
+    else 
+      lattice_to_dot(cout,w2,spare,has_seps,edge_value);
     get_sarch().clear_rest();
   }
     
   return 0;
 }
+

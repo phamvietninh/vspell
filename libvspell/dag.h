@@ -64,6 +64,8 @@ protected:
 
 public:
 	WordDAG2(WordDAG *dag_);
+	WordDAG* get_dag() const { return dag; }
+	void node_dag_edge(uint node_id,uint &n1,uint &n2);
 	virtual uint node_begin() const { return nodes.size(); }
 	virtual uint node_end() const { return nodes.size()+1; }
 	virtual uint node_count() const { return nodes.size()+2; }

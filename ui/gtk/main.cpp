@@ -246,6 +246,8 @@ int main(int argc,char **argv)
 
 	vspell.init();
 	vspell.set_penalty(0.05);
+	vspell.set_normalization(true);
+	vspell.set_trigram(true);
 
 	GtkWidget *window_main = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_container_set_border_width(GTK_CONTAINER(window_main),10);

@@ -11,17 +11,22 @@
 
 using namespace std;
 
+void dag_to_dot(ostream &os,Lattice &w2,DAG &dag,bool edge_value);
+void dag2_to_dot(ostream &os,Lattice &w2,WordDAG2 &dag,bool edge_value);
 void print_all_words(const Lattice &words);
+
 int main(int argc,char **argv)
 {
   bool fuzzy = true;
   bool bellman = false;
-  bool threegram = false;
+  bool trigram = false;
+  bool dot = false;
 
   for (int i = 1;i < argc;i ++) {
     if (!strcmp(argv[i],"nofuzzy")) fuzzy = false;
     else if (!strcmp(argv[i],"bellman")) bellman = true;
-    else if (!strcmp(argv[i],"3gram")) threegram = true;
+    else if (!strcmp(argv[i],"trigram")) trigram = true;
+    else if (!strcmp(argv[i],"dot")) dot = true;
   }
   dic_init(!fuzzy ? 
 	   new WordNode(get_sarch()["<root>"]) : 
@@ -48,36 +53,6 @@ int main(int argc,char **argv)
   //wfst.set_wordlist(get_root());
   vector<Sentence> sentences;
 
-/*
-  Segmentation seg;
-  Sentence st("tui v×a m¾i mua mµt chiªc ghe");
-  st.standardize();
-  st.tokenize();
-  vector<WFST::WordInfos> words;
-  wfst.get_all_words(st,words);
-
-    {
-    int i, nn = words.size();
-    for (i = 0;i < nn;i ++) {
-    int nnn = words[i].size();
-    cerr << "From " << i << endl;
-    for (int ii = 0;ii < nnn;ii ++) {
-    int nnnn = words[i][ii].fuzzy_match.size();
-    cerr << "Len " << ii << endl;
-    for (int iii = 0;iii < nnnn;iii ++) {
-    cerr << sarch[words[i][ii].fuzzy_match[iii].node->get_id()] << " ";
-    cerr << words[i][ii].fuzzy_match[iii].node->get_syllable_count() << " ";
-    cerr << words[i][ii].fuzzy_match[iii].distance << " ";
-    cerr << words[i][ii].fuzzy_match[iii].node->get_prob() << endl;
-    }
-    }
-    }
-    }
-  wfst.segment_best(st,words,seg);
-  seg.print(cerr,st);
-*/
-  
-   
   string s;
   while (getline(cin,s)) {
     if (!s.empty()) {
@@ -104,24 +79,32 @@ int main(int argc,char **argv)
 	Path path;
 	WordDAG dagw(&words);
 	DAG *dag = &dagw;
-	if (threegram) {
-	  WordDAG2 *dagw2 = new WordDAG2(&dagw);
+	WordDAG2 *dagw2;
+	if (trigram) {
+	  dagw2 = new WordDAG2(&dagw);
 	  dag = dagw2;
 	}
-	if (bellman) {
-	  Bellman wfst;
-	  wfst.search(*dag,path);
+	if (dot) {
+	  if (trigram)
+	    dag2_to_dot(cout,words,*dagw2,false);
+	  else
+	    dag_to_dot(cout,words,*dag,false);
 	} else {
-	  PFS wfst;
-	  wfst.search(*dag,path);
+	  if (bellman) {
+	    Bellman wfst;
+	    wfst.search(*dag,path);
+	  } else {
+	    PFS wfst;
+	    wfst.search(*dag,path);
+	  }
+	  if (trigram) {
+	    ((WordDAG2*)dag)->demangle(path);
+	    delete (WordDAG2*)dag;
+	  }
+	  seg.resize(path.size()-2);
+	  copy(path.begin()+1,path.end()-1,seg.begin());
+	  seg.pretty_print(cout,st) << endl;
 	}
-	if (threegram) {
-	  ((WordDAG2*)dag)->demangle(path);
-	  delete (WordDAG2*)dag;
-	}
-	seg.resize(path.size()-2);
-	copy(path.begin()+1,path.end()-1,seg.begin());
-	seg.pretty_print(cout,st) << endl;
 	//	sarch.clear_rest();
       }
     }
@@ -129,3 +112,125 @@ int main(int argc,char **argv)
     
   return 0;
 }
+
+void dag_to_dot(ostream &os,Lattice &w2,DAG &dag,bool edge_value)
+{
+  uint i,n;
+  const Sentence &st = *w2.st;
+  WordEntries &wes = *w2.we;
+  n = dag.node_count();
+  os << "digraph wordlattice {" << endl;
+  os << "\trankdir=LR;" << endl;
+  os << "\tstyle=invis;" << endl;
+
+  for (i = 0;i < n;i ++) {
+    string label;
+    if (dag.node_id(i)) {
+      label = get_sarch()[dag.node_id(i)];
+      /*
+	wes[i].node.node->get_syllables(syll);
+	for (std::vector<strid>::size_type ii = 0;ii < syll.size();ii ++) {
+	if (i)
+	os << " ";
+	Syllable sy;
+	if (sy.parse(get_sarch()[syll[ii]]))
+	os << sy.to_str();
+	else
+	os << get_sarch()[syll[ii]];
+	}
+      */
+    } else if (i == dag.node_begin())
+      label = "head";
+    else
+      label = "end";
+    os << "\tn" << i << "[label=\"" << label << ";" << i << "\"];" << endl;
+    
+  }
+
+  vector<uint> nexts;
+  vector<bool> done;
+  uint v,vv,l,ii,nn;
+  i = 0;
+  done.resize(dag.node_count());
+  nexts.clear();
+  nexts.push_back(dag.node_begin());
+  while (i < (l = nexts.size())) {
+    v = nexts[i++];
+    if (done[v])
+      continue;
+    else
+      done[v] = true;
+    dag.get_next(v,nexts);
+    nn = nexts.size();
+    for (ii = l;ii < nn;ii ++) {
+      os << "\tn" << v << " -> n" << nexts[ii] << endl;
+    }
+  }
+  done.clear();
+
+  os << "}" << endl;
+}
+
+void dag2_to_dot(ostream &os,Lattice &w2,WordDAG2 &dag,bool edge_value)
+{
+  uint i,n;
+  const Sentence &st = *w2.st;
+  WordEntries &wes = *w2.we;
+  n = dag.node_count();
+  WordDAG *wdag = dag.get_dag();
+  os << "digraph wordlattice {" << endl;
+  os << "\trankdir=LR;" << endl;
+  os << "\tstyle=invis;" << endl;
+
+  for (i = 0;i < n;i ++) {
+    string label;
+    if (dag.node_id(i)) {
+      uint n1,n2;
+      dag.node_dag_edge(i,n1,n2);
+      if (wdag->node_id(n1))
+	label = get_sarch()[wdag->node_id(n1)];
+      else if (n1 == wdag->node_begin())
+	label = "head";
+      else
+	label = "tail";
+      label += string(" ");
+      if (wdag->node_id(n2))
+	label += get_sarch()[wdag->node_id(n2)];
+      else if (n2 == wdag->node_begin())
+	label += "head";
+      else
+	label += "tail";
+    } else if (i == dag.node_begin())
+      label = "head";
+    else
+      label = "end";
+    os << "\tn" << i << "[label=\"" << label << ";" << i << "\"];" << endl;
+    
+  }
+
+  vector<uint> nexts;
+  vector<bool> done;
+  uint v,vv,l,ii,nn;
+  i = 0;
+  done.resize(dag.node_count());
+  nexts.clear();
+  nexts.push_back(dag.node_begin());
+  while (i < (l = nexts.size())) {
+    v = nexts[i++];
+    if (done[v])
+      continue;
+    else
+      done[v] = true;
+    dag.get_next(v,nexts);
+    nn = nexts.size();
+    for (ii = l;ii < nn;ii ++) {
+      os << "\tn" << v << " -> n" << nexts[ii] << endl;
+    }
+  }
+  done.clear();
+
+  os << "}" << endl;
+}
+
+
+

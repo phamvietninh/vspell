@@ -149,12 +149,13 @@ float WordDAG2::edge_value(uint node_from,uint node_to) const
 	} else
 		return 1000;
 
-	if (v[0] == v[1] && v[1] == get_id(START_ID))	// back to 2-gram
-		v[1] = Vocab_None;
-	if (v[1] == v2 && v2 == get_id(STOP_ID)) {
+	if (v[0] == v2 && v2 == get_id(STOP_ID)) {
+		v[0] = v[1];
 		v[1] = Vocab_None;
 		return (-get_ngram().wordProb(v2,v));
 	}
+	if (v[0] == v[1] && v[1] == get_id(START_ID))	// back to 2-gram
+		v[1] = Vocab_None;
 	return (-get_ngram().wordProb(v2,v));
 }
 
@@ -177,3 +178,10 @@ void WordDAG2::demangle(vector<uint> &next_id) const
 	next_id.resize(n-1);
 }
 
+void WordDAG2::node_dag_edge(uint node_id,uint &n1,uint &n2)
+{
+	if (node_id < nodes.size()) {
+		n1 = nodes[node_id].n1;
+		n2 = nodes[node_id].n2;
+	}
+}

@@ -16,8 +16,39 @@
 
 using namespace std;
 
-WordState::WordState(const WordState &ws):dnode(ws.dnode),sent(ws.sent),fuzid(ws.fuzid),pos(ws.pos)
+WordState::WordState(const WordState &ws):dnode(ws.dnode),sent(ws.sent),fuzid(ws.fuzid),pos(ws.pos),len(ws.len)
 {
+}
+
+void WordState::add_word(set<WordEntry> &we,LeafNode*leaf)
+{
+	WordEntry e;
+	e.pos = pos;
+	e.len = len;
+	e.fuzid = fuzid;
+	e.node = leaf;
+	//cerr << "Add " << e << endl;
+	we.insert(e);
+}
+
+void WordState::collect_words(set<WordEntry> &we)
+{
+	std::vector<LeafNode*> leaves;
+	uint iii,nnn;
+	dnode.node->get_leaves(leaves,MAIN_LEAF);
+	nnn = leaves.size();
+	for (iii = 0;iii < nnn;iii ++)
+		add_word(we,leaves[iii]);
+}
+
+void UpperWordState::collect_words(set<WordEntry> &we)
+{
+	std::vector<LeafNode*> leaves;
+	uint iii,nnn;
+	dnode.node->get_leaves(leaves,CASE_LEAF);
+	nnn = leaves.size();
+	for (iii = 0;iii < nnn;iii ++)
+		add_word(we,leaves[iii]);
 }
 
 void WordState::get_first(WordStates &states,uint _pos)
@@ -25,11 +56,13 @@ void WordState::get_first(WordStates &states,uint _pos)
 	dnode.node = warch.get_root();
 	pos = _pos;
 	fuzid = 0;
-	get_next(states,pos);
+	len = 0;
+	get_next(states);
 }
 
-void ExactWordState::get_next(WordStates &states,uint i)
+void ExactWordState::get_next(WordStates &states)
 {
+	uint i = pos+len;
 	BranchNode *branch = dnode.node->get_branch(sent[i].get_cid());
 	if (branch == NULL)
 		return;
@@ -37,11 +70,13 @@ void ExactWordState::get_next(WordStates &states,uint i)
 	states.push_back(this);
 	// change the info
 	dnode = branch;
+	len ++;
 }
 
-void LowerWordState::get_next(WordStates &states,uint i)
+void LowerWordState::get_next(WordStates &states)
 {
 	string s1,s2;
+	uint i = pos+len;
 	s1 = get_sarch()[sent[i].get_cid()];
 	s2 = get_lowercased_syllable(s1);
 	BranchNode *branch = dnode.node->get_branch(get_sarch()[s2]);
@@ -51,17 +86,19 @@ void LowerWordState::get_next(WordStates &states,uint i)
 	states.push_back(this);
 	// change the info
 	dnode = branch;
+	len ++;
 	if (s1 != s2)
 		fuzid |= 1 << (i-pos);
 }
 
-void FuzzyWordState::get_next(WordStates &states,uint _i)
+void FuzzyWordState::get_next(WordStates &states)
 {
 	vector<confusion_set>& confusion_sets = get_confusion_sets();
 	int i,j,m,n = confusion_sets.size();
 	bool ret = false;
 	set<Syllable> syllset,syllset2;
 	Syllable _syll;
+	uint _i = pos+len;
 	string s1 = get_sarch()[sent[_i].get_cid()];
 
 	_syll.parse(s1.c_str());
@@ -108,10 +145,11 @@ void FuzzyWordState::get_next(WordStates &states,uint _i)
 		for (pnode = range.first;pnode != range.second;++pnode)
 			if (!pnode->second->is_leaf()) {
 				cerr << "Fuzzy: " << iter->to_std_str() << endl;
-				WordState *s = new FuzzyWordState(*this);
+				FuzzyWordState *s = new FuzzyWordState(*this);
 
 				// change the info
 				s->dnode.node = (BranchNode*)pnode->second.get();
+				s->len++;
 				if (s1 != str)
 					s->fuzid |= 1 << (_i-s->pos);
 				states.push_back(s);
@@ -138,9 +176,11 @@ void Lattice::construct(const Sentence &sent)
 	WordStateFactories factories;
 	ExactWordStateFactory exact;
 	LowerWordStateFactory lower;
+	UpperWordStateFactory upper;
 	FuzzyWordStateFactory fuzzy;
 	factories.push_back(&exact);
 	factories.push_back(&lower);
+	factories.push_back(&upper);
 	factories.push_back(&fuzzy);
 	pre_construct(sent,wes,factories);
 	mark_proper_name(sent,wes);
@@ -182,28 +222,12 @@ void Lattice::pre_construct(const Sentence &sent,set<WordEntry> &we,const WordSt
 		nn = states1.size();
 		for (ii = 0;ii < nn;ii ++)
 			// state1[ii].get_next() have to delete itself if necessary.
-			states1[ii]->get_next(states2,i);
+			states1[ii]->get_next(states2);
 
 		// get completed words
 		nn = states2.size();
-		for (ii = 0;ii < nn;ii ++) {
-			std::vector<LeafNode*> leaves;
-			uint kind[2] = {MAIN_LEAF,CASE_LEAF};
-			for (uint i_kind = 0;i_kind < 2;i_kind ++) {
-				leaves.clear();
-				states2[ii]->dnode.node->get_leaves(leaves,kind[i_kind]);
-				nnn = leaves.size();
-				for (iii = 0;iii < nnn;iii ++) {
-					WordEntry e;
-					e.pos = states2[ii]->pos;
-					e.len = i-states2[ii]->pos+1;
-					e.fuzid = states2[ii]->fuzid;
-					e.node = leaves[iii];
-					//cerr << "Add " << e << endl;
-					we.insert(e);
-				}
-			}
-		}
+		for (ii = 0;ii < nn;ii ++)
+			states2[ii]->collect_words(we);
 
 		states1.swap(states2);
 	}

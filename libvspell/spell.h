@@ -76,8 +76,8 @@ typedef std::vector<WordState*> WordStates;
 class WordState {
 protected:
 	WordState(const WordState&);
+	void add_word(std::set<WordEntry> &we,LeafNode*);
 
-public:
 	/**
 		 the currently processing node
 	 */
@@ -87,9 +87,13 @@ public:
 
 	int fuzid;
 	int pos;
+	int len;
+
+public:
 	WordState(const Sentence &st):fuzid(0),sent(st),pos(0) {}
 	virtual void get_first(WordStates &states,uint pos);
-	virtual void get_next(WordStates &states,uint pos) = 0;	// you have to delete your self after this if your task is done
+	virtual void get_next(WordStates &states) = 0;	// you have to delete your self after this if your task is done
+	virtual void collect_words(std::set<WordEntry> &we);
 };
 
 
@@ -188,25 +192,31 @@ public:
 
 struct ExactWordState:public WordState {
 	ExactWordState(const Sentence &st):WordState(st) {}
-	void get_next(WordStates &states,uint pos);
+	void get_next(WordStates &states);
 };
 WORDSTATEFACTORY(ExactWordState);
 
 struct LowerWordState:public WordState {
 	LowerWordState(const Sentence &st):WordState(st) {}
-	void get_next(WordStates &states,uint pos);
+	void get_next(WordStates &states);
 };
 WORDSTATEFACTORY(LowerWordState);
 
+struct UpperWordState:public LowerWordState {
+	UpperWordState(const Sentence &st):LowerWordState(st) {}
+	void collect_words(std::set<WordEntry> &we);
+};
+WORDSTATEFACTORY(UpperWordState);
+
 struct FuzzyWordState:public WordState {
 	FuzzyWordState(const Sentence &st):WordState(st) {}
-	void get_next(WordStates &states,uint pos);
+	void get_next(WordStates &states);
 };
 WORDSTATEFACTORY(FuzzyWordState);
 
 struct CaseWordState:public WordState {
 	CaseWordState(const Sentence &st):WordState(st) {}
-	void get_next(WordStates &states,uint pos);
+	void get_next(WordStates &states);
 };
 WORDSTATEFACTORY(CaseWordState);
 

@@ -22,7 +22,7 @@ bool proper_name_init()
 	while ((line = ifs.getline()) != NULL) {
 		while (line[strlen(line)-1] == '\n' || line[strlen(line)-1] == '\r' || line[strlen(line)-1] == ' ')
 			line[strlen(line)-1] = 0;
-		propernames.insert(get_sarch()[get_dic_syllable(line)]);
+		propernames.insert(get_sarch()[get_std_syllable(line)]);
 	}
 	return true;
 }
@@ -128,3 +128,85 @@ bool find_capital_words(Sentence &st,int start,int &pos,int &len)
 	}
 	return found;
 }
+
+bool is_first_capitalized_word(const char *input)
+{
+	uint i,n = strlen(input);
+	// check for upper-case chars
+	for (i = n-1;i >= 0;i --)
+		if (viet_toupper(input[i]) == input[i])
+			break;
+	return i == 0;
+}
+
+bool is_all_capitalized_word(const char *input)
+{
+	uint i,n = strlen(input);
+	// check for upper-case chars
+	for (i = n-1;i >= 0;i --)
+		if (viet_toupper(input[i]) != input[i])
+			return false;
+	return true;
+}
+
+bool is_lower_cased_word(const char *input)
+{
+	uint i,n = strlen(input);
+	// check for upper-case chars
+	for (i = 0;i < n;i ++)
+		if (viet_toupper(input[i]) == input[i])
+			return false;
+	return true;
+}
+
+bool is_first_capitalized_word(const strid_string &s)
+{
+	if (s.empty())
+		return true;
+
+	uint i,n = s.size();
+
+	if (is_first_capitalized_word(sarch[s[0]])) {
+		for (i = 1;i < n;i ++)
+			if (!is_lower_cased_word(sarch[s[i]]))
+				return false;
+		return true;
+	}
+
+	return false;
+}
+
+bool is_all_capitalized_word(const strid_string &s)
+{
+	if (s.empty())
+		return true;
+
+	uint i,n = s.size();
+
+	if (is_all_capitalized_word(sarch[s[0]])) {
+		for (i = 1;i < n;i ++)
+			if (!is_all_capitalized_word(sarch[s[i]]))
+				return false;
+		return true;
+	}
+
+	return false;
+}
+
+bool is_lower_cased_word(const strid_string &s)
+{
+	if (s.empty())
+		return true;
+
+	uint i,n = s.size();
+
+	if (is_lower_cased_word(sarch[s[0]])) {
+		for (i = 1;i < n;i ++)
+			if (!is_lower_cased_word(sarch[s[i]]))
+				return false;
+		return true;
+	}
+
+	return false;
+}
+

@@ -236,7 +236,7 @@ bool VSpell::init()
 		cerr << "done" << endl;
 	}	else
 		cerr << "Syllable Ngram loading error. The result may be incorrect" << endl;
-	get_sarch().set_blocked(true);
+	sarch.set_blocked(true);
 	return true;
 }
 
@@ -310,7 +310,7 @@ void VSpell::add_word(const char *s)
 	strid_string toks;
 	string ss;
 	while (is >> ss) {
-		toks += get_sarch()[ss];
+		toks += sarch[ss];
 	}
 	words.insert(toks);
 }
@@ -334,9 +334,11 @@ bool Text::sentence_check(const char *pp)
 	WordStateFactories factories;
 	ExactWordStateFactory exact;
 	LowerWordStateFactory lower;
+	UpperWordStateFactory upper;
 	FuzzyWordStateFactory fuzzy;
 	factories.push_back(&exact);
 	factories.push_back(&lower);
+	factories.push_back(&upper);
 	factories.push_back(&fuzzy);
 	w.pre_construct(st,wes,factories);
 	mark_proper_name(st,wes);
@@ -385,11 +387,11 @@ bool Text::syllable_check(int i)
 	if (vspell->in_dict(st[i].get_id()))
 		return true;
 
-	if (get_sarch().in_dict(st[i].get_cid())) {
+	if (sarch.in_dict(st[i].get_cid())) {
 		Syllable syl;							// diacritic check
-		if (syl.parse(get_sarch()[st[i].get_cid()])) {
+		if (syl.parse(sarch[st[i].get_cid()])) {
 			string s = get_lowercased_syllable(syl.to_str());
-			if (get_lowercased_syllable(get_sarch()[st[i].get_id()]) == s)
+			if (get_lowercased_syllable(sarch[st[i].get_id()]) == s)
 				return true;
 		}
 	}
@@ -425,17 +427,31 @@ bool Text::word_check()
 		int ii,len = seg[i].node->get_syllable_count();
 		seg[i].node->get_syllables(sylls);
 
-		bool ok = true;
+		// in user dict
+		bool ok = vspell->in_dict(sylls2);
+
+		// case-sensitive comparation.
 		sylls2.resize(len);
+		bool subok = true;
 		for (ii = 0;ii < len;ii ++) {
 			sylls2[ii] = st[seg[i].pos+ii].get_id();
-			if (ok && st[seg[i].pos+ii].get_cid() != sylls[ii])
-				ok = false;
+			if (subok && st[seg[i].pos+ii].get_cid() != sylls[ii])
+				subok = false;
 		}
+		
+ 		strid_string sylls3;
+		sylls3.resize(sylls.size());
+		for (ii = 0;ii < sylls3.size();ii ++)
+			sylls3[ii] = sarch[get_unstd_syllable(sarch[sylls[ii]])];
 
-		if (vspell->in_dict(sylls2)) {
-			ok = true;
-		}
+		// don't care if the "true" word is lower-cased and the original one is valid upper-cased
+		if (!subok &&
+				(is_all_capitalized_word(sylls2) ||
+				 (is_first_capitalized_word(sylls2) && is_lower_cased_word(sylls3))))
+			subok = true;
+
+		if (!ok)
+			ok = subok;
 
 		if (!ok) {
 			Suggestion _s;
@@ -492,7 +508,7 @@ void Text::apply_separators(set<WordEntry> &wes)
 	int i,n = st.get_syllable_count();
 
 	for (i = 0;i < n-1 && sep < seps.size();i ++) {
-		int p = offset+st[i].start+strlen(get_sarch()[st[i].get_id()]);
+		int p = offset+st[i].start+strlen(sarch[st[i].get_id()]);
 		if (p <= seps[sep] && seps[sep] <= offset+st[i+1].start) {
 			apply_separator(wes,i);
 			sep ++;
@@ -777,8 +793,8 @@ void get_phonetic_syllable_candidates(const char *input,Candidates &output,float
 		string s = iter->to_std_str();
 		string ss = get_lowercased_syllable(s);
 		//cerr << s << endl;
-		if (get_sarch().in_dict(get_sarch()[s]) ||
-				get_sarch().in_dict(get_sarch()[ss]))
+		if (sarch.in_dict(sarch[s]) ||
+				sarch.in_dict(sarch[ss]))
 			output.insert(iter->to_str(),v+1);
 	}
 }
@@ -943,8 +959,8 @@ bool Candidates::CandidateComparator::operator()(const std::string &s1,const std
 	float f1,f2;
 	VocabIndex v;
 	v = Vocab_None; 
-	f1 = -get_syngram().wordProb(get_sarch()[get_std_syllable(get_lowercased_syllable(s1))],&v);
-	f2 = -get_syngram().wordProb(get_sarch()[get_std_syllable(get_lowercased_syllable(s2))],&v);
+	f1 = -get_syngram().wordProb(sarch[get_std_syllable(get_lowercased_syllable(s1))],&v);
+	f2 = -get_syngram().wordProb(sarch[get_std_syllable(get_lowercased_syllable(s2))],&v);
 	//cerr << f1 << "<>" << f2 << endl;
 	return f1 > f2;	// we want reverse order
 }
@@ -957,7 +973,7 @@ void Candidates::get_list(std::vector<std::string> &v)
 	n = 0;
 	for (iter = candidates.begin();iter != candidates.end();++iter)
 		if (!get_case_syllable_candidates(iter->candidate.c_str(),*this,iter->priority)) {
-			if (get_sarch().in_dict(get_dic_syllable(get_lowercased_syllable(iter->candidate)))) {
+			if (sarch.in_dict(get_std_syllable(get_lowercased_syllable(iter->candidate)))) {
 				v[n++] = iter->candidate;
 			}
 		}

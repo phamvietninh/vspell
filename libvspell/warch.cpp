@@ -130,7 +130,7 @@ void WordArchive::add_entry(vector<string> toks)
 		if (pos == string::npos)
 			pos = len;
 		string s = toks[0].substr(start,pos-start);
-		VocabIndex id = sarch[get_dic_syllable(s)];
+		VocabIndex id = sarch[get_std_syllable(s)];
 		syllables.push_back(id);
 		start = pos+1;
 	}
@@ -164,7 +164,7 @@ void WordArchive::add_case_entry(vector<string> toks2)
 		if (pos == string::npos)
 			pos = len;
 		string s = toks[0].substr(start,pos-start);
-		VocabIndex id = sarch[get_dic_syllable(s)];
+		VocabIndex id = sarch[get_std_syllable(s)];
 		syllables.push_back(id);
 		start = pos+1;
 	}
@@ -176,7 +176,7 @@ void WordArchive::add_case_entry(vector<string> toks2)
 		if (pos == string::npos)
 			pos = len;
 		string s = toks2[0].substr(start,pos-start);
-		VocabIndex id = sarch[get_dic_syllable(s)];
+		VocabIndex id = sarch[get_std_syllable(s)];
 		real_syllables.push_back(id);
 		start = pos+1;
 	}

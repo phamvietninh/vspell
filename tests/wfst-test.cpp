@@ -73,11 +73,14 @@ int main(int argc,char **argv)
 	WordStateFactories factories;
 	ExactWordStateFactory exact;
 	LowerWordStateFactory lower;
+	UpperWordStateFactory upper;
 	FuzzyWordStateFactory ffuzzy;
 	factories.push_back(&exact);
 	factories.push_back(&lower);
-	if (fuzzy)
+	if (fuzzy) {
+	  factories.push_back(&upper);
 	  factories.push_back(&ffuzzy);
+	}
 	words.pre_construct(st,wes,factories);
 	mark_proper_name(st,wes);
 	words.post_construct(wes);

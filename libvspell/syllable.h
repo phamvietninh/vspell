@@ -61,7 +61,7 @@ public:
 //extern char *last_consonants[];
 //extern char *padding_vowels[];
 std::string get_std_syllable(const std::string &str);
-std::string get_dic_syllable(const std::string &str);
+std::string get_unstd_syllable(const std::string &str);
 std::string get_lowercased_syllable(const std::string &str);
 typedef std::vector<Syllable> confusion_set;
 std::vector<confusion_set>& get_confusion_sets();

@@ -880,7 +880,7 @@ strid Syllable::to_id() const
 
 strid Syllable::to_std_id() const
 {
-	return get_sarch()[get_dic_syllable(to_str())];
+	return get_sarch()[to_std_str()];
 }
 
 /*
@@ -959,32 +959,26 @@ bool viet_ispunct(int ch)
 	return cat_table[ch] & CAT_PUNCT;
 }
 
-string get_dic_syllable(const string &str)
+string get_std_syllable(const string &str)
 {
 	uint i,n = str.size();
 
-	for (i = 0;i < n;i ++) {
-		pair<char,unsigned char> p;
-		//p = full_diacritic_table[(unsigned char)str[i]];
-		p = full_diacritic_table[(unsigned char)viet_tolower(str[i])];
-		if (p.first > 0) {
-			string ret = char(p.first+'0')+str;
-			ret[i+1] = diacritic_table[0][p.second];
-			if (viet_toupper(str[i]) == str[i])
-				ret[i+1] = viet_toupper(ret[i+1]);
-			return ret;
-		}
-	}
-	return '0'+str;
-}
-
-string get_std_syllable(const string &str)
-{
-	string s = get_dic_syllable(str);
-	if (get_sarch().in_dict(s) || get_sarch().in_dict(get_lowercased_syllable(s)))
-		return s;
+	Syllable sy;
+	if (sy.parse(str.c_str()))
+		return sy.to_std_str();
 	else
 		return string("0")+str;
+}
+
+string get_unstd_syllable(const string &str)
+{
+	uint i,n = str.size();
+
+	Syllable sy;
+	if (sy.parse(str.c_str()))
+		return sy.to_str();
+	else
+		return (str[0] >= '0' && str[0] <= '5') ? str.substr(1) : str;
 }
 
 string get_lowercased_syllable(const string &str)

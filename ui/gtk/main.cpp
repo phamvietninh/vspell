@@ -61,8 +61,14 @@ void MyText::show_wrong_syllables(unsigned p)
 {
 	Suggestions &sugg = suggestions;
 	int cc,ii,nn,i,n = sugg.size();
-	gtk_text_buffer_set_text (textbuffer_main, vspell->get_utf8_text().c_str(),strlen(vspell->get_utf8_text().c_str()));
+	gtk_text_buffer_set_text (textbuffer_main,
+														vspell->get_utf8_text().c_str(),
+														strlen(vspell->get_utf8_text().c_str()));
 	GtkTextIter start,end;
+	iter_at(start,0);
+	iter_at(end,length);
+	gtk_text_buffer_apply_tag_by_name(textbuffer_main,
+																		"bg-syllable", &start, &end);
 	for (i = 0;i < n;i ++) {
 		int id = sugg[i].id;
 		int from = st[id].start;
@@ -71,7 +77,8 @@ void MyText::show_wrong_syllables(unsigned p)
 					 id,get_sarch()[st[id].id],from);
 		iter_at(start,from);
 		iter_at(end,from+len);
-		gtk_text_buffer_apply_tag_by_name (textbuffer_main, (i == p ? "mispelled" : "mispelled2"),
+		gtk_text_buffer_apply_tag_by_name (textbuffer_main,
+																			 (i == p ? "mispelled" : "mispelled2"),
 																			 &start,&end);
 	}
 }
@@ -106,7 +113,14 @@ void MyText::show_wrong_words(unsigned p)
 	GtkTextIter start,end;
 
 	Suggestions &sugg = suggestions;
-	gtk_text_buffer_set_text (textbuffer_main, vspell->get_utf8_text().c_str(),strlen(vspell->get_utf8_text().c_str()));
+	gtk_text_buffer_set_text (textbuffer_main, 
+														vspell->get_utf8_text().c_str(),
+														strlen(vspell->get_utf8_text().c_str()));
+	iter_at(start,0);
+	iter_at(end,length);
+	gtk_text_buffer_apply_tag_by_name(textbuffer_main,
+																		"bg-word", &start, &end);
+																		
 	show_words();
 	n = sugg.size();
 	for (i = 0;i < n;i ++) {
@@ -121,7 +135,8 @@ void MyText::show_wrong_words(unsigned p)
 		printf("Mispelled at %d\n",id);
 		iter_at(start,from);
 		iter_at(end,to);
-		gtk_text_buffer_apply_tag_by_name (textbuffer_main, (i == p ? "mispelled" : "mispelled2"),
+		gtk_text_buffer_apply_tag_by_name (textbuffer_main, 
+																			 (i == p ? "mispelled" : "mispelled2"),
 																			 &start,&end);
 	}
 }
@@ -276,6 +291,12 @@ int main(int argc,char **argv)
 															NULL);
 	gtk_text_buffer_create_tag (textbuffer_main, "word",
 															"underline", (gboolean)TRUE,
+															NULL);
+	gtk_text_buffer_create_tag (textbuffer_main, "bg-word",
+															"background", "grey",
+															NULL);
+	gtk_text_buffer_create_tag (textbuffer_main, "bg-syllable",
+															"background", "lightgrey",
 															NULL);
 
 	textview_main = gtk_text_view_new_with_buffer(textbuffer_main);

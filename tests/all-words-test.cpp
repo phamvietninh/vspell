@@ -31,6 +31,7 @@ int main(int argc,char **argv)
   bool dot = false;
   bool spare = false;
   bool has_seps = false;
+  bool edge_value = false;
   int i,n;
   vector<unsigned> seps;
 
@@ -39,12 +40,16 @@ int main(int argc,char **argv)
     if (!strcmp(argv[i],"dot")) dot = true;
     if (!strcmp(argv[i],"spare")) spare = true;
     if (!strcmp(argv[i],"seps")) has_seps = true;
+    if (!strcmp(argv[i],"edgeval")) edge_value = true;
   }
 
   dic_init(fuzzy ? new FuzzyWordNode(get_sarch()["<root>"]) : new WordNode(get_sarch()["<root>"]));
 
   cerr << "Loading... ";
   get_root()->load("wordlist");
+  File f("ngram","rt",0);
+  if (!f.error())
+	  get_ngram().read(f);
   cerr << "done" << endl;
 
   get_sarch().set_blocked(true);
@@ -131,22 +136,41 @@ int main(int argc,char **argv)
       	  cout << "n" << anchor[i] << " -> n" << anchor[i+1] << " [style=invis, weight=10000];" << endl;
 	}
 
+      VocabIndex vi[2];
+      vi[1] = Vocab_None;
+      float val;
       int ii,nn;
       for (i = 0;i < n;i ++) {
 	WordEntry &we = wes[i];
 
-	if (we.pos == 0)
-	  cout << "\thead -> n" << we.id << ";" << endl;
-	if (we.pos+we.len >= w2.get_word_count())
-	  cout << "\tn" << we.id << " -> tail;" << endl;
-	else {
+	if (we.pos == 0) {
+	  if (edge_value) {
+	    vi[0] = get_id(START_ID);
+	    val = -get_ngram().wordProb(we.id,vi);
+	    cout << "\thead -> n" << we.id << " [ label=\"" << val << "\"];" << endl;
+	  } else
+	    cout << "\thead -> n" << we.id << ";" << endl;
+	}
+	if (we.pos+we.len >= w2.get_word_count()) {
+	  if (edge_value) {
+	    vi[0] = we.id;
+	    val = -get_ngram().wordProb(get_id(STOP_ID),vi);
+	    cout << "\tn" << we.id << " -> tail [ label=\"" << val << "\"];" << endl;
+	  } else
+	    cout << "\tn" << we.id << " -> tail;" << endl;
+	} else {
 	  if (!spare)
 	    cout << "\tn" << we.id << " -> n" << anchor[(we.pos+we.len)] << ";" << endl;
 	  else {
 	    const WordEntryRefs &wers = w2.get_we(we.pos+we.len);
 	    nn = wers.size();
 	    for (ii = 0;ii < nn; ii ++) {
-	      cout << "\tn" << we.id << " -> n" << wers[ii]->id << ";" << endl;
+	      if (edge_value) {
+		vi[0] = we.id;
+		val = -get_ngram().wordProb(wers[ii]->id,vi);
+		cout << "\tn" << we.id << " -> n" << wers[ii]->id << " [label=\"" << val << "\"];" << endl;
+	      } else
+		cout << "\tn" << we.id << " -> n" << wers[ii]->id << ";" << endl;
 	    }
 	  }
 	}

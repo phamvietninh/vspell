@@ -64,12 +64,19 @@ float get_syllable(const std::string &syll);
 bool is_word_exist(const std::string &word);
 float get_word(const std::string &word);
 
-extern StringArchive sarch;
-extern Ngram ngram;
-extern strid unk_id,punct_id,proper_name_id,start_id,stop_id,poem_id,number_id;
+#define UNK_ID 0
+#define PUNCT_ID 1
+#define PROPER_NAME_ID 2
+#define START_ID 3
+#define STOP_ID 4
+#define POEM_ID 5
+#define NUMBER_ID 6
+StringArchive& get_sarch();
+Ngram& get_ngram();
+strid get_id(int id);
 
 inline bool is_syllable_exist(const std::string &syll) {
-	return is_syllable_exist(sarch[syll]); 
+	return is_syllable_exist(get_sarch()[syll]); 
 }
 
 /*

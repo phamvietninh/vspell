@@ -13,8 +13,6 @@
 
 using namespace std;
 
-unsigned int ngram_length = 2;						// for lazy men ;)
-
 /**
 	 Don't know how to name this class. 
 	 It is used to generate a "to hop" ;)
@@ -318,8 +316,8 @@ bool Segmentor::step(Segmentation &result)
 
 			/*-it's better to compute ngram outside this function
 			if (ngram_enabled) {
-				if (newtrace.s.size() >= ngram_length) {
-					VocabIndex *vi = new VocabIndex[ngram_length];
+				if (newtrace.s.size() >= NGRAM_LENGTH) {
+					VocabIndex *vi = new VocabIndex[NGRAM_LENGTH];
 					vi[0] = newtrace.s.items[len-1].node(sent).node->get_id();
 					vi[1] = Vocab_None;
 					newtrace.s.prob += -ngram.wordProb(newtrace.s.items[len-2].node(sent).node->get_id(),vi);

@@ -77,7 +77,7 @@ void PFS::segment_best(const Lattice &w,Segmentation &seps)
 		  vv = wers[ii]->id;
 		  //value = val[v]+wers[ii]->node.node->get_prob();
 		  //vi[0] = (*w.we)[back_traces[v]].node.node->get_id();
-		  add = (-ngram.wordProb((*w.we)[vv].node.node->get_id(),vi));
+		  add = (-get_ngram().wordProb((*w.we)[vv].node.node->get_id(),vi));
 		  value = val[v] + add;
 		  //cerr << "examine " << vv << "(" << wers[ii]->node << ")";
 

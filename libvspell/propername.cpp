@@ -8,7 +8,7 @@ using namespace std;
 
 bool find_capital_words(Sentence &st,int start,int &pos,int &len);
 
-set<strid> propernames;
+static set<strid> propernames;
 
 bool proper_name_init()
 {
@@ -21,7 +21,7 @@ bool proper_name_init()
 	while ((line = ifs.getline()) != NULL) {
 		while (line[strlen(line)-1] == '\n' || line[strlen(line)-1] == '\r' || line[strlen(line)-1] == ' ')
 			line[strlen(line)-1] = 0;
-		propernames.insert(sarch[get_dic_syllable(line)]);
+		propernames.insert(get_sarch()[get_dic_syllable(line)]);
 	}
 	return true;
 }
@@ -59,7 +59,7 @@ bool proper_name_init()
   if (last_names.find(st[npos].id) != last_names.end()) {
   // mark as a personal name.
   st[npos].span = nlen;	// skip next nlen syllables.
-  st[npos].cid = sarch["<propername>"];//proper_name_id;
+  st[npos].cid = get_sarch()["<propername>"];//proper_name_id;
   }
 
   // check for other proper names
@@ -86,7 +86,7 @@ void mark_proper_name(const Sentence &sent,set<WordEntry> &we)
 					e.pos = start;
 					e.len = i-start;
 					e.fuzid = 0;
-					e.node = get_root()->get_next(proper_name_id);
+					e.node = get_root()->get_next(get_id(PROPER_NAME_ID));
 					we.insert(e);
 				}
 				start = -1;
@@ -100,7 +100,7 @@ void mark_proper_name(const Sentence &sent,set<WordEntry> &we)
 		e.pos = start;
 		e.len = i-start;
 		e.fuzid = 0;
-		e.node = get_root()->get_next(proper_name_id);
+		e.node = get_root()->get_next(get_id(PROPER_NAME_ID));
 		we.insert(e);
 		start = -1;
 	}

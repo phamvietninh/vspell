@@ -11,7 +11,6 @@
 
 using namespace std;
 
-extern unsigned int ngram_length;
 
 /**
  * dump a Sections
@@ -27,7 +26,7 @@ std::ostream& operator << (std::ostream &os,const Sections &me)
 	for (i = 0;i < n;i ++) {
 		if (ii < nn && me[ii].start == i)
 			os << "[";
-		os << format("%s") % sarch[_sent[i].id];
+		os << format("%s") % get_sarch()[_sent[i].id];
 		if (ii < nn && me[ii].start+me[ii].len-1 == i) {
 			os << "]" << me[ii].len;
 			ii ++;
@@ -92,7 +91,7 @@ void Sections::construct(const Lattice &words)
 			// now merge two sections (this and the previous) if needed
 			if (!sects.empty()) {
 				Section &prev = sects.back();
-				if (sect.start - (prev.start + prev.len) < ngram_length-1)
+				if (sect.start - (prev.start + prev.len) < NGRAM_LENGTH-1)
 					prev.len = pos - prev.start + 1; // merge
 				else
 					sects.push_back(sect); // not merge
@@ -125,9 +124,9 @@ std::ostream& Segmentation::pretty_print(std::ostream &os,const Sentence &st)
 		if (i)
 			os << " ";
 		id = (*this)[i].node.node->get_id();
-		if (id == unk_id)
+		if (id == get_id(UNK_ID))
 			id = st[(*this)[i].pos].id;
-		os << sarch[id];
+		os << get_sarch()[id];
 	}
 	return os;
 }
@@ -142,15 +141,15 @@ void Section::segment_best(const Lattice &w,Segmentation &final_seg)
 							start,						// from
 							start+len-1);			// to
 
-	VocabIndex *vi = new VocabIndex[ngram_length];
+	VocabIndex *vi = new VocabIndex[NGRAM_LENGTH];
 	while (segtor.step(seg)) {
 		// compute ngram. take the best seg.
 		seg.prob = 0;
-		vi[ngram_length] = Vocab_None;
-		for (unsigned int ii = ngram_length-1;ii < seg.size();ii ++) {
-			for (unsigned int j = 0;j < ngram_length-1;j++)
+		vi[NGRAM_LENGTH] = Vocab_None;
+		for (unsigned int ii = NGRAM_LENGTH-1;ii < seg.size();ii ++) {
+			for (unsigned int j = 0;j < NGRAM_LENGTH-1;j++)
 				vi[j] = seg[ii-1-j].node.node->get_id();
-			seg.prob += -ngram.wordProb(seg[ii].node.node->get_id(),vi);
+			seg.prob += -get_ngram().wordProb(seg[ii].node.node->get_id(),vi);
 		}
 		
 		if (seg.prob < final_seg.prob)

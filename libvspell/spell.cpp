@@ -211,7 +211,7 @@ generalize all capitalized words.
 */
 bool VSpell::init()
 {
-	dic_init(new FuzzyWordNode(sarch["<root>"]));
+	dic_init(new FuzzyWordNode(get_sarch()["<root>"]));
 
 	cerr << "Loading dictionary... ";
 	get_root()->load("wordlist");
@@ -219,11 +219,11 @@ bool VSpell::init()
 	cerr << "Loading ngram... ";
 	File f("ngram","rt");
 	if (!f.error())
-		ngram.read(f);
+		get_ngram().read(f);
 	else
 		cerr << "Ngram loading error. The result may be incorrect" << endl;
 	cerr << "done" << endl;
-	sarch.set_blocked(true);
+	get_sarch().set_blocked(true);
 	return true;
 }
 
@@ -329,11 +329,11 @@ bool Text::syllable_check(int i)
 	if (vspell->in_dict(st[i].get_id()))
 		return true;
 	
-	if (sarch.in_dict(st[i].get_cid())) {
+	if (get_sarch().in_dict(st[i].get_cid())) {
 		Syllable syl;							// diacritic check
-		if (syl.parse(sarch[st[i].get_cid()])) {
+		if (syl.parse(get_sarch()[st[i].get_cid()])) {
 			string s = get_lowercased_syllable(syl.to_str());
-			if (get_lowercased_syllable(sarch[st[i].get_id()]) == s)
+			if (get_lowercased_syllable(get_sarch()[st[i].get_id()]) == s)
 				return true;
 		}
 	}
@@ -420,7 +420,7 @@ void Text::apply_separators(set<WordEntry> &wes)
 	int i,n = st.get_syllable_count();
 
 	for (i = 0;i < n-1 && sep < seps.size();i ++) {
-		int p = offset+st[i].start+strlen(sarch[st[i].get_id()]);
+		int p = offset+st[i].start+strlen(get_sarch()[st[i].get_id()]);
 		if (p <= seps[sep] && seps[sep] <= offset+st[i+1].start) {
 			apply_separator(wes,i);
 			sep ++;
@@ -501,8 +501,9 @@ static gunichar unicode_str[] = {
 	 272,
 	0
 };
-map<unsigned char,gunichar> viscii_utf8_map;
-map<gunichar,unsigned char> utf8_viscii_map;
+
+static map<unsigned char,gunichar> viscii_utf8_map;
+static map<gunichar,unsigned char> utf8_viscii_map;
 
 void viet_init()
 {

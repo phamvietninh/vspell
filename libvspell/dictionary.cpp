@@ -27,12 +27,12 @@ using namespace std;
 
 typedef SArray<strid,float> syllable_dict_type;
 typedef SArrayIter<strid,float> syllable_dict_iterator;
-syllable_dict_type syllable_dict;
-WordNodePtr myroot;
-strid unk_id,start_id,stop_id,punct_id,proper_name_id,poem_id,number_id;
+static syllable_dict_type syllable_dict;
+static WordNodePtr myroot;
+static strid unk_id,start_id,stop_id,punct_id,proper_name_id,poem_id,number_id;
 
-StringArchive sarch;
-Ngram ngram(sarch.get_dict(),2);
+static StringArchive sarch;
+static Ngram ngram(sarch.get_dict(),2);
 
 
 bool syllable_init();
@@ -377,13 +377,12 @@ bool FuzzyWordNode::fuzzy_get_next_with_ed(strid str,
 	return ret;
 }
 
-typedef vector<Syllable> confusion_set;
-extern vector<confusion_set> confusion_sets;
 
 bool FuzzyWordNode::fuzzy_get_next_with_syllable(strid str,
 																								 vector<DistanceNode>& _nodes,
 																								 const Syllable &_syll) const
 {
+	vector<confusion_set>& confusion_sets = get_confusion_sets();
 	int i,j,m,n = confusion_sets.size();
 	bool ret = false;
 	set<Syllable> syllset,syllset2;
@@ -588,6 +587,30 @@ std::ostream& operator << (std::ostream &os,const WordNode &node)
 		os << sarch[syll[i]] << "(" << syll[i] << ") ";
 	}
 	return os;
+}
+
+StringArchive& get_sarch()
+{
+	return sarch;
+}
+
+Ngram& get_ngram()
+{
+	return ngram;
+}
+
+strid get_id(int id)
+{
+	switch (id) {
+	case UNK_ID: return unk_id;
+	case PUNCT_ID: return punct_id;
+	case PROPER_NAME_ID: return proper_name_id;
+	case START_ID: return start_id;
+	case STOP_ID: return stop_id;
+	case POEM_ID: return poem_id;
+	case NUMBER_ID: return number_id;
+	default: return unk_id;
+	}
 }
 
 /*

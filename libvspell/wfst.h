@@ -22,6 +22,7 @@
 #endif
 
 #define SEGM_SEPARATOR 1
+#define NGRAM_LENGTH 2
 
 struct Section {
 	uint segment;

@@ -19,7 +19,7 @@ protected:
 	virtual bool ui_syllable_check();
 	virtual bool ui_word_check();
 
-	void show_wrong_syllable(unsigned);
+	void show_wrong_syllables(unsigned);
 	void show_wrong_word(unsigned);
 
 	//	void iter_at(GtkTextIter &iter,int pos);
@@ -105,7 +105,7 @@ void MyText::iter_at(GtkTextIter &iter,int pos)
 }
 */
 
-void MyText::show_wrong_syllable(unsigned p)
+void MyText::show_wrong_syllables(unsigned p)
 {
 	const char *os = vspell->get_utf8_text().c_str();
 
@@ -134,7 +134,7 @@ void MyText::show_wrong_syllable(unsigned p)
 
 		if (sug < suggestions.size()) {
 			int pos = st[suggestions[sug].id].start;
-			int pos2 = pos+strlen(sarch[st[suggestions[sug].id].get_id()]);
+			int pos2 = pos+strlen(get_sarch()[st[suggestions[sug].id].get_id()]);
 			if (pos2 == c) {
 				cout << (p == sug ? ">" : "]");
 				sug ++;
@@ -180,7 +180,7 @@ void MyText::show_wrong_word(unsigned p)
 		if (sug < suggestions.size()) {
 			int st_pos = (*seg.we)[seg[suggestions[sug].id].id].pos+stid;
 			int pos = st[st_pos].start;
-			int pos2 = pos+strlen(sarch[st[st_pos].get_id()]);
+			int pos2 = pos+strlen(get_sarch()[st[st_pos].get_id()]);
 			if (pos2 == c) {
 				stid ++;
 				if (pos2 == c && stid == n_stid) {
@@ -241,8 +241,8 @@ bool MyText::ui_syllable_check()
 {
 	unsigned i,n = suggestions.size();
 	cout << "Syllable check: " << suggestions.size() << endl;
-	for (int i = 0;i < n;i ++) {
-		show_wrong_syllable(i);
+	for (i = 0;i < n;i ++) {
+		show_wrong_syllables(i);
 		// query
 		string s;
 		cerr << "Input: The right one is:" << endl;
@@ -255,9 +255,9 @@ bool MyText::ui_syllable_check()
 			return true;							// force to exit
 
 		replace(st[suggestions[i].id].start, // from
-						strlen(sarch[st[suggestions[i].id].get_id()]), // size
+						strlen(get_sarch()[st[suggestions[i].id].get_id()]), // size
 						s.c_str());					// text
-		vspell->add(sarch[viet_to_viscii_force(s.c_str())]);
+		vspell->add(get_sarch()[viet_to_viscii_force(s.c_str())]);
 		return false;								// continue checking
 	}
 }
@@ -291,7 +291,7 @@ bool MyText::ui_word_check()
 		}
 
 		replace(st[pos].start, // from
-						st[pos2].start+strlen(sarch[st[pos2].get_id()])-st[pos].start, // size
+						st[pos2].start+strlen(get_sarch()[st[pos2].get_id()])-st[pos].start, // size
 						s.c_str());					// text
 
 		// add separators after replacing the text, to have old separators removed

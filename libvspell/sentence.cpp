@@ -170,8 +170,8 @@ void Sentence::tokenize()
 			/*
 				char *viet_token = viet_to_viscii(tokens[i].value.c_str());
 				if (!viet_token) {
-				sy.id = sarch[tokens[i].value];
-				sy.cid = sarch[string("6")+tokens[i].value];
+				sy.id = get_sarch()[tokens[i].value];
+				sy.cid = get_sarch()[string("6")+tokens[i].value];
 				syllables.push_back(sy);
 				} else {
 			*/
@@ -180,8 +180,8 @@ void Sentence::tokenize()
 			for (jj = 0;jj < nn;jj ++)
 				if (viet_isalpha(viet_token[jj]) || viet_isdigit(viet_token[jj])) {
 					string s = viet_token;
-					sy.id = sarch[s];
-					sy.cid = sarch[get_std_syllable(s)];
+					sy.id = get_sarch()[s];
+					sy.cid = get_sarch()[get_std_syllable(s)];
 					syllables.push_back(sy);
 					break;
 				}
@@ -201,7 +201,7 @@ ostream& operator <<(ostream &os, const Sentence &st)
 	int cc,i,n = st.get_syllable_count();
 	for (cc = i = 0;i < n;i ++) {
 		if (i) os << " ";
-		os << boost::format("%s(%d-%d[%s])") % sarch[st[i].id] % st[i].id % st[i].cid % sarch[st[i].cid];
+		os << boost::format("%s(%d-%d[%s])") % get_sarch()[st[i].id] % st[i].id % st[i].cid % get_sarch()[st[i].cid];
 	}
 	//os << st.prob << endl;
 	

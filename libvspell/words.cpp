@@ -78,7 +78,7 @@ void Lattice::pre_construct(const Sentence &sent,set<WordEntry> &we)
 			const WordState &ws = states1[ii];
 
 			WordNodePtr exact_node = ws.dnode.node->get_next(sent[i].get_cid());
-			WordNodePtr lowercase_node = ws.dnode.node->get_next(sarch[get_lowercased_syllable(sarch[sent[i].get_cid()])]);
+			WordNodePtr lowercase_node = ws.dnode.node->get_next(get_sarch()[get_lowercased_syllable(get_sarch()[sent[i].get_cid()])]);
 			vector<WordNode::DistanceNode> nodes;
 			ws.dnode.node->fuzzy_get_next(sent[i].get_cid(),nodes);
 			if (exact_node && 
@@ -137,11 +137,11 @@ void Lattice::post_construct(set<WordEntry> &we)
 			e.len = 1;
 			e.fuzid = 0;
 			// if one starts with a cardinal number, then mark it number_id
-			string s = sarch[(*st)[i].get_cid()];
+			string s = get_sarch()[(*st)[i].get_cid()];
 			if (strchr("0123456789",s[0]) != NULL)
-				e.node = get_root()->get_next(number_id);
+				e.node = get_root()->get_next(get_id(NUMBER_ID));
 			else
-				e.node = get_root()->get_next(unk_id);
+				e.node = get_root()->get_next(get_id(UNK_ID));
 			we.insert(e);
 		}
 

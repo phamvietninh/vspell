@@ -33,8 +33,8 @@ void SoftCounter::count(const Lattice &w,NgramFractionalStats &stats)
 			v = wers[ii]->id;
 
 			if (i == 0) {
-				vi[0] = start_id;
-				Sleft[v] = -ngram.wordProb((*w.we)[v].node.node->get_id(),vi);
+				vi[0] = get_id(START_ID);
+				Sleft[v] = -get_ngram().wordProb((*w.we)[v].node.node->get_id(),vi);
 			}
 
 			int next = wers[ii]->pos+wers[ii]->len;
@@ -45,7 +45,7 @@ void SoftCounter::count(const Lattice &w,NgramFractionalStats &stats)
 					// wers2[iii] is the second node (W').
 					vv = wers2[iii]->id;
 					vi[0] = (*w.we)[v].node.node->get_id();
-					add = Sleft[v]*(-ngram.wordProb((*w.we)[vv].node.node->get_id(),vi));
+					add = Sleft[v]*(-get_ngram().wordProb((*w.we)[vv].node.node->get_id(),vi));
 					Sleft[vv] += add;
 					
 					// init prev references for Sright phase
@@ -53,7 +53,7 @@ void SoftCounter::count(const Lattice &w,NgramFractionalStats &stats)
 				}
 			} else {
 				vi[0] = (*w.we)[v].node.node->get_id();
-				Sright[v] = -ngram.wordProb(stop_id,vi);
+				Sright[v] = -get_ngram().wordProb(get_id(STOP_ID),vi);
 				sum += Sleft[v];
 				ends.push_back(v);
 			}
@@ -75,7 +75,7 @@ void SoftCounter::count(const Lattice &w,NgramFractionalStats &stats)
 				// vv is the second node (W').
 				vv = prev[v][iii];
 				vi[0] = (*w.we)[vv].node.node->get_id();
-				add = Sright[v]*(-ngram.wordProb((*w.we)[v].node.node->get_id(),vi));
+				add = Sright[v]*(-get_ngram().wordProb((*w.we)[v].node.node->get_id(),vi));
 				Sright[vv] += add;
 
 				// collect fractional counts
@@ -94,14 +94,14 @@ void SoftCounter::count(const Lattice &w,NgramFractionalStats &stats)
 	// from ends[i] to the end.
 	n = ends.size();
 	vi[2] = Vocab_None;
-	vi[1] = stop_id;
+	vi[1] = get_id(STOP_ID);
 	for (i = 0;i < n;i ++) {
 		fc = Sleft[ends[i]]*Sright[ends[i]]/sum; 
 		vi[0] = ends[i];
 		*stats.insertCount(vi) += fc;
 	}
 
-	vi[0] = start_id;
+	vi[0] = get_id(START_ID);
 	const WordEntryRefs &wers = w.get_we(0);
 	n = wers.size();
 	for (i = 0;i < n;i ++) {

@@ -18,7 +18,7 @@ protected:
 	virtual bool ui_syllable_check();
 	virtual bool ui_word_check();
 
-	void show_syllables();
+	void show_wrong_syllables(unsigned p);
 	void show_words();
 	void show_wrong_words();
 
@@ -37,6 +37,8 @@ static GtkTextTagTable *tagtable_main;
 static GtkTextBuffer *textbuffer_main;
 static GtkWidget *textview_main;
 static GtkWidget *log_main;
+static GtkWidget *spell_entry;
+static GtkWidget *ignore_button,*ignore_all_button,*spell_button,*open_button;
 static MyTextFactory myfactory;
 static VSpell vspell(myfactory);
 
@@ -45,7 +47,7 @@ void MyText::iter_at(GtkTextIter &iter,int pos)
 	gtk_text_buffer_get_iter_at_offset(textbuffer_main,&iter,offset+pos);
 }
 
-void MyText::show_syllables()
+void MyText::show_wrong_syllables(unsigned p)
 {
 	Suggestions &sugg = suggestions;
 	int cc,ii,nn,i,n = sugg.size();
@@ -53,12 +55,12 @@ void MyText::show_syllables()
 	for (i = 0;i < n;i ++) {
 		int id = sugg[i].id;
 		int from = st[id].start;
-		int len = strlen(sarch[st[id].id]);
+		int len = strlen(get_sarch()[st[id].id]);
 		printf("Syllable Mispelled: %d (%s) at %d\n",
-					 id,sarch[st[id].id],from);
+					 id,get_sarch()[st[id].id],from);
 		iter_at(start,from);
 		iter_at(end,from+len);
-		gtk_text_buffer_apply_tag_by_name (textbuffer_main, "mispelled",
+		gtk_text_buffer_apply_tag_by_name (textbuffer_main, (i == p ? "mispelled" : "mispelled2"),
 																			 &start,&end);
 	}
 }
@@ -77,7 +79,7 @@ void MyText::show_words()
 			continue;
 		}
 		int from = st[cc].start;
-		int to = st[cc+nn-1].start+strlen(sarch[st[cc+nn-1].id]);
+		int to = st[cc+nn-1].start+strlen(get_sarch()[st[cc+nn-1].id]);
 		printf("From %d to %d(%d)\n",from,to,n);
 		iter_at(start,from);
 		iter_at(end,to);
@@ -102,7 +104,7 @@ void MyText::show_wrong_words()
 		nn = seg[id].node.node->get_syllable_count();
 
 		int from = st[cc].start;
-		int to = st[cc+nn-1].start+strlen(sarch[st[cc+nn-1].id]);
+		int to = st[cc+nn-1].start+strlen(get_sarch()[st[cc+nn-1].id]);
 		printf("Mispelled at %d\n",id);
 		iter_at(start,from);
 		iter_at(end,to);
@@ -119,19 +121,62 @@ static void button_reset_callback (GtkWidget *button, gpointer data)
 	gtk_text_buffer_remove_all_tags (textbuffer_main, &start,&end);
 }
 
-static void button_spell_callback (GtkWidget *button, gpointer data)
-{
+bool is_checking = true;
+bool ignore = true;
 
+static void set_state(bool spellcheck)
+{
 	GtkTextIter start,end;
+
+	if (spellcheck == is_checking)
+		return;
+
+	is_checking = spellcheck;
 	gtk_text_buffer_get_start_iter(textbuffer_main,&start);
 	gtk_text_buffer_get_end_iter(textbuffer_main,&end);
+	gtk_text_buffer_remove_all_tags (textbuffer_main, &start,&end);
+	
+	gtk_text_view_set_editable(GTK_TEXT_VIEW(textview_main),!is_checking);
+	gtk_widget_set_sensitive(GTK_WIDGET(open_button),!is_checking);
+	gtk_widget_set_sensitive(GTK_WIDGET(spell_button),!is_checking);
+	gtk_widget_set_sensitive(GTK_WIDGET(ignore_button),is_checking);
+	gtk_widget_set_sensitive(GTK_WIDGET(ignore_all_button),is_checking);
+	ignore = true;
+}
 
-	button_reset_callback(NULL,NULL);
+static void button_spell_callback (GtkWidget *button, gpointer data)
+{
+	GtkTextIter start,end;
+
+	set_state(true);
+
+	gtk_text_buffer_get_start_iter(textbuffer_main,&start);
+	gtk_text_buffer_get_end_iter(textbuffer_main,&end);
 
 	gchar *buffer = gtk_text_buffer_get_text(textbuffer_main,&start,&end,FALSE);
 	//int len = g_utf8_strlen(buffer,-1);
 
 	vspell.check(buffer);
+	set_state(false);
+}
+
+static void button_ignore_all_callback(GtkWidget *button,gpointer data)
+{
+	set_state(false);
+}
+
+static void button_spell_accept_callback (GtkWidget *button, gpointer data)
+{
+}
+
+static void spell_entry_activate_callback(GtkEntry *entry, gpointer data)
+{
+	button_spell_accept_callback(NULL,NULL);
+}
+
+static void button_ignore_callback (GtkWidget *button, gpointer data)
+{
+	ignore = true;
 }
 
 static void button_exit_callback (GtkWidget *button, gpointer data)
@@ -156,30 +201,36 @@ int main(int argc,char **argv)
 	vspell.init();
 
 	GtkWidget *window_main = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_container_set_border_width(GTK_CONTAINER(window_main),10);
 	gtk_window_set_default_size(GTK_WINDOW(window_main),400,200);
 	g_signal_connect(window_main,"destroy",G_CALLBACK(window_destroy_callback),NULL);
 
 	GtkWidget *vbox_main = gtk_vbox_new(FALSE,10);
 	gtk_container_add(GTK_CONTAINER(window_main),vbox_main);
 
-
+	// Search box
 	GtkWidget *hbox_search = gtk_hbox_new(FALSE,10);
-	gtk_box_pack_start(GTK_BOX(vbox_main),hbox_search,FALSE,TRUE,10);
+	gtk_box_pack_start(GTK_BOX(vbox_main),hbox_search,FALSE,TRUE,0);
 
 	GtkWidget *entry_search = gtk_entry_new();
-	gtk_box_pack_start(GTK_BOX(hbox_search),entry_search,TRUE,TRUE,10);
+	gtk_box_pack_start(GTK_BOX(hbox_search),entry_search,TRUE,TRUE,0);
 	GtkWidget *button_search = gtk_button_new_with_mnemonic("_Search");
 	g_signal_connect(button_search,"clicked",
 									 G_CALLBACK(button_search_callback),entry_search);
-	gtk_box_pack_start(GTK_BOX(hbox_search),button_search,FALSE,TRUE,10);
+	gtk_box_pack_start(GTK_BOX(hbox_search),button_search,FALSE,TRUE,0);
 
 	log_main = gtk_label_new("");
 	gtk_label_set_line_wrap(GTK_LABEL(log_main),true);
-	gtk_box_pack_start(GTK_BOX(vbox_main),log_main,FALSE,FALSE,10);
+	gtk_box_pack_start(GTK_BOX(vbox_main),log_main,FALSE,FALSE,0);
 	
+	// Text box+Spell box
+	GtkWidget *paned = gtk_hpaned_new();
+	gtk_paned_set_position(GTK_PANED(paned),300);
+	gtk_box_pack_start(GTK_BOX(vbox_main),paned,TRUE,TRUE,0);
 	
+	// --textbox
 	GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL,NULL);
-	gtk_box_pack_start(GTK_BOX(vbox_main),scrolled_window,TRUE,TRUE,0);
+	gtk_paned_add1(GTK_PANED(paned),scrolled_window);
 
 	tagtable_main = gtk_text_tag_table_new();
 	textbuffer_main = gtk_text_buffer_new(tagtable_main);
@@ -187,6 +238,10 @@ int main(int argc,char **argv)
 															"weight", PANGO_WEIGHT_BOLD,
 															"style", PANGO_STYLE_ITALIC,
 															"foreground", "red",
+															NULL);
+	gtk_text_buffer_create_tag (textbuffer_main, "mispelled2",
+															"weight", PANGO_WEIGHT_BOLD,
+															"style", PANGO_STYLE_ITALIC,
 															NULL);
 	gtk_text_buffer_create_tag (textbuffer_main, "word",
 															"underline", (gboolean)TRUE,
@@ -196,18 +251,50 @@ int main(int argc,char **argv)
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(textview_main),GTK_WRAP_WORD);
 	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window),textview_main);
 
+	// --spellbox
+	GtkWidget *spell_vbox = gtk_vbox_new(FALSE,10);
+	gtk_paned_add2(GTK_PANED(paned),spell_vbox);
+
+	GtkWidget *spell_entry_hbox = gtk_hbox_new(FALSE,5);
+	gtk_box_pack_start(GTK_BOX(spell_vbox),spell_entry_hbox,FALSE,FALSE,0);
+
+	spell_entry = gtk_entry_new();
+	g_signal_connect(G_OBJECT(spell_entry),"activate",G_CALLBACK(spell_entry_activate_callback),NULL);
+	gtk_box_pack_start(GTK_BOX(spell_entry_hbox),spell_entry,TRUE,TRUE,0);
+
+	GtkWidget *spell_entry_button = gtk_button_new();
+	GtkWidget *spell_entry_button_image = gtk_image_new_from_stock(GTK_STOCK_OK,GTK_ICON_SIZE_BUTTON);
+	g_signal_connect(spell_entry_button,"clicked",G_CALLBACK(button_spell_accept_callback),NULL);
+	gtk_container_add(GTK_CONTAINER(spell_entry_button),spell_entry_button_image);
+	gtk_box_pack_start(GTK_BOX(spell_entry_hbox),spell_entry_button,FALSE,FALSE,0);
+
+	GtkWidget *w = gtk_tree_view_new();
+	gtk_box_pack_start(GTK_BOX(spell_vbox),w,TRUE,TRUE,0);
+
+	// Commands
 	GtkWidget *hbox_command = gtk_hbox_new(TRUE,10);
 	gtk_box_pack_start(GTK_BOX(vbox_main),hbox_command,FALSE,TRUE,0);
 
-	GtkWidget *button_spell = gtk_button_new_with_mnemonic("_Check");
-	g_signal_connect(button_spell,"clicked",G_CALLBACK(button_spell_callback),NULL);
-	GtkWidget *button_reset = gtk_button_new_with_mnemonic("_Reset");
-	g_signal_connect(button_reset,"clicked",G_CALLBACK(button_reset_callback),NULL);
+	open_button = gtk_button_new_with_mnemonic("_Open");
+	//g_signal_connect(button_spell,"clicked",G_CALLBACK(button_spell_callback),NULL);
+	gtk_box_pack_start(GTK_BOX(hbox_command),open_button,FALSE,TRUE,0);
+	spell_button = gtk_button_new_with_mnemonic("_Check");
+	g_signal_connect(spell_button,"clicked",G_CALLBACK(button_spell_callback),NULL);
+	gtk_box_pack_start(GTK_BOX(hbox_command),spell_button,FALSE,TRUE,0);
+	//GtkWidget *button_reset = gtk_button_new_with_mnemonic("_Reset");
+	//g_signal_connect(button_reset,"clicked",G_CALLBACK(button_reset_callback),NULL);
+	//gtk_box_pack_start(GTK_BOX(hbox_command),button_reset,FALSE,TRUE,0);
+	ignore_button = gtk_button_new_with_mnemonic("_Ignore");
+	g_signal_connect(ignore_button,"clicked",G_CALLBACK(button_ignore_callback),NULL);
+	gtk_box_pack_start(GTK_BOX(hbox_command),ignore_button,FALSE,TRUE,0);
+	ignore_all_button = gtk_button_new_with_mnemonic("Ignore _All");
+	g_signal_connect(ignore_all_button,"clicked",G_CALLBACK(button_ignore_all_callback),NULL);
+	gtk_box_pack_start(GTK_BOX(hbox_command),ignore_all_button,FALSE,TRUE,0);
 	GtkWidget *button_exit = gtk_button_new_with_mnemonic("_Exit");
 	g_signal_connect(button_exit,"clicked",G_CALLBACK(button_exit_callback),NULL);
-	gtk_box_pack_start(GTK_BOX(hbox_command),button_spell,FALSE,TRUE,0);
-	gtk_box_pack_start(GTK_BOX(hbox_command),button_reset,FALSE,TRUE,0);
 	gtk_box_pack_start(GTK_BOX(hbox_command),button_exit,FALSE,TRUE,0);
+
+	set_state(false);
 
 	gtk_widget_show_all(window_main);
 	gtk_main();
@@ -228,8 +315,8 @@ void button_search_callback(GtkWidget *button, gpointer data)
 			pp = is.size();
 		s = is.substr(p,pp-p);
 		p = pp+1;
-		strid id = sarch[s];
-		if (!sarch.in_dict(id)) {
+		strid id = get_sarch()[s];
+		if (!get_sarch().in_dict(id)) {
 			char *str = g_strdup_printf("%s not found",viet_to_utf8(s.c_str()));
 			gtk_label_set_text(GTK_LABEL(log_main),str);
 			g_free(str);
@@ -250,13 +337,36 @@ void button_search_callback(GtkWidget *button, gpointer data)
 
 bool MyText::ui_syllable_check()
 {
-	show_syllables();
-	return true;
+	unsigned i,n = suggestions.size();
+	for (i = 0;i < n;i ++) {
+		show_wrong_syllables(i);
+		// query
+		string s = get_sarch()[st[suggestions[i].id].id];
+		gtk_entry_set_text(GTK_ENTRY(spell_entry),s.c_str());
+		ignore = false;
+		while (!gtk_main_iteration() && !ignore);
+		cerr << "Input: The right one is:" << endl;
+
+		if (s.empty())
+			continue;
+		
+		if (s == "<>")
+			return true;							// force to exit
+
+		replace(st[suggestions[i].id].start, // from
+						strlen(get_sarch()[st[suggestions[i].id].get_id()]), // size
+						s.c_str());					// text
+		vspell->add(get_sarch()[viet_to_viscii_force(s.c_str())]);
+		return false;								// continue checking
+	}
+	return !is_checking;
 }
 
 bool MyText::ui_word_check()
 {
 	show_words();
 	show_wrong_words();
-	return true;
+	ignore = false;
+	while (!gtk_main_iteration() && !ignore);
+	return !is_checking;
 }

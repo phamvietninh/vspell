@@ -147,7 +147,7 @@ using namespace std;
 /*
 	namespace Dictionary {
 */
-char *vowels[] = {
+static char *vowels[] = {
 	"iê","yê","ia",
 	"ß½","ßa","uô","ua",
 	"a","å","â",
@@ -157,7 +157,7 @@ char *vowels[] = {
 	NULL
 };
 
-char *first_consonants[] = {	// longest first
+static char *first_consonants[] = {	// longest first
 	"ngh",			// 0
 	"nh",				// 1
 	"ng",				// 2
@@ -187,7 +187,7 @@ char *first_consonants[] = {	// longest first
 	NULL
 };
 
-char *last_consonants[] = {	// longest first
+static char *last_consonants[] = {	// longest first
 	"nh","ng","ch",/*"gh","ph","th","tr","gi","kh",*/
 	"c","m","n","p","t",/*"b","k","q","d","ğ","g","h","l","r","s","v","x",*/
 	// these are semivowels, not consonants.
@@ -195,12 +195,12 @@ char *last_consonants[] = {	// longest first
 	NULL
 };
 
-char *padding_vowels[] = {
+static char *padding_vowels[] = {
 	"o","u",
 	NULL
 };
 
-char *diacritic_table[6] = {
+static char *diacritic_table[6] = {
 	"aâåeêioô½ußy",
 	"á¤¡éªíó¯¾úÑı",
 	"à¥¢è«ìò°¶ù×Ï",
@@ -209,25 +209,29 @@ char *diacritic_table[6] = {
 	"Õ§£©®¸÷µşøñÜ",
 };
 
-char *case_table[2] = {
+static char *case_table[2] = {
 	"áàäãÕâ¤¥¦ç§å¡¢ÆÇ£éèë¨©êª«¬­®íìïî¸óòöõ÷ô¯°±²µ½¾¶·ŞşúùüûøßÑ×ØæñıÏÖÛÜğ", 
 	"ÁÀÄÃ€Â„…†‡Å‚ƒÉÈËˆ‰ÊŠ‹ŒÍÌ›Î˜ÓÒ™ šÔ‘’“´•–—³”ÚÙœ¿º»¼ÿ¹İŸĞ", 
 };
 
-char full_case_table[2][256];
-char cat_table[256];						// numeric,alpha...
-pair<char,unsigned char> full_diacritic_table[256];
+static char full_case_table[2][256];
+static char cat_table[256];						// numeric,alpha...
+static pair<char,unsigned char> full_diacritic_table[256];
 #define CAT_ALPHA 1
 #define CAT_DIGIT 2
 #define CAT_SPACE 4
 #define CAT_PUNCT 8
 #define CAT_XDIGIT 16
 
-const char *syll_empty = "Empty";
-const char *syll_exist = "Exist";
+static const char *syll_empty = "Empty";
+static const char *syll_exist = "Exist";
 
-typedef vector<Syllable> confusion_set;
-vector<confusion_set> confusion_sets;
+static vector<confusion_set> confusion_sets;
+std::vector<confusion_set>& get_confusion_sets()
+{
+	return confusion_sets;
+}
+
 
 string viet_tolower(const string &str);	// hack
 
@@ -783,12 +787,12 @@ string Syllable::to_str() const
 
 strid Syllable::to_id() const
 {
-	return sarch[to_str()];
+	return get_sarch()[to_str()];
 }
 
 strid Syllable::to_std_id() const
 {
-	return sarch[get_dic_syllable(to_str())];
+	return get_sarch()[get_dic_syllable(to_str())];
 }
 
 /*
@@ -889,7 +893,7 @@ string get_dic_syllable(const string &str)
 string get_std_syllable(const string &str)
 {
 	string s = get_dic_syllable(str);
-	if (sarch.in_dict(s) || sarch.in_dict(get_lowercased_syllable(s)))
+	if (get_sarch().in_dict(s) || get_sarch().in_dict(get_lowercased_syllable(s)))
 		return s;
 	else
 		return str;

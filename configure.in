@@ -47,6 +47,8 @@ AC_CONFIG_FILES([Makefile
                  libsrilm/Makefile
                  libvspell/Makefile
                  tests/Makefile
-                 ui/Makefile])
+                 ui/Makefile
+		 ui/cli/Makefile
+		 ui/gtk/Makefile])
 AC_OUTPUT
 

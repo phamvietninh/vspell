@@ -1,6 +1,7 @@
 // -*- coding: viscii -*-
 #include "wfst.h"
 #include "distance.h"
+#include "sentence.h"
 #include <string>
 #include <fstream>
 #include <cmath>
@@ -17,6 +18,8 @@ int main()
 
   cerr << "Loading... ";
   get_root()->load("wordlist.wl");
+  File f("ngram","rt");
+  ngram.read(f);
   cerr << "done" << endl;
 
   sarch.set_blocked(true);
@@ -65,18 +68,22 @@ int main()
   string s;
   while (getline(cin,s)) {
     if (!s.empty()) {
-
+      vector<string> ss;
+      sentences_split(s,ss);
       //sentences.push_back(Sentence(s));
       //Sentence &st = sentences.back();
-      Sentence st(s);
-      st.standardize();
-      st.tokenize();
-      Segmentation seg;
-      Words words;
-      words.construct(st);
-      wfst.segment_best(st,words,seg);
-      cerr << seg << endl;
-      sarch.clear_rest();
+      for (int i = 0;i < ss.size();i ++) {
+	cout << ss[i] << endl;
+	Sentence st(ss[i]);
+	st.standardize();
+	st.tokenize();
+	Segmentation seg;
+	Words words;
+	words.construct(st);
+	wfst.segment_best(st,words,seg);
+	cerr << seg << endl;
+	sarch.clear_rest();
+      }
     }
   }
     

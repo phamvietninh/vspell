@@ -51,7 +51,7 @@ int main(int argc,char **argv)
 	string s;
 	int i,ii,iii,n,nn,nnn,z;
 	int count = 0;
-	NgramStats stats(get_sarch().get_dict(),2);
+	NgramStats stats(get_sarch().get_dict(),3);
 	while (getline(cin,s)) {
 		count ++;
 		if (count % 200 == 0)

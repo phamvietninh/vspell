@@ -687,6 +687,46 @@ char_traits_strid::copy(char_traits_strid::char_type* __s1,
 
 */
 
+bool get_case_syllable_candidates(const char *input,Candidates &output, float v)
+{
+	// There are only two acceptable cases:
+	// 1. The first character is upper case, the rest is lower
+	// 2. All are either lower or upper
+	// if there is some upper case character without following one of these cases, then it's fault.
+	// also, if there is a uppercase word in dictionary, then add it.
+
+	uint i,n = strlen(input);
+	// check for upper-case chars
+	for (i = 0;i < n;i ++)
+		if (viet_toupper(input[i]) == input[i])
+			break;
+
+	if (i >= n || n < 2)
+		return false;
+
+	string s;
+
+	s = input;
+	s[0] = viet_toupper(s[0]);
+	for (i = 1;i < n;i ++)
+		s[i] = viet_tolower(s[i]);
+	if (s != string(input))
+		output.insert(s,v);
+
+	s = input;
+	for (i = 0;i < n;i ++)
+		s[i] = viet_tolower(s[i]);
+	if (s != string(input))
+		output.insert(s,v);
+
+	s = input;
+	for (i = 0;i < n;i ++)
+		s[i] = viet_toupper(s[i]);
+	if (s != string(input))
+		output.insert(s,v);
+	return true;
+}
+
 void get_phonetic_syllable_candidates(const char *input,Candidates &output,float v)
 {
 	vector<confusion_set>& confusion_sets = get_confusion_sets();
@@ -895,8 +935,8 @@ bool Candidates::CandidateComparator::operator()(const std::string &s1,const std
 	float f1,f2;
 	VocabIndex v;
 	v = Vocab_None; 
-	f1 = -get_syngram().wordProb(get_sarch()[get_std_syllable(s1)],&v);
-	f2 = -get_syngram().wordProb(get_sarch()[get_std_syllable(s2)],&v);
+	f1 = -get_syngram().wordProb(get_sarch()[get_std_syllable(get_lowercased_syllable(s1))],&v);
+	f2 = -get_syngram().wordProb(get_sarch()[get_std_syllable(get_lowercased_syllable(s2))],&v);
 	//cerr << f1 << "<>" << f2 << endl;
 	return f1 > f2;	// we want reverse order
 }
@@ -908,8 +948,10 @@ void Candidates::get_list(std::vector<std::string> &v)
 	set<Candidate>::iterator iter;
 	n = 0;
 	for (iter = candidates.begin();iter != candidates.end();++iter)
-		if (get_sarch().in_dict(get_dic_syllable(iter->candidate))) {
-			v[n++] = iter->candidate;
+		if (!get_case_syllable_candidates(iter->candidate.c_str(),*this,iter->priority)) {
+			if (get_sarch().in_dict(get_dic_syllable(get_lowercased_syllable(iter->candidate)))) {
+				v[n++] = iter->candidate;
+			}
 		}
 	v.resize(n);
 	sort(v.begin(),v.end(),CandidateComparator(*this));

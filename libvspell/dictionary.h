@@ -4,6 +4,9 @@
 #ifndef __STRING__
 #include <string>
 #endif
+#ifndef __MAP__
+#include <map>
+#endif
 #include <libsrilm/Vocab.h>
 #include <libsrilm/Ngram.h>
 #include "debug.h"
@@ -16,6 +19,9 @@ class WordNode;
 typedef WordNode* WordNodePtr;
 
 typedef VocabIndex strid;				// for easy migration
+#ifndef __MYSTRING_H__
+#include "mystring.h"
+#endif
 
 typedef struct {
 	strid id;											// real id
@@ -72,6 +78,7 @@ float get_word(const std::string &word);
 #define POEM_ID 5
 #define NUMBER_ID 6
 StringArchive& get_sarch();
+const std::map<strid,strid_string>& get_pnames();
 Ngram& get_ngram();
 Ngram& get_syngram();
 strid get_id(int id);

@@ -15,7 +15,6 @@
 #include <libsrilm/SArray.cc>
 #endif
 
-
 #define ED_THRESOLD1 1
 #define ED_THRESOLD2 2
 
@@ -34,7 +33,7 @@ static strid unk_id,start_id,stop_id,punct_id,proper_name_id,poem_id,number_id;
 static StringArchive sarch;
 static Ngram ngram(sarch.get_dict(),3);
 static Ngram syngram(sarch.get_dict(),2);
-
+static map<strid,strid_string> pnames;
 
 bool syllable_init();
 void viet_init();
@@ -217,6 +216,11 @@ void WordNode::add_entry(vector<string> toks)
 	//cerr << endl;
 	node->set_prob(atof(toks[2].c_str()));
 
+	string newword = word;
+	transform(newword.begin(),newword.end(),newword.begin(),viet_tolower);
+	if (newword != word) {
+		pnames[sarch[newword]] += sarch[word];
+	}
 	/*
 		if (csyllables != syllables) {
 		transform(word.begin(),word.end(),word.begin(),viet_tolower);
@@ -617,6 +621,12 @@ strid get_id(int id)
 	case NUMBER_ID: return number_id;
 	default: return unk_id;
 	}
+}
+
+
+const std::map<strid,strid_string>& get_pnames()
+{
+	return pnames;
 }
 
 /*

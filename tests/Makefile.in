@@ -64,6 +64,9 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LDFLAGS = @LDFLAGS@
+LEX = @LEX@
+LEXLIB = @LEXLIB@
+LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LN_S = @LN_S@
@@ -122,7 +125,7 @@ INCLUDES = -I$(top_builddir)/libsrilm  -I$(top_builddir)/libvspell @VSPELL_CFLAG
 bin_PROGRAMS = dictionary-test syllable-test wfst-train\
 	distance-test sentence-test wfst-test\
 	section-test all-words-test posgen-test\
-	segm-test
+	segm-test tokenize-test
 
 
 all_words_test_SOURCES = all-words-test.cpp
@@ -145,6 +148,8 @@ posgen_test_SOURCES = posgen-test.cpp
 posgen_test_LDADD = $(LDADD)
 segm_test_SOURCES = segm-test.cpp
 segm_test_LDADD = $(LDADD)
+tokenize_test_SOURCES = tokenize-test.cpp
+tokenize_test_LDADD = $(LDADD)
 subdir = tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -153,7 +158,8 @@ CONFIG_CLEAN_FILES =
 bin_PROGRAMS = dictionary-test$(EXEEXT) syllable-test$(EXEEXT) \
 	wfst-train$(EXEEXT) distance-test$(EXEEXT) \
 	sentence-test$(EXEEXT) wfst-test$(EXEEXT) section-test$(EXEEXT) \
-	all-words-test$(EXEEXT) posgen-test$(EXEEXT) segm-test$(EXEEXT)
+	all-words-test$(EXEEXT) posgen-test$(EXEEXT) segm-test$(EXEEXT) \
+	tokenize-test$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 
 am_all_words_test_OBJECTS = all-words-test.$(OBJEXT)
@@ -196,6 +202,11 @@ syllable_test_OBJECTS = $(am_syllable_test_OBJECTS)
 syllable_test_DEPENDENCIES = $(top_builddir)/libvspell/libvspell.a \
 	$(top_builddir)/libsrilm/libsrilm.a
 syllable_test_LDFLAGS =
+am_tokenize_test_OBJECTS = tokenize-test.$(OBJEXT)
+tokenize_test_OBJECTS = $(am_tokenize_test_OBJECTS)
+tokenize_test_DEPENDENCIES = $(top_builddir)/libvspell/libvspell.a \
+	$(top_builddir)/libsrilm/libsrilm.a
+tokenize_test_LDFLAGS =
 am_wfst_test_OBJECTS = wfst-test.$(OBJEXT)
 wfst_test_OBJECTS = $(am_wfst_test_OBJECTS)
 wfst_test_DEPENDENCIES = $(top_builddir)/libvspell/libvspell.a \
@@ -218,6 +229,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/segm-test.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/sentence-test.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/syllable-test.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/tokenize-test.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/wfst-test.Po ./$(DEPDIR)/wfst-train.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -228,9 +240,10 @@ DIST_SOURCES = $(all_words_test_SOURCES) $(dictionary_test_SOURCES) \
 	$(distance_test_SOURCES) $(posgen_test_SOURCES) \
 	$(section_test_SOURCES) $(segm_test_SOURCES) \
 	$(sentence_test_SOURCES) $(syllable_test_SOURCES) \
-	$(wfst_test_SOURCES) $(wfst_train_SOURCES)
+	$(tokenize_test_SOURCES) $(wfst_test_SOURCES) \
+	$(wfst_train_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(all_words_test_SOURCES) $(dictionary_test_SOURCES) $(distance_test_SOURCES) $(posgen_test_SOURCES) $(section_test_SOURCES) $(segm_test_SOURCES) $(sentence_test_SOURCES) $(syllable_test_SOURCES) $(wfst_test_SOURCES) $(wfst_train_SOURCES)
+SOURCES = $(all_words_test_SOURCES) $(dictionary_test_SOURCES) $(distance_test_SOURCES) $(posgen_test_SOURCES) $(section_test_SOURCES) $(segm_test_SOURCES) $(sentence_test_SOURCES) $(syllable_test_SOURCES) $(tokenize_test_SOURCES) $(wfst_test_SOURCES) $(wfst_train_SOURCES)
 
 all: all-am
 
@@ -289,6 +302,9 @@ sentence-test$(EXEEXT): $(sentence_test_OBJECTS) $(sentence_test_DEPENDENCIES)
 syllable-test$(EXEEXT): $(syllable_test_OBJECTS) $(syllable_test_DEPENDENCIES) 
 	@rm -f syllable-test$(EXEEXT)
 	$(CXXLINK) $(syllable_test_LDFLAGS) $(syllable_test_OBJECTS) $(syllable_test_LDADD) $(LIBS)
+tokenize-test$(EXEEXT): $(tokenize_test_OBJECTS) $(tokenize_test_DEPENDENCIES) 
+	@rm -f tokenize-test$(EXEEXT)
+	$(CXXLINK) $(tokenize_test_LDFLAGS) $(tokenize_test_OBJECTS) $(tokenize_test_LDADD) $(LIBS)
 wfst-test$(EXEEXT): $(wfst_test_OBJECTS) $(wfst_test_DEPENDENCIES) 
 	@rm -f wfst-test$(EXEEXT)
 	$(CXXLINK) $(wfst_test_LDFLAGS) $(wfst_test_OBJECTS) $(wfst_test_LDADD) $(LIBS)
@@ -310,6 +326,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/segm-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sentence-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syllable-test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tokenize-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wfst-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wfst-train.Po@am__quote@
 

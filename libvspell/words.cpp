@@ -17,12 +17,13 @@ using namespace std;
 */
 struct WordState {
 
-	/** 
+	/**
 		 the currently processing node
 	 */
 	WordNode::DistanceNode dnode;
 
 	int fuzid;
+	int pos;
 
 	WordState(const WordNode::DistanceNode &n):dnode(n),fuzid(0) {}
 };
@@ -36,103 +37,74 @@ void Words::construct(const Sentence &sent)
 {
 	Words &w = *this;
 	int i,n,ii,nn,k,nnn,iii;
-	vector<strid> syll;
+	vector<bool> marks;
 	set<WordEntry> we;
 
 	//cerr << "construct\n";
 
 	w.st = &sent;
 
-	vector<WordState> states;
-	vector<WordState> old_states(states);
-	states.reserve(10);
-	old_states.reserve(10);
+	boost::scoped_ptr<vector<WordState> > states1(new vector<WordState>);
+	boost::scoped_ptr<vector<WordState> > states2(new vector<WordState>);
+	states1->reserve(10);
+	states2->reserve(10);
 
 	n = sent.get_syllable_count();
+	marks.resize(n);
 
-	syll.resize(n);
 	for (i = 0;i < n;i ++) {
-		syll[i] = sent[i].get_cid();
-		//cerr << syll[i] << " ";
+
+		states1->push_back(WordNode::DistanceNode(get_root()));
+		states1->back().pos = i;
+		states2->clear();
+
+		nn = states1->size();
+		bool has_words = false;
+		for (ii = 0;ii < nn;ii ++) {
+			const WordState &ws = (*states1)[ii];
+
+			WordNodePtr exact_node = ws.dnode.node->get_next(sent[i].get_cid());
+			vector<WordNode::DistanceNode> nodes;
+			ws.dnode.node->fuzzy_get_next(sent[i].get_cid(),nodes);
+			if (exact_node && 
+					find(nodes.begin(),nodes.end(),exact_node) == nodes.end())
+				nodes.push_back(exact_node);
+
+			nnn = nodes.size();
+			for (iii = 0;iii < nnn;iii ++) {
+				states2->push_back(ws);	// inherit from the current state
+				WordState &ws2 = states2->back();
+				ws2.dnode = nodes[iii];
+				if (nodes[iii].node != exact_node)
+					ws2.fuzid |=  1 << k;
+				
+				// get completed words
+				if (ws2.dnode.node->get_prob() >= 0) {
+					WordEntry e;
+					e.pos = ws2.pos;
+					e.len = i-ws2.pos+1;
+					e.fuzid = ws2.fuzid;
+					e.node = ws2.dnode;
+					we.insert(e);
+					for (int k = ws2.pos; k <= i;k ++)
+						marks[k] = true;
+				}
+			}
+		}
+		
+		states1.swap(states2);
 	}
-	//cerr << endl;
 
-	for (i = 0;i < n;i ++) {			// pos
-
-		// finding all possible words started at the i-th syllable.
-
-		// init states with root node
-		states.clear();
-		states.push_back(WordNode::DistanceNode(get_root()));
-
-		for (k = 0;k+i < n && !states.empty(); k ++) { // length of k
-			// save states
-			old_states = states;
-
-			/*
-			cerr << "State:" << i << " " << k << endl;
-			int jj,jnn = states.size();
-			for (jj = 0;jj < jnn;jj ++) {
-				cerr << sarch[states[jj].dnode.node->get_syllable()] << endl;
-				if (states[jj].dnode.node != wl) {
-					states[jj].dnode.node->dump_next(cerr);
-					cerr << endl;
-				}
-			}
-			*/
-
-			// clear states, ready for new states
-			states.clear();
-
-			// get next new states -> states
-			// those in old_states which has reached end will be removed from states
-			nn = old_states.size();
-			bool has_words = false;
-			for (ii = 0;ii < nn;ii ++) {
-				WordNode::DistanceNode &state = old_states[ii].dnode;
-				WordNodePtr exact_node = state.node->get_next(syll[i+k]);
-				vector<WordNode::DistanceNode> nodes;
-				//nodes.clear();
-				//if (exact_node)
-				//nodes.push_back(exact_node);
-				//cerr << *exact_node << endl;
-				state.node->fuzzy_get_next(syll[i+k],nodes);
-				if (exact_node && 
-						find(nodes.begin(),nodes.end(),exact_node) == nodes.end())
-					nodes.push_back(exact_node);
-				nnn = nodes.size();
-				for (iii = 0;iii < nnn;iii ++) {
-					states.push_back(old_states[ii]);
-					states.back().dnode = nodes[iii];
-					if (nodes[iii].node != exact_node)
-						states.back().fuzid |=  1 << k;
-
-					// get completed words
-					if (states.back().dnode.node->get_prob() >= 0) {
-						WordEntry e;
-						e.pos = i;
-						e.len = k+1;
-						e.fuzid = states.back().fuzid;
-						e.node = states.back().dnode;
-						we.insert(e);
-						has_words = true;
-						//winfo.fuzzy_match.push_back(states[ii]);
-					}
-				}
-			}
-
-
-			// this is an unknown syllable, we presume this is an unknown word
-			if (k == 0 && !has_words) {
-				WordEntry e;
-				e.pos = i;
-				e.len = 1;
-				e.fuzid = 0;
-				e.node = get_root()->get_next(unk_id);
-				we.insert(e);
-			}
-		}	// end of k
-	}	// end of i
+	// make sure that one can go from source to destination, without gaps.
+	for (i = 0;i < n;i ++)
+		if (!marks[i]) { 
+			WordEntry e;
+			e.pos = i;
+			e.len = 1;
+			e.fuzid = 0;
+			e.node = get_root()->get_next(unk_id);
+			we.insert(e);
+		}
 
 	//copy(we.begin(),we.end(),ostream_iterator<WordEntry>(cerr));
 	// copy to real _we

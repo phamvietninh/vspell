@@ -241,7 +241,7 @@ public:
   //  Syllable& operator[] (int i) { return syllables[i]; }
   bool is_contiguous(unsigned int i);		// i & i+1 is contiguous ?
   void merge(unsigned int i);
-	
+	friend std::ostream& operator <<(std::ostream &os, const Sentence &st);
 };
 
 typedef Sentence* SentenceRef;

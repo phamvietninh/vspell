@@ -39,7 +39,7 @@ public:
 	VocabString operator[] (strid i);
 	bool in_dict(VocabString s);
 	bool in_dict(const std::string &s) { return in_dict(s.c_str()); }
-	bool in_dict(strid i) { return dict.getWord(i) != 0; }
+	bool in_dict(strid i) { return i < dict.numWords(); }
 
 	void dump();
 };

@@ -1,6 +1,7 @@
 #include "sentence.h"						// -*- tab-width: 2 -*-
 #include "spell.h"
 #include "tokenize.h"
+#include <boost/format.hpp>
 using namespace std;
 
 void sentences_split(const string &_input,vector<string> &output)
@@ -173,7 +174,8 @@ void Sentence::tokenize()
 
 			if (jj < nn) {							// a token
 				string &s = tokens[i].value;
-				sy.cid = sy.id = sarch[s];
+				sy.id = sarch[s];
+				sy.cid = sarch[get_std_syllable(s)];
 				syllables.push_back(sy);
 			}
 		}
@@ -188,27 +190,13 @@ void Sentence::tokenize()
 
 ostream& operator <<(ostream &os, const Sentence &st)
 {
-	//int cc,i,n = st.get_syllable_count();
-	/*
-		for (i = 0;i < n;i ++) {
-		cout << *st[i] << " ";
-		if (items[i].flags & SEGM_SEPARATOR)
-		cout << "| ";
-		}
-		cout << endl;
-	*/
-	/*
+	int cc,i,n = st.get_syllable_count();
 	for (cc = i = 0;i < n;i ++) {
-		int c = st.words[st[i]].node(st).node->get_syllable_count();
-		for (int k = 0;k < c;k ++) {
-			if (k) os << "_";
-			os << sarch[st[cc+k].get_id()];
-		}
-		cc += c;
-		os << " ";
+		if (i) os << " ";
+		os << boost::format("%s(%d-%d[%s])") % sarch[st[i].id] % st[i].id % st[i].cid % sarch[st[i].cid];
 	}
-	os << prob << endl;
-	*/
+	//os << st.prob << endl;
+	
 	return os;
 }
 

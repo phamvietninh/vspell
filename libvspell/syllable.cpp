@@ -751,19 +751,21 @@ bool Syllable::parse(const char *str)
 void Syllable::print()
 {
 	char **p;
-	for (int i = 0;i < 4;i ++) {
+	char *diacritics[] = {"_","'","`","?","~","."};
+	for (int i = 0;i < 5;i ++) {
 		if (components[i] < 0) 
-			cerr << "_";
+			cout << "_";
 		else {
 			switch (i) {
 			case First_Consonant: p = first_consonants; break;
 			case Last_Consonant: p = last_consonants; break;
 			case Padding_Vowel: p = padding_vowels; break;
 			case Vowel: p = vowels; break;
+			case Diacritic: p = diacritics; break;
 			}
-			cerr << p[components[i]];
+			cout << p[components[i]];
 		}
-		cerr << " ";
+		cout << " ";
 	}
 }
 
@@ -863,7 +865,7 @@ bool viet_ispunct(int ch)
 	return cat_table[ch] & CAT_PUNCT;
 }
 
-string get_std_syllable(const string &str)
+string get_dic_syllable(const string &str)
 {
 	uint i,n = str.size();
 
@@ -877,6 +879,15 @@ string get_std_syllable(const string &str)
 		}
 	}
 	return '0'+str;
+}
+
+string get_std_syllable(const string &str)
+{
+	string s = get_dic_syllable(str);
+	if (sarch.in_dict(s))
+		return s;
+	else
+		return str;
 }
 
 string get_lowercased_syllable(const string &str)

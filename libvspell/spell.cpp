@@ -523,7 +523,8 @@ bool Text::word_check()
 				BranchNode *branch = warch.get_root();
 				LeafNode* leaf;
 				for (ii = 0;ii < len && branch;ii ++)
-					branch = branch->get_branch(st[seg[i].pos+ii].get_cid());
+					// follow the lowercase branch
+					branch = branch->get_branch(sarch[get_lowercased_syllable(sarch[st[seg[i].pos+ii].get_cid()])]);
 
 				if (branch && (leaf = branch->get_leaf(sarch["<mainleaf>"])) != NULL) {
 					sylls.clear();

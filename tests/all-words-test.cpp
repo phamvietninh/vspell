@@ -54,11 +54,17 @@ int main(int argc,char **argv)
 	//nodes.insert(wes[i].node.node->get_id());
 	  cout << "\tn" << i << " [label=\"";
 	  std::vector<strid> syll;
-	  wes[i].node.node->get_syllables(syll);
-	  for (std::vector<strid>::size_type ii = 0;ii < syll.size();ii ++) {
-	    if (i)
-	      cout << " ";
-	    cout << sarch[syll[ii]];
+	  if (wes[i].node.node) {
+	    wes[i].node.node->get_syllables(syll);
+	    for (std::vector<strid>::size_type ii = 0;ii < syll.size();ii ++) {
+	      if (i)
+		cout << " ";
+	      Syllable sy;
+	      if (sy.parse(sarch[syll[ii]]))
+		cout << sy.to_str();
+	      else
+		cout << sarch[syll[ii]];
+	    }
 	  }
 	  cout << "\"];" << endl;
 	  //}
@@ -70,7 +76,7 @@ int main(int argc,char **argv)
 
 	if (we.pos == 0)
 	  cout << "\thead -> n" << we.id << ";" << endl;
-	if (we.pos+we.len => w2.get_word_count())
+	if (we.pos+we.len >= w2.get_word_count())
 	  cout << "\tn" << we.id << " -> tail;" << endl;
 	else {
 	  const WordEntryRefs &wers = w2.get_we(we.pos+we.len);

@@ -1,0 +1,23 @@
+digraph syllable {
+	rankdir=LR
+	fontname=arial;
+	head [label=""];
+	tail [label=""];
+	style=dashed;
+	n1 [label="Âm đầu"];
+	subgraph cluster_syllable {
+		label="Vần";
+		n2 [label="Âm đệm"];
+		n3 [label="Âm chính", shape=box];
+		n4 [label="Âm cuối"];
+	}
+	head -> n1;
+	head -> n2;
+	head -> n3;
+	n1 -> n2;
+	n1 -> n3;
+	n2 -> n3;
+	n3 -> n4;
+	n3 -> tail;
+	n4 -> tail;	
+}

@@ -1,47 +1,82 @@
 digraph wordlattice {
-	rankdir=LR
+	rankdir=LR;
 	fontname=arial;
-	head [label="head"];
-	tail [label="tail"];
+	spline=true;
 	style=invis;
-	subgraph cluster_l1 {
-		hoc1 [label="học"];
-		hocsinh1 [label="học sinh"];
+
+	head;
+	tail;
+	subgraph cluster_z1 {
+	subgraph cluster_n1 {
+	style=dashed;
+	n0 [label="học"];
+	n1 [label=" hộc"];
 	}
-	subgraph cluster_l2 {
-		subgraph cluster_l21 {
-		style=dashed;
-		sinh2 [label="sinh"];
-		xinh2 [label="xinh"];
-		}
-		sinhhoc2 [label="sinh học"];
+	n2 [label=" học sinh"];
 	}
-	subgraph cluster_l3 {
-		hoc3 [label="học"];
-		hocsinh3 [label="học sinh"];
+	subgraph cluster_z2 {
+	subgraph cluster_n2 {
+	style=dashed;
+	n3 [label=" sinh"];
+	n4 [label=" xinh"];
 	}
-	subgraph cluster_l4 {
-		subgraph cluster_l41 {
-		style=dashed;
-		sinh4 [label="sinh"];
-		xinh4 [label="xinh"];
-		}
-		sinhhoc4 [label="sinh học"];
+	n5 [label=" sinh học"];
 	}
-	subgraph cluster_l5 {
-		hoc5 [label="học"];
+	subgraph cluster_z3 {
+	subgraph cluster_n3 {
+	style=dashed;
+	n6 [label=" học"];
+	n7 [label=" hộc"];
 	}
-	head -> hoc1;
-	head -> hocsinh1;
-	hoc1 -> {sinh2 sinhhoc2 xinh2};
-	hocsinh1 -> { hoc3 hocsinh3};
-	sinh2 -> { hoc3 hocsinh3};
-	xinh2 -> {hoc3 hocsinh3};
-	sinhhoc2 -> {sinh4 xinh4 sinhhoc4};
-	hoc3 -> {sinh4 sinhhoc4 xinh4};
-	hocsinh3 -> hoc5;
-	sinh4 -> hoc5;
-	xinh4 -> hoc5;
-	sinhhoc4 -> tail;
-	hoc5 -> tail;
+	n8 [label=" học sinh"];
+	}
+	subgraph cluster_z4 {
+	subgraph cluster_n4 {
+	style=dashed;
+	n9 [label=" sinh"];
+	n10 [label=" xinh"];
+	}
+	n11 [label=" sinh học"];
+	}
+	subgraph cluster_n5 {
+	style=dashed;
+	n12 [label=" học"];
+	n13 [label=" hộc"];
+	}
+	head -> n0;
+	n0 -> n3;
+	n0 -> n4;
+	n0 -> n5;
+	head -> n1;
+	n1 -> n3;
+	n1 -> n4;
+	n1 -> n5;
+	head -> n2;
+	n2 -> n6;
+	n2 -> n7;
+	n2 -> n8;
+	n3 -> n6;
+	n3 -> n7;
+	n3 -> n8;
+	n4 -> n6;
+	n4 -> n7;
+	n4 -> n8;
+	n5 -> n9;
+	n5 -> n10;
+	n5 -> n11;
+	n6 -> n9;
+	n6 -> n10;
+	n6 -> n11;
+	n7 -> n9;
+	n7 -> n10;
+	n7 -> n11;
+	n8 -> n12;
+	n8 -> n13;
+	n9 -> n12;
+	n9 -> n13;
+	n10 -> n12;
+	n10 -> n13;
+	n11 -> tail;
+	n12 -> tail;
+	n13 -> tail;
 }

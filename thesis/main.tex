@@ -230,7 +230,7 @@ từ, biểu diễn dấu thanh điệu bằng ký tự đầu tiên trong từ.
 
 Bước này sẽ gán $fid$ là $sid$.
 
-\subsubsection{Chữ viết hoa NOTIMPL}
+\subsubsection{Chữ viết hoa UNIMPL}
 
 Xử lý chữ viết hoa. Chữ viết hoa dùng để biểu diễn tên riêng, hoặc
 dùng cho chữ đứng đầu câu. Do đó cần phân biệt chữ đầu câu có phải là
@@ -257,7 +257,9 @@ phần Phát sinh từ thay thế.
 
 Phần này được thực hiện bên trong phần \textbf{Phát sinh từ thay thế}.
 
-\begin{algo}
+\begin{algo} Xử lý chữ hoa
+
+\label{algo:propername}
   \begin{enumerate}
   \item Lấy 1 chữ. Kiểm tra ký tự đầu tiên xem có phải ký tự hoa hay
     không.
@@ -274,7 +276,7 @@ Phần này được thực hiện bên trong phần \textbf{Phát sinh từ tha
   \end{enumerate}
 \end{algo}
 
-\subsubsection{Từ láy NOTIMPL}
+\subsubsection{Từ láy UNIMPL}
 
 Phần này được thực hiện bên trong phần \textbf{Phát sinh từ thay thế}.
 
@@ -284,7 +286,9 @@ pháp có thể áp dụng như của LV anh Toàn. Nhưng những ``từ láy''
 nên áp dụng giải pháp ``80 từ láy, 20 từ thường''. Không biết được hay
 không, phiêu quá \ldots
 
-\begin{algo}
+\begin{algo} Xử lý từ láy
+
+\label{algo:poem}
   \begin{enumerate}
   \item Lấy 2 chữ liên tiếp.
   \item Kiểm tra quy tắt từ láy.
@@ -298,7 +302,7 @@ Cách hình thành từ láy của con người như thế nào ?? Từ láy th�
 liền với hình tượng, cảm giác gì đó. Làm sao người ta có thể cảm nhận
 được một từ có phải là từ láy hay không??
 
-\subsubsection{Từ nước ngoài, các ký hiệu, \ldots NOTIMPL}
+\subsubsection{Từ nước ngoài, các ký hiệu, \ldots UNIMPL}
 
 Coi như từ sai chính tả.
 Xử lý tiếng nước ngoài, các ký hiệu chuyên ngành, các từ viết tắt. Do
@@ -348,13 +352,13 @@ sinh. Good or bad? Hmmm... Làm sao để làm? Hmmm Hmmm
 
 
 
-\subsubsection{Lỗi bàn phím NOTIMPL}
+\subsubsection{Lỗi bàn phím UNIMPL}
 
 Sơ đồ bố trí của bàn phím EN-US được dùng. Do thông thường chỉ gặp một
 lỗi này mỗi từ, nên chương trình chỉ lưu danh sách những phím lân cận
 với từng phím, dựa trên bàn phím EN-US. Ví dụ: $A \rightarrow (S,Q,W,X,Z)$.
 
-\subsubsection{Lỗi không rõ nguyên nhân NOTIMPL}
+\subsubsection{Lỗi không rõ nguyên nhân UNIMPL}
 
 \label{algo:ed}
 Lỗi này dựa vào {\em độ đo khoảng cách hiệu chỉnh} được đề cập
@@ -389,6 +393,7 @@ $ed(X[i+1],Y[i])$, ta có thể tính từ lần lượt từ thấp đến cao 
 (2,1), rồi đường chéo (1,3),(2,2),(3,1) \ldots
 
 \begin{algo} Tính hàm ed()
+
   \begin{enumerate}
   \item Đặt (0,0) là 0 nếu x[0] = y[0] hoặc 1 nếu ngược lại.
   \item Đặt (0,j) là j
@@ -455,7 +460,7 @@ duyệt qua để tìm ra tất cả các từ có thể có trong đoạn. Sau 
 các từ này lại. 
 
 XXXX. thuật toán tạo lưới từ.
-\begin{algo} Tạo lưới từ
+\begin{algo} Tạo lưới từ (cơ bản)
 
 Cho câu S có n tiếng. State là đỉnh, còn ``nút i'' là cạnh. Ta duyệt
 lần lượt qua các cạnh để tìm  ra các từ. Duyệt i từ 1 đến n:
@@ -465,6 +470,7 @@ lần lượt qua các cạnh để tìm  ra các từ. Duyệt i từ 1 đến 
 \item Nếu không tiến được thì xóa state.
 \item Nếu hoàn tất một từ thì lưu lại.
 \end{itemize}
+\end{algo}
 
 Sau khi hoàn tất, đánh dấu tất cả các chữ xuất hiện trong các từ tìm
 được. Do từ điển không hoàn chỉnh, và do các ký hiệu, từ viết tắt
@@ -473,8 +479,12 @@ Sau khi hoàn tất, đánh dấu tất cả các chữ xuất hiện trong các
 thêm các từ ``UNK'' sẽ đảm bảo tạo ra một đồ thị liên thông. Nếu đồ
 thị không liên thông, ta không thể áp dụng thuật toán tìm đường đi
 ngắn nhất.
-  
-\end{algo}
+
+Thuật toán cũ---tự động tạo UNK nếu không tìm được từ 1-chữ tại
+một vị trí bất kỳ. Thuật toán cũ tạo ra một đường liên thông các từ
+1-chữ xuyên suốt câu. Thuật toán mới cho thấy sự không hoàn chỉnh của
+wordlist. Wordlist thiếu khá nhiều những từ 1-chữ \ldots{} Cần 1
+wordlist tốt.
 
 Ngoài lưới từ, ta có thể tạo lưới 2-từ từ lưới từ. Lưới 2-từ tương tự
 như lưới từ, tuy nhiên mỗi nút là một cặp 2 từ đi liền nhau trong câu. Thuật toán
@@ -778,7 +788,7 @@ cần thao tác trên chuỗi, ta sẽ thông qua id để lấy chuỗi gốc.
 Các chuỗi được lưu trong một associative array và một array. Một dùng
 để ánh xạ chuỗi sang id. Một để ánh xạ id sang chuỗi.
 
-Có thể dùng lexical tree để giảm thiểu không gian lưu chuỗi (NOTIMPL)
+Có thể dùng lexical tree để giảm thiểu không gian lưu chuỗi (UNIMPL)
 
 Mỗi chuỗi có thể có nhiều id: id gắn với chuỗi gốc ({\em id}), id gắn
 với chuỗi gốc đã chuẩn hóa ({\em sid}), id gắn với chuỗi viết thường
@@ -910,6 +920,7 @@ Chương trình được lặp đi lặp lại nhiều lần.
 \end{itemize}
 
 \section{Hướng phát triển}
+\label{sec:todo}
 
 Viết lại từ đầu :-D
 
@@ -928,6 +939,7 @@ Viết lại từ đầu :-D
 \item Ngoài cách đang làm, còn hướng nào khác không? Liệu speech
   recognition/OCR có ý kiến nào hay không? Cần tìm hiểu mọi thứ liên
   quan đến ``error tolerance''
+\item \verb#Syllable::to_str()# output sai từ ``của''.
 \end{itemize}
 
 

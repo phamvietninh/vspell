@@ -26,9 +26,10 @@ int main()
     Sentence st(s);
     st.standardize();
     st.tokenize();
-    Words words;
+    Words words,w2;
     words.construct(st);
-    cerr << words;
+    w2.based_on(words);
+    cout << w2;
     sarch.clear_rest();
   }
     

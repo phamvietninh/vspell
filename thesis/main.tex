@@ -1,4 +1,4 @@
-\documentclass[a4paper,oneside,12pt]{book} % -*- coding: vietnamese-utf8 mode: latex -*-
+\documentclass[a4paper,oneside,14pt]{extbook} % -*- coding: vietnamese-utf8 mode: latex -*-
 \usepackage[utf8]{vietnam}
 \renewcommand{\rmdefault}{utm}
 \renewcommand{\sfdefault}{uhv}
@@ -11,15 +11,24 @@
 \usepackage{tabularx}
 \usepackage{footnote}
 \usepackage{tipa}
-\usepackage{subfigure}
+%\usepackage{subfigure}
+%\usepackage{longtable}
 
-\usepackage{theorem}
-\theoremstyle{break}
-\newtheorem{algo}{Thuật toán}
+%\usepackage{theorem}
+%\theoremstyle{break}
+%\newtheorem{algo}{Thuật toán}
 
-\setlength{\parskip}{1.6ex plus 0.7ex minus 0.6ex}
+%\setlength{\parskip}{1.6ex plus 0.7ex minus 0.6ex}
 
 \setcounter{minitocdepth}{4}
+
+%\usepackage{tocloft}
+%\newcommand{\listalgo}{Danh sách thuật toán}
+%\newlistof{algo}{algo}{\listalgo}
+\usepackage{float} % fancy floats
+\floatstyle{boxed}
+\newfloat{algo}{htbp}{alg}[chapter]
+\floatname{algo}{Thuật toán}
 
 \newcommand{\note}[1]{\underline{#1}}
 \newcommand{\comment}[1]{}
@@ -31,22 +40,23 @@
 \dominitoc
 %\doparttoc
 \maketitle
+%\large
 
 \begin{titlepage}
   \begin{center}
     \Large Lời cảm ơn
   \end{center}
-Xin chân thành cám ơn TS. Đinh Điền và các thành viên trong nhóm VCL
-đã hỗ trợ hoàn thành luận văn này.
+  Xin chân thành cám ơn TS. Đinh Điền và các thành viên trong nhóm VCL
+  đã hỗ trợ hoàn thành luận văn này.
 \begin{flushright}
   Nguyễn Thái Ngọc Duy
 \end{flushright}
 \end{titlepage}
 
 \tableofcontents
-%\listoffigures
-%\listoftables
-%\large%
+\listoffigures
+\listoftables
+\listof{algo}{Danh sách thuật toán}
 
 %% \chapter{Giới thiệu}
 %% \label{cha:intro}
@@ -1478,6 +1488,64 @@ nhau. Nhưng chủ yếu vẫn được phân loại từ quan điểm người 
 năng phát hiện lỗi sai, và khả năng đề nghị những từ thay thế cho lỗi
 sai đó.
 
+\subsection{Phân loại lỗi chính tả}
+
+Có nhiều cách phân loại lỗi khác nhau. Tuy nhiên, xét theo quan điểm của
+chương trình bắt lỗi chính tả thì lỗi chính tả có thể phân làm hai
+loại là lỗi non-word và lỗi real-word (được sử dụng trong~\cite{Tuoi}):
+\begin{itemize}
+\item Lỗi non-word là lỗi tạo ra từ sai, hoàn toàn không có trong từ
+  điển. Đây là loại lỗi dễ phát hiện. (Ví dụ, ``hoa2'',
+  ``nhưg''~\ldots)
+\item Lỗi real-word là lỗi chính tả mà từ/tiếng đó có trong từ điển. Nếu
+  không dựa vào ngữ cảnh chung quanh thì không thể xác định đó có phải
+  là lỗi chính tả hay không. (Ví dụ, ``Anh ta là một người bàng
+  quang''--- từ ``bàng quang'' không đúng, nhưng vẫn có trong từ
+  điển). Đây là loại lỗi rất khó nhận ra và xử lý.
+\end{itemize}
+
+Ngoài ra có thể phân loại lỗi theo nguồn gốc phát sinh lỗi. Theo cách
+phân loại này, có hai loại lỗi chiếm đa số là lỗi phát âm sai và lỗi
+nhập sai.
+\begin{itemize}
+\item Lỗi phát âm sai.
+  Lỗi này do sự nhầm lẫn giữa cách đọc và cách
+  viết giữa những từ đồng âm hoặc gần với nhau. Với tiếng Việt, do có
+  nhiều khác biệt cách phát âm giữa các vùng trong khi hệ thống chữ
+  viết dựa trên hệ thống phát âm tiếng Hà Nội, nên dễ dẫn đến các lỗi
+  sai loại này.
+
+\item Lỗi nhập sai. 
+  Lỗi gây ra do gõ sai phím, gõ sót phím hoặc dư phím.
+
+\item Các lỗi khác.
+  Ngoài hai loại lỗi trên, còn có nhiều nguyên nhân khác dẫn đến lỗi
+  chính tả. Một trong những nguyên nhân đó là lỗi dùng từ sai (do hiểu
+  sai, hoặc không hiểu rõ cách dùng từ). Đây thực chất thuộc về lỗi từ
+  vựng, nhưng đôi khi người dùng lại đòi hỏi trình bắt lỗi chính tả phải
+  tìm ra những lỗi này.
+  
+  Ngoài lỗi dùng từ sai, còn có những lỗi phát sinh do máy móc. Hai công
+  cụ liên quan đến xử lý văn bản và dễ gây ra lỗi chính tả là nhận dạng
+  tiếng nói và nhận dạng chữ viết. Đối với nhận dạng tiếng nói, lỗi
+  thường gặp giống với dạng lỗi phát âm sai. Tuy nhiên, đối với một số
+  ngôn ngữ như tiếng Anh --- mỗi từ gồm nhiều âm tiết --- thì có thể gây
+  ra lỗi tách từ sai. Đối với nhận dạng văn bản, lỗi chủ yếu do sự giống
+  nhau giữa các chữ cái khi viết. Thông thường, bản thân các công cụ này
+  cũng được cài đặt một trình bắt lỗi chính tả tự động (dạng đơn giản
+  hoặc phức tạp) nhằm giảm thiểu các lỗi chính tả.
+\end{itemize}
+
+%\subsection{Phân loại lỗi}
+
+\noindent Theo \cite{Chang} thì lỗi bao gồm:
+\begin{itemize}
+\item Giống phiên âm
+\item Giống hình dạng chữ viết
+\item Giống nghĩa
+\item Giống cách gõ
+\end{itemize}
+
 \subsection{Phát hiện lỗi chính tả}
 
 Giải pháp đơn giản để phát hiện lỗi chính tả là dùng một cấu trúc dữ
@@ -1537,7 +1605,7 @@ cũng khá phức tạp. Ngoài ra, đôi khi các chữ được viết hoa ho�
 
 Thuật toán để xử lý trường hợp chữ hoa, chữ thường có thể được mô tả
 như sau:
-\begin{algo}[Xử lý chữ hoa, chữ thường]
+\begin{algo}\caption{Xử lý chữ hoa, chữ thường}
 \begin{enumerate}
 \item Đặt $w_t$ là chữ viết thường của $w$.
 \item Đặt $c$ là kết quả tìm kiếm $w_t$.
@@ -1553,6 +1621,7 @@ như sau:
 
 
 \section{Lập danh sách từ đề nghị}
+\label{sec:candidate-list}
 
 Sau khi phát hiện ra từ bị sai chính tả, ta cần đưa ra một số từ ``gần
 giống'' có khả năng thay thế từ bị sai chính tả. Trong trường hợp lý
@@ -1764,7 +1833,7 @@ chính giữa cửa sổ, xem các danh từ còn lại trong cửa sổ là ng�
 cảnh. Đặt cửa sổ các danh từ là $W$ và danh từ chính giữa cửa sổ là
 $w$, ta có:
 
-\begin{algo}[Khử nhập nhằng danh từ dùng CD]
+\begin{algo}\caption{Khử nhập nhằng danh từ dùng CD}
   \begin{enumerate}
   \item tree := compute\_tree(words\_in\_window).
 
@@ -2143,11 +2212,49 @@ yếu tố này sẽ dễ dẫn đến sai lầm, vì mọi phương pháp tách
 lỗi chính tả trở nên đơn giản. Ta có thể áp dụng các kỹ thuật đã được
 áp dụng trên bắt lỗi chính tả các ngôn ngữ châu Âu dễ dàng.
 
+Với tiếng Việt, do độ dài mỗi tiếng ngắn (khoảng năm chữ cái). Tuy
+nhiên nếu tính theo cấu trúc âm tiết thì mỗi tiếng chỉ gồm tối đa bốn
+thành phần (không kể thanh điệu) là âm đầu, âm đệm, âm chính và âm
+cuối. Mỗi thành phần đều được thể hiện bằng một cụm chữ cái riêng
+biệt, có thể coi như là một đơn vị tương đương chữ cái. Vậy nên, xét
+một mặt nào đó, có thể xem mỗi tiếng trong tiếng Việt chỉ gồm tối đa
+bốn ``chữ cái''. Do độ dài tiếng quá ngắn nên số lượng nhập nhằng của
+một tiếng lớn hơn rất nhiều so với các ngôn ngữ châu Âu dù chỉ xét
+từ đồng âm.
+
+Trình bắt lỗi tiếng Việt đã được nghiên cứu trong những năm gần
+đây~\cite{Tuoi,vietdecisionlist}. Giải pháp được đề nghị
+trong~\cite{Tuoi} sử dụng phân tích cú pháp để đánh giá các cách tách
+từ. Trong khi đó \cite{vietdecisionlist} sử dụng danh sách quyết định
+để khử nhập nhằng cho từng từ một.
 
 
 %%% Bắt lỗi chính tả không tách từ, có không?
 
 \section{Tách từ}
+
+%% \subsection{Tách từ}
+
+%% \cite{Sproat} sử dụng WFST để tách từ, huấn luyện bằng EM dựa trên
+%% cách tách từ đúng nhất.
+
+%% \cite{wordseg} sử dụng giải pháp tương tự như \cite{Sproat} nhưng cải
+%% tiến bằng cách cáp dụng Neural Networks để giải quyết nhập nhằng dựa
+%% vào POS. Nghiên cứu đề cập đến một số vấn đề tiền xử lý tiếng Việt như
+%% xác định tên riêng, từ láy, phân tích hình thái.
+
+%% \cite{Ravishankar} đề nghị tạo ra lưới từ\footnote{word lattice} sau
+%% đó sử dụng thuật toán tìm đường đi ngắn nhất để tìm cách tách từ tốt
+%% nhất dựa trên 2-gram hoặc 3-gram.
+
+%% \cite{LAH} sử dụng n-gram và quy hoạch động để tách từ,
+%% không dùng từ điển. Giải pháp này tương tự như \cite{softcount}, tuy
+%% nhiên chỉ tính xác suất cách tách từ tốt nhất thay vì tính tổng xác
+%% suất mọi cách tách từ như trong \cite{softcount}.
+
+%% \cite{Chunyu} kết hợp ngram, lập trình quy hoạch động để tách từ. Xài
+%% soft-count thay vì ``hard-count'' như \cite{Chang}. \cite{Chunyu} còn
+%% đề nghị dùng case-based learning.
 
 %\note{Liệt kê các phương pháp tách từ}
 Bài toán tách từ cho ngôn ngữ đơn lập đã được đặt ra từ lâu, chủ yếu
@@ -2477,7 +2584,7 @@ lỗi chính tả tiếng Việt!
 cách tách từ sau khi đã qua tiền xử lý nhập nhằng chính tả, tuy nhiên
 lại sử dùng nhiều mô hình ngôn ngữ khác nhau như 
 character bigram, word bigram, inter-word character bigram (IWCB), POS
-bigram, word class bigram. 
+bigram, word class bigram.
 
 Dựa trên những nghiên cứu này, có thể thấy giải pháp khả thi cho việc
 tách từ khi bị 
@@ -2523,24 +2630,810 @@ XXX
 \label{cha:model}
 \minitoc
 
-% \note{Phân loại lỗi, nguyên nhân gây lỗi}
+\section{Mô hình chung}
 
-%%% cut it out, move it to somewhere
-Ngoài ra, phải nói thêm là, do tiếng Việt là loại ngôn ngữ ``nói sao
-viết vậy'', lại có sự phân hoá trong hệ thống âm vị của các miền, nên
-khi viết thường rất dễ sai. Mức độ ``nhầm lẫn'' trong tiếng Việt cao
-hơn hiều so với các thứ tiếng khác (như tiếng Anh). Với tiếng Anh,
-thông thường mỗi tập nhầm lẫn chỉ gồm hai từ. Với tiếng Việt, đó có
-thể là năm từ, thậm chí mười từ. Sự gia tăng kích thước của tập nhầm
-lẫn làm hạn chế khả năng của các thuật toán bắt lỗi chính tả dựa trên
-tập nhầm lẫn.
+Việc bắt lỗi chính tả của một văn bản được xử lý lần lượt qua các bước
+(xem hình~\ref{fig:overall-model}), bao gồm ba khối chính là:
+\begin{itemize}
+\item Khối tiền xử lý.
+  Tách văn bản thành những đoạn ngắn. Tách
+  đoạn thành từng tiếng. Đánh dấu các ký hiệu, dấu ngắt dòng, các số,
+  tên riêng~\ldots{}
+
+\item Khối bắt lỗi non-word.
+   Kiểm tra các tiếng với các tiếng đã có
+   trong từ điển. Báo lỗi những tiếng không có trong từ điển. Sau đó 
+   đưa ra giải pháp thay thế.
+
+\item Khối bắt lỗi real-word.
+  Tương tự như khối bắt lỗi real-word. Tuy nhiên cần phải tách từ
+  trước khi thực hiện bắt lỗi chính tả.
+\end{itemize}
+
+%% \begin{enumerate}
+%% \item \textbf{Tiền xử lý} 
+%% \item \textbf{Bắt lỗi tiếng}
+%% \item \textbf{Tạo lưới từ} Tìm ra mọi từ có thể có trong câu. Xem
+%%   giải thích về lưới từ bên dưới. Lồng trong phần này là phần
+%%   \textbf{Phát sinh từ thay thế}
+%% \item \textbf{Tách từ} Dựa vào lưới từ, đưa ra cách tách từ tốt nhất.
+%% \item \textbf{Bắt lỗi từ} Dựa vào từ điển và cách tách từ đã có,
+%%   tìm những từ nào không có trong từ điển. Những từ này được xem là từ
+%%   sai. Sau đó \textbf{Đưa ra giải pháp thay thế}
+%% \end{enumerate}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{diagram}
+  \caption{Mô hình chung}
+  \label{fig:overall-model}
+\end{figure}
 
 
- \section{Lỗi chính tả}
+\subsection{Tiền xử lý}
+
+Phần tiền xử lý bao gồm nhiều công đoạn, bắt đầu bằng phần tách các
+token (``tiếng'') (\ref{sec:preprocess:token}), và các phần tiền xử lý
+khác như đánh dấu các số, các ký hiệu~\ldots
+
+Do đây là tiền xử lý trên dữ liệu không chính xác, nên một số công
+đoạn tiền xử lý (như nhận dạng tên riêng) không được thực hiện ngay ở
+công đoạn này mà được thực hiện trong phần bắt lỗi real-word.
+
+\subsection{Bắt lỗi non-word}
+
+Phần này sử dụng từ điển để tìm ra những token sai, không có trong từ
+điển, lập danh sách từ đề nghị, sau đó yêu cầu người dùng chọn từ
+đúng.
+
+Phần này được chạy lặp đi lặp lại cho đến khi không còn lỗi
+non-word. Sau đó sẽ đến phần thực hiện của bắt lỗi real-word.
+
+\subsection{Bắt lỗi real-word}
+
+Phần này cố gắng tìm ra tất cả các từ sai chính tả. Phần này gồm hai
+công đoạn là tách từ và bắt lỗi chính tả.
+
+Đầu tiên, lưới từ của câu đang xét sẽ được xây dựng. Sau đó lưới từ
+này được bổ sung thêm từ cơ chế phục hồi lỗi và các bước tiền xử lý đã
+không thể thực hiện được trong phần tiền xử lý. Từ lưới từ này, ta sẽ
+chọn ra một cách tách từ tốt nhất dựa vào mô hình ngôn ngữ.
+
+Sau khi đã tách từ xong, phần việc còn lại rất giống với các bước đã
+thực hiện trong phần tách từ non-word. Tuy nhiên, thay vì lần lượt tra cứu
+các từ với từ điển, ta sẽ so sánh giữa từ trong cách tách từ đúng nhất
+và từ trong câu có giống nhau hay không. Từ trong cách tách từ đúng
+nhất được xem là từ đúng. Nếu từ trong câu không giống, ta xem như đó
+là lỗi chính tả. Phần còn lại được thực hiện tương tự như trong phần
+bắt lỗi non-word.
 
 
-\subsection{Phân loại lỗi}
+\section{Tiền xử lý}
 
+
+\subsection{Tách token}
+\label{sec:preprocess:token}
+
+Do văn bản đầu vào là một chuỗi các ký tự, ta cần phải tách văn bản ra
+thành từng tiếng một, loại bỏ các khoảng trắng dư thừa và đánh dấu các
+loại dấu câu trong văn bản. Sau khi tách xong, ta được một dãy các
+chuỗi, mỗi chuỗi là một ``token'' kèm theo thông tin về loại token đó
+(chữ, khoảng trắng, dấu câu~\ldots)
+
+Ví dụ, đoạn văn bản trên được tách thành những phần như sau:
+
+\def\mybox#1{\hbox{\vrule width 0pt height 24pt}\framebox{\strut#1}}
+{\noindent
+\mybox{Do} \hfil \mybox{ } \hfil \mybox{văn} \hfil \mybox{ } \hfil \mybox{bản} \hfil
+\mybox{ } \hfil \mybox{đầu} \hfil \mybox{ } \hfil \mybox{vào} \hfil \mybox{ } \hfil 
+\mybox{là} \hfil \mybox{ } \hfil \mybox{một} \hfil \mybox{ } \hfil 
+\mybox{chuỗi} \hfil \mybox{ } \hfil \mybox{các} \hfil  \mybox{ } \hfil 
+\mybox{ký} \hfil \mybox{ } \hfil \mybox{tự} \hfil \mybox{,} \hfil \mybox{ } \hfil 
+\mybox{ta} \hfil \mybox{ } \hfil \mybox{cần} \hfil \mybox{ } \hfil \mybox{phải} \hfil 
+\mybox{ } \hfil \mybox{tách} \hfil \mybox{ } \hfil \mybox{văn} \hfil \mybox{ } \hfil 
+\mybox{bản} \hfil \mybox{ } \hfil \mybox{ra} \hfil \mybox{ } \hfil 
+\mybox{thành} \hfil \mybox{ } \hfil \mybox{từng} \hfil \mybox{ } \hfil 
+\mybox{tiếng} \hfil \mybox{ } \hfil 
+\mybox{một} \hfil \mybox{,} \hfil \mybox{ } \hfil \mybox{loại} \hfil \mybox{ } \hfil 
+\mybox{bỏ} \hfil \mybox{ } \hfil \mybox{các} \hfil \mybox{ } \hfil 
+\mybox{khoảng} \hfil \mybox{ } \hfil \mybox{trắng} \hfil \mybox{ } \hfil 
+\mybox{dư} \hfil \mybox{ } \hfil \mybox{thừa} \hfil \mybox{ } \hfil \mybox{và} \hfil 
+\mybox{ } \hfil \mybox{đánh} \hfil \mybox{ } \hfil \mybox{dấu} \hfil \mybox{ } \hfil 
+\mybox{các} \hfil \mybox{ } \hfil  \mybox{loại} \hfil \mybox{ } \hfil
+\mybox{dấu} \hfil \mybox{ } \hfil 
+\mybox{câu} \hfil \mybox{ } \hfil \mybox{trong} \hfil \mybox{ } \hfil  
+\mybox{văn} \hfil \mybox{ } \hfil \mybox{bản} \hfil \mybox{.} \hfil \mybox{ } \hfil 
+\mybox{Sau} \hfil \mybox{ } \hfil \mybox{khi} \hfil \mybox{ } \hfil 
+\mybox{tách} \hfil \mybox{ } \hfil \mybox{xong} \hfil \mybox{,} \hfil \mybox{ } \hfil 
+\mybox{ta} \hfil \mybox{ } \hfil \mybox{được} \hfil \mybox{ } \hfil \mybox{một} \hfil 
+\mybox{ } \hfil \mybox{dãy} \hfil \mybox{ } \hfil \mybox{các} \hfil \mybox{ } \hfil 
+\mybox{chuỗi} \hfil \mybox{,} \hfil \mybox{ } \hfil \mybox{mỗi} \hfil \mybox{ } \hfil 
+\mybox{chuỗi} \hfil \mybox{ } \hfil \mybox{là} \hfil \mybox{ } \hfil 
+\mybox{một} \hfil \mybox{ } \hfil \mybox{``} \hfil \mybox{token} \hfil
+\mybox{''} \hfil \mybox{ } \hfil  
+\mybox{kèm} \hfil \mybox{ } \hfil \mybox{theo} \hfil \mybox{ } \hfil 
+\mybox{thông} \hfil \mybox{ } \hfil \mybox{tin} \hfil \mybox{ } \hfil 
+\mybox{về} \hfil \mybox{ } \hfil \mybox{loại} \hfil \mybox{ } \hfil 
+\mybox{token} \hfil \mybox{ } \hfil \mybox{đó} \hfil  \mybox{ } \hfil 
+\mybox{(} \hfil \mybox{chữ} \hfil \mybox{,} \hfil \mybox{ } \hfil 
+\mybox{khoảng} \hfil \mybox{ } \hfil \mybox{trắng} \hfil \mybox{,} \hfil 
+\mybox{ } \hfil \mybox{dấu} \hfil \mybox{ } \hfil \mybox{câu} \hfil \mybox{ } \hfil 
+\mybox{\ldots} \hfil \mybox{)} \hfill
+}
+
+Quy luật tách như sau:
+\begin{itemize}
+\item Khoảng trắng là ký tự khoảng trắng (space) hoặc ký tự tab.
+\item Dấu kết thúc câu bao gồm ba dấu: \mybox{.} \mybox{?} \mybox{!}
+\item Dấu đóng ngoặc bao gồm: \mybox{"} \mybox{)} \mybox{]} \mybox{\}}
+  \mybox{>} \mybox{'}
+\item Một token là:
+  \begin{itemize}
+  \item Một hoặc nhiều dấu kết câu và các dấu đóng ngoặc nếu có. Ví
+    dụ: \mybox{.)}
+  \item Một hoặc nhiều dấu nối chữ (hyphen) \mybox{-}.
+  \item Một hoặc nhiều dấu mở nháy đơn \mybox{`}.
+  \item Một hoặc nhiều dấu đóng nháy đơn \mybox{'}.
+  \item Một hoặc nhiều chữ, chữ số, một số dấu: \mybox{.} \mybox{,}
+    \mybox{:} \mybox{'} \mybox{\$} \mybox{\%} \mybox{-}
+    \mybox{$\backslash$} \mybox{/}; kết thúc bằng chữ hoặc chữ số. Ví
+    dụ: \mybox{tôi} \mybox{\$12}
+  \item Một hoặc nhiều chữ, chữ số, kết thúc bằng dấu tỉnh lược
+    \mybox{'} (quy tắc này chủ yếu áp dụng cho tiếng Anh, như
+    \mybox{she'} \mybox{s} \mybox{ } \mybox{a} \mybox{ } \mybox{teacher})
+  \item Một chữ hoặc chữ số.
+  \item Một hoặc nhiều khoảng trắng,  dấu xuống dòng và các ký tự lạ khác.
+  \end{itemize}
+\end{itemize}
+
+\subsection{Tách câu}
+
+Mục đích của tách câu là tách ra thành từng câu để xử lý. Việc xác
+định đơn vị câu rất quan trọng trong các ứng dụng xử lý ngôn ngữ tự
+nhiên. Tuy nhiên, do chương trình này chưa sử dụng một số thông tin
+cần đến đơn vị câu, nên ``câu'' ở đây được hiểu như là một đoạn ngắn,
+một câu hoặc một phần của câu. 
+
+Việc tách câu dựa vào các dấu câu để ngắt câu ra thành từng đoạn để xử
+lý. Mỗi đoạn sẽ được xử lý độc lập với nhau. Các đoạn được phân cách
+bởi các token dấu câu \mybox{.} \mybox{,} \mybox{;} \mybox{(}
+\mybox{)}~\ldots{} Phần tách token phải được thực hiện trước phần tách
+câu. 
+
+\subsection{Chuẩn hoá}
+
+Chuẩn hoá là đặt lại vị trí dấu trong các tiếng nhằm đảm bảo thống
+nhất một quy tắc đặt dấu chung. Do tiếng Việt không quy định cụ thể
+quy tắc bỏ dấu nên hình thành nhiều cách bỏ dấu khác nhau (bỏ dấu khoa
+học, bỏ dấu mỹ thuật~\ldots). Việc bỏ dấu không thống nhất sẽ gây khó
+khăn cho các thao tác xử lý về sau, bởi vì cùng một chữ nhưng dùng hai
+quy tắc bỏ dấu khác nhau sẽ cho ra hai chuỗi ký tự hoàn toàn khác nhau
+(Ví dụ, ``hoà'' và ``hòa''). 
+
+Để tránh tình trạng này, dấu được tách
+riêng ra khỏi tiếng, được coi như là một ký tự nằm ở đầu tiếng. Như
+vậy một tiếng bất kỳ sẽ bao gồm ký tự đầu tiên đại diện cho thanh
+điệu, các ký tự theo sau đại diện cho âm đầu và vần của tiếng đó. Dấu
+được thể hiện theo quy ước gõ VNI:
+\begin{itemize}
+\item Thanh ngang được biểu diễn bằng ký tự `0'.
+\item Thanh sắc được biểu diễn bằng ký tự `1'.
+\item Thanh huyền được biểu diễn bằng ký tự `2'.
+\item Thanh hỏi được biểu diễn bằng ký tự `3'.
+\item Thanh ngã được biểu diễn bằng ký tự `4'.
+\item Thanh nặng được biểu diễn bằng ký tự `5'.
+\end{itemize}
+
+Theo quy tắc trên, ``hoà'' sẽ được biến đổi thành ``2hoa'';
+``hòa'' sẽ được biến đổi thành ``2hoa''. Như vậy ta có thể coi ``hòa''
+và ``hoà'' là tương đương nhau khi so sánh dạng biến đổi ``2hoa'' của
+chúng. Một số ví dụ khác: ``hồng'' được biến đổi thành ``2hông'',
+``hoa'' được biến đổi thành ``0hoa''.
+
+Các tiếng nước ngoài, các ký hiệu~\ldots{} không có dấu, sẽ được xem như
+có thanh ngang. Như vậy, ``USA'' sẽ được biến đổi thành ``0USA''.
+
+Do việc biến đổi làm mất thông tin về cách bỏ dấu. Ta cần phải giữ lại
+chữ gốc bên cạnh chữ biến đổi (``chữ chuẩn hoá'') để có thể dùng lại
+sau này. Ta cũng có thể phục hồi chữ từ chữ chuẩn hoá bằng cách phân
+tích cấu trúc âm tiết và bỏ dấu thích hợp theo quy tắc bỏ dấu cho
+trước. Việc này sẽ giúp chuẩn hoá cách bỏ dấu cho toàn văn bản.
+
+\subsection{Chữ viết hoa}
+
+Chữ viết hoa dùng để biểu diễn tên riêng, từ viết tắt hoặc dùng cho
+chữ đứng đầu câu. Do đó cần phân biệt chữ đầu câu có 
+phải là chữ bắt đầu tên riêng hay không. Ngoài ra, cần xác định tên riêng khi
+tìm được chữ viết hoa bắt đầu tên riêng. Các văn bản tiếng Việt chưa
+hoàn toàn thống nhất về quy tắc viết hoa. Ví dụ, có tài liệu dùng
+``Cộng hoà Xã hội Chủ nghĩa Việt Nam'', nhưng có tài liệu lại dùng
+``Cộng Hoà Xã Hội Chủ Nghĩa Việt Nam''.
+
+Do văn bản đầu vào có khả năng bị sai chính tả, kèm theo sự không
+thống nhất trong quy cách viết tên riêng, nên khó có thể xác định
+tên riêng ngay ở bước tiền xử lý. Vì vậy phần này sẽ được thực hiện trong
+phần tách từ thay vì trong phần tiền xử lý.
+
+%% ngay chính xác có phải là cụm từ viết hoa đúng hay không. Bước này cố
+%% gắng phát hiện ra những cụm từ viết hoa và thêm vào lưới từ. Do vậy,
+%% phần này được thực hiện bên trong phần \textbf{Phát sinh từ thay thế}. 
+
+%% Có thể dùng thuật giải như sau: Nếu bắt đầu bằng chữ viết hoa, và chữ
+%% đầu được viết thường cùng những từ kế tiếp của nó là một từ trong từ
+%% điển, thì xem như đó là một từ. Nếu một chuỗi từ viết hoa liên tục
+%% (hai từ trở lên) thì xem như đó là một từ (một tên riêng), và được
+%% đánh dấu từ lạ $UNK$.
+
+%% Với tên riêng của người Việt. Một danh sách các tên tiếng Việt được
+%% thu thập nhằm rút ra những chữ thường dùng khi đặt tên. Những chuỗi
+%% các chữ hoa liên tiếp được hình thành từ những chữ trong danh sách này
+%% sẽ được xem như là tên riêng, đánh mã $PROP$.
+
+
+%% \begin{algo}\caption{Xử lý chữ hoa}
+%% \label{algo:propername}
+%%   \begin{enumerate}
+%%   \item Lấy 1 chữ. Kiểm tra ký tự đầu tiên xem có phải ký tự hoa hay
+%%     không.
+%%   \item Nếu đây là chữ đầu câu, phát sinh bình thường dựa theo bản
+%%     viết thường của chữ này. Ngoài ra tiếp tục thực hiện các bước
+%%     dưới.
+%%   \item Duyệt từ chữ đó trở đi, lấy chuỗi dài nhất có thể dựa trên
+%%     $sid$. Phát sinh từ mới dựa trên từ lấy được. Đặt xác suất 0.80.
+%%   \item Nếu không tìm được từ nào, duyệt lại như bước trên, dùng
+%%     $scid$.
+%%   \item Nếu chữ kế tiếp cũng là chữ hoa, duyệt từ đó trở đi để lấy
+%%     chuỗi chữ hoa dài nhất ($scid$). Phát sinh từ mới
+%%     mã $PROP$. 
+%%   \end{enumerate}
+%% \end{algo}
+
+%% \subsection{Từ láy UNIMPL}
+
+%% Phần này được thực hiện bên trong phần \textbf{Phát sinh từ thay thế}.
+
+%% \begin{itemize}
+%% \item Láy toàn bộ (Vd. ba ba, chuồn chuồn~\ldots{})
+%% \item Láy âm đầu (Vd. chặt chẽ, trong trẻo~\ldots{})
+%% \item Láy điệp vần (Vd. lông bông, lã chã~\ldots{})
+%% \item Láy điệp âm, láy vần (Vd. thủ thỉ, tủm tỉm~\ldots{})
+%% \item Hai thanh của tiếng thường ở cùng một hệ~\ldots{}
+%% \end{itemize}
+
+%% \note{Hổng thèm làm :-)} Vấn đề từ láy cũng tương tự như  tên riêng. Giải
+%% pháp có thể áp dụng là dựa vào các quy tắc tạo từ láy để phát hiện
+%% những từ có khả năng là từ láy và thêm vào lưới từ. 
+
+%% Đối với các từ láy trên 2 tiếng. Do số lượng các từ láy dạng này không
+%% nhiều nên có thể thêm các từ láy này vào từ điển.
+%% %% Nhưng những ``từ láy''
+%% %% ``nhưng những'' có thể giết chết module tách từ một cách êm dịu. Chắc
+%% %% nên áp dụng giải pháp ``80 từ láy, 20 từ thường''. Không biết được hay
+%% %% không, phiêu quá~\ldots{}
+
+%% \begin{algo}\caption{Xử lý từ láy}
+%% \label{algo:poem}
+%%   \begin{enumerate}
+%%   \item Lấy 2 chữ liên tiếp.
+%%   \item Kiểm tra quy tắt từ láy.
+%%   \item Nếu đúng, phát sinh thêm từ láy mới, mã $POEM$.
+%%   \end{enumerate}
+%% \end{algo}
+
+%% %% Có lẽ nên lọc ra danh sách từ láy bằng tay, đánh nhãn toàn bộ là
+%% %% $POEM$, hoặc dùng nhãn riêng. Heuristic này không đáng tin lắm.
+%% %% Cách hình thành từ láy của con người như thế nào ?? Từ láy thường gắn
+%% %% liền với hình tượng, cảm giác gì đó. Làm sao người ta có thể cảm nhận
+%% %% được một từ có phải là từ láy hay không??
+
+\subsection{Từ nước ngoài, từ viết tắt, các ký hiệu~\ldots{}}
+
+Xử lý tiếng nước ngoài, các ký hiệu chuyên ngành, các từ viết tắt. Do
+trình bắt lỗi không có kiến thức về các lĩnh vực chuyên 
+ngành, cũng như các thứ tiếng trên thế giới, nên việc áp dụng tri thức
+để phân loại là điều hết sức khó khăn.  Giải pháp được dùng ở đây là
+xem các từ nước ngoài, từ viết tắt, các ký hiệu~\ldots{} như là 
+những chữ bình thường (và sẽ được xem như là lỗi chính tả trong phần
+bắt lỗi chính tả).
+
+Phần này sẽ cố gắng phân loại một số loại thường gặp như số, ngày
+tháng~\ldots{} nhằm giảm bớt các lỗi sai chính tả không đáng có. Các
+con số được đánh dấu riêng bằng mã $NUM$. ``Số'' ở đây được coi là bất
+cứ chữ nào bắt đầu bằng số. Ví dụ, ``0lit'', ``0.2'',
+``0-4''~\ldots{}{} đều được coi là số. 
+
+Ngày tháng được nhận dạng theo mẫu ``ngày-tháng-năm'' hoặc
+``ngày/tháng/năm''. Nói cách khác, ngày tháng là các số liên tiếp,
+cách nhau bằng dấu `/' hoặc `--'. Ngày tháng cũng được đánh nhãn $NUM$.
+
+
+\section{Bắt lỗi non-word}
+
+
+\subsection{Tìm lỗi chính tả}
+
+Việc tìm lỗi chính tả đơn giản là duyệt qua từng token, kiểm tra xem
+token đó có trong từ điển hay không. Nếu token không có trong từ điển,
+token đó bị sai chính tả.
+
+Nếu thực hiện như trên, sẽ có rất nhiều chữ bị cho là sai chính tả, ví
+dụ như các con số, ngày tháng~\ldots{} Ta cần phải nhận ra những token
+loại này và bỏ qua chúng khi tìm lỗi chính tả. Do phần tiền xử lý đã
+đánh dấu các token chứa số bằng mã $NUM$ nên khi thực hiện tìm lỗi
+chính tả, ta sẽ không xét những token loại này.
+
+
+\subsection{Lập danh sách từ đề nghị}
+\label{sec:nonword:candidate-list}
+
+Sau khi đã xác định những chữ bị sai chính tả, ta cần đưa ra một số
+gợi ý để người dùng chọn, thay vì buộc người dùng tự tìm ra chữ
+đúng. Việc lập ra danh sách gợi ý chủ yếu dựa vào nguyên tắc phục hồi
+lỗi: Dựa vào nguyên nhân phát sinh ra lỗi, thực hiện thao tác ngược
+lại để tìm ra chữ đúng.
+
+Lỗi được xử lý trong phần này là lỗi non-word. Lỗi này có thể do những
+nguyên nhân sau:
+\begin{itemize}
+\item Lỗi nhập liệu sai.
+\item Lỗi OCR.
+\item Lỗi nhận dạng tiếng nói.
+\item Lỗi phát âm sai.
+\end{itemize}
+
+
+\subsubsection{Lỗi nhập liệu}
+\label{sec:nonword:recover:keyboard}
+
+Lỗi nhập liệu bao gồm những loại lỗi sau:
+\begin{itemize}
+\item Lỗi gõ sót phím.
+\item Lỗi gõ dư phím.
+\item Lỗi gõ sai phím (gõ nhầm phím này bằng phím khác).
+\item Lỗi gõ sai thứ tự (gõ đảo thứ tự hai phím liên tiếp nhau).
+\end{itemize}
+
+Ngoài ra, do phím spacebar phát sinh ký tự khoảng trắng dùng để phân
+cách các chữ với nhau, nên cần phải xử lý đặc biệt với phím này. Dựa
+vào các loại lỗi trên, ta có thêm các lỗi bổ sung:
+\begin{itemize}
+\item Lỗi gõ thiếu phím spacebar, gom hai chữ thành một chữ.
+\item Lỗi gõ dư phím spacebar, tách một chữ thành hai chữ.
+\item Lỗi gõ sai phím spacebar, có thể dẫn đến việc nhóm hai chữ hoặc
+  tách chữ làm hai.
+\item Lỗi gõ sai thứ tự giữa một phím và phím spacebar dẫn đến việc
+  một ký tự trong chữ này bị đẩy sang chữ khác.
+\end{itemize}
+
+Giải pháp khắc phục lỗi là thực hiện ngược lại quá trình tạo ra
+lỗi. Đối với lỗi gõ sót phím, dư phím, ta có thể thêm một phím hoặc
+bớt một phím để tạo ra chữ mới. Với lỗi gõ sai thứ tự, ta duyệt qua
+chữ, lần lượt hoán vị hai ký tự liên tiếp để tạo ra chữ mới.
+
+Đối với lỗi gõ nhầm phím, ta dựa vào bố trí bàn phím để phát sinh
+lỗi. Giả định sơ đồ bố trí của bàn phím EN-US được dùng. Do thông
+thường chỉ gặp một lỗi gõ nhầm với phím ngay bên cạnh này mỗi 
+từ, nên chương trình chỉ lưu danh  sách những phím lân cận với từng
+phím, dựa trên bàn phím EN-US. Ví dụ: $A \rightarrow \{ S, Q, W, X, Z \}$. 
+
+Với những phím hai ký tự như phím `\texttt{2}' (`\texttt{2}' và
+`\texttt{@}') thì \texttt{@} sẽ được thêm 
+vào tập các phím lân cận với \texttt{2} và ngược lại.
+
+Danh sách cụ thể được nêu trong bảng~\ref{tab:neighbor-keys}.
+
+\begin{table}[htbp]
+  \centering
+\begin{tabular}{ll|ll|ll}
+Phím&Phím lân cận&Phím&Phím lân cận&Phím&Phím lân cận\\\hline
+\verb#`#&\verb#~1!#&%z
+\verb#~#&\verb#`1!#&%z
+\verb#1#&\verb#!`~q2@#\\
+\verb#!#&\verb#1`~q2@#&%z
+\verb#2#&\verb#@1!qw3#\#&%z
+\verb#@#&\verb#21!qw3#\#\\
+\verb#3#&\#\verb#2@we4$#&%z
+\#&\verb#32@we4$#&%z
+\verb#4#&\verb#$3#\#\verb#er5%#\\
+\verb#$#&\verb#43#\#\verb#er5%#&%z
+\verb#5#&\verb#%4$rt6^#&%z
+\verb#%#&\verb#54$rt6^#\\
+\verb#6#&\verb#^5%ty7&#&%z
+\verb#^#&\verb#65%ty7&#&%z
+\verb#7#&\verb#&6^yu8*#\\
+\verb#&#&\verb#76^yu8*#&%z
+\verb#8#&\verb#*7&ui9(#&%z
+\verb#*#&\verb#87&ui9(#\\
+\verb#9#&\verb#(8*io0)#&%z
+\verb#(#&\verb#98*io0)#&%z
+\verb#0#&\verb#)9(op-_#\\
+\verb#)#&\verb#09(op-_#&%z
+\verb#-#&\verb#_0)p[=+#&%z
+\verb#_#&\verb#-0)p[=+#\\
+\verb#=#&\verb#+-_[{]}\\|#&%z
+\verb#+#&\verb#=-_[{]}\\|#&%z
+\verb#\#&\verb#|=+]}#\\
+\verb#|#&\verb#\=+]}#&%z
+\verb#q#&\verb#aw2@1!#&%z
+\verb#w#&\verb#qase3#\#\verb#2@#\\
+\verb#e#&\verb#wsdr4$3#\#&%z
+\verb#r#&\verb#edft5%4$#&%z
+\verb#t#&\verb#rfgy6^5%#\\
+\verb#y#&\verb#tghu7&6^#&%z
+\verb#u#&\verb#yhji8*7&#&%z
+\verb#i#&\verb#ujko9(8*#\\
+\verb#o#&\verb#iklp0)9(#&%z
+\verb#p#&\verb#ol;:[{-_0)#&%z
+\verb#[#&\verb#]}=+-_#\\
+\verb#{#&\verb#]}=+-_#&%z
+\verb#]#&\verb#[{=+\|#&%z
+\verb#}#&\verb#[{=+\|#\\
+\verb#a#&\verb#qwsz#&%z
+\verb#s#&\verb#awedxz#&%z
+\verb#d#&\verb#erfcxs#\\
+\verb#f#&\verb#rtgvcd#&%z
+\verb#g#&\verb#tyhbvf#&%z
+\verb#h#&\verb#yujnbg#\\
+\verb#j#&\verb#uikmnh#&%z
+\verb#k#&\verb#iol,<mj#&%z
+\verb#l#&\verb#op;:.>,<k#\\
+\verb#;#&\verb#/?.>l#&%z
+\verb#:#&\verb#/?.>l#&%z
+\verb#'#&\verb#[{]}/?;:#\\
+\verb#"#&\verb#'[{]}/?;:#&%z
+\verb#z#&\verb#asx#&%z
+\verb#x#&\verb#zsdc#\\
+\verb#c#&\verb#xdfv#&%z
+\verb#v#&\verb#cfgb#&%z
+\verb#b#&\verb#vghn#\\
+\verb#n#&\verb#bhjm#&%z
+\verb#m#&\verb#njk,<#&%z
+\verb#,#&\verb#<mkl.>#\\
+\verb#<#&\verb#,mkl.>#&%z
+\verb#.#&\verb#>,<l;:/?#&%z
+\verb#>#&\verb#.,<l;:/?#\\
+\verb#/#&\verb#?.>;:'"#&%z
+\verb#?#&\verb#/.>;:'"#&%z
+\end{tabular}
+  \caption{Danh sách phím lân cận}
+  \label{tab:neighbor-keys}
+\end{table}
+
+
+Do với mỗi phím có khoảng 8 phím lân cận. Một chữ dài trung bình 5 ký
+tự sẽ phát sinh ra một tập $8^5$ các chuỗi có khả năng. Trong số này
+chỉ có một số rất ít là chữ thật sự, đúng quy tắc chính tả. Tuy nhiên
+việc xử lý một khối lượng lớn như vậy là không thể. Vì vậy chương
+trình giả định chỉ nhập gõ sai tối đa hai phím với mỗi chữ, nhằm giảm
+thiểu bùng nổ tổ hợp.
+
+Với lỗi spacebar, ta cũng xét tương tự. Tuy nhiên, với những lỗi có
+khả năng tách làm hai chữ, ta sẽ xét chữ hiện thời và chữ kế tiếp cùng
+lúc, xem như là một chữ. Lỗi gõ nhầm spacebar với một phím khác là
+điều khó có thể xảy ra vì phím spacebar tương đối lớn, dễ nhận diện
+khi gõ.
+
+Với các kiểu gõ như VNI, TELEX. Chương trình cố gắng ``phục hồi'' từ
+những chữ gõ sai nếu phát hiện được. Ví dụ, ``nguyê4n'' sẽ tạo ra
+``nguyễn''. Bộ gõ được  VNI, TELEX cài đặt, sau đó nhận chuỗi các ký tự
+của chữ đang xét qua bộ gõ phục hồi các dấu. Bước này được thực hiện
+sau bước trên, để nếu gõ nhầm phím dấu kế bên thì vẫn có thể phục hồi
+lại.
+
+Bộ gõ VNI và TELEX được sử dụng như trong
+bảng~\ref{tab:vni-telex}. Nguyên tắc của các bộ gõ được cài đặt không
+quá cầu kỳ, do yêu cầu chỉ là để phục hồi lỗi. Các phím dấu của mỗi bộ
+gõ sẽ được duyệt qua chữ, từ vị trí của phím dấu về đầu chữ. Nếu phím
+dấu có thể kết hợp được với ký tự đang được duyệt, ta xem như đã phục
+hồi lỗi. Lỗi VNI-TELEX được áp dụng lại, sau khi đã phục hồi lỗi theo
+phương pháp trên, vì khi gõ VNI-TELEX người dùng vẫn có khả năng gõ
+nhầm các phím dấu.
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{ll|ll}
+    \multicolumn{2}{c}{VNI}&\multicolumn{2}{c}{TELEX}\\
+    Phím&Dấu&Phím&Dấu\\\hline
+    1&dấu sắc&s&dấu sắc\\
+    2&dấu huyền&f&dấu huyền\\
+    3&dấu hỏi&r&dấu hỏi\\
+    4&dấu ngã&x&dấu ngã\\
+    5&dấu nặng&j&dấu nặng\\
+    6&dấu mũ&aa,ee,oo&â,ê,ô\\
+    u7,o7&ư,ơ&uw,ow&ư,ơ\\
+    a8&ă&aw&ă\\
+    d9&đ&dd&đ\\
+  \end{tabular}
+  \caption{Kiểu gõ VNI-TELEX}
+  \label{tab:vni-telex}
+\end{table}
+
+% Hmm.. phần phục hồi ngược từ VNI, TELEX. Vd, englíh (english). Cái này
+% nhường cho English Speller. Hơi vướng với VIQR.
+
+Các chữ được phát sinh sẽ được so sánh với từ điển tiếng. Nếu chữ nằm trong từ
+điển, ta cho chữ vào danh sách đề nghị. Ngược lại, chữ bị hủy bỏ.
+
+Tóm lại, thuật toán phục hồi lỗi bàn phím như sau:
+\begin{algo}\caption{Phục hồi lỗi bàn phím}
+  \begin{enumerate}
+  \item Phục hồi lỗi VNI-TELEX.
+  \item Phục hồi lỗi gõ sót phím. Phục hồi lỗi VNI-TELEX dựa trên kết
+    quả của lần phục hồi trước.
+  \item Phục hồi lỗi gõ dư phím. Phục hồi lỗi VNI-TELEX dựa trên kết
+    quả của lần phục hồi trước.
+  \item Phục hồi lỗi nhầm phím. Phục hồi lỗi VNI-TELEX dựa trên kết
+    quả của lần phục hồi trước.
+  \item Phục hồi lỗi sai thứ tự phím. Phục hồi lỗi VNI-TELEX dựa trên kết
+    quả của lần phục hồi trước.
+  \item Phục hồi lỗi gõ sót phím spacebar. Phục hồi lỗi VNI-TELEX dựa trên kết
+    quả của lần phục hồi trước.
+  \item Phục hồi lỗi gõ dư phím spacebar. Phục hồi lỗi VNI-TELEX dựa trên kết
+    quả của lần phục hồi trước.
+  \item Phục hồi lỗi sai thứ tự phím spacebar. Phục hồi lỗi VNI-TELEX dựa trên kết
+    quả của lần phục hồi trước.
+  \item Lọc lại danh sách những từ đã có. Nếu từ không nằm trong từ
+    điển tiếng thì loại bỏ.
+  \end{enumerate}
+\end{algo}
+
+\begin{algo}\caption{Phục hồi lỗi VNI-TELEX}
+  \begin{enumerate}
+  \item Duyệt lần lượt từng ký tự trong chữ, từ trái sang phải.
+  \item Nếu ký tự đang xét là phím dấu, duyệt ngược từ vị trí ký tự
+    đang xét về đầu chữ. Nếu có thể ghép dấu, thực hiện ghép dấu, lưu
+    chữ vào danh sách. 
+  \end{enumerate}
+\end{algo}
+
+\begin{algo}\caption{Phục hồi lỗi gõ sót phím}
+  \begin{enumerate}
+  \item Duyệt lần lượt từng ký tự trong chữ, từ trái sang phải.
+  \item Ở từng vị trí, chèn thêm một ký tự vào bên phải ký tự đang
+    xét. Lưu chữ vào danh sách.
+  \end{enumerate}
+\end{algo}
+
+\begin{algo}\caption{Phục hồi lỗi gõ dư phím}
+  \begin{enumerate}
+  \item Duyệt lần lượt từng ký tự trong chữ, từ trái sang phải.
+  \item Ở từng vị trí, xóa ký tự đang xét. Lưu chữ vào danh sách.
+  \end{enumerate}
+\end{algo}
+
+\begin{algo}\caption{Phục hồi lỗi gõ nhầm phím}
+  \begin{enumerate}
+  \item Duyệt lần lượt từng ký tự trong chữ, từ trái sang phải.
+  \item Ở từng vị trí, thay thế ký tự đang xét bằng ký tự lân cận (như
+    trong bảng~\ref{tab:neighbor-keys}). Lưu chữ vào danh sách.
+  \end{enumerate}
+\end{algo}
+
+\begin{algo}\caption{Phục hồi lỗi gõ sai thứ tự phím}
+  \begin{enumerate}
+  \item Duyệt lần lượt từng ký tự trong chữ, từ trái sang phải.
+  \item Ở từng vị trí, hoán vị ký tự đang xét và ký tự bên phải ký tự
+    đang xét. Lưu chữ vào danh sách.
+  \end{enumerate}
+\end{algo}
+
+\begin{algo}\caption{Phục hồi lỗi gõ sót phím spacebar}
+  \begin{enumerate}
+  \item Duyệt lần lượt từng ký tự trong chữ, từ trái sang phải.
+  \item Ở từng vị trí, tách chữ làm hai chữ tại vị trí ký tự đang
+    xét. Lưu hai chữ vào danh sách.
+  \end{enumerate}
+\end{algo}
+
+\begin{algo}\caption{Phục hồi lỗi gõ dư phím spacebar}
+  \begin{enumerate}
+  \item Nối chữ đang xét và chữ bên phải chữ đang xét lại làm một. 
+  \item Lưu chữ vào danh sách.
+  \end{enumerate}
+\end{algo}
+
+\begin{algo}\caption{Phục hồi lỗi gõ sai thứ tự phím spacebar}
+  \begin{enumerate}
+  \item Chuyển một ký tự từ chữ bên phải chữ đang xét sang cuối chữ đang
+    xét. Lưu vào danh sách.
+  \item Chuyển một ký tự từ chữ đang xét sang đầu chữ bên phải chữ đang
+    xét. Lưu vào danh sách.
+  \end{enumerate}
+\end{algo}
+
+\subsubsection{Lỗi phát âm}
+
+Lỗi phát âm chủ yếu gây ra lỗi real-word. Tuy nhiên lỗi phát âm đôi
+khi vẫn có lỗi non-word. Đây là những từ phát âm giống nhau, chữ viết
+bao gồm các thành phần âm đầu, âm đệm, âm chính, âm cuối hợp lệ. Tuy
+nhiên kết hợp các thành phần lại không tạo thành một chữ nằm trong từ
+điển tiếng. Ví dụ, ``nghành'', ``ngỉ'', ``ka''. Do đặc điểm của chữ
+quốc ngữ, một số âm tố không thể kết hợp với nhau. Đây là nguyên nhân
+chủ yếu của lỗi loại này.
+
+Lỗi phát âm sẽ được trình bày cụ thể trong
+phần~\ref{sec:realword:recover:sound}. Phần này chỉ nêu ra những điểm
+riêng của lỗi phát âm---non-word.
+
+Với loại lỗi này, ta cần phân tích cấu trúc âm tiết tiếng Việt. Sau
+khi phân tích cấu trúc âm tiết tiếng Việt, ta sẽ thay thế từng thành
+phần của âm tiết bằng một thành phần khác có cách phát âm giống như
+thành phần được thay thế. Thuật toán lỗi phát âm như sau:
+\begin{algo}\caption{Phục hồi lỗi phát âm (non-word)}
+  \begin{enumerate}
+  \item Phân tích cấu trúc âm tiết.
+  \item Tạo danh sách âm tiết~\ref{algo:syllable-candidate-list}, bao
+    gồm các âm tiết có phát âm tương tự với âm tiết ban đầu.
+  \item Lọc lại danh sách, những âm tiết không có tront từ điển tiếng
+    bị loại bỏ.
+  \end{enumerate}
+\end{algo}
+
+\subsection{Sắp xếp danh sách từ đề nghị}
+
+Như đã nói trong phần~\ref{sec:sort-candidates}, có nhiều cách để sắp
+xếp danh sách từ đề nghị. Do không thể sử dụng các thông tin cú pháp,
+ngữ nghĩa, giải pháp được áp dụng là dùng mô hình ngôn ngữ (được dùng
+khi bắt lỗi real-word --- phần~\ref{sec:language-model}) sẽ được dùng
+để đánh giá các từ đề nghị, cùng với việc loại bỏ các chữ không cùng
+chữ hoa/thường với chữ gốc.
+
+Giải pháp được áp dụng như sau:
+\begin{algo}\caption{Sắp xếp danh sách từ đề nghị (non-word)}
+  \begin{enumerate}
+  \item Phát sinh lưới từ.
+  \item Thêm các chữ đề nghị vào, cập nhật lưới từ, thêm các từ mới từ
+    những chữ được thêm. 
+  \item Áp dụng mô hình ngôn ngữ, dựa vào điểm để sắp xếp danh sách từ.
+  \end{enumerate}
+\end{algo}
+
+\section{Bắt lỗi real-word}
+
+Bắt lỗi real-word đòi hỏi tách từ và lượng giá các cách tách từ bằng
+mô hình ngôn ngữ. Để thuận tiện xử lý, chương trình sử dụng một cấu
+trúc dữ liệu dạng đồ thị để thể hiện các từ --- gọi là lưới
+từ\footnote{word lattice}. Đây là một đồ thị có hướng không chu trình,
+với các nút là các từ trong câu, cạnh là đường nối giữa hai từ kề
+nhau, hướng thể hiện thứ tự của các từ trong câu. 
+Lưới từ chứa tất cả 
+các từ có khả năng xuất hiện trong câu. Các từ được liên kết với nhau
+theo trật tự như trong câu. Khi duyệt từ nút gốc đến nút đích, ta sẽ
+được một cách tách từ cho câu. Hình~\ref{fig:wordlattice} thể hiện một
+lưới từ.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{wordlattice}
+  \caption{Lưới từ của câu ``Học sinh học sinh học''}
+  \label{fig:wordlattice}
+\end{figure}
+
+Ngoài lưới từ cơ bản như mô tả ở trên, ta có thể mở rộng lưới từ để
+chứa thêm những từ có khả năng, phát sinh từ công đoạn phục hồi lỗi,
+nhằm xác định xem từ nào là đúng nhất. Lưới từ này gọi là lưới từ mở
+rộng (hình~\ref{fig:wordlattice1}). 
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{wordlattice1}
+  \caption{Lưới từ mở rộng của câu ``Học sinh học sinh học''}
+  \label{fig:wordlattice1}
+\end{figure}
+
+Một dạng khác của lưới từ, gọi là lưới 2-từ  (xem
+hình~\ref{fig:wordlattice2}). Trong loại lưới từ này, 
+mỗi nút không phải là một từ mà là hai từ đứng liền nhau. Hai nút nối
+liền nhau thì từ bên phải của nút bên trái và từ bên trái của nút bên
+phải là một. Nói cách khác, một cặp nút nối với nhau bằng một cạnh
+trong lưới từ chỉ có ba từ thay vì bốn từ. Lưới từ loại này dùng để
+thể hiện mô hình trigram (trong khi lưới từ bình thường được dùng để
+thể hiện bigram). Việc tạo ra lưới 3-từ, lưới 4-từ là có thể. Tuy
+nhiên những lưới từ này thường không hiệu quả. 
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{wordlattice2}
+  \caption{Lưới 2-từ của câu ``Học sinh học sinh học''}
+  \label{fig:wordlattice2}
+\end{figure}
+
+\subsection{Tạo lưới từ}
+\label{sub:lattice:creation}
+
+Lưới từ cơ bản được tạo bằng thuật toán Viterbi. Mỗi tiếng trong câu
+được duyệt qua để tìm ra tất cả các từ có thể có trong đoạn. Sau đó
+tập hợp các từ này lại tạo nên lưới từ.
+
+\begin{algo}\caption{Tạo lưới từ (cơ bản)}
+Cho câu S có n tiếng. State là đỉnh, còn ``nút i'' là cạnh. Ta duyệt
+lần lượt qua các cạnh để tìm  ra các từ. Duyệt i từ 1 đến n:
+\begin{itemize}
+\item Tạo state gốc cho nút i.
+\item Xét các state, nếu tiến thêm được một bước thì lưu lại state mới (i+1).
+\item Nếu không tiến được thì xóa state.
+\item Nếu hoàn tất một từ thì lưu lại.
+\end{itemize}
+\end{algo}
+
+Thuật toán tạo lưới 2-từ được nêu trong \cite{Ravishankar}. Thuật toán
+sẽ tạo ra lưới $n$-từ từ lưới $n-1$-từ. Lưới từ cơ bản nên trên được
+xem như là lưới 1-từ. Thuật toán được tóm tắt lại như sau: 
+
+\begin{algo}\caption{Tạo lưới $n$-từ từ lưới $(n-1)$-từ}
+\begin{enumerate}
+\item Nếu nút ($w$) có $n$ từ đứng liền trước nó ($w_i$),
+  $i=1,2,\ldots{},n$ trong lưới từ gốc, nó sẽ được lặp lại $n$ lần trong
+  lưới từ mới, tên là ($w_{i}w$), tương ứng với $i=1,2,\ldots{},n$.
+\item Nếu ($w_i$) nối với ($w_j$) trong lưới từ gốc, nối tất cả
+  ($w_xw_i$) với ($w_iw_j$) $x$ bất kỳ.
+\item Giá trị của ($w_iw_j$) là giá trị của cạnh ($w_i$) ($w_j$) trong
+  lưới từ cũ.
+\item Giá trị của cạnh ($w_iw_j$) ($w_jw_k$) là 3-gram của $w_i$, $w_j$
+  và $w_k$.
+\end{enumerate}
+\end{algo}
+
+%% Các lưới n-từ có đặc điểm là tăng nhanh số nút và số cạnh, nhưng số
+%% tầng vẫn không đổi (Đồ thị càng ngày càng ``mập'', nhưng ``cao''
+%% không nổi ;-) )
+
+
+
+
+\subsection{Tạo lưới từ mở rộng --- Phục hồi lỗi}
+\label{sec:realword:recover}
+
+Sau khi có lưới từ cơ bản. Ta có thể áp dụng mô hình ngôn ngữ để tìm
+ra cách tách từ tốt nhất nếu bài toán là tách từ. Tuy nhiên, do câu
+không hoàn toàn chính xác, ta cần phải tiến hành phục hồi lỗi --- thêm
+vào những từ có khả năng đúng, sau đó mới có thể tách từ. Phần phục
+hồi lỗi, thêm từ vào lưới từ để tạo lưới từ mở rộng là nội dung của
+công đoạn này.
+
+Như đã xét ở phần~\ref{sec:nonword:candidate-list}, có 4 loại lỗi chủ
+yếu là lỗi bàn phím, lỗi OCR, lỗi nhận dạng tiếng nói, lỗi phát âm (và
+các loại lỗi còn lại). Cả bốn loại lỗi này đều có thể gây ra lỗi
+real-word. Tuy nhiên, lỗi real-word chủ yếu là lỗi phát âm, lỗi bàn
+phím chiếm rất ít, phần còn lại là lỗi OCR và lỗi nhận dạng tiếng
+nói. Phần này chủ yếu tập trung vào lỗi phát âm. Lỗi bàn phím được
+trình bày trong phần~\ref{sec:nonword:recover:keyboard}.
+
+%% Phần này được sử dụng trong lúc tạo lưới từ và kiểm tra chính
+%% tả. Mục đích là, cho trước một từ, phát sinh những từ ``gần giống''
+%% với từ đó. Việc định nghĩa như thế nào là ``giống'' ở đây dựa theo các
+%% nguyên nhân gây ra lỗi chính tả:
+%% \begin{itemize}
+%% \item Lỗi phát âm. Ví dụ, ``vu'' và ``du''. 
+%% \item Do lỗi bàn phím. Có thể do gõ nhầm những phím lân cận. Ví dụ: gõ
+%%   ``tôi'' thành ``tôu''. Khắc phục lỗi này dựa vào bố trí phím trên
+%%   bàn phím. Độ đo là khoảng cách từ phím tạo ra ký tự trong từ cho
+%%   trước và những từ chung quanh. Thông thường lỗi này chỉ xảy ra một
+%%   lần trong mỗi từ. Ngoài ra còn lỗi liên quan đến cách kiểu gõ tiếng
+%%   Việt.
+%% \item Lỗi OCR\footnote{Optical Character Recognition}. Lỗi dạng này
+%%   phụ thuộc nhiều vào phông chữ được dùng trên văn bản giấy. Tuy nhiên
+%%   vẫn có một số lỗi chung như ``a'' và ``c'', ``d'' và ``cl''~\ldots{}
+%% \item Lỗi sai về mặt từ vựng, cú pháp. Lỗi này hiện thời không xử lý
+%%   do cần nhiều tri thức về ngôn ngữ tiếng Việt.
+%% \item Lỗi không rõ nguyên nhân. Với dạng lỗi này, ta dùng hàm độ đo,
+%%   tính số lần thêm/xóa/thay đổi/hoán vị mỗi ký tự giữa hai từ. Hàm độ đo
+%%   được dùng được nêu trong \cite{Oflazer}, sẽ được trình bày lại bên
+%%   dưới.
+%% \end{itemize}
+
+%% \note{Hmm..} có lẽ nên gắng thêm vào các từ phát sinh một ``hệ số chính
+%% xác''. Từ gốc là từ có hệ số chính xác cao hơn so với các từ được phát
+%% sinh. Good or bad? Hmmm... Làm sao để làm? Hmmm Hmmm
+
+\subsubsection{Lỗi phát âm}
+\label{sec:realword:recover:sound}
+
+Lỗi phát âm phụ thuộc vào cách phát âm của từng
+vùng. \cite{LoiChinhTa} liệt kê các trường hợp lỗi thông dụng
+nhất. Những quy tắc này được áp dụng để tạo ra những từ gần giống phát
+âm.
+%%% Nêu tổng quan, nói cụ thể hơn ở phần sau ``previous work''
 Theo~\cite{LoiChinhTa}, lỗi bao gồm các loại sau:
 \begin{itemize}
 \item Lỗi thanh điệu. Chủ yếu là lỗi nhầm lẫn hai thanh hỏi, ngã.
@@ -2558,99 +3451,167 @@ Theo~\cite{LoiChinhTa}, lỗi bao gồm các loại sau:
 \item Sai quy cách viết hoa
 \end{itemize}
 
-\noindent Theo \cite{Tuoi}, lỗi được phân làm hai loại:
-\begin{itemize}
-\item Từ bị sai không nằm trong từ điển. (do sai dấu hỏi---ngã, bỏ dấu
-  không đúng vị trí, gõ nhầm ký tự trên bàn phím, gõ thiếu ký tự, gõ
-  dư ký tự, gõ sai do gõ theo cách phát âm từng vùng, gõ nhầm vị trí
-  các ký tự trong từ~\ldots{})
-\item Từ bị sai nhưng vẫn có trong từ điển. (sai cách phát âm, nhầm ký
-  tự, bỏ dấu sai, thiếu/thừa ký tự~\ldots{})
-\end{itemize}
 
-\noindent Theo \cite{Chang} thì lỗi bao gồm:
-\begin{itemize}
-\item Giống phiên âm
-\item Giống hình dạng chữ viết
-\item Giống nghĩa
-\item Giống cách gõ
-\end{itemize}
+\subsubsection{Lỗi không rõ nguyên nhân UNIMPL}
 
-\section{Xử lý lỗi chính tả}
-%%% Nêu tổng quan, nói cụ thể hơn ở phần sau ``previous work''
+\label{algo:ed}
+Lỗi này dựa vào {\em độ đo khoảng cách hiệu chỉnh} được đề cập
+trong \cite{Oflazer}. Các thao tác hiệu chỉnh được đo gồm {\em chèn,
+xóa, thay thế một ký tự} hoặc {\em hoán vị hai ký tự kề nhau}, để có
+thể chuyển đổi từ này thành từ kia. Đặt $X = x_1, x_2, \ldots{}, x_m$ và
+$Y = y_1,y_2,\ldots{},y_n$ là hai chuỗi có độ dài tương ứng là $m$ và
+$n$. $X[i]\quad(Y[j])$ biểu diễn chuỗi con ban đầu của X (Y) từ đầu từ
+đến ký tự thứ $j$. Cho $X$ và $Y$, độ đo $ed(X[m],Y[n])$ được tính như
+sau:
+\begin{equation}
+\begin{array}{rll}
+  ed(X[i+1],Y[j+1]) &= ed(X[i],Y[j]) & \text{nếu $x_{i+1}=y_{j+1}$
+  (ký tự cuối như nhau)}\\
+                    &= 1+min\{ed(X[i-1],Y[j-1]), & \text{nếu $x_i=y_{j+1}$}\\
+                    &\qquad\qquad ed(X[i+1],Y[j]), & \text{và $x_{i+1}=y_j$}\\
+                    &\qquad\qquad ed(X[i],Y[j+1])\}\\
+                    &= 1+min\{ed(X[i],Y[j]),&\text{trường hợp khác}\\
+                    &\qquad\qquad ed(X[i+1],Y[j]),\\
+                    &\qquad\qquad ed(X[i],Y[j+1])\}\\
+  ed(X[0],Y[j])     &=j & 0 \le j \le n\\
+  ed(X[i],Y[j])     &=i & 0 \le i \le n\\\\
+  ed(X[-1],Y[j])    &=ed(X[i],Y[-1]) = max(m,n)&\text{Biên}
+\end{array}
+\end{equation}
 
-Với \cite{Tuoi} thì việc xử lý lỗi bao gồm:
-\begin{itemize}
-\item Từ không có trong từ điển thì bắt lỗi ở cấp từ vựng.
-\item Từ có trong từ điển thị bắt lỗi ở cấp cú pháp.
-\end{itemize}
+Thuật toán có thể được khử đệ quy khi cài đặt bằng quy hoạch
+động. Nhận thấy $ed(X[i+1],Y[i+1])$ cần dùng
+$ed(X[i],Y[i])$,$ed(X[i-1],Y[i-1])$,$ed(X[i],Y[i+1])$ hoặc
+$ed(X[i+1],Y[i])$, ta có thể tính từ lần lượt từ thấp đến cao theo
+đường zig-zag bắt đầu từ đỉnh (1,1), sau đó đến đường chéo phụ (1,2),
+(2,1), rồi đường chéo (1,3),(2,2),(3,1)~\ldots{}
 
-%% Với \cite{Chang}, giải pháp gồm:
-%% \begin{itemize}
-%% \item Composite confusing character substitution
-%% \item Advanced word class bigram language. LM score is composed base
-%%   language model score and substitution penalty score.
-%% \end{itemize}
+\begin{algo}\caption{Tính hàm $ed$}
+  \begin{enumerate}
+  \item Đặt (0,0) là 0 nếu x[0] = y[0] hoặc 1 nếu ngược lại.
+  \item Đặt (0,j) là j
+  \item Đặt (i,0) là i
+  \item (i,j)=(i-1,j-1) nếu x[i]=y[j]
+  \item (i,j)=1+min\{(i-2,j-2),(i,j-1),(i-1,j)\} nếu x[i] = y[j-1]
+    hoặc x[i-1]=y[j]
+  \item (i,j)=1+min\{(i-1,j-1),(i,j-1),(i-1,j)\} trong các trường hợp còn lại
+  \end{enumerate}
+\end{algo}
 
-%% qua các bước:
-%% \begin{enumerate}
-%% \item Input and Clause Segmentation
-%% \item Composite Confusing Character Substitution
-%% \item Language Model Evaluation
-%% \item Comparision and Correction
-%% \item Output
-%% \end{enumerate}
+Ví dụ: tính độ sai khác giữa chữ ``thắng'' và ``tắgn''. Ta tính các
+giá trị như bảng~\ref{tab:ed-example}. Vậy có hai khác biệt giữa hai
+chữ. Khác biệt thứ nhất là xoá ký tự `h'. Khác biệt thứ hai là hoán vị
+hay ký tự `n' và `g'.
 
-Việc tìm lỗi dựa chủ yếu trên từ điển. So sánh từng từ trong câu với từ điển, những từ
-không có trong từ điển là những từ có khả năng bị lỗi. Sau đó dựa trên
-một số thuật giải hoặc các độ đo để tìm ra từ gần đúng với từ đó, chọn làm
-từ đề nghị.
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{|c|c|c|c|c|c|c|}
+    \hline
+    X&-&-&t&ắ&g&n\\\hline
+    -&0&0&0&0&0&0\\\hline
+    -&0&0&1&2&3&4\\\hline
+    t&0&1&\bf 0&\bf 1&\bf 2&\bf 3\\\hline
+    h&0&2&\bf 1&\bf 1&\bf 2&\bf 3\\\hline
+    ắ&0&3&\bf 2&\bf 1&\bf 1&\bf 2\\\hline
+    n&0&4&\bf 3&\bf 2&\bf 2&\bf 1\\\hline
+    g&0&5&\bf 4&\bf 3&\bf 2&\bf 2\\\hline
+  \end{tabular}
+  \caption{Bảng $ed$ của ``thắng'' và ``tắgn''}
+  \label{tab:ed-example}
+\end{table}
 
-Việc tự động sửa lỗi chủ yếu dựa trên một tập các từ hay bị lỗi (then-than,
-there-their~\ldots{}), sử dụng ngữ cảnh xung quanh để xác định từ đúng
-hay sai.
+\subsubsection{Phân tích âm tiết}
+\label{sec:realword:syllable}
 
-Đối với ngôn ngữ đơn lập như tiếng Việt, vấn đề mới phát sinh là không
-thể xác định rõ ràng ranh giới từ. Với tiếng Anh và các ngôn ngữ biến
-cách khác, khoảng trắng thường được dùng để phân cách hai từ. Trong tiếng Việt,
-khoảng trắng được dùng để phân cách hai tiếng. Ngoài ra, việc định
-nghĩa từ trong tiếng Việt vẫn chưa thống nhất~\cite{worddef}. Luận văn
-này sử dụng ``từ'' như là ``từ từ điển''.  
+Để phát sinh từ dựa trên lỗi phát âm, cần phân tích cấu trúc của từng
+tiếng. Một tiếng bao gồm âm đầu, vần và thanh. Vần gồm âm đệm, âm
+chính và âm cuối. Trong các thành phần của tiếng, âm chính là bắt buộc
+phải có. Các thành phần còn lại có thể không có. Ta có thể biểu diễn
+cấu trúc âm tiếng theo sơ đồ trạng thái như hình~\ref{fig:syllable}.
 
-Để bắt lỗi chính tả trong tiếng Việt, có thể dựa trên nhiều cách khác
-nhau. Cách đầu tiên đơn giản là tìm ranh giới từ cho tiếng Việt, sau
-đó chuyển về bài toán bắt lỗi chính tả của tiếng Anh, dựa trên từ
-điển. Cách khác là bắt lỗi mà không cần tách từ~\cite{Tuoi}
-Cách nữa dựa trên ý tưởng ``phân tích cú pháp câu, nếu ta không thể
-phân tích cú pháp của câu, nghĩa là câu đó sai chính tả''~\cite{iccc}.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{syllable}
+  \caption{Sơ đồ trạng thái phân tích cấu trúc tiếng}
+  \label{fig:syllable}
+\end{figure}
 
-Luận văn này làm theo hướng tách từ, sau đó tìm lỗi chính tả dựa trên
-từ điển.
+Khi phân tích tiếng, có thể có một số nhập nhằng giữa các thành phần
+của tiếng. Vd, ``lúa'' bao gồm âm chính ``ua'' hay âm đệm ``u'' và âm
+chính ``a''~\ldots{}
+
+Ta có thể phân tích tiếng dùng FST. Tuy nhiên, qua
+ hình~\ref{fig:syllable}
+ có thể thấy chỉ có tám cách để hình thành
+tiếng. Cài đặt theo tám cách này đơn giản và hiệu quả hơn dùng FST
+tổng quát. Việc sắp xếp thứ tự áp dụng từng cách và một số heuristic
+sẽ giúp loại bỏ nhập nhằng khi phân tích tiếng. 
 
 
 
-\subsection{Tách từ}
+\subsection{Hoàn chỉnh lưới từ}
+\label{sec:lattice:competion}
 
-\cite{Sproat} sử dụng WFST để tách từ, huấn luyện bằng EM dựa trên
-cách tách từ đúng nhất.
+Sau khi tạo lưới từ mở rộng, cần bảo đảm có thể tìm được một cách tách
+từ từ từ đầu tiên cho đến từ cuối cùng và mọi cách tách từ đều kết thúc
+ở từ cuối cùng trong câu. Nói cách khác, phải đảm bảo luôn tìm được
+đường đi từ bất kỳ đỉnh nào trên đồ thị đến đỉnh của các từ kết thúc câu.
+Do từ điển bị giới hạn, có khả năng lưới từ thiếu một vài cạnh làm đồ
+thị không còn liên thông. Bước này thêm vào các đỉnh để bảo đảm đồ thị
+liên thông. Lưới từ sẽ được duyệt lại, tìm những nơi không liên thông,
+thêm vào các đỉnh (mã ``UNK'') để đảm bảo tính liên thông. 
 
-\cite{wordseg} sử dụng giải pháp tương tự như \cite{Sproat} nhưng cải
-tiến bằng cách cáp dụng Neural Networks để giải quyết nhập nhằng dựa
-vào POS. Nghiên cứu đề cập đến một số vấn đề tiền xử lý tiếng Việt như
-xác định tên riêng, từ láy, phân tích hình thái.
 
-\cite{Ravishankar} đề nghị tạo ra lưới từ\footnote{word lattice} sau
-đó sử dụng thuật toán tìm đường đi ngắn nhất để tìm cách tách từ tốt
-nhất dựa trên 2-gram hoặc 3-gram.
 
-\cite{LAH} sử dụng n-gram và quy hoạch động để tách từ,
-không dùng từ điển. Giải pháp này tương tự như \cite{softcount}, tuy
-nhiên chỉ tính xác suất cách tách từ tốt nhất thay vì tính tổng xác
-suất mọi cách tách từ như trong \cite{softcount}.
+\subsection{Áp dụng mô hình ngôn ngữ --- Tách từ}
 
-\cite{Chunyu} kết hợp ngram, lập trình quy hoạch động để tách từ. Xài
-soft-count thay vì ``hard-count'' như \cite{Chang}. \cite{Chunyu} còn
-đề nghị dùng case-based learning.
+%\section{Tách từ}
+\label{sub:wordseg}
+
+Dùng thuật toán tìm kiếm theo độ ưu tiên PFS\footnote{Priority-First
+Search---PFS} để tìm đường đi ngắn nhất trên đồ thị. Khoảng cách giữa hai
+điểm trong đồ thị là xác suất 2-gram của hai từ. Bài toán tìm đường
+đi ngắn nhất, có thể áp dụng PFS, Prime, Djisktra. PFS được chọn vì
+lưới từ, qua khảo sát, có thể được coi là một đồ thị thưa.
+
+Để áp dụng 3-gram thay vì 2-gram, ta sẽ sử dụng lưới 2-từ. Sau đó áp
+dụng thuật toán PFS cho đồ thị mới.
+
+Cách làm này không thể thực hiện với n-gram ($n > 3$) vì khi đó số
+nút/cạnh trong đồ thị sẽ tăng đáng kể. Ngoài ra, PFS cũng không áp
+dụng được trong trường hợp sử dụng những độ đo như đo số lỗi sai đã
+xảy ra~\ldots{} Trong trường hợp đó ta nên sử dụng thuật toán A*~\cite{Ravishankar}
+
+%% XXXX. Nếu WFST cộng viterbi, beam pruning \ldots{} thì sao nhỉ?
+
+
+
+
+\subsection{Tìm lỗi chính tả}
+
+
+\subsection{Lập danh sách từ đề nghị}
+%\section{Tìm từ thay thế}
+
+Do tiếng Việt đọc sao ghi vậy,
+nên bước chuyển từ từ sang âm có thể bỏ qua. Bước còn lại là áp dụng
+thuật toán đo độ hiệu chỉnh giữa hai từ như đã nêu trong~\ref{algo:ed}
+Ta có thể so sánh từng ký tự, hoặc so sánh theo âm (ví dụ, ``th'' thay
+vì ``t'' và ``h'').
+
+Chương trình sẽ liệt kê XXXX (chọn theo tiêu chí nào?, 10 từ lớn nhất
+hay sao đây)
+
+XXXX. thuật toán tính ed.
+
+
+
+\subsection{Sắp xếp danh sách từ đề nghị}
+
+
+
+\section{Huấn luyện}
+\label{sec:training}
 
 \subsection{Huấn luyện tách từ}
 
@@ -2687,511 +3648,6 @@ không thật bảo đảm (\textit{training set}), xử lý qua 4 bước:
 \item \textbf{Language model pruning}
 \end{enumerate}
 
-
-
-\section{Mô hình chung}
-
-Việc bắt lỗi chính tả của một văn bản được xử lý lần lượt qua những
-bước sau:
-\begin{enumerate}
-\item \textbf{Tiền xử lý} Tách văn bản thành những đoạn ngắn. Tách
-  đoạn thành từng tiếng. Đánh dấu các ký hiệu, dấu ngắt dòng, các số,
-  tên riêng~\ldots{}
-\item \textbf{Bắt lỗi tiếng} Kiểm tra các tiếng với các tiếng đã có
-  trong từ điển. Báo lỗi những tiếng không có trong từ điển. Sau đó 
-  \textbf{Đưa ra giải pháp thay thế}.
-\item \textbf{Tạo lưới từ} Tìm ra mọi từ có thể có trong câu. Xem
-  giải thích về lưới từ bên dưới. Lồng trong phần này là phần
-  \textbf{Phát sinh từ thay thế}
-\item \textbf{Tách từ} Dựa vào lưới từ, đưa ra cách tách từ tốt nhất.
-\item \textbf{Bắt lỗi từ} Dựa vào từ điển và cách tách từ đã có,
-  tìm những từ nào không có trong từ điển. Những từ này được xem là từ
-  sai. Sau đó \textbf{Đưa ra giải pháp thay thế}
-\end{enumerate}
-
-\section{Tiền xử lý}
-\label{sub:preprocess}
-
-Dựa vào flex để tách thành các token. Mục đích là để tách các dấu câu
-ra khỏi tiếng. Ví dụ \fbox{"chào"} sẽ được tách thành 3 token
-\fbox{"} \fbox{chào} \fbox{"}. Quy tắc được dùng như sau:
-
-\begin{verbatim}
-
-SENTENCE_FINAL                  [.?!]
-HYPHEN                          [\-]
-OPEN_SINGLE_QUOTE               [\`]
-CLOSE_SINGLE_QUOTE              [\']
-RIGHT_PAREN                     [\"\)\]\}\>\']
-
-
-LETTERS_AND_NUMBERS             [a-zA-Z0-9]
-LETTERS_NUMBER_AND_THEN_SOME    [a-zA-Z0-9]
-APOSTROPHE                      \'
-
-SINGLE_CHARACTER                [a-zA-Z0-9]
-
-WHITE_SPACE                     [ \t\n]
-NEWLINE                         [\n]
-INVISIBLE                       [^\040-\176]
-
-
-{SENTENCE_FINAL}+{RIGHT_PAREN}*                                 |
-{HYPHEN}+                                                       |
-{OPEN_SINGLE_QUOTE}+                                            |
-{CLOSE_SINGLE_QUOTE}+                                           |
-
-{LETTERS_NUMBER_AND_THEN_SOME}+{LETTERS_AND_NUMBERS}            |
-{LETTERS_AND_NUMBERS}+{APOSTROPHE}                              |
-
-{SINGLE_CHARACTER}                   { xuất từ }
-
-({WHITE_SPACE}|{INVISIBLE}|{NEWLINE})+                { bỏ qua }
-
-\end{verbatim}
-
-
-\subsection{Tách câu}
-
-Dựa vào các dấu câu để ngắt câu ra thành từng đoạn để xử lý. Mỗi
-đoạn sẽ được xử lý độc lập với nhau. Đoạn ở đây có thể là một câu,
-nhưng cũng có thể là một 
-phần của câu. Luận văn này sẽ dùng từ ``câu'' để ám chỉ ``đoạn''. Nếu
-các thông tin ở mức cao hơn được sử dụng (như thông tin cú pháp, ngữ
-nghĩa~\ldots{}) thì phải thật sự xử lý trên câu chứ không phải trên 
-đoạn. Các đoạn được phân cách bởi các dấu câu \fbox{.} \fbox{,}
-\fbox{;} \fbox{(} \fbox{)}~\ldots{} 
-
-\subsection{Chuẩn hoá}
-
-Do trong tiếng Việt có nhiều từ có thể viết theo các
-cách khác nhau về vị trí dấu thanh điệu, ví dụ, ``hoà'' và
-``hòa''. Bởi vậy cần phải chuẩn hoá sao cho chương trình xem ``hòa''
-và ``hoà'' là một. Giải pháp đưa ra là tách dấu thanh điệu ra khỏi
-từ, biểu diễn dấu thanh điệu bằng ký tự đầu tiên trong từ. Như vậy,
-``hoà'' và ``hòa'' đều có cùng cách biểu diễn là ``2hoa'', trong khi
-đó ``hoa'' được biểu diễn là ``0hoa'', ``hồng'' được biểu diễn là
-``2hông''.
-
-\subsection{Chữ viết hoa}
-
-Xử lý chữ viết hoa. Chữ viết hoa dùng để biểu diễn tên riêng, từ viết
-tắt hoặc dùng cho chữ đứng đầu câu. Do đó cần phân biệt chữ đầu câu có
-phải là chữ bắt đầu tên riêng hay không. Ngoài ra, cần xác định tên riêng khi
-tìm được chữ viết hoa bắt đầu tên riêng. Các văn bản tiếng Việt chưa
-hoàn toàn thống nhất về quy tắc viết hoa. Ví dụ, có tài liệu dùng
-``Cộng hoà Xã hội Chủ nghĩa Việt Nam'', nhưng có tài liệu lại dùng
-``Cộng Hoà Xã Hội Chủ Nghĩa Việt Nam''.
-
-Do văn bản đầu vào có khả năng bị sai chính tả nên không thể xác định
-ngay chính xác có phải là cụm từ viết hoa đúng hay không. Bước này cố
-gắng phát hiện ra những cụm từ viết hoa và thêm vào lưới từ. Do vậy,
-phần này được thực hiện bên trong phần \textbf{Phát sinh từ thay thế}. 
-
-Có thể dùng thuật giải như sau: Nếu bắt đầu bằng chữ viết hoa, và chữ
-đầu được viết thường cùng những từ kế tiếp của nó là một từ trong từ
-điển, thì xem như đó là một từ. Nếu một chuỗi từ viết hoa liên tục
-(hai từ trở lên) thì xem như đó là một từ (một tên riêng), và được
-đánh dấu từ lạ $UNK$.
-
-Với tên riêng của người Việt. Một danh sách các tên tiếng Việt được
-thu thập nhằm rút ra những chữ thường dùng khi đặt tên. Những chuỗi
-các chữ hoa liên tiếp được hình thành từ những chữ trong danh sách này
-sẽ được xem như là tên riêng, đánh mã $PROP$.
-
-
-%% \begin{algo}[Xử lý chữ hoa]
-%% \label{algo:propername}
-%%   \begin{enumerate}
-%%   \item Lấy 1 chữ. Kiểm tra ký tự đầu tiên xem có phải ký tự hoa hay
-%%     không.
-%%   \item Nếu đây là chữ đầu câu, phát sinh bình thường dựa theo bản
-%%     viết thường của chữ này. Ngoài ra tiếp tục thực hiện các bước
-%%     dưới.
-%%   \item Duyệt từ chữ đó trở đi, lấy chuỗi dài nhất có thể dựa trên
-%%     $sid$. Phát sinh từ mới dựa trên từ lấy được. Đặt xác suất 0.80.
-%%   \item Nếu không tìm được từ nào, duyệt lại như bước trên, dùng
-%%     $scid$.
-%%   \item Nếu chữ kế tiếp cũng là chữ hoa, duyệt từ đó trở đi để lấy
-%%     chuỗi chữ hoa dài nhất ($scid$). Phát sinh từ mới
-%%     mã $PROP$. 
-%%   \end{enumerate}
-%% \end{algo}
-
-\subsection{Từ láy UNIMPL}
-
-Phần này được thực hiện bên trong phần \textbf{Phát sinh từ thay thế}.
-
-\begin{itemize}
-\item Láy toàn bộ (Vd. ba ba, chuồn chuồn~\ldots{})
-\item Láy âm đầu (Vd. chặt chẽ, trong trẻo~\ldots{})
-\item Láy điệp vần (Vd. lông bông, lã chã~\ldots{})
-\item Láy điệp âm, láy vần (Vd. thủ thỉ, tủm tỉm~\ldots{})
-\item Hai thanh của tiếng thường ở cùng một hệ~\ldots{}
-\end{itemize}
-
-\note{Hổng thèm làm :-)} Vấn đề từ láy cũng tương tự như  tên riêng. Giải
-pháp có thể áp dụng là dựa vào các quy tắc tạo từ láy để phát hiện
-những từ có khả năng là từ láy và thêm vào lưới từ. 
-
-Đối với các từ láy trên 2 tiếng. Do số lượng các từ láy dạng này không
-nhiều nên có thể thêm các từ láy này vào từ điển.
-%% Nhưng những ``từ láy''
-%% ``nhưng những'' có thể giết chết module tách từ một cách êm dịu. Chắc
-%% nên áp dụng giải pháp ``80 từ láy, 20 từ thường''. Không biết được hay
-%% không, phiêu quá~\ldots{}
-
-\begin{algo}[Xử lý từ láy]
-\label{algo:poem}
-  \begin{enumerate}
-  \item Lấy 2 chữ liên tiếp.
-  \item Kiểm tra quy tắt từ láy.
-  \item Nếu đúng, phát sinh thêm từ láy mới, mã $POEM$.
-  \end{enumerate}
-\end{algo}
-
-%% Có lẽ nên lọc ra danh sách từ láy bằng tay, đánh nhãn toàn bộ là
-%% $POEM$, hoặc dùng nhãn riêng. Heuristic này không đáng tin lắm.
-%% Cách hình thành từ láy của con người như thế nào ?? Từ láy thường gắn
-%% liền với hình tượng, cảm giác gì đó. Làm sao người ta có thể cảm nhận
-%% được một từ có phải là từ láy hay không??
-
-\subsection{Từ nước ngoài, từ viết tắt, các ký hiệu~\ldots{}}
-
-\note{Coi như từ sai chính tả}
-\note{không phân biệt từ nước ngoài và từ sai chính tả}
-Xử lý tiếng nước ngoài, các ký hiệu chuyên ngành, các từ viết tắt. Do
-trình bắt lỗi không có kiến thức về các lĩnh vực chuyên 
-ngành, cũng như các thứ tiếng trên thế giới, nên việc áp dụng tri thức
-để phân loại là điều hết sức khó khăn. Giải pháp được dùng ở đây là
-coi tất cả những từ nước ngoài, từ viết tắt, ký hiệu~\ldots{} đều là sai
-chính tả, trừ khi được người dùng được vào danh sách từ nước ngoài, từ
-viết tắt. Các con số được đánh dấu riêng bằng mã $NUM$.
-``Số'' ở đây được coi là bất cứ chữ nào bắt đầu bằng số. Ví dụ, ``0lit'',
-``0.2'', ``0-4''~\ldots{}{} đều được coi là số. 
-
-\section{Phát sinh từ thay thế}
-
-Phần này được sử dụng trong lúc tạo lưới từ và kiểm tra chính
-tả. Mục đích là, cho trước một từ, phát sinh những từ ``gần giống''
-với từ đó. Việc định nghĩa như thế nào là ``giống'' ở đây dựa theo các
-nguyên nhân gây ra lỗi chính tả:
-\begin{itemize}
-\item Lỗi phát âm. Ví dụ, ``vu'' và ``du''. 
-\item Do lỗi bàn phím. Có thể do gõ nhầm những phím lân cận. Ví dụ: gõ
-  ``tôi'' thành ``tôu''. Khắc phục lỗi này dựa vào bố trí phím trên
-  bàn phím. Độ đo là khoảng cách từ phím tạo ra ký tự trong từ cho
-  trước và những từ chung quanh. Thông thường lỗi này chỉ xảy ra một
-  lần trong mỗi từ. Ngoài ra còn lỗi liên quan đến cách kiểu gõ tiếng
-  Việt.
-\item Lỗi OCR\footnote{Optical Character Recognition}. Lỗi dạng này
-  phụ thuộc nhiều vào phông chữ được dùng trên văn bản giấy. Tuy nhiên
-  vẫn có một số lỗi chung như ``a'' và ``c'', ``d'' và ``cl''~\ldots{}
-\item Lỗi sai về mặt từ vựng, cú pháp. Lỗi này hiện thời không xử lý
-  do cần nhiều tri thức về ngôn ngữ tiếng Việt.
-\item Lỗi không rõ nguyên nhân. Với dạng lỗi này, ta dùng hàm độ đo,
-  tính số lần thêm/xóa/thay đổi/hoán vị mỗi ký tự giữa hai từ. Hàm độ đo
-  được dùng được nêu trong \cite{Oflazer}, sẽ được trình bày lại bên
-  dưới.
-\end{itemize}
-
-%% \note{Hmm..} có lẽ nên gắng thêm vào các từ phát sinh một ``hệ số chính
-%% xác''. Từ gốc là từ có hệ số chính xác cao hơn so với các từ được phát
-%% sinh. Good or bad? Hmmm... Làm sao để làm? Hmmm Hmmm
-
-\subsection{Lỗi phát âm}
-
-Lỗi phát âm phụ thuộc vào cách phát âm của từng
-vùng. \cite{LoiChinhTa} liệt kê các trường hợp lỗi thông dụng
-nhất. Những quy tắc này được áp dụng để, ví dụ, từ   ``du'' ta tạo ra
-``vu''. 
-
-Để phát sinh từ dựa trên lỗi phát âm, cần phân tích cấu trúc của từng
-tiếng. Một tiếng bao gồm âm đầu, vần và thanh. Vần gồm âm đệm, âm
-chính và âm cuối. Trong các thành phần của tiếng, âm chính là bắt buộc
-phải có. Các thành phần còn lại có thể không có. Ta có thể biểu diễn
-cấu trúc âm tiếng theo sơ đồ trạng thái như hình~\ref{fig:syllable}.
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=\textwidth]{syllable}
-  \caption{Sơ đồ trạng thái phân tích cấu trúc tiếng}
-  \label{fig:syllable}
-\end{figure}
-
-Khi phân tích tiếng, có thể có một số nhập nhằng giữa các thành phần
-của tiếng. Vd, ``lúa'' bao gồm âm chính ``ua'' hay âm đệm ``u'' và âm
-chính ``a''~\ldots{}
-
-Ta có thể phân tích tiếng dùng FST. Tuy nhiên, qua
- hình~\ref{fig:syllable}
- có thể thấy chỉ có tám cách để hình thành
-tiếng. Cài đặt theo tám cách này đơn giản và hiệu quả hơn dùng FST
-tổng quát. Việc sắp xếp thứ tự áp dụng từng cách và một số heuristic
-sẽ giúp loại bỏ nhập nhằng khi phân tích tiếng. 
-
-\subsection{Lỗi bàn phím UNIMPL}
-
-Chương trình giả định sơ đồ bố trí của bàn phím EN-US được dùng. Do
-thông thường chỉ gặp một lỗi gõ nhầm với phím ngay bên cạnh này mỗi
-từ, nên chương trình chỉ lưu danh  sách những phím lân cận với từng
-phím, dựa trên bàn phím EN-US. Ví dụ: $A \rightarrow (S,Q,W,X,Z)$. 
-
-Với những phím có hai ký tự như phím `2' (2 và @) thì @ sẽ được thêm
-vào tập các phím lân cận với 2 và ngược lại.
-
-Do với mỗi phím có khoảng 8 phím lân cận. Một chữ dài trung bình 8 ký
-tự sẽ phát sinh ra một tập $8^8$ các chuỗi có khả năng. Trong số này
-chỉ có một số rất ít là chữ thật sự, đúng quy tắc chính tả. Tuy nhiên
-việc xử lý một khối lượng lớn như vậy là không thể. Vì vậy chương
-trình giả định chỉ nhập gõ sai tối đa hai phím với mỗi chữ, nhằm giảm
-thiểu bùng nổ tổ hợp.
-
-Với các kiểu gõ như VNI, TELEX. Chương trình cố gắng ``phục hồi'' từ
-những chữ gõ sai nếu phát hiện được. Vd, ``nguyê4n'' sẽ tạo ra
-``nguyễn''. Ta cài đặt bộ gõ VNI, TELEX, sau đó đưa chuỗi các ký tự
-của chữ đang xét qua bộ gõ phục hồi các dấu. Bước này được thực hiện
-sau bước trên, để nếu gõ nhầm phím dấu kế bên thì vẫn có thể phục hồi
-lại.
-
-% Hmm.. phần phục hồi ngược từ VNI, TELEX. Vd, englíh (english). Cái này
-% nhường cho English Speller. Hơi vướng với VIQR.
-
-\subsection{Lỗi không rõ nguyên nhân UNIMPL}
-
-\label{algo:ed}
-Lỗi này dựa vào {\em độ đo khoảng cách hiệu chỉnh} được đề cập
-trong \cite{Oflazer}. Các thao tác hiệu chỉnh được đo gồm {\em chèn,
-xóa, thay thế một ký tự} hoặc {\em hoán vị hai ký tự kề nhau}, để có
-thể chuyển đổi từ này thành từ kia. Đặt $X = x_1, x_2, \ldots{}, x_m$ và
-$Y = y_1,y_2,\ldots{},y_n$ là hai chuỗi có độ dài tương ứng là $m$ và
-$n$. $X[i]\quad(Y[j])$ biểu diễn chuỗi con ban đầu của X (Y) từ đầu từ
-đến ký tự thứ $j$. Cho $X$ và $Y$, độ đo $ed(X[m],Y[n])$ được tính như
-sau:
-\begin{equation}
-\begin{array}{rll}
-  ed(X[i+1],Y[j+1]) &= ed(X[i],Y[j]) & \text{nếu $x_{i+1}=y_{j+1}$
-  (ký tự cuối như nhau)}\\
-                    &= 1+min\{ed(X[i-1],Y[j-1]), & \text{nếu $x_i=y_{j+1}$}\\
-                    &\qquad\qquad ed(X[i+1],Y[j]), & \text{và $x_{i+1}=y_j$}\\
-                    &\qquad\qquad ed(X[i],Y[j+1])\}\\
-                    &= 1+min\{ed(X[i],Y[j]),&\text{trường hợp khác}\\
-                    &\qquad\qquad ed(X[i+1],Y[j]),\\
-                    &\qquad\qquad ed(X[i],Y[j+1])\}\\
-  ed(X[0],Y[j])     &=j & 0 \le j \le n\\
-  ed(X[i],Y[j])     &=i & 0 \le i \le n\\\\
-  ed(X[-1],Y[j])    &=ed(X[i],Y[-1]) = max(m,n)&\text{Biên}
-\end{array}
-\end{equation}
-
-Thuật toán có thể được khử đệ quy khi cài đặt bằng quy hoạch
-động. Nhận thấy $ed(X[i+1],Y[i+1])$ cần dùng
-$ed(X[i],Y[i])$,$ed(X[i-1],Y[i-1])$,$ed(X[i],Y[i+1])$ hoặc
-$ed(X[i+1],Y[i])$, ta có thể tính từ lần lượt từ thấp đến cao theo
-đường zig-zag bắt đầu từ đỉnh (1,1), sau đó đến đường chéo phụ (1,2),
-(2,1), rồi đường chéo (1,3),(2,2),(3,1)~\ldots{}
-
-\begin{algo}[Tính hàm ed()]
-  \begin{enumerate}
-  \item Đặt (0,0) là 0 nếu x[0] = y[0] hoặc 1 nếu ngược lại.
-  \item Đặt (0,j) là j
-  \item Đặt (i,0) là i
-  \item (i,j)=(i-1,j-1) nếu x[i]=y[j]
-  \item (i,j)=1+min\{(i-2,j-2),(i,j-1),(i-1,j)\} nếu x[i] = y[j-1]
-    hoặc x[i-1]=y[j]
-  \item (i,j)=1+min\{(i-1,j-1),(i,j-1),(i-1,j)\} trong các trường hợp còn lại
-  \end{enumerate}
-\end{algo}
-
-Ví dụ: tính độ sai khác giữa chữ ``thắng'' và ``tắgn''. Ta tính các
-giá trị như bảng~\ref{tab:ed-example}. Vậy có hai khác biệt giữa hai
-chữ. Khác biệt thứ nhất là xoá ký tự `h'. Khác biệt thứ hai là hoán vị
-hay ký tự `n' và `g'.
-
-\begin{table}[htbp]
-  \centering
-  \begin{tabular}{|c|c|c|c|c|c|c|}
-    \hline
-    X&-&-&t&ắ&g&n\\\hline
-    -&0&0&0&0&0&0\\\hline
-    -&0&0&1&2&3&4\\\hline
-    t&0&1&\bf 0&\bf 1&\bf 2&\bf 3\\\hline
-    h&0&2&\bf 1&\bf 1&\bf 2&\bf 3\\\hline
-    ắ&0&3&\bf 2&\bf 1&\bf 1&\bf 2\\\hline
-    n&0&4&\bf 3&\bf 2&\bf 2&\bf 1\\\hline
-    g&0&5&\bf 4&\bf 3&\bf 2&\bf 2\\\hline
-  \end{tabular}
-  \caption{Bảng $ed$ của ``thắng'' và ``tắgn''}
-  \label{tab:ed-example}
-\end{table}
-
-\section{Tạo lưới từ}
-\label{sub:lattice}
-Lưới từ\footnote{word lattice} là một đồ thị có hướng không chu trình,
-với các nút là các từ trong câu, cạnh là đường nối giữa hai từ kề
-nhau, hướng thể hiện hướng của câu (từ trái sang phải). Lưới từ
-chứa tất cả 
-các từ có khả năng xuất hiện trong câu. Các từ được liên kết với nhau
-theo trật tự trong câu. Khi duyệt từ nút gốc đến nút đích, ta sẽ được
-một cách tách từ cho câu. Xem hình~\ref{fig:wordlattice}.
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=\textwidth]{wordlattice}
-  \caption{Lưới từ của câu ``Học sinh học sinh học''}
-  \label{fig:wordlattice}
-\end{figure}
-
-Khi tạo lưới từ trong chương trình bắt lỗi chính tả, thuật toán không
-chỉ phát sinh những từ được tạo từ đoạn, mà còn những từ {\em có thể
-có} được phát sinh từ đoạn. Xem hình~\ref{fig:wordlattice1}.
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=\textwidth]{wordlattice1}
-  \caption{Lưới từ mở rộng của câu ``Học sinh học sinh học''}
-  \label{fig:wordlattice1}
-\end{figure}
-
-Lưới từ được tạo bằng thuật toán Viterbi. Mỗi tiếng trong câu được
-duyệt qua để tìm ra tất cả các từ có thể có trong đoạn. Sau đó tập hợp
-các từ này lại. 
-
-\begin{algo}[Tạo lưới từ (cơ bản)]
-Cho câu S có n tiếng. State là đỉnh, còn ``nút i'' là cạnh. Ta duyệt
-lần lượt qua các cạnh để tìm  ra các từ. Duyệt i từ 1 đến n:
-\begin{itemize}
-\item Tạo state gốc cho nút i.
-\item Xét các state, nếu tiến thêm được một bước thì lưu lại state mới (i+1).
-\item Nếu không tiến được thì xóa state.
-\item Nếu hoàn tất một từ thì lưu lại.
-\end{itemize}
-\end{algo}
-
-Sau khi hoàn tất, đánh dấu tất cả các chữ xuất hiện trong các từ tìm
-được. Do từ điển không hoàn chỉnh, và do các ký hiệu, từ viết
-tắt~\ldots{}{},
- sẽ có một số chữ không nằm trong bất kỳ từ nào tìm được. Do
-đó ta cần duyệt lại, và đánh dấu những chữ này là từ ``UNK''. Việc tạo
-thêm các từ $UNK$ sẽ đảm bảo tạo ra một đồ thị liên thông. Nếu đồ
-thị không liên thông, ta không thể áp dụng thuật toán tìm đường đi
-ngắn nhất.
-
-Ngoài lưới từ cơ bản, ta có thể tạo lưới 2-từ. Lưới 2-từ
-tương tự như lưới từ, tuy nhiên mỗi nút là một cặp 2 từ đi liền nhau
-trong câu. Thuật toán tạo lưới 2-từ được nêu trong \cite{Ravishankar},
-được tóm tắt lại như sau (xem hình~\ref{fig:wordlattice2}):
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=\textwidth]{wordlattice2}
-  \caption{Lưới 2-từ của câu ``Học sinh học sinh học''}
-  \label{fig:wordlattice2}
-\end{figure}
-
-\begin{algo}[Tạo lưới n-từ từ lưới (n-1)-từ]
-\begin{enumerate}
-\item Nếu nút ($w$) có $n$ từ đứng liền trước nó ($w_i$),
-  $i=1,2,\ldots{},n$ trong lưới từ gốc, nó sẽ được lặp lại $n$ lần trong
-  lưới từ mới, tên là ($w_{i}w$), tương ứng với $i=1,2,\ldots{},n$.
-\item Nếu ($w_i$) nối với ($w_j$) trong lưới từ gốc, nối tất cả
-  ($w_xw_i$) với ($w_iw_j$) $x$ bất kỳ.
-\item Giá trị của ($w_iw_j$) là giá trị của cạnh ($w_i$) ($w_j$) trong
-  lưới từ cũ.
-\item Giá trị của cạnh ($w_iw_j$) ($w_jw_k$) là 3-gram của $w_i$, $w_j$
-  và $w_k$.
-\end{enumerate}
-\end{algo}
-
-%% Các lưới n-từ có đặc điểm là tăng nhanh số nút và số cạnh, nhưng số
-%% tầng vẫn không đổi (Đồ thị càng ngày càng ``mập'', nhưng ``cao''
-%% không nổi ;-) )
-
-
-\subsection{Lưu lưới từ}
-
-Các nút trong lưới từ được lưu tập trung vào một mảng
-(WordEntries). Truy cập nút được thực hiện thông qua index của mảng
-này. Mỗi nút chứa các thông tin về từ của nút đó, bao gồm vị trí từ,
-số tiếng, index trong WordEntries~\ldots{}{}
-
-Words là một mảng tương ứng với vị trí từng tiếng trong câu. Vị trí
-của mỗi tiếng sẽ được liên kết với một danh sách các từ bắt đầu tại
-tiếng đó. Ta có thể coi danh sách này như danh sách các cạnh nối từ
-nút đang xét đến các nút kế tiếp.
-
-
-\section{Tách từ}
-\label{sub:wordseg}
-
-Dùng thuật toán tìm kiếm theo độ ưu tiên PFS\footnote{Priority-First
-Search---PFS} để tìm đường đi ngắn nhất trên đồ thị. Khoảng cách giữa hai
-điểm trong đồ thị là xác suất 2-gram của hai từ. Bài toán tìm đường
-đi ngắn nhất, có thể áp dụng PFS, Prime, Djisktra. PFS được chọn vì
-lưới từ, qua khảo sát, có thể được coi là một đồ thị thưa.
-
-Để áp dụng 3-gram thay vì 2-gram, ta sẽ sử dụng lưới 2-từ. Sau đó áp
-dụng thuật toán PFS cho đồ thị mới.
-
-Cách làm này không thể thực hiện với n-gram ($n > 3$) vì khi đó số
-nút/cạnh trong đồ thị sẽ tăng đáng kể. Ngoài ra, PFS cũng không áp
-dụng được trong trường hợp sử dụng những độ đo như đo số lỗi sai đã
-xảy ra~\ldots{} Trong trường hợp đó ta nên sử dụng thuật toán A*~\cite{Ravishankar}
-
-%% XXXX. Nếu WFST cộng viterbi, beam pruning \ldots{} thì sao nhỉ?
-
-
-\section{Tìm từ thay thế}
-
-Do tiếng Việt đọc sao ghi vậy,
-nên bước chuyển từ từ sang âm có thể bỏ qua. Bước còn lại là áp dụng
-thuật toán đo độ hiệu chỉnh giữa hai từ như đã nêu trong~\ref{algo:ed}
-Ta có thể so sánh từng ký tự, hoặc so sánh theo âm (ví dụ, ``th'' thay
-vì ``t'' và ``h'').
-
-Chương trình sẽ liệt kê XXXX (chọn theo tiêu chí nào?, 10 từ lớn nhất
-hay sao đây)
-
-XXXX. thuật toán tính ed.
-
-\section{Giao tiếp với người dùng}
-\label{sec:ui}
-
-Cố gắng khai thác tri thức của người sử dụng, nhằm bổ trợ cho trình
-bắt lỗi, giảm thiểu các sai sót do trình bắt lỗi gây ra.
-
-Hỏi người dùng càng nhiều càng tốt. Luôn luôn có một tùy chọn ``không
-biết'' cho người dùng.
-
-\begin{itemize}
-\item Phần bắt lỗi tiếng.
-\item Nhận dạng từ sai.
-\item Nhận dạng ký hiệu, tên riêng nước ngoài.
-\end{itemize}
-
-Sau mỗi lần sữa lỗi, cần chạy lại thuật toán để loại tác động của lỗi
-sai.
-
-Văn bản xử lý được phân thành nhiều tầng:
-\begin{enumerate}
-\item Văn bản thô toàn bộ. Chuỗi các ký tự.
-\item Văn bản thô (câu).
-\item Dạng token. Tách ra từng chuỗi con.
-\item Dạng sentence. Một số token sẽ được gán id. Một số khác bị bỏ
-  qua. 
-\item Dạng lattice. Đồ thị các id (có thể giống hoặc khác với id ở cấp
-  sentence) và các liên kết. 
-\item Dạng segmentation. chuỗi id nhất định.
-\end{enumerate}
-
-Hiện tại, việc thay đổi thông tin ở tầng trên sẽ hủy mọi thông tin ở
-tầng bên dưới.
-
-Lưu lại các thông tin của người dùng như thế nào? Các thông tin này là
-``global'' hay ``local''?
-
-\section{Trình huấn luyện}
-\label{sec:training}
 
 \subsection{Tiền xử lý}
 Giống như phần~\ref{sub:preprocess}
@@ -3280,7 +3736,7 @@ P^{right}(W) = \left\{
   \right.
 $$
 
-\begin{algo}[Tính $P^{left}$]
+\begin{algo}\caption{Tính $P^{left}$}
 \begin{enumerate}
 \item Đặt $P^{left}(head) = p(head)$
 \item Đặt $P^{left}(W) = 0$ với mọi $W$ còn lại.
@@ -3298,7 +3754,7 @@ cộng thêm vào $\displaystyle\frac{P(W)}{P^{left}(tail)}$ cho từ
 $C$. Thực tế, ta sẽ lồng bước này vào trong thuật toán tính
 $P^{right}$, vì thuật toán cũng phải duyệt qua tất cả các từ.
 
-\begin{algo}[Tính $P^{right}$]
+\begin{algo}\caption{Tính $P^{right}$}
 \begin{enumerate}
 \item Đặt $P^{right}(tail) = p(tail)$
 \item Đặt $P^{right}(W) = 0$ với mọi nút còn lại.
@@ -3358,7 +3814,7 @@ dồn ta có thể tính ngay $P(W/W')$ bằng cách nhân giá trị cộng d�
 $P^{left}(W)$. Thuật toán tính $P^{left}$ và $P^{right}$ sau cùng như
 sau:
 
-\begin{algo}[Tính $P^{left}$]
+\begin{algo}\caption{Tính $P^{left}$}
 \begin{enumerate}
 \item Đặt $P^{left}(head) = p(head)$
 \item Đặt $P^{left}(W) = 0$ với mọi $W$ còn lại.
@@ -3369,7 +3825,7 @@ sau:
 \end{enumerate}
 \end{algo}
 
-\begin{algo}[Tính $P^{right}$]
+\begin{algo}\caption{Tính $P^{right}$}
 \begin{enumerate}
 \item Đặt $P^{right}(tail) = p(tail)$
 \item Đặt $P^{right}(W) = 0$ với mọi nút còn lại.
@@ -3392,11 +3848,56 @@ N-gram được tính như thông thường. Sử dụng backoff chuẩn. Thư v
 SRILM được dùng để tính n-gram.
 
 
+\section{Lỗi chính tả}
+
+% \note{Phân loại lỗi, nguyên nhân gây lỗi}
+
 
 
 \chapter{Cài đặt}
 \label{cha:implementation}
 \minitoc
+
+\section{Tách token}
+\label{sub:preprocess:token}
+
+Dựa vào flex để tách thành các token. Mục đích là để tách các dấu câu
+ra khỏi tiếng. Ví dụ \fbox{"chào"} sẽ được tách thành 3 token
+\fbox{"} \fbox{chào} \fbox{"}. 
+
+\begin{verbatim}
+
+SENTENCE_FINAL [.?!]
+HYPHEN [\-]
+OPEN_SINGLE_QUOTE [\`]
+CLOSE_SINGLE_QUOTE [\']
+RIGHT_PAREN [\"\)\]\}\>\']
+
+
+LETTERS_AND_NUMBERS [a-zA-Z0-9]
+LETTERS_NUMBER_AND_THEN_SOME [a-zA-Z0-9]
+APOSTROPHE \'
+
+SINGLE_CHARACTER [a-zA-Z0-9]
+
+WHITE_SPACE [ \t\n]
+NEWLINE [\n]
+INVISIBLE [^\040-\176]
+
+
+{SENTENCE_FINAL}+{RIGHT_PAREN}* |
+{HYPHEN}+ |
+{OPEN_SINGLE_QUOTE}+ |
+{CLOSE_SINGLE_QUOTE}+ |
+
+{LETTERS_NUMBER_AND_THEN_SOME}+{LETTERS_AND_NUMBERS} |
+{LETTERS_AND_NUMBERS}+{APOSTROPHE} |
+
+{SINGLE_CHARACTER} { xuất từ }
+
+({WHITE_SPACE}|{INVISIBLE}|{NEWLINE})+ { bỏ qua }
+
+\end{verbatim}
 
 Chương trình gồm hai phần: phần bắt lỗi chính tả và phần huấn luyện.
 
@@ -3440,6 +3941,19 @@ Với bản huấn luyện, lưu thêm id gốc để có thể xuất ra y như
 Không cần. Wordlist sẽ lưu theo dạng chuẩn hoá. Như vậy không cần lưu
 id gốc. Quá trình training cần có bước chuyển tiếp để đọc wordlist
 chưa chuẩn hoá, ghi ra wordlist chuẩn hoá.
+
+
+\subsection{Lưu lưới từ}
+
+Các nút trong lưới từ được lưu tập trung vào một mảng
+(WordEntries). Truy cập nút được thực hiện thông qua index của mảng
+này. Mỗi nút chứa các thông tin về từ của nút đó, bao gồm vị trí từ,
+số tiếng, index trong WordEntries~\ldots{}{}
+
+Words là một mảng tương ứng với vị trí từng tiếng trong câu. Vị trí
+của mỗi tiếng sẽ được liên kết với một danh sách các từ bắt đầu tại
+tiếng đó. Ta có thể coi danh sách này như danh sách các cạnh nối từ
+nút đang xét đến các nút kế tiếp.
 
 
 \section{Dữ liệu huấn luyện}
@@ -3539,6 +4053,46 @@ tin nhập là danh sách từ, danh sách tiếng, n-gram (nếu có). Thông t
 xuất là n-gram mới.
 
 Chương trình được lặp đi lặp lại nhiều lần.
+
+\section{Giao tiếp với người dùng}
+\label{sec:ui}
+
+Cố gắng khai thác tri thức của người sử dụng, nhằm bổ trợ cho trình
+bắt lỗi, giảm thiểu các sai sót do trình bắt lỗi gây ra.
+
+Hỏi người dùng càng nhiều càng tốt. Luôn luôn có một tùy chọn ``không
+biết'' cho người dùng.
+
+\begin{itemize}
+\item Phần bắt lỗi tiếng.
+\item Nhận dạng từ sai.
+\item Nhận dạng ký hiệu, tên riêng nước ngoài.
+\end{itemize}
+
+Sau mỗi lần sữa lỗi, cần chạy lại thuật toán để loại tác động của lỗi
+sai.
+
+Văn bản xử lý được phân thành nhiều tầng:
+\begin{enumerate}
+\item Văn bản thô toàn bộ. Chuỗi các ký tự.
+\item Văn bản thô (câu).
+\item Dạng token. Tách ra từng chuỗi con.
+\item Dạng sentence. Một số token sẽ được gán id. Một số khác bị bỏ
+  qua. 
+\item Dạng lattice. Đồ thị các id (có thể giống hoặc khác với id ở cấp
+  sentence) và các liên kết. 
+\item Dạng segmentation. chuỗi id nhất định.
+\end{enumerate}
+
+Hiện tại, việc thay đổi thông tin ở tầng trên sẽ hủy mọi thông tin ở
+tầng bên dưới.
+
+Lưu lại các thông tin của người dùng như thế nào? Các thông tin này là
+``global'' hay ``local''?
+
+
+
+
 
 \chapter{Đánh giá và kết luận}
 \label{cha:conclusion}
@@ -3804,4 +4358,10 @@ P_3(\Zhs) &= P_3^{left}(\Zhs)P_3^{right}(\Zhs)\\
 \end{array}
 $$
 
+
+Với \cite{Tuoi} thì việc xử lý lỗi bao gồm:
+\begin{itemize}
+\item Từ không có trong từ điển thì bắt lỗi ở cấp từ vựng.
+\item Từ có trong từ điển thị bắt lỗi ở cấp cú pháp.
+\end{itemize}
 

@@ -11,6 +11,7 @@
 \usepackage{tabularx}
 \usepackage{footnote}
 \usepackage{tipa}
+\usepackage{fancyvrb}
 %\usepackage{subfigure}
 %\usepackage{longtable}
 
@@ -46,7 +47,7 @@
   \begin{center}
     \Large Lời cảm ơn
   \end{center}
-  Xin chân thành cám ơn TS. Đinh Điền và các thành viên trong nhóm VCL
+  Xin chân thành cảm ơn TS. Đinh Điền và các thành viên trong nhóm VCL
   đã hỗ trợ hoàn thành luận văn này.
 \begin{flushright}
   Nguyễn Thái Ngọc Duy
@@ -1601,8 +1602,10 @@ cũng khá phức tạp. Ngoài ra, đôi khi các chữ được viết hoa ho�
 để nhấn mạnh, để làm tiêu đề~\ldots{}
 
 Thuật toán để xử lý trường hợp chữ hoa, chữ thường có thể được mô tả
-như sau:
-\begin{algo}\caption{Xử lý chữ hoa, chữ thường}
+như trong thuật toán~\ref{algo:capital}.
+\begin{algo}
+\caption{Xử lý chữ hoa, chữ thường}
+\label{algo:capital}
 \begin{enumerate}
 \item Đặt $w_t$ là chữ viết thường của $w$.
 \item Đặt $c$ là kết quả tìm kiếm $w_t$.
@@ -1828,9 +1831,11 @@ thước nhất định, chương trình di chuyển cửa sổ mỗi
 danh từ một lần, từ đầu câu cho đến hết, khử nhập nhằng cho danh từ ở
 chính giữa cửa sổ, xem các danh từ còn lại trong cửa sổ là ngữ
 cảnh. Đặt cửa sổ các danh từ là $W$ và danh từ chính giữa cửa sổ là
-$w$, ta có:
+$w$, ta có thuật toán~\ref{algo:CD}.
 
-\begin{algo}\caption{Khử nhập nhằng danh từ dùng CD}
+\begin{algo}
+\caption{Khử nhập nhằng danh từ dùng CD}
+\label{algo:CD}
   \begin{enumerate}
   \item tree := compute\_tree(words\_in\_window).
 
@@ -2121,11 +2126,11 @@ và $W'$.
 Một cải tiến của phương pháp này là
 áp dụng trigram dựa trên từ loại thay vì trigram từ. Từ câu $W$, ta
 tạo ra các chuỗi từ loại. Xác suất cuối cùng là:
-\begin{align}
+\begin{align*}
 P(W)  &=\sum_T P(W,T)\\
 P(W,T)&=P(W|T)P(T)\\
       &=\prod_i P(w_i|t_i)\prod_i P(t_i|t_{i-2}t_{i-1})
-\end{align}
+\end{align*}
 với $T$ là một chuỗi từ loại của $W$, $T=t_1\ldots{} t_n$ và
 $P(t_i|t_{i-2}t_{i-1})$ là xác suất trigram từ loại.
 
@@ -2409,10 +2414,10 @@ giống với bài toán đánh nhãn từ loại bằng HMM, trừ việc số 
 %% HHMM bao gồm $D$ mức HMM mà mỗi mức này là một HMM độc lập. Hơn nữa,
 %% mỗi HMM chỉ liên kết với cha và con của nó. Toàn bộ tập tham số của
 %% HHMM được ký hiệu là:
-%% \begin{align}
+%% \begin{align*}
 %% \lambda&=\{(\lambda(q^d))\}_{d\in\{1,\ldots{},D\}}\\
 %%        &=\{\{A(q^d)\}_{d\in\{1,\ldots{},D-1\}},\{\Pi(q^d)\}_{d\in\{1,\ldots{},D-1\}},\{B(q^D)\}\}
-%% \end{align}
+%% \end{align*}
 
 %% HMM là dạng đặc biệt của HHMM, khi $D=1$.
 
@@ -2620,6 +2625,32 @@ bởi chính HMM, vì HMM là mô hình thống kê thuần tuý, không phát h
 ngôn ngữ học, do đó phần nào hạn chế kết quả cuối cùng. 
 
 XXX
+XXX % đưa cái này lên phần cơ sở tin học/huấn luyện
+%% Có thể huấn luyện dựa trên dữ liệu mẫu, hoặc dữ liệu thô. Do hầu hết
+%% các phương pháp tách từ đều dựa trên ngram ($n\ge 1$) nên rất cần có
+%% khối lượng dữ liệu huấn luyện lớn nhằm đạt tính bao quát. Dữ liệu
+%% mẫu, được tách từ sẵn, thường không đủ để huấn luyện. Giải pháp chủ
+%% yếu là huấn luyện dựa trên dữ liệu thô, chưa tách từ.
+
+%% Thuật toán thường dùng nhất để huấn luyện trên dữ liệu thô là thuật
+%% toán EM. Nhiều người đã cố gắng cải tiến EM theo nhiều cách khác nhau
+%% nhằm nâng cao chất lượng huấn luyện, đồng thời hạn chế những khuyết
+%% điểm của EM. 
+
+%% \cite{self-supervised} đề nghị cách giải quyết hạn chế ``tối ưu cục
+%% bộ'' của EM, bằng cách phân phối lại từ vựng sau mỗi lần chạy và khởi
+%% động lại EM với điểm khởi đầu tốt hơn.
+
+%% \cite{text-tiling} sử dụng một lượng nhỏ ngữ liệu huấn luyện có chất
+%% lượng cao (\textit{seed set}) và một lượng lớn ngữ liệu có chất lượng
+%% không thật bảo đảm (\textit{training set}), xử lý qua 4 bước:
+%% \begin{enumerate}
+%% \item \textbf{Phân đoạn tập huấn luyện}
+%% \item \textbf{Phân hạng tập huấn luyện}
+%% \item \textbf{Tổ hợp tập huấn luyện}
+%% \item \textbf{Language model pruning}
+%% \end{enumerate}
+
 
 \chapter{Mô hình}
 \label{cha:model}
@@ -3150,8 +3181,10 @@ nhầm các phím dấu.
 Các chữ được phát sinh sẽ được so sánh với từ điển tiếng. Nếu chữ nằm trong từ
 điển, ta cho chữ vào danh sách đề nghị. Ngược lại, chữ bị hủy bỏ.
 
-Tóm lại, thuật toán phục hồi lỗi bàn phím như sau:
-\begin{algo}\caption{Phục hồi lỗi bàn phím}
+Tóm lại, thuật toán~\ref{algo:keyb} để phục hồi lỗi bàn phím.
+\begin{algo}
+\caption{Phục hồi lỗi bàn phím}
+\label{algo:keyb}
   \begin{enumerate}
   \item Phục hồi lỗi VNI-TELEX.
   \item Phục hồi lỗi gõ sót phím. Phục hồi lỗi VNI-TELEX dựa trên kết
@@ -3254,8 +3287,11 @@ riêng của lỗi phát âm---non-word.
 Với loại lỗi này, ta cần phân tích cấu trúc âm tiết tiếng Việt. Sau
 khi phân tích cấu trúc âm tiết tiếng Việt, ta sẽ thay thế từng thành
 phần của âm tiết bằng một thành phần khác có cách phát âm giống như
-thành phần được thay thế. Thuật toán lỗi phát âm như sau:
-\begin{algo}\caption{Phục hồi lỗi phát âm (non-word)}
+thành phần được thay thế. Thuật toán lỗi phát âm như trong thuật
+toán~\ref{algo:error:nonword}.
+\begin{algo}
+\caption{Phục hồi lỗi phát âm (non-word)}
+\label{algo:error:nonword}
   \begin{enumerate}
   \item Phân tích cấu trúc âm tiết.
   \item Tạo danh sách âm tiết~\ref{algo:syllable-candidate-list}, bao
@@ -3276,8 +3312,11 @@ khi bắt lỗi real-word --- phần~\ref{sec:language-model}) sẽ được dù
 chữ hoa/thường với chữ gốc và áp dụng thống kê tần số sử dụng của mỗi
 từ.
 
-Giải pháp được áp dụng như sau:
-\begin{algo}\caption{Sắp xếp danh sách từ đề nghị (non-word)}
+Giải pháp được áp dụng như sau trong thuật
+toán~\ref{algo:nonword:sort}.
+\begin{algo}
+\caption{Sắp xếp danh sách từ đề nghị (non-word)}
+\label{algo:nonword:sort}
   \begin{enumerate}
   \item Phát sinh lưới từ.
   \item Thêm các chữ đề nghị vào, cập nhật lưới từ, thêm các từ mới từ
@@ -3363,9 +3402,12 @@ lần lượt qua các cạnh để tìm  ra các từ. Duyệt i từ 1 đến 
 
 Thuật toán tạo lưới~2-từ được nêu trong \cite{Ravishankar}. Thuật toán
 sẽ tạo ra lưới $n$-từ từ lưới $n-1$-từ. Lưới từ cơ bản nên trên được
-xem như là lưới 1-từ. Thuật toán được tóm tắt lại như sau: 
+xem như là lưới 1-từ. Thuật toán được tóm tắt lại như trong thuật
+toán~\ref{algo:extend-lattice}.
 
-\begin{algo}\caption{Tạo lưới $n$-từ từ lưới $(n-1)$-từ}
+\begin{algo}
+\caption{Tạo lưới $n$-từ từ lưới $(n-1)$-từ}
+\label{algo:extend-lattice}
 \begin{enumerate}
 \item Nếu nút ($w$) có $n$ từ đứng liền trước nó ($w_i$),
   $i=1,2,\ldots{},n$ trong lưới từ gốc, nó sẽ được lặp lại $n$ lần trong
@@ -3386,7 +3428,7 @@ xem như là lưới 1-từ. Thuật toán được tóm tắt lại như sau:
 
 
 
-\subsection{Tạo lưới từ mở rộng --- Phục hồi lỗi}
+\subsection{Mở rộng lưới từ  --- Phục hồi lỗi}
 \label{sec:realword:recover}
 
 Sau khi có lưới từ cơ bản. Ta có thể áp dụng mô hình ngôn ngữ để tìm
@@ -3431,8 +3473,80 @@ trình bày trong phần~\ref{sec:nonword:recover:keyboard}.
 %% xác''. Từ gốc là từ có hệ số chính xác cao hơn so với các từ được phát
 %% sinh. Good or bad? Hmmm... Làm sao để làm? Hmmm Hmmm
 
+Lưới từ sau khi mở rộng có hai đặc điểm sau:
+\begin{itemize}
+\item Không phân biệt giữa từ gốc và các từ được phát sinh. Nói cách
+  khác, nhìn vào lưới từ ta không thể biết được đâu là từ gốc, đâu là
+  từ phát sinh. Không có ưu tiên cho từ gốc.
+\item Do mô hình ngôn ngữ được tính toán dựa trên tổng giá trị của các
+  cạnh, nên các câu có ít từ hơn (ít cạnh hơn) thường có xu hướng được
+  chọn vì tổng giá trị sẽ nhỏ hơn.
+\end{itemize}
 
-XXX %các hiệu chỉnh trên lỗi, chuẩn hoá độ dài ...
+Đối với vấn đề đầu tiên, ta có thể thay đổi giá trị các cạnh nối đến
+từ đó để phản ánh sự khác biệt. Ví dụ, trong
+hình~\ref{fig:wordlattice1}, ta có thể biến đổi giá trị các cạnh nối
+đến từ ``xinh'' bằng cách giảm 0,2\% giá trị của các cạnh nối đến từ
+``xinh'' đó. Vậy, bất cứ cách tách từ nào chứa từ xinh cũng sẽ bị giảm
+một khoảng giá trị nhất định, so với các cách tách từ chứa từ ``sinh''
+vẫn giữa nguyên giá trị gốc. Nhờ vậy, từ gốc sẽ được ưu tiên hơn các
+từ phát sinh.
+
+Trên nguyên tắc, độ giảm của các cạnh nên phụ thuộc vào khả năng xuất
+hiện của các từ phát sinh. Những từ phát sinh có khả năng nhất sẽ ít
+bị giảm nhất, những từ hiếm gặp nhất sẽ bị giảm nhiều nhất. Việc này
+sẽ giúp hạn chế lỗi chọn sai từ của mô hình ngôn ngữ. Tuy nhiên các
+thông số về khả năng xuất hiện của các từ phát sinh đòi hỏi phải có ngữ
+liệu sai trong thực tế và ngữ liệu đúng tương ứng để rút trích thông
+tin này. Đây là một hướng phát triển trong tương lai.
+
+Vấn đề thứ hai phức tạp hơn. Nếu ta sử dụng Viterbi hay
+WFST thì chỉ cần chuẩn hoá giá trị mỗi lần duyệt nút kế. Khi áp dụng
+đồ thị để giải quyết, ta không thể làm như vậy vì giá trị các cạnh
+được ngầm định là không thay đổi, và công thức tính độ dài đường đi là
+tổng các cạnh, cũng không thay đổi. Tuy nhiên ta có thể khắc phục bằng
+cách thay đổi giá trị của các cạnh {\em chưa được xét}. Việc thay đổi
+giá trị các cạnh chưa được xét sẽ không ảnh hưởng đến tính đúng đắn
+của thuật toán, vì thuật toán tính toán đường đi ngắn nhất dựa vào các
+cạnh đã xét. Nếu ta không thay đổi giá trị các cạnh đã xét, thuật toán
+vẫn không đổi.
+
+Giả sử có một đường đi qua $n$ cạnh $e_1,e_2,\ldots,e_n$, giá trị
+đường đi qua các cạnh đó là $\sum_{i=1}^{n}e_i$. Nếu được chuẩn hóa,
+giá trị mới sẽ là $\frac{1}{n}\sum_{i=1}^{n}e_i$. 
+%% \begin{align*}
+%%   \Delta&=\sum_{i=1}^{n}e_i-\frac{1}{n}\sum_{i=1}^{n}e_i\\
+%%         &=\frac{n-1}{n}\sum_{i=1}^{n}e_i\\
+%%   \frac{1}{n}\sum_{i=1}^{n}e_i&=\sum_{i=1}^{n}e_i-\Delta\\
+%%                              &=\sum_{i=1}^{n}e_i-\frac{n-1}{n}\sum_{i=1}^{n}e_i\\
+%%                              &=\sum_{i=1}^{n}(e_i-\frac{n-1}{n}e_i)\\
+%%                              &=\sum_{i=1}^{n}\frac{1}{n}e_i
+%% \end{align*}
+Do $$\frac{1}{n}\sum_{i=1}^{n}e_i=\sum_{i=1}^{n}\frac{1}{n}e_i$$ ta
+thấy mỗi cạnh cần phải ``co'' lại còn một khoảng $\frac{1}{n}$ (hay
+nói cách khác, mất đi $\frac{n-1}{n}$) giá trị
+thực của chính nó. Các cạnh cứ co lại từ từ mỗi khi thêm vào một cạnh
+mới. Tuy nhiên, do các cạnh đã xét sẽ không thể thay đổi, nên ta sẽ
+gom tất cả các khoảng giá trị mất đi này trừ vào cạnh sẽ được xét.
+
+Giả sử đã có $n$ cạnh, ta cần thêm cạnh $e_{n+1}$ vào. Độ dài $n$ cạnh
+trước đó là $N$ (đã chuẩn hoá). Ta cần tính $N'$ là độ dài $n+1$ cạnh đã
+chuẩn hoá
+\begin{align*}
+\Delta&=N'-N\\
+      &=\frac{Nn+e_{n+1}}{n+1}-N\\
+      &=\frac{e_{n+1}-N}{n+1}\\
+N'&=N+\Delta
+\end{align*}
+
+Ta có thể coi cạnh mới, cần được thêm vào là cạnh có giá trị là
+$\Delta=\frac{e_{n+1}-N}{n+1}$ thay vì $e_{n+1}$ như ban đầu. Tuy
+nhiên, do $\Delta$ có thể âm, cần dùng những thuật toán có thể tìm
+đường đi trên đồ thị có trọng số âm như Bellman-Ford thay vì dùng
+PFS. Có thể hình dung đồ thị mới là một loại đồ thị động, các cạnh
+phía sau càng ngày càng bị thu ngắn lại.
+
+%%% trường hợp có hai đường đi đến cùng một cạnh và cạnh âm thì sao?
 
 \subsubsection{Lỗi phát âm}
 \label{sec:realword:recover:sound}
@@ -3475,7 +3589,7 @@ Theo~\cite{LoiChinhTa}, lỗi bao gồm các loại sau:
 %%   (ký tự cuối như nhau)}\\
 %%                     &= 1+min\{ed(X[i-1],Y[j-1]), & \text{nếu $x_i=y_{j+1}$}\\
 %%                     &\qquad\qquad ed(X[i+1],Y[j]), & \text{và $x_{i+1}=y_j$}\\
-%%                     &\qquad\qquad ed(X[i],Y[j+1])\}\\
+%%                     &\qquad\qquad ed(X[i],Y[j+1])\}\\o
 %%                     &= 1+min\{ed(X[i],Y[j]),&\text{trường hợp khác}\\
 %%                     &\qquad\qquad ed(X[i+1],Y[j]),\\
 %%                     &\qquad\qquad ed(X[i],Y[j+1])\}\\
@@ -3652,11 +3766,11 @@ Thuật toán Viterbi có thể hoạt động, nhưng không tận dụng tri�
 dùng mô hình bigram. Do mỗi nút đại diện cho một từ, cạnh nối giữa hai
 từ có thể đại diện cho xác suất bigram $logP(w_2|w_1)$, việc tính mô
 hình ngôn ngữ cho một cách tách từ:
-\begin{align}
+\begin{align*}
   P(w_1\ldots w_n)&= P(w_1|head)\prod_{i=2}^nP(w_i|w_{i-1})P(tail|w_n)\\
   logP(w_1\ldots w_n)&= log(P(w_1|head)\prod_{i=2}^nP(w_i|w_{i-1})P(tail|w_n)\\
   &=P(w_1|head)+\sum_{i=2}^nP(w_i|w_{i-1})+P(tail|w_n)
-\end{align}
+\end{align*}
 
 Với cách tính này, việc tính $logP(w_1\ldots w_n)$ tương đương với giá
 trị đường đi từ head đến tail (cạnh head đến nút của từ đầu tiên là
@@ -3753,32 +3867,6 @@ hiện có vì các lý do sau:
 
 \subsection{Huấn luyện mô hình ngôn ngữ}
 
-XXX % đưa cái này lên phần cơ sở tin học/huấn luyện
-%% Có thể huấn luyện dựa trên dữ liệu mẫu, hoặc dữ liệu thô. Do hầu hết
-%% các phương pháp tách từ đều dựa trên ngram ($n\ge 1$) nên rất cần có
-%% khối lượng dữ liệu huấn luyện lớn nhằm đạt tính bao quát. Dữ liệu
-%% mẫu, được tách từ sẵn, thường không đủ để huấn luyện. Giải pháp chủ
-%% yếu là huấn luyện dựa trên dữ liệu thô, chưa tách từ.
-
-%% Thuật toán thường dùng nhất để huấn luyện trên dữ liệu thô là thuật
-%% toán EM. Nhiều người đã cố gắng cải tiến EM theo nhiều cách khác nhau
-%% nhằm nâng cao chất lượng huấn luyện, đồng thời hạn chế những khuyết
-%% điểm của EM. 
-
-%% \cite{self-supervised} đề nghị cách giải quyết hạn chế ``tối ưu cục
-%% bộ'' của EM, bằng cách phân phối lại từ vựng sau mỗi lần chạy và khởi
-%% động lại EM với điểm khởi đầu tốt hơn.
-
-%% \cite{text-tiling} sử dụng một lượng nhỏ ngữ liệu huấn luyện có chất
-%% lượng cao (\textit{seed set}) và một lượng lớn ngữ liệu có chất lượng
-%% không thật bảo đảm (\textit{training set}), xử lý qua 4 bước:
-%% \begin{enumerate}
-%% \item \textbf{Phân đoạn tập huấn luyện}
-%% \item \textbf{Phân hạng tập huấn luyện}
-%% \item \textbf{Tổ hợp tập huấn luyện}
-%% \item \textbf{Language model pruning}
-%% \end{enumerate}
-
 Như đã nói, tính toán mô hình ngôn ngữ cần phải tách từ. Trong phần
 bắt lỗi real-word, ta đã thực hiện được phần tách từ mờ. Do dữ liệu
 huấn luyện được xem là chính xác nên chỉ cần tách từ bình thường. Do
@@ -3866,7 +3954,7 @@ $\frac{S_{j_1}^{left}p(C_{j_1}\ldots
 
 $S_{j_1}^{left}$ và $S_{j_2}^{right}$ được tính bằng quy hoạch động. 
 
-\begin{align}
+\begin{align*}
 S_i^{left} &= \left\{
     \begin{array}{ll}
       1&i=1\\
@@ -3881,7 +3969,7 @@ S_i^{right} &= \left\{
       \sum_{j=i+1}^{n}p(C_{i+1}\ldots C_j)S_j^{right}&1\le i<n-1
     \end{array}
   \right.
-\end{align}
+\end{align*}
 
 $S_i^{left}$ được tính lần lượt với $i=1,2,\ldots,n+1$ từ trái sang
 phải. Sau khi kết thúc, ta được $\alpha=S_{n+1}^{left}$. Sau đó tính
@@ -4078,6 +4166,7 @@ phải dùng lưới~3-từ để tính trigram, nếu dùng thuật toán gốc
 \chapter{Cài đặt}
 \label{cha:implementation}
 \minitoc
+\tolerance=10000
 
 Chương trình được cài đặt bằng C++ trên nền Linux. Phần giao diện được
 cài đặt bằng Gtk+. Phần giao diện này chỉ mang tính chất minh
@@ -4109,7 +4198,7 @@ thuộc lớp này, được truy cập thông qua hàm \verb@get_sarch()@. Toá
 Từ và tiếng đều được lưu trong StringArchive. Với từ, các khoảng trắng
 được thay thế bằng dấu gạch chân `\verb@_@' trước khi lưu. Ngoài ra từ
 cách nhau bởi nhiều khoảng trắng sẽ được gom lại thành một khoảng
-trắng. Ví dụ, từ ``\verb@học  sinh@'' sẽ được lưu trong StringArchive
+trắng. Ví dụ, từ ``\texttt{học   sinh}'' sẽ được lưu trong StringArchive
 dạng ``\verb@học_sinh@''. Việc chuẩn hoá sẽ được tiến hành trên từng
 tiếng. Sau khi chuẩn hoá, từ sẽ thành ``\verb@5hoc_0sinh@''.
 
@@ -4457,25 +4546,381 @@ lưới~2-từ thành mã nút trong lưới từ \verb@WordDAG@.
 
 \section{Danh từ riêng}
 
-% mark_proper_name
+Một danh sách 8000 tên riêng được sử dụng để tạo một tập các chữ
+thường hình thành tên riêng.
+Những chữ liên tiếp nhau nằm trong danh sách này được coi là một tên
+riêng. Hàm \verb@mark_proper_name()@ bổ sung những nút $PROP$ vào lưới
+từ cho những tên riêng được tìm ra.
 
 \section{Xử lý tiếng Việt}
 
-% viet_*
+Một số hàm được tạo ra để hỗ trợ việc xử lý tiếng Việt, bao gồm:
+\begin{itemize}
+\item \verb@viet_toupper@, \verb@viet_tolower@, \verb@viet_isupper@, \verb@viet_islower@,
+  \verb@viet_isalpha@, \verb@viet_isdigit@, \verb@viet_isxdigit@, \verb@viet_isspace@,
+  \verb@viet_ispunct@: Các hàm tiếng Việt thay thế cho các hàm gốc (toupper,
+  tolower~\ldots)
+\item \verb@viet_utf8_to_viscii()@: Chuyển từ UTF-8 sang VISCII. Trả
+  về \verb@false@ nếu không thể chuyển đổi.
+\item \verb@viet_utf8_to_viscii()@: Chuyển từ UTF-8 sang VISCII. Những
+  ký tự không thể chuyển được sẽ được thay bằng `z'.
+\item \verb@viet_viscii_to_utf8()@: Chuyển từ VISCII sang UTF-8.
+\end{itemize}
 
 \section{Lỗi bàn phím}
 
+Lỗi bàn phím được cài đặt thông qua các lớp \verb@KeyRecover@,
+\verb@CharInserter@, \verb@CharEraser@, \verb@CharTransposer@ và
+hàm \verb@im_recover()@.
+
+Lớp \verb@KeyRecover@, cũng như các lớp Char\ldots{} khác, bao gồm ba hàm:
+\begin{itemize}
+\item \verb@init()@: khởi động đối tượng, nhận một chuỗi và số lỗi có
+  thể có.
+\item \verb@step()@: trả về một chuỗi phát sinh từ lỗi bàn phím. Trả
+  về \verb@false@ nếu không còn chuỗi nào nữa.
+\item \verb@done()@: hoàn tất sử dụng đối tượng, giải phóng các tài
+  nguyên.
+\end{itemize}
+
+Hàm \verb@im_recover()@, gọi đến hai hàm \verb@vni_recover()@ và
+\verb@telex_recover()@ dùng để phục hồi phím từ hai kiểu gõ trên.
+
+Các hàm này được sử dụng trong hàm \verb@get_syllable_candidates()@.
+Các phần xử lý bàn phím khác cũng được xử lý trong hàm này.
 
 \section{Bổ sung lưới từ}
-XXX class penalty
+
+Lớp \verb@PenaltyDAG@ được dẫn xuất từ lớp \verb@DAG@. Lớp này điều
+chỉnh lại hàm \verb@DAG::edge_value()@ để thay đổi độ dài cạnh nhằm
+tạo sự khác biệt giữa các cạnh phát sinh và cạnh gốc. Lớp nhận một đối
+tượng \verb@DAG@ khác, hoạt động như là một vỏ bọc cho đối tượng này.
+
+Lớp sử dụng thông tin \verb@WordEntry::fuzid@ để biết có bao nhiêu
+tiếng trong từ là tiếng phát sinh, sau đó giảm giá trị của cạnh theo
+một tỉ lệ tương ứng. Nếu có $n$ tiếng sai, giá trị cạnh sẽ bị mất đi
+một khoảng $nwV$
+với $V$ là giá trị ban đầu, $w$ là trọng số.
+
+Các hàm mới trong \verb@PenaltyDAG@:
+\begin{itemize}
+\item \verb@PenaltyDAG::set_weight()@: Đặt trọng số $w$ cho đối tượng.
+\item \verb@PenaltyDAG::get_weight()@: Lấy trọng số $w$ của đối tượng.
+\end{itemize}
+
+Giá trị $w$ được sử dụng trong chương trình minh hoạ là $0.05$. 
 
 \section{Trình bắt lỗi chính tả}
 
-XXX class VSpell
+Trình bắt lỗi chính tả bao gồm hai lớp chính là lớp \verb@Text@. Lớp
+\verb@Text@ đại diện cho một đoạn văn bản trong toàn bộ văn bản. Lớp
+này thực hiện toàn bộ công đoạn tìm lỗi chính tả. Các chuỗi được sử
+dụng để giao tiếp giữa lớp này và các lớp khác là UTF-8.
+
+Các biến quan trọng trong lớp \verb@Text@:
+\begin{itemize}
+\item \verb@vspell@ trỏ đến đối tượng \verb@VSpell@ quản lý đối tượng
+  này.
+\item \verb@offset@,\verb@length@: vị trí và độ dài của đoạn văn bản
+  do đối tượng này xử lý, xét trong toàn bộ văn bản của \verb@vspell@.
+\end{itemize}
+
+Các hàm quan trọng trong lớp \verb@Text@:
+\begin{itemize}
+\item \verb@ui_syllable_check()@: Hàm ảo, được gọi khi đối tượng cần
+  người dùng kiểm tra tính đúng sai của một tiếng.
+\item \verb@ui_word_check()@: Hàm ảo, được gọi khi đối tượng cần người
+  dùng kiểm tra tính đúng sai của một từ.
+\item \verb@syllabel_check@: cho biết tiếng tại vị trí cho trước có
+  đúng chính tả hay không.
+\item \verb@apply_separators()@: Áp dụng separator cho câu.
+\item \verb@get_separators()@: Lấy danh sách separator.
+\item \verb@sentence_check()@: Tiến hành kiểm tra chính tả một
+  câu. Trả về \verb@true@ nếu không còn lỗi. Hàm này thực hiện hầu như
+  toàn bộ công đoạn bắt lỗi chính tả, mô tả trong thuật
+  toán~\ref{algo:Text::sentence_check}.
+\item \verb@syllable_check()@: Kiểm lỗi tiếng. Trả về \verb@true@ nếu
+  không còn lỗi (thuật toán~\ref{algo:Text::syllable_check}).
+\item \verb@word_check()@: Kiểm lỗi từ. Trả về \verb@true@ nếu
+  không còn lỗi (thuật toán~\ref{algo:Text::word_check}).
+\item \verb@replace()@: Thay thế một chuỗi con trong đoạn văn bản đang
+  xét.
+\item \verb@substr()@: Lấy một chuỗi con trong đoạn văn bản đang xét.
+\end{itemize}
+
+\begin{algo}
+\caption{Text::sentence\_check()}
+\label{algo:Text::sentence_check}
+  \begin{enumerate}
+  \item Tách token.
+  \item Chuẩn hoá các tiếng.
+  \item Gọi \verb@syllable_check()@ để kiểm tra. Nếu có lỗi tiếng, gọi
+    \verb@ui_syllable_check()@ để yêu cầu người dùng sửa lỗi, sau đó
+    kết thúc (trả về \verb@false@ --- vẫn còn lỗi).
+  \item Xây dựng lưới từ.
+  \item Bổ sung lưới từ:
+    \begin{itemize}
+    \item Đánh dấu tên riêng.
+    \item Áp dụng separator.
+    \end{itemize}
+  \item Xây dựng \verb@DAG@ tương ứng (tùy theo các thông số về
+    trigram, penalty~\ldots).
+  \item Tìm cách tách từ tốt nhất. 
+    \begin{itemize}
+    \item Nếu có chuẩn hoá, sử dụng Bellman-Ford.
+    \item Nếu không có chuẩn hoá, sử dụng PFS.
+    \end{itemize}
+  \item Gọi \verb@word_check()@ để kiểm tra. Nếu có lỗi, gọi
+    \verb@ui_word_check()@ để yêu cầu người dùng sửa lỗi, sau đó kết
+    thúc (trả về \verb@false@ --- vẫn còn lỗi).
+  \item Kết thúc, trả về \verb@true@ --- sạch lỗi.
+  \end{enumerate}
+\end{algo}
+
+\begin{algo}
+\caption{Text::syllable\_check()}
+\label{algo:Text::syllable_check}
+\begin{enumerate}
+\item Duyệt lần lượt từng tiếng trong câu. Thực hiện:
+  \begin{enumerate}
+  \item Gọi \verb@VSpell::in_dict()@, kiểm tra $id$ xem tiếng đó có
+    chưa. Nếu đã có, kết thúc (trả về \verb@true@ --- không có lỗi).
+  \item Gọi \verb@StringArchive::in_dict()@, kiểm tra xem $cid$ của
+    tiếng có trong từ điển tiếng không. Nếu có, phân tích tiếng, lấy
+    dạng chữ thường, đúng quy cách bỏ dấu của tiếng. Kiểm tra xem tiếng
+    mới có giống với tiếng cũ hay không (lỗi bỏ dấu sai vị trí). Nếu có,
+    kết thúc (trả về \verb@true@ --- không có lỗi).
+  \item Trả về \verb@false@ --- lỗi.
+  \end{enumerate}
+\item Nếu trả về \verb@false@, đưa tiếng vào danh sách tiếng gặp
+  lỗi. Tiếp tục duyệt các tiếng còn lại.
+\item Trả về \verb@true@ nếu danh sách các tiếng gặp lỗi là rỗng.
+\end{enumerate}
+\end{algo}
+
+\begin{algo}
+\caption{Text::word\_check()}
+\label{algo:Text::word_check}
+\begin{enumerate}
+\item Duyệt lần lượt các từ trong cách tách từ đã có.
+\item Lấy danh sách $id$ của các tiếng của từ --- \verb@sylls2@.
+\item Lấy danh sách $cid$ của các tiếng của từ --- \verb@sylls@.
+\item Nếu \verb@sylls@ không trùng khớp với các tiếng trong câu (dùng 
+  $cid$) và \verb@sylls2@ không có trong từ điển riêng của
+  \verb@VSpell@, lưu từ vào danh sách từ gặp lỗi.
+\item Trả về \verb@true@ nếu danh sách các từ gặp lỗi là rỗng.
+\end{enumerate}
+\end{algo}
+
+Ta thấy \verb@Text@ là một lớp abstract. Một số hàm như
+\verb@ui_syllable_check()@, \verb@ui_word_check()@ cần phải được cài
+đặt trong lớp dẫn xuất. Đây là những hàm giao tiếp với người dùng. Tùy
+môi trường sử dụng mà các hàm này được cài đặt cho thích hợp. Dù cài
+đặt theo cách nào, nhiệm vụ của những hàm này vẫn như nhau: yêu cầu
+người dùng đưa ra quyết định. Sau khi lập danh sách từ đề nghị,
+\verb@Text@ sẽ gọi các hàm này. Các hàm này phải liệt kê danh sách từ
+đề nghị và chờ người dùng quyết định chọn từ nào.
+
+
+Lớp \verb@VSpell@ là lớp chính, đại diện cho mô hình bắt lỗi chính tả,
+được dùng để giao tiếp với chương trình sử dụng bắt lỗi chính tả. Lớp
+này sử dụng \verb@Text@ để tiến hành bắt lỗi chính tả.
+
+Lớp \verb@VSpell@ quản lý một từ điển riêng của chính nó, được bổ sung bởi
+người dùng. Do chương trình không thể đạt được một từ điển hoàn chỉnh,
+từ điển này được dùng để bổ sung cho từ điển đã có. Những ký hiệu, các
+từ nước ngoài~\ldots{} không được nhận diện bởi chương trình cũng sẽ
+được thêm vào từ điển này sau khi người dùng đã kiểm tra những từ đó
+và xác định rằng những từ đó là chính xác. \verb@VSpell@ bao gồm hai
+từ điển: từ điển từ (\verb@VSpell:words@) và từ điển tiếng
+(\verb@VSpell::syllables@).
+
+Ngoài ra \verb@VSpell@ còn duy trì một danh sách các separator
+(\verb@VSpell::sepaparators@). 
+
+Các hàm thường dùng trong \verb@VSpell@:
+\begin{itemize}
+\item \verb@init()@: Khởi động cơ chế bắt lỗi chính tả, nạp các tập
+  tin liên quan~\ldots (bao gồm việc nạp từ điển, ngram, danh sách tên
+  riêng). 
+\item \verb@cleanup()@: Hủy bỏ toàn bộ dữ liệu của đối tượng, chuẩn bị để
+  hủy bỏ đối tượng.
+\item \verb@check()@: tiến hành kiểm lỗi chính tả cho một đoạn văn
+  bản (thuật toán~\ref{algo:VSpell::check}). Văn bản được dùng ở dạng
+  UTF-8. 
+\item \verb@set_penalty()@: Đặt trọng số $w$ cho lớp \verb@PenaltyDAG@.
+\item \verb@get_penalty()@: Lấy trọng số $w$ của lớp
+  \verb@PenaltyDAG@.
+\item \verb@set_normalization()@: Cho biết có áp dụng chuẩn hoá cách
+  tách từ hay không.
+\item \verb@get_normalization()@: Như trên.
+\item \verb@set_trigram()@: Cho biết có áp dụng trigram hay không.
+\item \verb@get_trigram()@: Như trên.
+\end{itemize}
+
+\begin{algo}
+\caption{VSpell::check()}
+\label{algo:VSpell::check}
+\begin{enumerate}
+\item Văn bản UTF-8 được lưu vào \verb@utf8_text@.
+\item Lặp
+  \begin{enumerate}
+  \item Chuyển văn bản từ UTF-8 sang VISCII, dùng
+    \verb@viet_to_viscii_force@.
+  \item Tách câu (\verb@sentences_split()@).
+  \item Duyệt từng câu.
+    \begin{enumerate}
+    \item Tạo đối tượng \verb@Text@ mới
+      (\verb@TextFactory::create()@).
+    \item Đặt \verb@offset@,\verb@length@ cho đối tượng \verb@Text@. 
+    \item Gọi \verb@Text::sentence_check()@.
+    \item Nếu trả về \verb@false@, ngừng duyệt các câu còn lại.
+    \end{enumerate}
+  \item Nếu \verb@sentence_check()@ trả về \verb@true@ với mọi câu,
+    dừng lặp.
+  \end{enumerate}
+\item Trả về \verb@true@.
+\end{enumerate}
+\end{algo}
+
+Lớp \verb@VSpell@ không sử dụng trực tiếp \verb@Text@ mà sử dụng lớp
+dẫn xuất từ \verb@Text@. Để tạo ra một đối tượng \verb@Text@,
+\verb@VSpell@ dựa vào đối tượng thuộc lớp \verb@TextFactory@. Đối
+tượng này có nhiệm vụ tạo ra đối tượng \verb@Text@ cho \verb@VSpell@. 
+
+
+\subsection{Separator}
+
+Phần trên có đề cập đến ``separator''. Separator tồn tại vì bộ tách từ
+của chương trình không thể nào hoàn chỉnh.  Separator giúp hỗ trợ
+trình tách từ tách đúng hơn. Separator là những dấu hiệu, chỉ ra rằng
+một vị trí nào đó trong câu là ranh giới từ, không thể tồn tại một từ
+đi ngang qua vị trí đó. Ví dụ, chương trình tách từ ``\mybox{ông}
+\mybox{quan tài} \mybox{thật} \mybox{đấy}''. Ta sẽ chen một separator vào
+giữa ``quan'' và ``tài''. Nhờ vậy, chương trình sẽ chọn ra một cách
+tách từ khác ``\mybox{ông} \mybox{quan} \mybox{tài} \mybox{thật}
+\mybox{đấy}''.
+
+Separator được sử dụng trong phần hiệu chỉnh lưới từ. Sau khi đã hoàn
+tất tạo lưới từ, thuật toán~\ref{algo:Text::apply_separators} sẽ duyệt qua toàn bộ lưới từ, loại bỏ bất
+cứ từ nào vi phạm separator.
+\begin{algo}
+\caption{Text::apply\_separators()}
+\label{algo:Text::apply_separators}
+\begin{enumerate}
+\item Sắp xếp danh sách separator theo thứ tự xuất hiện.
+\item Duyệt lần lượt từng separator, bắt đầu từ $0$.
+  \begin{enumerate}
+  \item Duyệt lần lượt tất cả các từ trong lưới từ.
+  \item Loại bỏ những từ cắt ngang qua separator đang xét.
+  \end{enumerate}
+\end{enumerate}
+\end{algo}
+
+\subsection{vspell-gtk}
+
+Như đã nói, các lớp trong \verb@VSpell@, \verb@Text@ chỉ tập trung vào
+phần xử lý văn bản. Phần giao tiếp được tách riêng (nằm trong hai hàm
+\verb@Text::ui_word_check()@ và
+\verb@Text::ui_syllable_check()@). Chương trình vspell-gtk được tạo ra
+nhằm mục đích minh hoạ cách cài đặt hai hàm này. Chương trình là một
+bộ bắt lỗi chính tả độc lập. Tuy nhiên, để chương trình thực sự hữu
+dụng, trình bắt lỗi chính tả nên được tích hợp với các chương trình
+liên quan đến xử lý văn bản như AbiWord, OpenOffice, GEdit,
+Evolution~\ldots
+
+Chương trình có giao diện như trong
+hình~\ref{fig:vspell-gtk-ui}. Sau khi nhập liệu, ta nhấn nút
+``Check''. Chương trình kiểm lỗi hai giai đoạn: kiểm lỗi tiếng và kiểm
+lỗi từ. Phần được kiểm tra sẽ được tô sẫm. Những từ/tiếng bị sai được
+gạch dưới. Từ đang được sửa sẽ được tô đỏ. Nhấn ``Ignore'' sẽ bỏ qua
+lỗi hiện tại, chuyển sang lỗi kế, lần lượt xoay vòng lỗi. Nhấn
+``Ignore all'' sẽ bỏ qua hoàn toàn một giai đoạn kiểm lỗi (tiếng hoặc
+từ), chuyển qua giai đoạn kế (hoặc kết thúc quá trình kiểm tra). Để
+sửa lỗi, ta chọn từ trong khung ``Candidates'' hoặc tự nhập từ mới,
+sau đó nhấn nút ``Enter'' bên cạnh.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{vspell-gtk}
+  \caption{Giao diện vspell-gtk}
+  \label{fig:vspell-gtk-ui}
+\end{figure}
+
+vspell-gtk tạo lớp \verb@MyText@ dẫn xuất từ \verb@Text@. Các hàm
+\verb@ui_syllable_check()@ và \verb@ui_word_check()@ được cài đặt như
+trong thuật toán~\ref{algo:MyText::ui_syllable_check}
+và~\ref{algo:MyText::ui_word_check}. \verb@MyText@ có thêm vài hàm phụ
+để hiển thị như \verb@show_wrong_syllables()@,
+\verb@show_wrong_words()@ và \verb@show_words()@.
+
+
+\begin{algo}
+\caption{MyText::ui\_syllable\_check()}
+\label{algo:MyText::ui_syllable_check}
+\begin{enumerate}
+\item Duyệt lần lượt từng tiếng bị sai trong danh sách tiếng sai.
+\item Hiện tiếng sai dùng hàm \verb@show_wrong_syllables()@.
+\item Lập danh sách tiếng đề nghị dùng
+  \verb@get_syllable_candidates()@, hiện thị danh sách tiếng lên màn
+  hình.
+\item Đặt \verb@processed@, \verb@ignore_all@, \verb@ignore@ là
+  \verb@false@. 
+\item Lặp liên tục (nhường quyền xử lý cho Gtk+) cho đến khi biến
+  \verb@ignore@ hoặc \verb@ignore_all@ hoặc \verb@processed@ là
+  \verb@true@. (Khi các nút tương ứng được nhấn, giá trị các biến này
+  sẽ bị thay đổi).
+\item Nếu \verb@ignore@ là \verb@true@, quay lại từ đầu (chuyển qua từ bị sai
+  kế tiếp).
+\item Nếu \verb@ignore_all@ là \verb@true@, kết thúc (trả về
+  \verb@true@ --- ``sạch lỗi'' do người dùng không muốn kiểm tra lỗi
+  tiếng nữa).
+\item Nếu \verb@processed@ là \verb@true@.
+  \begin{enumerate}
+  \item Lấy tiếng do người dùng chọn (hoặc nhập mới).
+  \item Thay thế tiếng bị sai trong câu bằng tiếng của người dùng.
+  \item Thêm tiếng này vào từ điển tiếng của \verb@VSpell@.
+  \item Kết thúc, trả về \verb@false@ --- còn lỗi.
+  \end{enumerate}
+\end{enumerate}
+\end{algo}
+
+\begin{algo}
+\caption{MyText::ui\_word\_check()}
+\label{algo:MyText::ui_word_check}
+\begin{enumerate}
+\item Duyệt lần lượt từng từ bị sai trong danh sách từ sai.
+\item Hiện từ sai dùng hàm \verb@show_wrong_words()@.
+\item Lập danh sách từ đề nghị dùng từ được dùng trong cách tách từ
+  đùng khi áp dụng mô hình ngôn ngữ.
+%  \verb@get_syllable_candidates()@, hiện thị danh sách tiếng lên màn
+%  hình.
+\item Đặt \verb@processed@, \verb@ignore_all@, \verb@ignore@ là
+  \verb@false@. 
+\item Lặp liên tục (nhường quyền xử lý cho Gtk+) cho đến khi biến
+  \verb@ignore@ hoặc \verb@ignore_all@ hoặc \verb@processed@ là
+  \verb@true@. (Khi các nút tương ứng được nhấn, giá trị các biến này
+  sẽ bị thay đổi).
+\item Nếu \verb@ignore@ là \verb@true@, quay lại từ đầu (chuyển qua từ bị sai
+  kế tiếp).
+\item Nếu \verb@ignore_all@ là \verb@true@, kết thúc (trả về
+  \verb@true@ --- ``sạch lỗi'' do người dùng không muốn kiểm tra lỗi
+  từ nữa).
+\item Nếu \verb@processed@ là \verb@true@.
+  \begin{enumerate}
+  \item Lấy từ do người dùng chọn (hoặc nhập mới).
+  \item Tìm ký tự `\verb@|@'. Các ký tự này đại diện cho
+    separator. Nếu có, thêm những separator này vào \verb@VSpell@, kết thúc
+    --- trả về \verb@false@.
+  \item Thay thế từ bị sai trong câu bằng từ của người dùng.
+  \item Thêm từ này vào từ điển từ của \verb@VSpell@.
+  \item Kết thúc, trả về \verb@false@ --- còn lỗi.
+  \end{enumerate}
+\end{enumerate}
+\end{algo}
 
 \section{Trình huấn luyện}
 
-\section{Dữ liệu huấn luyện}
+\subsection{Dữ liệu huấn luyện}
 \label{sec:data-preprocessing}
 
 Dữ liệu gốc bao gồm: danh sách từ và các văn bản tiếng Việt thu thập
@@ -4571,46 +5016,25 @@ Chương trình \verb#wfst-train# được dùng để huấn luyện dữ liệ
 tin nhập là danh sách từ, danh sách tiếng, ngram (nếu có). Thông tin
 xuất là ngram mới.
 
-Chương trình được lặp đi lặp lại nhiều lần.
+Quy trình xử lý của trình huấn luyện được nêu trong thuật
+toán~\ref{algo:training}. Chương trình được lặp đi lặp lại nhiều lần. 
 
-\section{Giao tiếp người dùng}
-\label{sec:ui}
-
-Cố gắng khai thác tri thức của người sử dụng, nhằm bổ trợ cho trình
-bắt lỗi, giảm thiểu các sai sót do trình bắt lỗi gây ra.
-
-Hỏi người dùng càng nhiều càng tốt. Luôn luôn có một tùy chọn ``không
-biết'' cho người dùng.
-
-\begin{itemize}
-\item Phần bắt lỗi tiếng.
-\item Nhận dạng từ sai.
-\item Nhận dạng ký hiệu, tên riêng nước ngoài.
-\end{itemize}
-
-Sau mỗi lần sữa lỗi, cần chạy lại thuật toán để loại tác động của lỗi
-sai.
-
-Văn bản xử lý được phân thành nhiều tầng:
-\begin{enumerate}
-\item Văn bản thô toàn bộ. Chuỗi các ký tự.
-\item Văn bản thô (câu).
-\item Dạng token. Tách ra từng chuỗi con.
-\item Dạng sentence. Một số token sẽ được gán id. Một số khác bị bỏ
-  qua. 
-\item Dạng lattice. Đồ thị các id (có thể giống hoặc khác với id ở cấp
-  sentence) và các liên kết. 
-\item Dạng segmentation. chuỗi id nhất định.
-\end{enumerate}
-
-Hiện tại, việc thay đổi thông tin ở tầng trên sẽ hủy mọi thông tin ở
-tầng bên dưới.
-
-Lưu lại các thông tin của người dùng như thế nào? Các thông tin này là
-``global'' hay ``local''?
-
+\begin{algo}
+  \caption{Quy trình huấn luyện}
+  \label{algo:training}
+  \begin{enumerate}
+  \item Đọc từng dòng.
+  \item Tách câu.
+  \item Táck token.
+  \item Xây dựng lưới từ (\verb@Lattice::construct()@).
+  \item Tìm cách tách từ tốt nhất.
+  \item Thống kê ngram cho câu.
+  \item Xử lý câu kế tiếp.
+  \end{enumerate}
+\end{algo}
 
 \chapter{Đánh giá và kết luận}
+\tolerance=200
 \label{cha:conclusion}
 \minitoc
 
@@ -4648,21 +5072,17 @@ Viết lại từ đầu :-D
 \item \verb#Syllable::parse()# sẽ gặp vấn đề với chữ hoa.
 \end{itemize}
 
-\appendix
-\eject\addcontentsline{toc}{part}{Phụ lục}
+\appendix\eject\addcontentsline{toc}{part}{Phụ lục}
 \chapter{Blah}
 
-\listoffigures
+\eject\addcontentsline{toc}{chapter}{\listfigurename}\listoffigures
 %\refstepcounter{chapter}\addcontentsline{toc}{chapter}{\protect\numberline{\thechapter}\listfigurename}
-\addcontentsline{toc}{chapter}{\listfigurename}
-\listoftables
+
+\eject\addcontentsline{toc}{chapter}{\listtablename}\listoftables
 %\refstepcounter{chapter}\addcontentsline{toc}{chapter}{\protect\numberline{\thechapter}\listtablename}
-\addcontentsline{toc}{chapter}{\listtablename}
-\listof{algo}{Danh sách thuật toán}
+
+\eject\addcontentsline{toc}{chapter}{Danh sách thuật toán}\listof{algo}{Danh sách thuật toán}
 %\refstepcounter{chapter}\addcontentsline{toc}{chapter}{\protect\numberline{\thechapter}Danh sách thuật toán}
-\addcontentsline{toc}{chapter}{Danh sách thuật toán}
-
-
 \bibliographystyle{alpha}
 %\addcontentsline{toc}{chapter}{\bibname}
 \bibliography{reference}

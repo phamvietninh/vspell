@@ -4,8 +4,11 @@ INCLUDES = -I$(top_builddir)/libsrilm  -I$(top_builddir)/libvspell @VSPELL_CFLAG
 bin_PROGRAMS = dictionary-test syllable-test wfst-train\
 	distance-test sentence-test wfst-test\
 	section-test all-words-test posgen-test\
-	segm-test tokenize-test shortestpath
+	segm-test tokenize-test shortestpath\
+	std-syllable
 
+std_syllable_SOURCES = std-syllable.cpp
+std_syllable_LDADD = $(LDADD)
 shortestpath_SOURCES = shortestpath.cpp
 shortestpath_LDADD = $(LDADD)
 all_words_test_SOURCES = all-words-test.cpp

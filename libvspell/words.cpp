@@ -7,6 +7,7 @@
 #include <fstream>
 #include <boost/format.hpp>
 #include <set>
+#include "syllable.h"
 #include "propername.h"
 #ifndef _SArray_cc_
 #include <libsrilm/SArray.cc>
@@ -21,7 +22,7 @@ WordState::WordState(const WordState &ws):dnode(ws.dnode),sent(ws.sent),fuzid(ws
 
 void WordState::get_first(WordStates &states,uint _pos)
 {
-	dnode.node = get_root();
+	dnode.node = warch.get_root();
 	pos = _pos;
 	fuzid = 0;
 	get_next(states,pos);
@@ -29,28 +30,27 @@ void WordState::get_first(WordStates &states,uint _pos)
 
 void ExactWordState::get_next(WordStates &states,uint i)
 {
-	WordNodePtr exact_node = dnode.node->get_next(sent[i].get_cid());
-	if (exact_node == NULL)
+	BranchNode *branch = dnode.node->get_branch(sent[i].get_cid());
+	if (branch == NULL)
 		return;
 	cerr << "Exact: " << get_sarch()[sent[i].get_cid()] << endl;
 	states.push_back(this);
 	// change the info
-	dnode = exact_node;
+	dnode = branch;
 }
 
 void LowerWordState::get_next(WordStates &states,uint i)
 {
-	WordNodePtr exact_node;
 	string s1,s2;
 	s1 = get_sarch()[sent[i].get_cid()];
 	s2 = get_lowercased_syllable(s1);
-	exact_node = dnode.node->get_next(get_sarch()[s2]);
-	if (exact_node == NULL)
+	BranchNode *branch = dnode.node->get_branch(get_sarch()[s2]);
+	if (branch == NULL)
 		return;
 	cerr << "Lower: " << get_lowercased_syllable(get_sarch()[sent[i].get_cid()]) << endl;
 	states.push_back(this);
 	// change the info
-	dnode = exact_node;
+	dnode = branch;
 	if (s1 != s2)
 		fuzid |= 1 << (i-pos);
 }
@@ -70,7 +70,7 @@ void FuzzyWordState::get_next(WordStates &states,uint _i)
 	while (!syllset2.empty()) {
 		const Syllable sy = *syllset2.begin();
 		syllset2.erase(syllset2.begin());
-		
+
 		if (syllset.find(sy) != syllset.end())
 			continue;								// we already matched&applied this syllable
 
@@ -103,18 +103,20 @@ void FuzzyWordState::get_next(WordStates &states,uint _i)
 	for (iter = syllset.begin();iter != syllset.end(); ++ iter) {
 		//cerr << iter->to_std_str() << endl;
 		string str = get_lowercased_syllable(iter->to_std_str());
-		WordNodePtr* pnode = dnode.node->get_nodes().find(get_sarch()[str]);
-		if (pnode) {
-			cerr << "Fuzzy: " << iter->to_std_str() << endl;
-			WordState *s = new FuzzyWordState(*this);
+		BranchNode::const_np_range range = dnode.node->get_nodes().equal_range(get_sarch()[str]);
+		BranchNode::node_map::const_iterator pnode;
+		for (pnode = range.first;pnode != range.second;++pnode)
+			if (!pnode->second->is_leaf()) {
+				cerr << "Fuzzy: " << iter->to_std_str() << endl;
+				WordState *s = new FuzzyWordState(*this);
 
-			// change the info
-			s->dnode.node = *pnode;
-			if (s1 != str)
-				s->fuzid |= 1 << (_i-s->pos);
-			states.push_back(s);
-			//cerr << nodes[ii] << endl;
-		}
+				// change the info
+				s->dnode.node = (BranchNode*)pnode->second.get();
+				if (s1 != str)
+					s->fuzid |= 1 << (_i-s->pos);
+				states.push_back(s);
+				//cerr << nodes[ii] << endl;
+			}
 	}
 		
 	delete this;
@@ -168,7 +170,9 @@ void Lattice::pre_construct(const Sentence &sent,set<WordEntry> &we,const WordSt
 
 	for (i = 0;i < n;i ++) {
 
-		states2.clear();
+		//cerr << *this << endl;
+
+			states2.clear();
 
 		// new states
 		for (fi = 0;fi < fn;fi ++)
@@ -182,22 +186,31 @@ void Lattice::pre_construct(const Sentence &sent,set<WordEntry> &we,const WordSt
 
 		// get completed words
 		nn = states2.size();
-		for (ii = 0;ii < nn;ii ++) 
-			if (states2[ii]->dnode.node->get_prob() >= 0) {
+		for (ii = 0;ii < nn;ii ++) {
+			std::vector<LeafNode*> leaves;
+			states2[ii]->dnode.node->get_leaves(leaves);
+			nnn = leaves.size();
+			for (iii = 0;iii < nnn;iii ++) {
 				WordEntry e;
 				e.pos = states2[ii]->pos;
 				e.len = i-states2[ii]->pos+1;
 				e.fuzid = states2[ii]->fuzid;
-				e.node = states2[ii]->dnode;
+				e.node = leaves[iii];
+				//cerr << "Add " << e << endl;
 				we.insert(e);
 			}
+		}
 
 		states1.swap(states2);
 	}
 
+	//cerr << *this << endl;
+
 	nn = states1.size();
 	for (ii = 0;ii < nn;ii ++)
 		delete states1[ii];
+	//cerr << *this << endl;
+
 }
 
 /**
@@ -230,16 +243,16 @@ void Lattice::post_construct(set<WordEntry> &we)
 			string s = get_sarch()[(*st)[i].get_cid()];
 			//cerr << "Consider " << s;
 			if (strchr("0123456789",s[1]) != NULL)
-				e.node = get_root()->get_next(get_id(NUMBER_ID));
+				e.node = get_special_node(NUMBER_ID);
 			else {
 				int iiii,nnnn = s.size();
 				for (iiii = 0;iiii < nnnn;iiii ++)
 					if (viet_ispunct(s[i]))
 						break;
 				if (iiii < nnnn)
-					e.node = get_root()->get_next(get_id(PUNCT_ID));
+					e.node = get_special_node(PUNCT_ID);
 				else
-					e.node = get_root()->get_next(get_id(UNK_ID));
+					e.node = get_special_node(UNK_ID);
 			}
 			//cerr << " " << get_sarch()[e.node.node->get_id()] << endl;
 			we.insert(e);
@@ -266,17 +279,40 @@ void Lattice::construct()
 {
 	int i_we,n_we = we->size();
 
-	for (i_we = 0;i_we < n_we;i_we ++)
+	for (i_we = 0;i_we < n_we;i_we ++) {
+		//cerr << "=" << i_we << endl;
 		add((*we)[i_we]);
+	}
 }
 /**
 	 Dump a Lattice
  */
 ostream& operator << (ostream &os, const Lattice &w)
 {
-	int i,n = w.we->size();
-	for (i = 0;i < n;i ++)
-		os << (*w.we)[i] << endl;
+	int i,n;
+
+	if (!!w.we) {
+		n = w.we->size();
+		for (i = 0;i < n;i ++)
+			os << (*w.we)[i] << endl;
+	}
+	/*
+	n = w.wi.size();
+	for (i = 0;i < n;i ++) {
+		int ii,nn = w.wi[i].we.size();
+		if (nn) cerr << ">" << i << " ";
+		for (ii = 0;ii < nn;ii ++)
+			cerr << w.wi[i].we[ii] << " ";
+		if (nn)
+			cerr << endl;
+		nn = w.wi[i].fuzzy_map.size();
+		if (nn) cerr << "<" << i << " ";
+		for (ii = 0;ii < nn;ii ++)
+			cerr << w.wi[i].fuzzy_map[ii] << " ";
+		if (nn)
+			cerr << endl;
+	}
+	*/
 	/*
 	int i, nn = w.get_word_count();
 	for (i = 0;i < nn;i ++) {
@@ -309,7 +345,7 @@ Lattice::~Lattice()
 std::ostream& operator << (std::ostream &os,const WordEntry &we)
 {
 	using namespace boost;
-	os << format("%d %d %x ") % we.pos % we.len % we.fuzid << we.node;
+	os << format("%d %d %x %d") % we.pos % we.len % we.fuzid % we.id << we.node;
 	return os;
 }
 
@@ -347,7 +383,7 @@ void Lattice::add(WordEntry &w)
 			}
 	}
 
-	WordInfos &wis = me[w.pos];
+	WordInfos &wis = me[w.pos];	
 	wis.we.push_back(&w);
 }
 

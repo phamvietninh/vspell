@@ -7,10 +7,10 @@ using namespace std;
 
 int main()
 {
-  dic_init(new WordNode::WordNode(get_sarch()["<-root->"]));
+  dic_init();
 
   cerr << "Loading... ";
-  get_root()->load("wordlist.wl");
+  warch.load("wordlist.wl");
   cerr << "done" << endl;
 
   string str;

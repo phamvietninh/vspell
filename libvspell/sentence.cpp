@@ -1,5 +1,6 @@
 #include "sentence.h"						// -*- tab-width: 2 -*-
 #include "spell.h"
+#include "syllable.h"
 #include "tokenize.h"
 #include <boost/format.hpp>
 using namespace std;

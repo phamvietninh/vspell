@@ -9,10 +9,10 @@ using namespace std;
 
 int main(int argc,char **argv)
 {
-  dic_init(argc > 1 ? new WordNode(get_sarch()["<root>"]) : new FuzzyWordNode(get_sarch()["<root>"]));
+  dic_init();
 
   cerr << "Loading... ";
-  get_root()->load("wordlist.wl");
+  warch.load("wordlist.wl");
 
   File f("ngram","rt");
   get_ngram().read(f);

@@ -11,12 +11,10 @@
 #include <libsrilm/Ngram.h>
 #include "debug.h"
 
+#define sarch get_sarch()
 /*
 	namespace Dictionary {
 */
-
-class WordNode;
-typedef WordNode* WordNodePtr;
 
 typedef VocabIndex strid;				// for easy migration
 #ifndef __MYSTRING_H__
@@ -62,7 +60,7 @@ bool viet_isxdigit(int ch);
 bool viet_isspace(int ch);
 bool viet_ispunct(int ch);
 
-bool dic_init(WordNodePtr _root);
+bool dic_init();
 void dic_clean();
 bool is_syllable_exist(strid);
 bool is_syllable_exist(const std::string &syll);
@@ -77,6 +75,8 @@ float get_word(const std::string &word);
 #define STOP_ID 4
 #define POEM_ID 5
 #define NUMBER_ID 6
+#define LEAF_ID 7
+#define TOTAL_ID 8
 StringArchive& get_sarch();
 const std::map<strid,strid_string>& get_pnames();
 Ngram& get_ngram();

@@ -1,9 +1,10 @@
-#include "wfst.h"
 #include <fstream>
 #include <iostream>
 #include <algorithm>
 #include <iterator>
 #include <set>
+#include "vspell.h"
+#include "syllable.h"
 #include "propername.h"
 
 using namespace std;
@@ -181,7 +182,7 @@ void total_combinations(ostream &os,Lattice &w)
 
 int main(int argc,char **argv)
 {
-  WFST wfst;
+  //WFST wfst;
   bool fuzzy = true;
   bool dot = false;
   bool spare = false;
@@ -201,12 +202,10 @@ int main(int argc,char **argv)
     if (!strcmp(argv[i],"total_comb")) total_comb = true;
   }
 
-  dic_init(fuzzy ?
-	   new FuzzyWordNode(get_sarch()["<root>"]) :
-	   new WordNode(get_sarch()["<root>"]));
+  dic_init();
 
   cerr << "Loading... ";
-  get_root()->load("wordlist");
+  warch.load("wordlist");
   File f("ngram","rt",0);
   if (!f.error())
 	  get_ngram().read(f);
@@ -214,7 +213,7 @@ int main(int argc,char **argv)
 
   get_sarch().set_blocked(true);
 
-  wfst.set_wordlist(get_root());
+  //wfst.set_wordlist(get_root());
 
   string s;
   while (getline(cin,s)) {
@@ -236,10 +235,11 @@ int main(int argc,char **argv)
     WordStateFactories factories;
     ExactWordStateFactory exact;
     LowerWordStateFactory lower;
-    FuzzyWordStateFactory fuzzy;
+    FuzzyWordStateFactory ffuzzy;
     factories.push_back(&exact);
     factories.push_back(&lower);
-    factories.push_back(&fuzzy);
+    if (fuzzy)
+      factories.push_back(&ffuzzy);
     w2.pre_construct(st,wes,factories);
     mark_proper_name(st,wes);
     if (has_seps)

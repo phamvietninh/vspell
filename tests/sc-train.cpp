@@ -27,13 +27,11 @@ int main(int argc,char **argv)
 	bool nofuz2 = true;
 	const char *str;
 
-	dic_init(nofuz ? 
-		 new WordNode(get_sarch()["<root>"]) : 
-		 new FuzzyWordNode(get_sarch()["<root>"]));
+	dic_init();
 
 	cerr << "Loading... ";
 	str = "wordlist.wl";
-	get_root()->load(str);
+	warch.load(str);
 	str = (boost::format("ngram.%s") % oldres).str().c_str();
 	File f(str,"rt",0);
 	if (!f.error())

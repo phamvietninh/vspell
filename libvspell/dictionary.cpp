@@ -27,38 +27,34 @@ using namespace std;
 typedef SArray<strid,float> syllable_dict_type;
 typedef SArrayIter<strid,float> syllable_dict_iterator;
 static syllable_dict_type syllable_dict;
-static WordNodePtr myroot;
-static strid unk_id,start_id,stop_id,punct_id,proper_name_id,poem_id,number_id;
+static strid special_ids[TOTAL_ID];
+static LeafNode* special_leaves[TOTAL_ID];
+
+#ifdef sarch
+#undef sarch
+#endif
 
 static StringArchive sarch;
 static Ngram ngram(sarch.get_dict(),3);
 static Ngram syngram(sarch.get_dict(),2);
 static map<strid,strid_string> pnames;
+WordArchive warch;
 
 bool syllable_init();
 void viet_init();
 
-bool dic_init(WordNodePtr _root)
+bool dic_init()
 {
 	viet_init();
 	syllable_init();
 	ed_init();
-	myroot = _root;
 	sarch["<reserved>"]; // 0, don't use
-	unk_id = sarch["<opaque>"];
-	start_id = sarch["<s>"];
-	stop_id = sarch["</s>"];
-	proper_name_id = sarch["<prop>"];
-	punct_id = sarch["<punct>"];
-	poem_id = sarch["<poem>"];
-	number_id = sarch["<digit>"];
-	myroot->add_entry(unk_id);
-	myroot->add_entry(start_id);
-	myroot->add_entry(stop_id);
-	myroot->add_entry(proper_name_id);
-	myroot->add_entry(punct_id);
-	myroot->add_entry(poem_id);
-	myroot->add_entry(number_id);
+	int i;
+	char *specials[TOTAL_ID] = {"<opaque>","<punct>","<prop>","<s>","</s>","<poem>","<digit>","<leaf>"};
+	for (i = 0;i < TOTAL_ID;i ++) {
+		special_ids[i] = sarch[specials[i]];
+		special_leaves[i] = warch.add_special_entry(special_ids[i]);
+	}
 	proper_name_init();
 	return true;
 }
@@ -74,12 +70,6 @@ void StringArchive::dump()
 
 void dic_clean()
 {
-	delete myroot;
-}
-
-WordNodePtr get_root()
-{
-	return myroot;
 }
 
 bool is_syllable_exist(strid syll)
@@ -113,145 +103,9 @@ float get_word(const std::string &word)
 	delete nodes;
 	}
 */
-bool WordNode::load(const char* filename)
-{
-	File ifs(filename,"rt");
 
-	if (ifs.error())
-		return false;
 
-	int nr_lines = 0;
-	char *line;
-	int start,len,tmp_char;
-	string::size_type pos;
-	char *str_pos;
-	vector<string> toks;
-	while ((line = ifs.getline())) {
-		start = 0;
-		len = strlen(line);
-		toks.clear();
-		while (start < len) {
-			str_pos = strchr(line+start,'#');
-			if (str_pos == NULL)
-				pos = len;
-			else
-				pos = str_pos - line;
-			tmp_char = line[pos];
-			line[pos] = 0;
-			toks.push_back(line+start);
-			line[pos] = tmp_char;
-			start = pos+1;
-		}
-
-		if (!toks.size())
-			continue;			// unrecoverable error
-		if (toks.size() < 2)
-			toks.push_back("N");	// assume N
-		if (toks.size() < 3)
-			toks.push_back("0");	// assume 0
-
-		add_entry(toks);
-
-		nr_lines ++;
-	}
-
-	return true;
-}
-
-void WordNode::add_entry(vector<string> toks)
-{
-	unsigned start,len,pos;
-	start = 0;
-	len = toks[0].size();
-	WordNodePtr node(this);//,cnode(this);
-	vector<VocabIndex> syllables;
-	//vector<VocabIndex> csyllables;
-	while (start < len) {
-		pos = toks[0].find(' ',start);
-		if (pos == string::npos)
-			pos = len;
-		string s = toks[0].substr(start,pos-start);
-		VocabIndex id = sarch[get_dic_syllable(s)];
-		syllables.push_back(id);
-		WordNodePtr next = node->get_next(id);
-		if (!next) {							// create new
-			next = node->create_next(id);
-		}
-		node = next;
-
-		/*
-			transform(s.begin(),s.end(),s.begin(),viet_tolower);
-			VocabIndex cid = sarch[get_dic_syllable(s)];
-			csyllables.push_back(cid);
-			WordNodePtr cnext = cnode->get_next(cid);
-			if (!cnext) {							// create new
-			cnext = cnode->create_next(cid);
-			}
-			cnode = cnext;
-		*/
-		start = pos+1;
-	}
-
-	if (toks[2].find(' ') != string::npos)
-		toks[2].erase(toks[2].find(' '));
-
-	// reconstruct word id
-	string word;
-	int i,nr_syllables = syllables.size();
-	for (i = 0;i < nr_syllables;i ++) {
-		if (i)
-			word += "_";
-		word += sarch[syllables[i]];
-	}
-
-	node->info.reset(new WordInfo);
-	node->info->id = sarch[word];
-	node->info->syllables.resize(nr_syllables+1);
-	node->info->syllables[nr_syllables] = Vocab_None;
-	//cerr << "Word " << toks[0] << "(" << node->info->id << "| ";
-	for (int i = 0;i < nr_syllables;i ++) {
-		node->info->syllables[i] = syllables[i];
-		//cerr << node->info->syllables[i] << ",";
-	}
-	//cerr << endl;
-	node->set_prob(atof(toks[2].c_str()));
-
-	string newword = word;
-	transform(newword.begin(),newword.end(),newword.begin(),viet_tolower);
-	if (newword != word) {
-		pnames[sarch[newword]] += sarch[word];
-	}
-	/*
-		if (csyllables != syllables) {
-		transform(word.begin(),word.end(),word.begin(),viet_tolower);
-		cnode->info.reset(new WordInfo);
-		cnode->info->id = sarch[word];
-		nr_syllables = csyllables.size();
-		cnode->info->syllables.resize(nr_syllables+1);
-		cnode->info->syllables[nr_syllables] = Vocab_None;
-		for (i = 0;i < nr_syllables;i ++)
-		cnode->info->syllables[i] = csyllables[i];
-		cnode->set_prob(atof(toks[2].c_str()));
-		} else
-		cnode->info = node->info;
-	*/
-}
-
-void WordNode::add_entry(strid id)
-{
-	WordNodePtr next = get_next(id);
-	if (!next) {							// create new
-		next = create_next(id);
-	}
-
-	next->info.reset(new WordInfo);
-	next->info->id = id;
-	next->info->syllables.resize(1+1);
-	next->info->syllables[1] = Vocab_None;
-	next->info->syllables[0] = id;
-	next->set_prob(0);
-}
-
+/*
 bool WordNode::save(const char* filename)
 {
 	ofstream ofs(filename);
@@ -503,7 +357,7 @@ void WordNode::recalculate()
 		}
 	}
 }
-
+*/
 strid StringArchive::operator[] (VocabString s)
 {
 	VocabIndex vi = dict.getIndex(s);
@@ -566,7 +420,7 @@ strpair make_strpair(strid str)
 	pair.cid = sarch[st];
 	return pair;
 }
-
+/*
 void WordNode::dump_next(std::ostream &os) const
 {
 	node_map_iterator iter(*nodes);
@@ -576,7 +430,6 @@ void WordNode::dump_next(std::ostream &os) const
 		os << (*pnode)->id << " ";
 	}
 }
-
 std::ostream& operator << (std::ostream &os,const WordNode::DistanceNode &dnode)
 {
 	os << *dnode.node;
@@ -594,6 +447,7 @@ std::ostream& operator << (std::ostream &os,const WordNode &node)
 	return os;
 }
 
+*/
 StringArchive& get_sarch()
 {
 	return sarch;
@@ -611,17 +465,20 @@ Ngram& get_syngram()
 
 strid get_id(int id)
 {
-	switch (id) {
-	case UNK_ID: return unk_id;
-	case PUNCT_ID: return punct_id;
-	case PROPER_NAME_ID: return proper_name_id;
-	case START_ID: return start_id;
-	case STOP_ID: return stop_id;
-	case POEM_ID: return poem_id;
-	case NUMBER_ID: return number_id;
-	default: return unk_id;
-	}
+	if (id < TOTAL_ID)
+		return special_ids[id];
+	else
+		return special_ids[UNK_ID];
 }
+
+LeafNode* get_special_node(int id)
+{
+	if (id < TOTAL_ID)
+		return special_leaves[id];
+	else
+		return special_leaves[UNK_ID];
+}
+
 
 
 const std::map<strid,strid_string>& get_pnames()

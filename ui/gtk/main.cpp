@@ -6,6 +6,7 @@
 #include "config.h"
 #include <spell.h>
 #include <vspell.h>
+#include <syllable.h>
 
 using namespace std;
 
@@ -394,6 +395,7 @@ void button_search_callback(GtkWidget *button, gpointer data)
 		ids.push_back(id);
 	}
 
+	/*
 	WordNodePtr ptr;
 	ptr = get_root()->follow_syllables(ids);
 	if (ptr) {
@@ -402,6 +404,7 @@ void button_search_callback(GtkWidget *button, gpointer data)
 		g_free(str);
 	} else
 		gtk_label_set_text(GTK_LABEL(log_main),"Word not found.");
+	*/
 }
 
 void candidates_reset()

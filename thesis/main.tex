@@ -358,10 +358,10 @@ tiếp nhận một khoảng âm thanh nhất định. Những chấn động kh
 Âm học phân biệt các âm thanh theo những đặc trưng khác nhau, bao gồm:
 độ cao, độ mạnh, độ dài. Độ cao phụ thuộc vào tần số dao động. Tần số
 dao động càng lớn thì âm thanh càng cao. Tai người có khả năng nhận
-biết độ cao trong khoảng từ 16 đến 20.000 $H_z$. Độ mạnh (cường độ)
+biết độ cao trong khoảng từ 16 đến 20.000 $H_z$. Độ mạnh~(cường độ)
 phụ thuộc vào biên độ dao động. Biên độ càng lớn, âm thanh càng
 to. Cường độ âm thanh trong ngôn ngữ đảm bảo sự xác minh trong giao tế
-và là cơ sở để tạo thành các kiểu trọng âm khác nhau. Độ dài (trường
+và là cơ sở để tạo thành các kiểu trọng âm khác nhau. Độ dài~(trường
 độ) là khoảng thời gian kéo dài của âm thanh. Ngôn ngữ chỉ quan trọng
 thời gian tương đối của âm thanh. Ví dụ, các nguyên âm có trọng âm
 thường dài hơn nguyên âm không có trọng âm.
@@ -392,7 +392,7 @@ Phụ âm có đặc điểm cấu tạo hoàn toàn trái ngược với nguyê
 
 Nguyên âm và phụ âm có chức năng khác nhau trong cấu tạo âm tiết. Các
 nguyên âm thường làm hạt nhân hay đỉnh của âm tiết, còn phụ âm thường
-là yếu tố đi kèm, không tạo thành âm tiết (trừ các âm phụ vang).
+là yếu tố đi kèm, không tạo thành âm tiết~(trừ các âm phụ vang).
 
 Những âm tố có đặc tính giống nguyên âm nhưng thường chỉ đi kèm, bản
 thân không tạo thành âm tiết được gọi là {\em bán nguyên âm}. Ví dụ,
@@ -418,8 +418,8 @@ ngôn ngữ. Các viên gạch thường giống nhau, nhưng các âm vị về
 tắc phải khác nhau, ít nhất ở một đặc trưng nào đó. Sự khác biệt này
 tạo ra khác biệt về hình thức âm thanh của hình vị và từ, tạo ra tín
 hiệu khác biệt đối với sự thụ cảm của con người. Vậy âm vị có hai chức
-năng cơ bản là {\em chức năng khu biệt} (vỏ âm thanh của hình vị và
-từ) và {\em chức năng cấu tạo} (chất liệu để cấu tạo nên
+năng cơ bản là {\em chức năng khu biệt}~(vỏ âm thanh của hình vị và
+từ) và {\em chức năng cấu tạo}~(chất liệu để cấu tạo nên
 những thành tố của những đơn vị có nghĩa).
 
 
@@ -432,7 +432,7 @@ nhau, từ lớn đến nhỏ. Âm tiết là đơn vị phát âm nhỏ nhất,
 Về phương diện phát âm, dù lời nói chậm đến đâu cũng chỉ phân chia đến
 giới hạn của âm tiết mà thôi. Nhưng về phương diện thính giác thì âm
 tiết là một tổ hợp âm thanh, có thể gồm nhiều âm tố hoặc đôi khi chỉ
-có một âm tố. Mỗi âm tiết chỉ có một âm tố âm tiết tính (có khả năng
+có một âm tố. Mỗi âm tiết chỉ có một âm tố âm tiết tính~(có khả năng
 tạo thành âm tiết), còn lại là những yếu tố đi kèm, không tự mình tạo
 thành âm tiết. Âm tố âm tiết tính thường được phân bố ở đỉnh hay ở
 trung tâm, làm hạt nhân âm tiết, thường là các nguyên âm. Các phụ âm
@@ -4074,7 +4074,7 @@ $P^{left}$ và $P^{right}$, ta có thể tính fractional
 count cho các từ trong câu bằng cách duyệt tất cả các nút trong lưới từ,
 cộng thêm vào $\displaystyle\frac{P(W)}{P^{left}(tail)}$ cho từ
 $C$. Thực tế, ta sẽ lồng bước này vào trong thuật toán tính
-$P^{right}$, vì thuật toán cũng phải duyệt qua tất cả các từ (thuật
+$P^{right}$, vì thuật toán cũng phải duyệt qua tất cả các từ~(thuật
 toán~\ref{algo:sc1:pright}). 
 
 \begin{algo}\caption{Tính $P^{right}$}
@@ -4456,7 +4456,33 @@ những từ dài hơn). Nếu không thể gắn thêm tiếng mới vào từ,
 bị loại bỏ khỏi danh sách từ chưa hoàn chỉnh. Đồng thời các tiếng đó
 cũng được đưa vào danh sách từ chưa hoàn chỉnh như là những tiếng bắt
 đầu từ mới. Công việc được thực hiện cho đến khi quét hết chiều dài
-câu. 
+câu~(thuật toán~\ref{algo:pre_construct}). \verb@pre_construct()@ dựa
+vào hàm \verb@WordState::get_next()@ và \verb@WordState::get_first()@
+để thực hiện chuyển từ một state cũ ($states1$) sang state kế tiếp
+($states2$). Mỗi lớp khác nhau dẫn xuất từ \verb@WordState@ sẽ có cách
+chuyển qua state mới khác nhau. Nhờ vậy ta có thể tiến hành thu thập
+từ theo nhiều cách khác nhau. Tất cả các lớp dẫn xuất từ
+\verb@WordState@ tham gia vào \verb@pre_construct()@ được lưu vào một
+danh sách \verb@WordStateFactories@ chuyển cho \verb@pre_construct()@
+nhờ đó \verb@pre_construct()@ biết cần phải sử dụng những lớp nào.
+
+\begin{algo}
+  \caption{Lattice::pre\_construct()}
+  \label{algo:pre_construct}
+  \begin{enumerate}
+  \item Xóa $states2$.
+  \item Duyệt $i$ từ tiếng đầu tiên đến hết câu.
+    \begin{enumerate}
+    \item Thêm state mới (bắt đầu tại vị trí $i$) vào $states2$
+      (\verb@WordStateFactory::create_new()@). 
+    \item Chuyển state cũ (trong $states1$) sang $states2$ mới (\verb@WordState::get_next()@).
+    \item Duyệt tất cả các state trong $states2$, nếu tìm thấy từ hoàn
+      chỉnh thì thêm vào danh sách \verb@WordEntry@ $we$.
+    \item Hoán vị $states1$ và $states2$.
+    \end{enumerate}
+  \item Xóa $states1$. Trả về $we$.
+  \end{enumerate}
+\end{algo}
 
 Cấu trúc \verb@WordState@ được dùng để lưu một từ chưa hoàn chỉnh
 trong danh sách các từ chưa hoàn chỉnh. Cấu trúc này bao gồm vị trí
@@ -4467,6 +4493,13 @@ thành nên từ. Thành phần \verb@fuzid@ được cập nhật sau mỗi khi
 tiếng mới vào từ, cho biết đó là tiếng chính xác trên câu, hay tiếng
 gần giống với tiếng trên câu (phát sinh nhờ so sánh mờ). Mỗi bit trong
 \verb@fuzid@ tượng trưng cho một tiếng trong từ.
+
+Hai lớp chính được dùng là lớp \verb@ExactWordState@ và lớp
+\verb@LowerWordState@. Lớp đầu chỉ thực hiện chuyển sang state kế nếu
+tiếng kế tiếp hoàn toàn trùng khớp với tiếng kế tiếp của từ. Lớp sau
+sẽ chuyển state nếu cách viết thường của tiếng kế tiếp giống với tiếng
+kế tiếp của từ. Lớp sau được dùng để không phân biệt chữ hoa/chữ
+thường khi tìm từ.
 
 Hàm \verb@post_construct()@ thực hiện nốt những gì còn lại để tạo nên
 lưới từ, bao gồm việc duyệt qua lưới từ, thêm các nút (như $UNK$)
@@ -4518,6 +4551,11 @@ lưới~2-từ thành mã nút trong lưới từ \verb@WordDAG@.
 
 
 \subsection{Bổ sung lưới từ}
+
+Bổ sung lưới từ dựa theo lỗi phát âm được thực hiện ngay trong
+\verb@pre_construct()@ thông qua lớp \verb@FuzzyWordState@~(xem thêm
+phần~\ref{sec:impl:phonetic-error}).
+
 
 Lớp \verb@PenaltyDAG@ được dẫn xuất từ lớp \verb@DAG@. Lớp này điều
 chỉnh lại hàm \verb@DAG::edge_value()@ để thay đổi độ dài cạnh nhằm
@@ -4633,7 +4671,7 @@ Lấy danh sách các nút tương tự như thuật toán~\ref{algo:pfs}.
 \end{algo}
 
 \subsection{Lỗi phát âm}
-
+\label{sec:impl:phonetic-error}
 \subsubsection{Phân tích cấu trúc âm tiết}
 
 Lớp \verb@Syllable@ được dùng để phân tích cú pháp âm tiết. Năm thành
@@ -4646,7 +4684,7 @@ tin vào \verb@Syllable::components@.
 
 Việc tìm các tiếng tương tự cách phát âm được cài đặt trong lớp
 \verb@Syllable@ và hàm
-\verb@FuzzyWordNode::fuzzy_get_next_with_syllable()@. Lớp
+\verb@FuzzyWordState::get_next()@. Lớp
 \verb@Syllable@ sẽ thực hiện các thao tác cơ bản liên quan đến âm
 tiết, bao gồm hai hàm \verb@match@ và \verb@apply@.
 
@@ -4677,7 +4715,7 @@ các âm tiết khác nhau, mỗi âm tiết tương ứng với một giá tr�
 của thành phần đó.
 
 Sử dụng hai hàm trên, hàm
-\verb@fuzzy_get_next_with_syllable()@ làm phần việc còn
+\verb@FuzzyWordState::get_next()@ làm phần việc còn
 lại là gắn kết \verb@match()@, \verb@apply()@ và tập nhầm lẫn để tìm
 ra các âm tiết phát âm gần giống. Hàm lần lượt duyệt qua các mẫu âm
 tiết trong từng tập nhầm lẫn. Nếu âm tiết đang xét khớp với một mẫu âm
@@ -4749,9 +4787,9 @@ Các hàm quan trọng trong lớp \verb@Text@:
   toàn bộ công đoạn bắt lỗi chính tả, mô tả trong thuật
   toán~\ref{algo:Text::sentence_check}.
 \item \verb@syllable_check()@: Kiểm lỗi tiếng. Trả về \verb@true@ nếu
-  không còn lỗi (thuật toán~\ref{algo:Text::syllable_check}).
+  không còn lỗi~(thuật toán~\ref{algo:Text::syllable_check}).
 \item \verb@word_check()@: Kiểm lỗi từ. Trả về \verb@true@ nếu
-  không còn lỗi (thuật toán~\ref{algo:Text::word_check}).
+  không còn lỗi~(thuật toán~\ref{algo:Text::word_check}).
 \item \verb@replace()@: Thay thế một chuỗi con trong đoạn văn bản đang
   xét.
 \item \verb@substr()@: Lấy một chuỗi con trong đoạn văn bản đang xét.
@@ -4855,7 +4893,7 @@ Các hàm thường dùng trong \verb@VSpell@:
 \item \verb@cleanup()@: Hủy bỏ toàn bộ dữ liệu của đối tượng, chuẩn bị để
   hủy bỏ đối tượng.
 \item \verb@check()@: tiến hành kiểm lỗi chính tả cho một đoạn văn
-  bản (thuật toán~\ref{algo:VSpell::check}). Văn bản được dùng ở dạng
+  bản~(thuật toán~\ref{algo:VSpell::check}). Văn bản được dùng ở dạng
   UTF-8. 
 \item \verb@set_penalty()@: Đặt trọng số $w$ cho lớp \verb@PenaltyDAG@.
 \item \verb@get_penalty()@: Lấy trọng số $w$ của lớp

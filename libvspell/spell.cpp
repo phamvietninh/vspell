@@ -6,6 +6,7 @@
 #include <fstream>
 #include "vspell.h"
 #include "sentence.h"
+#include "syllable.h"
 #include "pfs.h"
 #include <map>
 #include "propername.h"
@@ -216,10 +217,10 @@ generalize all capitalized words.
 */
 bool VSpell::init()
 {
-	dic_init(new FuzzyWordNode(get_sarch()["<root>"]));
+	dic_init();
 
 	cerr << "Loading dictionary... ";
-	get_root()->load("wordlist");
+	warch.load("wordlist");
 	cerr << "done" << endl;
 	cerr << "Loading ngram... ";
 	File f("ngram","rt");

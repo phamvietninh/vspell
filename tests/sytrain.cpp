@@ -25,13 +25,11 @@ int main(int argc,char **argv)
 	bool nofuz2 = true;
 	const char *str;
 
-	dic_init(nofuz ? 
-		 new WordNode(get_sarch()["<root>"]) : 
-		 new FuzzyWordNode(get_sarch()["<root>"]));
+	dic_init();
 
 	cerr << "Loading... ";
 	str = "wordlist";
-	get_root()->load(str);
+	warch.load(str);
 	cerr << "done" << endl;
 
 	get_sarch().set_blocked(true);

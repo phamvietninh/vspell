@@ -1,5 +1,6 @@
 #include "propername.h"		// -*- tab-width: 2 -*-
 #include "dictionary.h"
+#include "syllable.h"
 #include <libsrilm/File.h>
 #include <set>
 
@@ -86,7 +87,7 @@ void mark_proper_name(const Sentence &sent,set<WordEntry> &we)
 					e.pos = start;
 					e.len = i-start;
 					e.fuzid = 0;
-					e.node = get_root()->get_next(get_id(PROPER_NAME_ID));
+					e.node = get_special_node(PROPER_NAME_ID);
 					we.insert(e);
 				}
 				start = -1;
@@ -100,7 +101,7 @@ void mark_proper_name(const Sentence &sent,set<WordEntry> &we)
 		e.pos = start;
 		e.len = i-start;
 		e.fuzid = 0;
-		e.node = get_root()->get_next(get_id(PROPER_NAME_ID));
+		e.node = get_special_node(PROPER_NAME_ID);
 		we.insert(e);
 		start = -1;
 	}

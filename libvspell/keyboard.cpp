@@ -1,6 +1,7 @@
 // -*- coding: viscii tab-width: 2 mode: c++ -*-
 
 #include "keyboard.h"
+#include "syllable.h"
 
 static char *keys = "`~1!2@3#4$5%6^7&8*9(0)-_=+\\|" "qwertyuiop[{]}" "asdfghjkl;:'\"" "zxcvbnm,<.>/?";
 static char *keymap[] = {

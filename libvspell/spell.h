@@ -38,7 +38,7 @@ struct WordEntry {
 																/// fuzid is a mask of fuzzy/exact match.
 	unsigned int id;							/// index in WordEntries
 
-	WordNode::DistanceNode node;	/// Word content
+	DNode<LeafNode> node;	/// Word content
 
 	bool operator < (const WordEntry &we) const {
 		return pos != we.pos ? pos < we.pos :
@@ -81,7 +81,7 @@ public:
 	/**
 		 the currently processing node
 	 */
-	WordNode::DistanceNode dnode;
+	DNode<BranchNode> dnode;
 	const Sentence &sent;
 	//bool survive;
 

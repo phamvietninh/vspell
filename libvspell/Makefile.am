@@ -6,10 +6,9 @@ libvspell_a_SOURCES = \
 	sentence.cpp sentence.h\
 	distance.cpp distance.h\
 	spell.cpp spell.h vspell.h\
-	wfst.cpp wfst.h\
 	pfs.cpp pfs.h\
 	words.cpp\
-	sections.cpp\
+	warch.cpp\
 	softcount.cpp softcount.h\
 	tokenize.ll tokenize.h\
 	debug.h mystring.h\

@@ -30,13 +30,11 @@ int main(int argc,char **argv)
     else if (!strcmp(argv[i],"dot")) dot = true;
     else if (!strcmp(argv[i],"edge")) edge_value = true;
   }
-  dic_init(!fuzzy ? 
-	   new WordNode(get_sarch()["<root>"]) : 
-	   new FuzzyWordNode(get_sarch()["<root>"]));
+  dic_init();
   ed_init();
 
   cerr << "Loading... ";
-  get_root()->load("wordlist");
+  warch.load("wordlist");
   File f("ngram","rt",0);
   if (!f.error())
 	  get_ngram().read(f);

@@ -1,1 +1,1 @@
-SUBDIRS = libsrilm libvspell vspell tests
+SUBDIRS = libsrilm libvspell ui tests

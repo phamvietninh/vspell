@@ -2,6 +2,8 @@
 #include "dictionary.h"
 #include "wordnode.h"
 #include <algorithm>
+#include <iostream>
+#include <iterator>
 
 using namespace std;
 

@@ -6,11 +6,12 @@
 #include <cmath>
 #include <cstdio>
 #include <sstream>
+#include <iostream>
 #include <libsrilm/NgramStats.h>
 
-void iterate(ostream &os,int level);
-
 using namespace std;
+
+void iterate(ostream &os,int level);
 
 WFST wfst;
 vector<Sentence> sentences;
@@ -24,14 +25,9 @@ int main()
   cerr << "done" << endl;
 
   wfst.set_wordlist(get_root());
-  ifstream ifs("corpus2");
-  if (!ifs.is_open()) {
-    cerr << "Can not open corpus\n";
-    return 0;
-  }
 
   string s;
-  while (getline(ifs,s)) {
+  while (getline(cin,s)) {
     if (!s.empty()) {
       sentences.push_back(Sentence(s));
       Sentence &st = sentences.back();
@@ -62,10 +58,10 @@ void iterate(ostream &os,int level)
   
     Segmentation seg;
     Words words;
-    wfst.get_all_words(st,words);
+    words.construct(st);
     //print_all_words(words);
     wfst.segment_best(st,words,seg);
-    seg.print(os,st);
+    cerr << seg << endl;
 
 
 #ifdef TRAINING

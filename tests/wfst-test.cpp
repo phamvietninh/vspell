@@ -31,11 +31,6 @@ int main()
 
   wfst.set_wordlist(get_root());
   vector<Sentence> sentences;
-  ifstream ifs("corpus-test");
-  if (!ifs.is_open()) {
-    cerr << "Can not open corpus\n";
-    return 0;
-  }
 
 /*
   Segmentation seg;
@@ -68,7 +63,7 @@ int main()
   
    
   string s;
-  while (getline(ifs,s)) {
+  while (getline(cin,s)) {
     if (!s.empty()) {
 
       //sentences.push_back(Sentence(s));
@@ -78,10 +73,9 @@ int main()
       st.tokenize();
       Segmentation seg;
       Words words;
-      wfst.get_all_words(st,words);
-//      print_all_words(words);
+      words.construct(st);
       wfst.segment_best(st,words,seg);
-      seg.print(cerr,st);
+      cerr << seg << endl;
       sarch.clear_rest();
     }
   }

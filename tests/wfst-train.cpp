@@ -134,6 +134,7 @@ int main(int argc,char **argv)
 				seg[i].node.node->inc_a();
 			*/
 		}
+		sarch.clear_rest();
 	}
 
 	cerr << "Calculating... ";

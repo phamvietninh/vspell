@@ -1991,7 +1991,7 @@ dụng trở nên không an toàn.
 
 
 %\subsection{Mô hình n-gram}
-%%% Mays et al 91 -> trigram
+%%% Mays et al 91 -> tri\-gram
 
 
 \subsection{Mô hình Winnow}
@@ -2114,19 +2114,19 @@ quá thấp).
 \item Sắp xếp các đặc trưng theo thứ tự giảm dần khả năng quyết định.
 \end{itemize}
 
-\subsection{Mô hình Trigram và Bayes}
+\subsection{Mô hình Tri\-Gram và Bayes}
 
-Mô hình sửa lỗi bằng Trigram rất đơn giản. Đối với mỗi câu, các từ
+Mô hình sửa lỗi bằng Tri\-Gram rất đơn giản. Đối với mỗi câu, các từ
 trong tập nhầm lẫn được thay thế cho từ tương ứng trong câu, sau đó
-tính xác suất trigram của toàn bộ câu. Từ tương ứng với câu có xác
+tính xác suất tri\-gram của toàn bộ câu. Từ tương ứng với câu có xác
 suất lớn nhất sẽ là từ được chọn. Cho câu $W =
 w_1\ldots{} w_k\ldots{} w_n$, $w_k'$ là từ được dùng để thay thế cho
 $w_k$, tạo ra câu mới $W'$. Nếu $P(W') > P(W)$ thì $w_k'$ sẽ được
-chọn, với $P(W)$ và $P(W')$ lần lượt là xác suất trigram của câu $W$
+chọn, với $P(W)$ và $P(W')$ lần lượt là xác suất tri\-gram của câu $W$
 và $W'$.
 
 Một cải tiến của phương pháp này là
-áp dụng trigram dựa trên từ loại thay vì trigram từ. Từ câu $W$, ta
+áp dụng tri\-gram dựa trên từ loại thay vì tri\-gram từ. Từ câu $W$, ta
 tạo ra các chuỗi từ loại. Xác suất cuối cùng là:
 \begin{align*}
 P(W)  &=\sum_T P(W,T)\\
@@ -2134,7 +2134,7 @@ P(W,T)&=P(W|T)P(T)\\
       &=\prod_i P(w_i|t_i)\prod_i P(t_i|t_{i-2}t_{i-1})
 \end{align*}
 với $T$ là một chuỗi từ loại của $W$, $T=t_1\ldots{} t_n$ và
-$P(t_i|t_{i-2}t_{i-1})$ là xác suất trigram từ loại.
+$P(t_i|t_{i-2}t_{i-1})$ là xác suất tri\-gram từ loại.
 
 Một mô hình khác để tìm và sửa lỗi chính tả là áp dụng bộ phân lớp
 Bayes. Có thể xem đây là bài toán phân lớp từ dựa vào một tập các đặc
@@ -2144,15 +2144,15 @@ chính là ngữ cảnh của từ cần xét. Tập đặc trưng được rút
 đang xét. Các đặc trưng và cách rút trích đặc trưng tương tự như trong
 mô hình Winnow.
 
-Mô hình Trigram và Bayes, mỗi cái có điểm mạnh riêng. Mô hình trigram
+Mô hình Tri\-Gram và Bayes, mỗi cái có điểm mạnh riêng. Mô hình tri\-gram
 hoạt động tốt nếu những từ trong tập nhầm lẫn không cùng từ
 loại. Ngược lại, khi không thể phân biệt dựa trên từ loại, mô hình
 Bayes sẽ hoạt động tốt hơn do dựa vào các thông tin về cú pháp, ngữ
 cảnh xung quanh. Do đó, giải pháp tốt nhất là kết hợp hai mô hình này
-với nhau. Đầu tiên ta áp dụng mô hình Trigram. Trong quá trình xử lý,
+với nhau. Đầu tiên ta áp dụng mô hình Tri\-Gram. Trong quá trình xử lý,
 nếu thấy mọi từ trong tập nhầm lẫn đều cùng từ loại, ta áp dụng mô
 hình Bayes. Ngược lại, ta sẽ chấp nhận kết quả của mô hình
-Trigram. Giải pháp này được áp dụng trong~\cite{Golding96}, tạo ra mô
+Tri\-Gram. Giải pháp này được áp dụng trong~\cite{Golding96}, tạo ra mô
 hình Tribayes.
 
 
@@ -2256,7 +2256,7 @@ từ. Trong khi đó \cite{vietdecisionlist} sử dụng danh sách quyết đ�
 %% nhiên chỉ tính xác suất cách tách từ tốt nhất thay vì tính tổng xác
 %% suất mọi cách tách từ như trong \cite{softcount}.
 
-%% \cite{Chunyu} kết hợp ngram, lập trình quy hoạch động để tách từ. Xài
+%% \cite{Chunyu} kết hợp n\-gram, lập trình quy hoạch động để tách từ. Xài
 %% soft-count thay vì ``hard-count'' như \cite{Chang}. \cite{Chunyu} còn
 %% đề nghị dùng case-based learning.
 
@@ -2569,7 +2569,7 @@ chuỗi từ. Do âm thanh thường bị nhiễu, nên các âm tiết có th�
 không chính xác hoàn toàn. Ngoài ra, do đặc tính của tiếng Anh nên
 cùng một chuỗi âm tiết có thể suy ra nhiều chuỗi từ khác nhau. Tác giả
 sử dụng lưới từ để tạo ra các chuỗi từ có khả năng từ chuỗi âm tiết,
-sau đó ngram trên từ để lượng giá các chuỗi từ.
+sau đó n\-gram trên từ để lượng giá các chuỗi từ.
 
 Một điểm đáng chú ý ở
 đây là sự tương đồng về một mặt nào đó giữa tiếng Anh và tiếng
@@ -2582,11 +2582,11 @@ tách từ lại gặp nhiều khó khăn. Với nhận xét này, có thể th�
 toán nhận dạng tiếng nói tiếng Anh gặp cùng vấn đề với bài toán bắt
 lỗi chính tả tiếng Việt!
 
-\cite{Chang} cũng dùng mô hình ngôn ngữ dạng ngram để đánh giá các
+\cite{Chang} cũng dùng mô hình ngôn ngữ dạng n\-gram để đánh giá các
 cách tách từ sau khi đã qua tiền xử lý nhập nhằng chính tả, tuy nhiên
 lại sử dùng nhiều mô hình ngôn ngữ khác nhau như 
-character bigram, word bigram, inter-word character bigram (IWCB), POS
-bigram, word class bigram.
+character bi\-gram, word bi\-gram, inter-word character bi\-gram (IWCB), POS
+bi\-gram, word class bi\-gram.
 
 Dựa trên những nghiên cứu này, có thể thấy giải pháp khả thi cho việc
 tách từ khi bị 
@@ -2629,7 +2629,7 @@ ngôn ngữ học, do đó phần nào hạn chế kết quả cuối cùng.
 %XXX
 %XXX % đưa cái này lên phần cơ sở tin học/huấn luyện
 %% Có thể huấn luyện dựa trên dữ liệu mẫu, hoặc dữ liệu thô. Do hầu hết
-%% các phương pháp tách từ đều dựa trên ngram ($n\ge 1$) nên rất cần có
+%% các phương pháp tách từ đều dựa trên n\-gram ($n\ge 1$) nên rất cần có
 %% khối lượng dữ liệu huấn luyện lớn nhằm đạt tính bao quát. Dữ liệu
 %% mẫu, được tách từ sẵn, thường không đủ để huấn luyện. Giải pháp chủ
 %% yếu là huấn luyện dựa trên dữ liệu thô, chưa tách từ.
@@ -2815,6 +2815,7 @@ Quy luật tách như sau:
 \end{itemize}
 
 \subsection{Tách câu}
+\label{sec:model:sentence-segmentation}
 
 Mục đích của tách câu là tách ra thành từng câu để xử lý. Việc xác
 định đơn vị câu rất quan trọng trong các ứng dụng xử lý ngôn ngữ tự
@@ -3396,8 +3397,8 @@ mỗi nút không phải là một từ mà là hai từ đứng liền nhau. Ha
 liền nhau thì từ bên phải của nút bên trái và từ bên trái của nút bên
 phải là một. Nói cách khác, một cặp nút nối với nhau bằng một cạnh
 trong lưới từ chỉ có ba từ thay vì bốn từ. Lưới từ loại này dùng để
-thể hiện mô hình trigram (trong khi lưới từ bình thường được dùng để
-thể hiện bigram). Việc tạo ra lưới 3-từ, lưới 4-từ là có thể. Tuy
+thể hiện mô hình tri\-gram (trong khi lưới từ bình thường được dùng để
+thể hiện bi\-gram). Việc tạo ra lưới 3-từ, lưới 4-từ là có thể. Tuy
 nhiên những lưới từ này thường không hiệu quả. 
 
 \begin{figure}[htbp]
@@ -3764,7 +3765,7 @@ thêm vào các đỉnh (mã ``UNK'') để đảm bảo tính liên thông.
 %\section{Tách từ}
 \label{sec:language-model}
 
-Phần này sử dụng mô hình ngôn ngữ ngram để đánh giá các cách tách từ,
+Phần này sử dụng mô hình ngôn ngữ n\-gram để đánh giá các cách tách từ,
 từ đó đưa ra cách tách từ tốt nhất. Dựa theo cấu trúc lưới từ, một
 cách tách từ chính là đường đi từ nút head đến nút tail. Ta có thể
 tiến hành việc lượng giá bằng cách duyệt đồ thị theo chiều sâu, tìm
@@ -3792,11 +3793,11 @@ câu trên thành từng đoạn ngắn hơn, do có một số từ trong câu 
 không nhập nhằng trong tách từ. Những từ như thế được biểu diễn trên
 lưới từ là những điểm thắt nút. Nhờ những điểm này, ta có thể tách
 câu ra thành từng đoạn ngắn hơn và xử lý từng đoạn độc lập. Cách này
-tùy thuộc vào loại mô hình ngôn ngữ được áp dụng. Với mô hình unigram,
-có thể áp dụng cách này. Với mô hình bigram hoặc cao hơn, ta cần tìm
-những nút có điều kiện khắt khe hơn. Cụ thể với bigram, ta cần tìm ra
+tùy thuộc vào loại mô hình ngôn ngữ được áp dụng. Với mô hình uni\-gram,
+có thể áp dụng cách này. Với mô hình bi\-gram hoặc cao hơn, ta cần tìm
+những nút có điều kiện khắt khe hơn. Cụ thể với bi\-gram, ta cần tìm ra
 một cặp nút thắt thì vì chỉ cần một nút. Như vậy, việc sử dụng mô hình
-bigram hay trigram, để có được mô hình ngôn ngữ hiệu quả hơn,  sẽ làm
+bi\-gram hay tri\-gram, để có được mô hình ngôn ngữ hiệu quả hơn,  sẽ làm
 giảm đi số phân đoạn trong câu, làm tăng thời gian xử lý.
 
 Bài toán tách từ mờ lại càng khó khăn hơn. Do kết quả của việc phục
@@ -3811,9 +3812,9 @@ này. Thuật toán Viterbi đã được áp dụng thành công trong những 
 toán tìm kiếm tương tự trong lĩnh vực nhận dạng tiếng nói.
 
 Thuật toán Viterbi có thể hoạt động, nhưng không tận dụng triệt để ưu
-điểm của lưới từ. Do mô hình ngôn ngữ được sử dụng là ngram, ta sẽ
-dùng mô hình bigram. Do mỗi nút đại diện cho một từ, cạnh nối giữa hai
-từ có thể đại diện cho xác suất bigram $logP(w_2|w_1)$, việc tính mô
+điểm của lưới từ. Do mô hình ngôn ngữ được sử dụng là n\-gram, ta sẽ
+dùng mô hình bi\-gram. Do mỗi nút đại diện cho một từ, cạnh nối giữa hai
+từ có thể đại diện cho xác suất bi\-gram $logP(w_2|w_1)$, việc tính mô
 hình ngôn ngữ cho một cách tách từ:
 \begin{align*}
   P(w_1\ldots w_n)&= P(w_1|head)\prod_{i=2}^nP(w_i|w_{i-1})P(tail|w_n)\\
@@ -3831,18 +3832,18 @@ toán tìm đường đi ngắn nhất trong đồ thị có hướng, có trọ
 Thuật toán tìm đường đi ngắn nhất được dùng ở đây là thuật toán tìm
 kiếm theo độ ưu tiên PFS\footnote{Priority-First Search --- PFS} để tìm
 đường đi ngắn nhất trên đồ thị. Khoảng cách giữa hai 
-điểm trong đồ thị là xác suất bigram của hai từ. Bài toán tìm đường
+điểm trong đồ thị là xác suất bi\-gram của hai từ. Bài toán tìm đường
 đi ngắn nhất, có thể áp dụng PFS, Prime, Djisktra. PFS được chọn vì
 lưới từ, qua khảo sát, có thể được coi là một đồ thị thưa.
 
-Cách trên được áp dụng cho bigram, không thể áp dụng cho trigram do
-giả định dùng trọng số của cạnh là xác suất bigram, bigram là xác suất
-giữa hai từ liên tiếp, trong khi trigram là xác suất giữa ba từ liên
-tiếp. Để áp dụng trigram thay vì bigram, ta sẽ sử dụng lưới~2-từ. Sau
+Cách trên được áp dụng cho bi\-gram, không thể áp dụng cho tri\-gram do
+giả định dùng trọng số của cạnh là xác suất bi\-gram, bi\-gram là xác suất
+giữa hai từ liên tiếp, trong khi tri\-gram là xác suất giữa ba từ liên
+tiếp. Để áp dụng tri\-gram thay vì bi\-gram, ta sẽ sử dụng lưới~2-từ. Sau
 đó áp dụng thuật toán PFS cho đồ thị mới vì mỗi nút trong lưới~2-từ
 thực chất bao gồm 3 từ liên tiếp nhau.
 
-Cách làm này không thể thực hiện với ngram ($n > 3$) vì khi đó số
+Cách làm này không thể thực hiện với n\-gram ($n > 3$) vì khi đó số
 nút/cạnh trong đồ thị sẽ tăng đáng kể. Ngoài ra, PFS cũng không áp
 dụng được trong trường hợp sử dụng những độ đo như đo số lỗi sai đã
 xảy ra~\ldots{} Trong trường hợp đó ta nên sử dụng thuật toán
@@ -3895,7 +3896,7 @@ phần~\ref{sec:nonword:sort-candidates}.
 \label{sec:training}
 
 Do chương trình cần một số tham số như thống kê tần số xuất hiện của
-từ, mô hình ngôn ngữ bigram, trigram~\ldots nên ta cần phải thu thập
+từ, mô hình ngôn ngữ bi\-gram, tri\-gram~\ldots nên ta cần phải thu thập
 các tham số này. Đối với tiếng Anh, việc này tương đối dễ dàng. Tuy
 nhiên, do không thể xác định ranh giới từ tiếng Việt, ta cần phải sử
 dụng một bộ tách từ trước khi huấn luyện.
@@ -3904,8 +3905,8 @@ dụng một bộ tách từ trước khi huấn luyện.
 tiêu biểu là~\cite{Tachtu}. Chương trình này không sử dụng bộ tách từ
 hiện có vì các lý do sau:
 \begin{itemize}
-\item Bộ tách từ trong~\cite{Tachtu} sử dụng unigram. Trên lý thuyết,
-  bigram/trigram tốt hơn unigram do chứa đựng thông tin về ngữ cảnh.
+\item Bộ tách từ trong~\cite{Tachtu} sử dụng uni\-gram. Trên lý thuyết,
+  bi\-gram/tri\-gram tốt hơn uni\-gram do chứa đựng thông tin về ngữ cảnh.
 \item Do bộ tách từ thống kê thường phụ thuộc vào ngữ liệu, nếu sử
   dụng một bộ tách từ trên lĩnh vực khác với lĩnh vực được huấn luyện
   cho trình bắt lỗi chính tả, kết quả sẽ không như mong đợi.
@@ -3931,7 +3932,7 @@ trọng số âm.
 
 Nếu dùng PFS để tách từ, ta chỉ có 1 cách tách từ tốt nhất. Việc đếm
 từ sẽ dựa trên cách tách từ này. Cách này cho kết quả tương tự như bộ
-tách từ rời, trừ việc áp dụng bigram/trigram thay cho unigram. Đối với
+tách từ rời, trừ việc áp dụng bi\-gram/tri\-gram thay cho uni\-gram. Đối với
 đồ thị có trọng số âm, thuật toán Bellman-Ford sẽ được sử dụng thay
 cho PFS.
 
@@ -4029,10 +4030,10 @@ $S_i^{right}$ vừa đếm từ.
 từ, $I$ là số lần duyệt (khoảng $5-10$ lần) và $N$ là kích thước ngữ
 liệu.
 
-\subsubsection{Thuật toán Soft-count áp dụng trên bigram}
+\subsubsection{Thuật toán Soft-count áp dụng trên bi\-gram}
 
 Như đã nói, thuật toán Soft-count có hai hạn chế là không dùng từ
-điển, và tính toán dựa trên unigram. Thuật toán cải tiến được đưa ra
+điển, và tính toán dựa trên uni\-gram. Thuật toán cải tiến được đưa ra
 để khắc phục hai hạn chế này.
 
 
@@ -4114,13 +4115,13 @@ toán~\ref{algo:sc1:pright}).
 \end{enumerate}
 \end{algo}
 
-\paragraph{Áp dụng bigram}
+\paragraph{Áp dụng bi\-gram}
 
-Để áp dụng bigram thay vì
-unigram, giải pháp đầu tiên là sử dụng lưới~2-từ thay vì lưới từ. Với
+Để áp dụng bi\-gram thay vì
+uni\-gram, giải pháp đầu tiên là sử dụng lưới~2-từ thay vì lưới từ. Với
 lưới~2-từ, mỗi nút tương đương hai từ liên tiếp nhau, do đó
 $P(C_i\ldots C_j)$ tương ứng với $P(W_k|W_{k-1})$ (với $W_k$ là từ thứ
-$k$). Tuy nhiên, để áp dụng với trigram, ta lại phải sử dụng
+$k$). Tuy nhiên, để áp dụng với tri\-gram, ta lại phải sử dụng
 lưới~3-từ. Điều này không hiệu quả vì lưới từ cấp càng cao càng
 to, xử lý kém hiệu quả.
 
@@ -4128,7 +4129,7 @@ Ta có thể áp dụng trực tiếp lưới từ cơ bản cho thuật toán S
 mà không cần lưới~2-từ. Thay vì tính toán các giá trị dựa trên nút,
 thuật toán sẽ được thay đổi để tính toán các giá trị dựa trên cạnh.
 
-Thay vì vậy, thuật toán được hiệu chỉnh để áp dụng bigram với lưới từ
+Thay vì vậy, thuật toán được hiệu chỉnh để áp dụng bi\-gram với lưới từ
 thông thường. Thay vì dùng giá trị nút để tính, ta dùng giá trị cạnh
 để tính. $p(W)$ sẽ được thay bằng $p(W|W')$ với $W$ và $W'$ là hai từ
 kề nhau.
@@ -4156,7 +4157,7 @@ P^{right}(W) = \left\{
 $$
 
 $P(W)$ đại diện cho xác suất tất cả các cách tách từ đi qua nút
-$W$. Do ta huấn luyện bigram, nên cần xác suất $P(W/W')$ chứ không cần
+$W$. Do ta huấn luyện bi\-gram, nên cần xác suất $P(W/W')$ chứ không cần
 $P(W)$. Nếu $W$ và $W_{+1}$ chỉ có một cạnh, $P(W)$ cũng chính là
 $P(W/W_{+1})$. Nếu có nhiều hơn một cạnh, ta cần dùng cách khác để
 tính $P(W/W')$. Với thuật toán tính $P^{right}$ hiện có, ta cộng dồn
@@ -4166,7 +4167,7 @@ $P^{left}(W)$. Thuật toán~\ref{algo:sc2:pleft}
 và~\ref{algo:sc2:pright} là thuật toán cải tiến để tính  $P^{left}$ và
 $P^{right}$.
 
-\begin{algo}\caption{Tính $P^{left}$ cho bigram}
+\begin{algo}\caption{Tính $P^{left}$ cho bi\-gram}
 \label{algo:sc2:pleft}
 \begin{enumerate}
 \item Đặt $P^{left}(head) = p(head)$
@@ -4178,7 +4179,7 @@ $P^{right}$.
 \end{enumerate}
 \end{algo}
 
-\begin{algo}\caption{Tính $P^{right}$ cho bigram}
+\begin{algo}\caption{Tính $P^{right}$ cho bi\-gram}
 \label{algo:sc2:pright}
 \begin{enumerate}
 \item Đặt $P^{right}(tail) = p(tail)$
@@ -4194,16 +4195,16 @@ $P^{right}$.
 \end{algo}
 
 
-\subsubsection{Thuật toán Soft-count mới để áp dụng trigram}
+\subsubsection{Thuật toán Soft-count mới để áp dụng tri\-gram}
 
-Với cách tính áp dụng để tính Soft-count với bigram, ta chỉ cần dùng
-lưới~2-từ thay vì lưới từ để có thể áp dụng trigram (trong khi lẽ ra
-phải dùng lưới~3-từ để tính trigram, nếu dùng thuật toán gốc).
+Với cách tính áp dụng để tính Soft-count với bi\-gram, ta chỉ cần dùng
+lưới~2-từ thay vì lưới từ để có thể áp dụng tri\-gram (trong khi lẽ ra
+phải dùng lưới~3-từ để tính tri\-gram, nếu dùng thuật toán gốc).
 
-%% \subsection{Tính ngram}
+%% \subsection{Tính n\-gram}
 
-%% Ngram được tính như thông thường. Sử dụng backoff chuẩn. Thư viện
-%% SRILM được dùng để tính ngram.
+%% N\-Gram được tính như thông thường. Sử dụng backoff chuẩn. Thư viện
+%% SRILM được dùng để tính n\-gram.
 
 
 %\section{Lỗi chính tả}
@@ -4259,13 +4260,13 @@ bộ nhớ, từ điển sử dụng cây đa nhánh (lớp \verb@WordNode@). Tr
 từ nút gốc (truy cập thông qua hàm \verb@get_root()@) cho đến hết, ta
 sẽ được danh sách tiếng hình thành từ. Với mỗi nút, ngoài việc chứa
 liên kết trỏ đến các nút con, còn có một số thông tin về từ (đối với
-những nút lá) bao gồm xác suất unigram của từ đó, strid của từ~\ldots
+những nút lá) bao gồm xác suất uni\-gram của từ đó, strid của từ~\ldots
 
 Một số hàm thường dùng bao gồm:
 \begin{itemize}
 \item \verb@get_syllable()@: Strid của tiếng của nút hiện tại.
 \item \verb@get_id()@: Strid của từ.
-\item \verb@get_prob()@: Lấy xác suất unigram của từ.
+\item \verb@get_prob()@: Lấy xác suất uni\-gram của từ.
 \item \verb@get_syllables()@: Danh sách strid của các tiếng hình thành
   nên từ.
 \item \verb@get_syllable_count()@: Số strid hình thành nên từ.
@@ -4403,9 +4404,9 @@ nên cách tách từ đó.
 
 \subsection{Mô hình ngôn ngữ}
 
-Mô hình ngôn ngữ được sử dụng là trigram. Mô hình ngôn ngữ được cài
+Mô hình ngôn ngữ được sử dụng là tri\-gram. Mô hình ngôn ngữ được cài
 đặt trong thư viện SRILM. Mô hình ngôn ngữ được truy cập thông qua hàm
-\verb@get_ngram()@. 
+\verb@get_n\-gram()@. 
 
 \section{Tiền xử lý}
 
@@ -4832,7 +4833,7 @@ Các hàm quan trọng trong lớp \verb@Text@:
     \item Áp dụng separator.
     \end{itemize}
   \item Xây dựng \verb@DAG@ tương ứng (tùy theo các thông số về
-    trigram, penalty~\ldots).
+    tri\-gram, penalty~\ldots).
   \item Tìm cách tách từ tốt nhất. 
     \begin{itemize}
     \item Nếu có chuẩn hoá, sử dụng Bellman-Ford.
@@ -4909,7 +4910,7 @@ Ngoài ra \verb@VSpell@ còn duy trì một danh sách các separator
 Các hàm thường dùng trong \verb@VSpell@:
 \begin{itemize}
 \item \verb@init()@: Khởi động cơ chế bắt lỗi chính tả, nạp các tập
-  tin liên quan~\ldots (bao gồm việc nạp từ điển, ngram, danh sách tên
+  tin liên quan~\ldots (bao gồm việc nạp từ điển, n\-gram, danh sách tên
   riêng). 
 \item \verb@cleanup()@: Hủy bỏ toàn bộ dữ liệu của đối tượng, chuẩn bị để
   hủy bỏ đối tượng.
@@ -4922,8 +4923,8 @@ Các hàm thường dùng trong \verb@VSpell@:
 \item \verb@set_normalization()@: Cho biết có áp dụng chuẩn hoá cách
   tách từ hay không.
 \item \verb@get_normalization()@: Như trên.
-\item \verb@set_trigram()@: Cho biết có áp dụng trigram hay không.
-\item \verb@get_trigram()@: Như trên.
+\item \verb@set_tri\-gram()@: Cho biết có áp dụng tri\-gram hay không.
+\item \verb@get_tri\-gram()@: Như trên.
 \end{itemize}
 
 \begin{algo}
@@ -5099,7 +5100,7 @@ Nhiệm vụ:
 \begin{itemize}
 \item Tạo danh sách tiếng, chuẩn hoá danh sách tiếng.
 \item Tiền xử lý ngữ liệu.
-\item Huấn luyện ngram, tạo ra dữ liệu ngram.
+\item Huấn luyện n\-gram, tạo ra dữ liệu n\-gram.
 \end{itemize}
 
 
@@ -5182,8 +5183,8 @@ liệu sau cùng là các tập tin văn bản, mỗi dòng là một đoạn.
 \label{sub:training-data}
 
 Chương trình \verb#wfst-train# được dùng để huấn luyện dữ liệu. Thông
-tin nhập là danh sách từ, danh sách tiếng, ngram (nếu có). Thông tin
-xuất là ngram mới.
+tin nhập là danh sách từ, danh sách tiếng, n\-gram (nếu có). Thông tin
+xuất là n\-gram mới.
 
 Quy trình xử lý của trình huấn luyện được nêu trong thuật
 toán~\ref{algo:training}. Chương trình được lặp đi lặp lại nhiều lần. 
@@ -5197,7 +5198,7 @@ toán~\ref{algo:training}. Chương trình được lặp đi lặp lại nhiề
   \item Táck token.
   \item Xây dựng lưới từ (\verb@Lattice::construct()@).
   \item Tìm cách tách từ tốt nhất.
-  \item Thống kê ngram cho câu.
+  \item Thống kê n\-gram cho câu.
   \item Xử lý câu kế tiếp.
   \end{enumerate}
 \end{algo}
@@ -5251,12 +5252,12 @@ Một số hàm được tạo ra để hỗ trợ việc xử lý tiếng Việ
 
 Sau đây là tóm tắt các đặc điểm mô hình được đề nghị:
 \begin{itemize}
-\item Áp dụng mô hình tách từ mờ dựa trên ngram (bigram và trigram).
+\item Áp dụng mô hình tách từ mờ dựa trên n\-gram (bi\-gram và tri\-gram).
 \item Cấu trúc dữ liệu dựa trên lưới từ --- một dạng đồ thị có
   hướng không chu trình. Nhờ đó có thể áp dụng thuật toán tìm đường
   trên đồ thị có hướng để tìm ra cách tốt từ tốt nhất.
-\item Sử dụng lưới~2-từ cho trigram, các thuật toán làm việc trên
-  bigram sẽ vẫn làm việc với trigram thông qua lưới~2-từ.
+\item Sử dụng lưới~2-từ cho tri\-gram, các thuật toán làm việc trên
+  bi\-gram sẽ vẫn làm việc với tri\-gram thông qua lưới~2-từ.
 \item Đồ thị được hiệu chỉnh để tạo
   ra sự khác biệt giữa từ gốc và các từ phát sinh bằng cách điều chỉnh
   giá trị các cạnh nối đến từ phát sinh. 
@@ -5267,7 +5268,7 @@ Sau đây là tóm tắt các đặc điểm mô hình được đề nghị:
   phím. Lỗi bàn phím bao gồm lỗi gõ thiếu phím, dư phím, nhầm phím,
   nhầm thứ tự hai lần gõ. Ngoài ra còn có lỗi do bộ gõ như VNI và
   TELEX.
-\item Sử dụng soft-count để huấn luyện ngram nhằm tạo ra mô hình ngôn
+\item Sử dụng soft-count để huấn luyện n\-gram nhằm tạo ra mô hình ngôn
   ngữ tốt hơn.
 \end{itemize}
 
@@ -5289,7 +5290,7 @@ thông trên không hoàn chỉnh, không bao quát hết hoặc không thể kh
 nhập nhằng toàn bộ, khi đó ta mới dùng thống kê như một giải pháp dự
 phòng.
 
-Chính vì chỉ sử dụng ngram dựa trên từ, đôi khi chương trình sẽ chọn
+Chính vì chỉ sử dụng n\-gram dựa trên từ, đôi khi chương trình sẽ chọn
 lầm cách tách từ, dẫn đến việc thông báo từ sai chính tả trong khi từ
 đó hoàn toàn đúng. 
 
@@ -5303,6 +5304,18 @@ Phần kiểm tra viết hoa khá khó khăn.
 
 \section{Kết quả thử nghiệm}
 
+Chương trình được huấn luyện dựa trên ngữ liệu từ các bài báo của mạng
+VnExpress.net. Ngữ liệu sử dụng có kích thước 12283822 byte, bao gồm
+2602105 chữ, khoảng 379000 
+câu\footnote{xem phần~\ref{sec:model:sentence-segmentation}  để biết
+  các quy tắc tách câu}. Trình huấn luyện chạy trong vòng 13 phút,
+trung bình khoảng 485 câu một giây. Dữ
+liệu xuất bao gồm 76682 uni\-gram, 446513 bi\-gram, 1101256 tri\-gram với
+kích thước tổng cộng 53939974 byte. Mô
+hình ngôn ngữ n\-gram-tiếng bao gồm 76224 uni\-gram và 324326 bi\-gram
+(8489570 byte). Dữ
+liệu tên riêng bao gồm 790 tiếng tạo thành tên người, rút trích từ
+7567 tên. Từ điển từ bao gồm 73940 từ, bao gồm 12332 tiếng.
 
 \section{Đánh giá}
 
@@ -5391,7 +5404,7 @@ không chứ nó. Nếu từ đó {\em không} phải là từ đúng thì coi n
 suy luận dựa trên những chứng cớ không đáng tin cậy (độ tin cậy?).
 
 Có thể duyệt từng cách tách từ, áp dụng CSS. Sau đó làm sao biết nên
-dùng cách tách từ nào ??? Lại dùng ngram?
+dùng cách tách từ nào ??? Lại dùng n\-gram?
 
 Túm lại có ba vấn đề:
 \begin{itemize}
@@ -5433,7 +5446,7 @@ Túm lại có ba vấn đề:
 %%   Chang. {\em A Stochastic Finite-State Word-Segmentation Algorithm for
 %%   Chinese.} ACL Vol 22 N3.%J96-3004.pdf
 %% \bibitem{Chunyu}Chunyu Kit, Zhiming Xu, Jonathan
-%%   J. Webster. {\em Integrating Ngram Model and Case-based Learning For
+%%   J. Webster. {\em Integrating N\-Gram Model and Case-based Learning For
 %%   Chinese Word Segmentation.}%tsdx.ps.gz
 %% \bibitem{softcount}Xianping Ge, Wanda Pratt,
 %%   Padhraic Smyth. {\em Discovering Chinese Words from Unsegmented
@@ -5497,7 +5510,7 @@ Túm lại có ba vấn đề:
 %%     Special issue on Machine Learning and Natural Language Processing,
 %%     34:107-130.
 %% \bibitem{}Andrew R. Golding and Yves Schabes. 1996. {\em Combining
-%%     trigram-based and feature-based methods for context-sensitive
+%%     tri\-gram-based and feature-based methods for context-sensitive
 %%     spelling correction}. Proceedings of the 34th Annual Meeting of
 %%     the Association for Computational Linguistics.
 %% \end{thebibliography}

@@ -12,7 +12,7 @@ set<strid> propernames;
 
 bool proper_name_init()
 {
-	File ifs("propername.lst","rt");
+	File ifs("pname","rt");
 
 	if (ifs.error())
 		return false;

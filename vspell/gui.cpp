@@ -5,127 +5,49 @@
 #include <sstream>
 #include "config.h"
 #include <spell.h>
-#include <sentence.h>
-#include <wordnode.h>
-#include <pfs.h>
+#include <vspell.h>
+
 using namespace std;
+
+class MyText : public Text
+{
+public:
+	MyText(VSpell* vs):Text(vs) {}
+
+protected:
+	virtual bool ui_syllable_check();
+	virtual bool ui_word_check();
+
+	void show_syllables();
+	void show_words();
+	void show_wrong_words();
+
+	void iter_at(GtkTextIter &iter,int pos);
+};
+
+class MyTextFactory : public TextFactory
+{
+public:
+	Text* create(VSpell *vs) const {
+		return new MyText(vs);
+	}
+};
 
 static GtkTextTagTable *tagtable_main;
 static GtkTextBuffer *textbuffer_main;
 static GtkWidget *textview_main;
 static GtkWidget *log_main;
-static char *viscii_str = "áàäãÕâ¤¥¦ç§å¡¢ÆÇ£éèë¨©êª«¬­®íìïî¸óòöõ÷ô¯°±²µ½¾¶·ŞşúùüûøßÑ×ØæñıÏÖÛÜğÁÀÄÃ€Â„…†‡Å‚ƒÉÈËˆ‰ÊŠ‹ŒÍÌ›Î˜ÓÒ™ šÔ‘’“´•–—³”ÚÙœ¿º»¼ÿ¹İŸĞ";
-static gunichar unicode_str[] = {
-	 225, 224,7843, 227,7841,
-	 226,7845,7847,7849,7851,7853,
-	 259,7855,7857,7859,7861,7863,
-	 233, 232,7867,7869,7865,
-	 234,7871,7873,7875,7877,
-	7879, 237, 236,7881, 297,7883,
-	 243, 242,7887, 245,7885,
-	 244,7889,7891,7893,7895,
-	7897, 417,7899,7901,7903,7905,
-	7907, 250, 249,7911, 361,7909,
-	 432,7913,7915,7917,7919,
-	7921, 253,7923,7927,7929,7925,
-	 273,
-	 193, 192,7842, 195,7840,
-	 194,7844,7846,7848,7850,7852,
-	 258,7854,7856,7858,7860,7862,
-	 201, 200,7866,7868,7864,
-	 202,7870,7872,7874,7876,7878,
-	 205, 204,7880, 296,7882,
-	 211, 210,7886, 213,7884,
-	 212,7888,7890,7892,7894,
-	7896, 416,7898,7900,7902,7904,
-	7906, 218, 217,7910, 360,7908,
-	 431,7912,7914,7916,7918,7920,
-	 221,7922,7926,7928,7924,
-	 272,
-	0
-};
+static MyTextFactory myfactory;
+static VSpell vspell(myfactory);
 
-void viet_utf8_to_viscii(const gchar *in,char *out) // pre-allocated
+void MyText::iter_at(GtkTextIter &iter,int pos)
 {
-	const gchar *p = in;
-	gunichar ch;
-	int i,n = strlen(viscii_str);
-	while ((ch = g_utf8_get_char(p)) != 0) {
-		p = g_utf8_next_char(p);
-		if (ch < 128) {
-			*out++ = ch;
-			continue;
-		}
-		for (i = 0;i < n;i ++)
-			if (unicode_str[i] == ch) {
-				*out++ = viscii_str[i];
-				break;
-			}
-
-		if (i >= n) {
-			fprintf(stderr,"Warning: unexpected unicode character %d",ch);
-			*out++ = (unsigned char)ch;
-		}
-	}
-	*out = 0;
+	gtk_text_buffer_get_iter_at_offset(textbuffer_main,&iter,offset+pos);
 }
 
-void viet_viscii_to_utf8(const char *in,gchar *out) // pre-allocated
+void MyText::show_syllables()
 {
-	unsigned char *p = (unsigned char*)in;
-	unsigned char ch;
-	int i,n = strlen(viscii_str);
-	while ((ch = *p) != 0) {
-		p++;
-		if (ch < 128) {
-			*out++ = ch;
-			continue;
-		}
-		for (i = 0;i < n;i ++)
-			if ((unsigned char)viscii_str[i] == ch) {
-				g_unichar_to_utf8(unicode_str[i],out);
-				out = g_utf8_next_char(out);
-				break;
-			}
-
-		if (i >= n) {
-			fprintf(stderr,"Warning: unexpected viscii character %d",ch);
-			g_unichar_to_utf8(ch,out);
-			out = g_utf8_next_char(out);
-		}
-	}
-	*out = 0;
-}
-
-char* viet_to_viscii(const char *in)
-{
-	static char buffer[1000];
-	if (g_utf8_strlen(in,-1) >= 1000)
-		return "";
-	viet_utf8_to_viscii(in,buffer);
-	return buffer;
-}
-
-char* viet_to_utf8(const char *in)
-{
-	static char buffer[6000];
-	if (strlen(in) >= 1000)
-		return "";
-	viet_viscii_to_utf8(in,buffer);
-	return buffer;
-}
-
-
-static void button_reset_callback (GtkWidget *button, gpointer data)
-{
-	GtkTextIter start,end;
-	gtk_text_buffer_get_start_iter(textbuffer_main,&start);
-	gtk_text_buffer_get_end_iter(textbuffer_main,&end);
-	gtk_text_buffer_remove_all_tags (textbuffer_main, &start,&end);
-}
-
-void text_show_syllables(const Sentence &st,const Suggestions &sugg)
-{
+	Suggestions &sugg = suggestions;
 	int cc,ii,nn,i,n = sugg.size();
 	GtkTextIter start,end;
 	for (i = 0;i < n;i ++) {
@@ -134,14 +56,14 @@ void text_show_syllables(const Sentence &st,const Suggestions &sugg)
 		int len = strlen(sarch[st[id].id]);
 		printf("Syllable Mispelled: %d (%s) at %d\n",
 					 id,sarch[st[id].id],from);
-		gtk_text_buffer_get_iter_at_offset(textbuffer_main,&start,from);
-		gtk_text_buffer_get_iter_at_offset(textbuffer_main,&end,from+len);
+		iter_at(start,from);
+		iter_at(end,from+len);
 		gtk_text_buffer_apply_tag_by_name (textbuffer_main, "mispelled",
 																			 &start,&end);
 	}
 }
 
-void text_show_words(const Sentence &st,const Segmentation &seg)
+void MyText::show_words()
 {
 	int n,cc,i,nn;
 	GtkTextIter start,end;
@@ -157,19 +79,20 @@ void text_show_words(const Sentence &st,const Segmentation &seg)
 		int from = st[cc].start;
 		int to = st[cc+nn-1].start+strlen(sarch[st[cc+nn-1].id]);
 		printf("From %d to %d(%d)\n",from,to,n);
-		gtk_text_buffer_get_iter_at_offset(textbuffer_main,&start,from);
-		gtk_text_buffer_get_iter_at_offset(textbuffer_main,&end,to);
+		iter_at(start,from);
+		iter_at(end,to);
 		gtk_text_buffer_apply_tag_by_name (textbuffer_main, "word",
 																			 &start,&end);
 		cc += nn;
 	}
 }
 
-void text_show_wrong_words(const Sentence &st,const Segmentation &seg,const Suggestions &sugg)
+void MyText::show_wrong_words()
 {
 	int n,cc,nn,i,ii;
 	GtkTextIter start,end;
 
+	Suggestions &sugg = suggestions;
 	n = sugg.size();
 	for (i = 0;i < n;i ++) {
 		int id = sugg[i].id;
@@ -181,54 +104,19 @@ void text_show_wrong_words(const Sentence &st,const Segmentation &seg,const Sugg
 		int from = st[cc].start;
 		int to = st[cc+nn-1].start+strlen(sarch[st[cc+nn-1].id]);
 		printf("Mispelled at %d\n",id);
-		gtk_text_buffer_get_iter_at_offset(textbuffer_main,&start,from);
-		gtk_text_buffer_get_iter_at_offset(textbuffer_main,&end,to);
+		iter_at(start,from);
+		iter_at(end,to);
 		gtk_text_buffer_apply_tag_by_name (textbuffer_main, "mispelled",
 																			 &start,&end);
 	}
 }
 
-void sentence_process(const char *pp)
+static void button_reset_callback (GtkWidget *button, gpointer data)
 {
-	// preprocess
-	Sentence st(pp);
-	Lattice words;
-	Suggestions sugg;
-	st.standardize();
-	st.tokenize();
-
-	// syllable checking
-	spell_check1(st,sugg);
-
-	// show mispelled syllables
-	text_show_syllables(st,sugg);
-
-	// try segmentation
-	if (/*n == 0*/1) {
-		PFS pfs;
-		//wfst.enable_ngram();
-		//wfst.set_wordlist(get_root());
-		//wfst.get_all_words(st,words);
-		words.construct(st);
-		cerr << words << endl;
-		//words.print();
-		//wfst.segment_best(st,words,seg);
-		Segmentation seg(words.we);
-		pfs.segment_best(words,seg);
-			
-		cerr << seg << endl;
-
-		// show segmentation
-		text_show_words(st,seg);
-
-		// word checking
-		sugg.clear();
-		spell_check2(st,seg,sugg);
-		
-		// show mispelled words
-		text_show_wrong_words(st,seg,sugg);
-	}
-
+	GtkTextIter start,end;
+	gtk_text_buffer_get_start_iter(textbuffer_main,&start);
+	gtk_text_buffer_get_end_iter(textbuffer_main,&end);
+	gtk_text_buffer_remove_all_tags (textbuffer_main, &start,&end);
 }
 
 static void button_spell_callback (GtkWidget *button, gpointer data)
@@ -241,14 +129,9 @@ static void button_spell_callback (GtkWidget *button, gpointer data)
 	button_reset_callback(NULL,NULL);
 
 	gchar *buffer = gtk_text_buffer_get_text(textbuffer_main,&start,&end,FALSE);
-	int len = g_utf8_strlen(buffer,-1);
-	char *pp = viet_to_viscii(buffer);
+	//int len = g_utf8_strlen(buffer,-1);
 
-	vector<string> pps;
-	sentences_split(pp,pps);
-	int pps_i,pps_len = pps.size();
-	for (pps_i = 0;pps_i < pps_len;pps_i ++)
-		sentence_process(pps[pps_i].c_str());
+	vspell.check(buffer);
 }
 
 static void button_exit_callback (GtkWidget *button, gpointer data)
@@ -269,16 +152,8 @@ int main(int argc,char **argv)
 	gtk_init(&argc,&argv);
 
 	//	sarch["<root>"];
-	dic_init(new FuzzyWordNode(sarch["<root>"]));
 
-	cerr << "Loading dictionary... ";
-	get_root()->load("wordlist.wl");
-	cerr << "done" << endl;
-	cerr << "Loading ngram... ";
-	File f("ngram","rt");
-	ngram.write(f);
-	cerr << "done" << endl;
-	sarch.set_blocked(true);
+	vspell.init();
 
 	GtkWidget *window_main = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_default_size(GTK_WINDOW(window_main),400,200);
@@ -371,4 +246,17 @@ void button_search_callback(GtkWidget *button, gpointer data)
 		g_free(str);
 	} else
 		gtk_label_set_text(GTK_LABEL(log_main),"Word not found.");
+}
+
+bool MyText::ui_syllable_check()
+{
+	show_syllables();
+	return true;
+}
+
+bool MyText::ui_word_check()
+{
+	show_words();
+	show_wrong_words();
+	return true;
 }

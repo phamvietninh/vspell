@@ -167,17 +167,25 @@ void Sentence::tokenize()
 	
 	for (i = 0;i < n;i ++) {
 		if (tokens[i].is_token) {
-			int jj,nn = tokens[i].value.size();
-			for (jj = 0;jj < nn;jj ++)
-				if (viet_isalpha(tokens[i].value[jj]) || viet_isdigit(tokens[i].value[jj]))
-					break;
-
-			if (jj < nn) {							// a token
-				string &s = tokens[i].value;
-				sy.id = sarch[s];
-				sy.cid = sarch[get_std_syllable(s)];
+			/*
+				char *viet_token = viet_to_viscii(tokens[i].value.c_str());
+				if (!viet_token) {
+				sy.id = sarch[tokens[i].value];
+				sy.cid = sarch[string("6")+tokens[i].value];
 				syllables.push_back(sy);
-			}
+				} else {
+			*/
+			const char *viet_token = tokens[i].value.c_str();
+			int jj,nn = strlen(viet_token);
+			for (jj = 0;jj < nn;jj ++)
+				if (viet_isalpha(viet_token[jj]) || viet_isdigit(viet_token[jj])) {
+					string s = viet_token;
+					sy.id = sarch[s];
+					sy.cid = sarch[get_std_syllable(s)];
+					syllables.push_back(sy);
+					break;
+				}
+			/*}*/
 		}
 		sy.start += tokens[i].value.size();
 	}

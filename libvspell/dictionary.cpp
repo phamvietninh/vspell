@@ -35,9 +35,11 @@ Ngram ngram(sarch.get_dict(),2);
 
 
 bool syllable_init();
+void viet_init();
 
 bool dic_init(WordNodePtr _root)
 {
+	viet_init();
 	syllable_init();
 	ed_init();
 	myroot = _root;

@@ -19,6 +19,8 @@ void PFS::segment_best(const Lattice &w,Segmentation &seps)
 
 	int n = w.get_word_count();
 
+	seps.we = w.we;
+
 	val.resize(w.we->size()+1);
 	back_traces.resize(w.we->size()+1);
 	seen.resize(w.we->size()+1);

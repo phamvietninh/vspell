@@ -24,48 +24,48 @@
 #include "mystring.h"
 #endif
 
-class Node;
-class BranchNode;
-class LeafNode;
-typedef boost::shared_ptr<Node> NodeRef;
+class NNode;
+class BranchNNode;
+class LeafNNode;
+typedef boost::shared_ptr<NNode> NNodeRef;
 
-class Node
+class NNode
 {
 public:
   virtual bool is_leaf() const = 0;
-  virtual ~Node() {}
+  virtual ~NNode() {}
 };
 
-class BranchNode:public Node
+class BranchNNode:public NNode
 {
 public:
-  typedef std::map<strid,NodeRef> node_map;
+  typedef std::map<strid,NNodeRef> node_map;
   typedef std::pair<node_map::const_iterator,node_map::const_iterator> const_np_range;
   typedef std::pair<node_map::iterator,node_map::iterator> np_range;
 protected:
   node_map nodes;
 public:
-  virtual ~BranchNode() {}
+  virtual ~BranchNNode() {}
   bool is_leaf() const { return false; }
-  LeafNode* get_leaf(strid leaf) const;
-  void get_leaves(std::vector<LeafNode*> &nodes) const;
-  void get_branches(strid,std::vector<BranchNode*> &nodes) const;
-  BranchNode* get_branch(strid) const;
+  LeafNNode* get_leaf(strid leaf) const;
+  void get_leaves(std::vector<LeafNNode*> &nodes) const;
+  void get_branches(strid,std::vector<BranchNNode*> &nodes) const;
+  BranchNNode* get_branch(strid) const;
   const node_map& get_nodes() const { return nodes; }
 
-  BranchNode* add_path(std::vector<strid> toks);
-  void add(strid,NodeRef);
+  BranchNNode* add_path(std::vector<strid> toks);
+  void add(strid,NNodeRef);
 };
 
-class LeafNode:public Node
+class LeafNNode:public NNode
 {
 protected:
   strid id;			// word id
 	std::vector<strid> syllables;
 	uint bitmask;
 public:
-	LeafNode():bitmask(0) {}
-  virtual ~LeafNode() {}
+	LeafNNode():bitmask(0) {}
+  virtual ~LeafNNode() {}
   bool is_leaf() const { return true; }
   strid get_id() const { return id; }
   void set_id(const std::vector<strid> &sy);
@@ -80,14 +80,14 @@ public:
 };
 
 template<class T>
-struct DNode {
+struct DNNode {
   T* node;
   int distance;
-  DNode(T* _node = NULL):node(_node),distance(0) {}
-  int operator == (const DNode &dn1) const {
+  DNNode(T* _node = NULL):node(_node),distance(0) {}
+  int operator == (const DNNode &dn1) const {
     return dn1.node == node;
   }
-  int operator < (const DNode &dn1) const {
+  int operator < (const DNNode &dn1) const {
     return (int)node+distance < (int)dn1.node+dn1.distance;
   }
   T& operator* () const { return *node; }
@@ -97,31 +97,31 @@ struct DNode {
 class WordArchive
 {
 protected:
-	NodeRef root;
+	NNodeRef root;
 	void add_entry(std::vector<std::string> toks);
 	void add_case_entry(std::vector<std::string> toks);
 	std::vector<strid> leaf_id;
 
 public:
 	WordArchive();
-	BranchNode* get_root() { return (BranchNode*)root.get(); }
+	BranchNNode* get_root() { return (BranchNNode*)root.get(); }
 	bool load(const char *filename);
-	LeafNode* add_special_entry(strid);
+	LeafNNode* add_special_entry(strid);
 	void register_leaf(strid leaf);
 	const std::vector<strid>& get_leaf_id() const { return leaf_id; }
 };
-LeafNode* get_special_node(int);
+LeafNNode* get_special_node(int);
 
 extern WordArchive warch;
 
 template<class T>
-std::ostream& operator << (std::ostream &os,const DNode<T> &node)
+std::ostream& operator << (std::ostream &os,const DNNode<T> &node)
 {
 	os << *node.node;
 	return os;
 }
 
-std::ostream& operator << (std::ostream &os,const LeafNode &node);
+std::ostream& operator << (std::ostream &os,const LeafNNode &node);
 
 #endif
 

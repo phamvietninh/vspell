@@ -40,7 +40,7 @@ struct WordEntry {
 																/// fuzid is a mask of fuzzy/exact match.
 	unsigned int id;							/// index in WordEntries
 
-	DNode<LeafNode> node;	/// Word content
+	DNNode<LeafNNode> node;	/// Word content
 
 	bool operator < (const WordEntry &we) const {
 		return pos != we.pos ? pos < we.pos :
@@ -78,12 +78,12 @@ typedef std::vector<WordState*> WordStates;
 class WordState {
 protected:
 	WordState(const WordState&);
-	void add_word(std::set<WordEntry> &we,LeafNode*);
+	void add_word(std::set<WordEntry> &we,LeafNNode*);
 
 	/**
 		 the currently processing node
 	 */
-	DNode<BranchNode> dnode;
+	DNNode<BranchNNode> dnode;
 	const Sentence &sent;
 	//bool survive;
 

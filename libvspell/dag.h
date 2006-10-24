@@ -50,19 +50,19 @@ public:
 class WordDAG2 : public DAG {
 protected:
 	WordDAG *dag;
-	struct Node {
+	struct NNode {
 		uint n1,n2;									// refer to node_id in dag
 		uint id;										// refer to nodes
-		bool operator < (const Node &n) const {
+		bool operator < (const NNode &n) const {
 			return n1 != n.n1 ? n1 < n.n1 : n2 < n.n2;
 		}
-		friend bool node_cmp (const Node &n1,const Node &n2) {
+		friend bool node_cmp (const NNode &n1,const NNode &n2) {
 			return n1.n1 < n2.n1;
 		}
 
 	};
-	typedef std::vector<Node> Nodes;
-	Nodes nodes;
+	typedef std::vector<NNode> NNodes;
+	NNodes nodes;
 
 public:
 	WordDAG2(WordDAG *dag_);

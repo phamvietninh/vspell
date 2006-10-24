@@ -1,0 +1,13 @@
+*.o
+.backup
+.svn
+.deps
+*.exe
+*~
+aclocal.m4
+autom4te.cache
+config.status
+config.log
+install-sh
+depcomp
+configure

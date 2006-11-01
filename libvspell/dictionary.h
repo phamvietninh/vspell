@@ -7,8 +7,8 @@
 #ifndef __MAP__
 #include <map>
 #endif
-#include <libsrilm/Vocab.h>
-#include <libsrilm/Ngram.h>
+#include <Vocab.h>
+#include <Ngram.h>
 #include "debug.h"
 
 #define sarch get_sarch()

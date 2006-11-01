@@ -1,7 +1,6 @@
 #include "config.h"		// -*- tab-width: 2 -*-
 #include <iostream>
 #include <stdlib.h>
-#include <libsrilm/File.h>
 #include <fstream>
 #include <algorithm>
 #include <vector>
@@ -12,7 +11,7 @@
 #include <math.h>
 #include <iterator>
 #ifndef _SArray_cc_
-#include <libsrilm/SArray.cc>
+#include <SArray.cc>
 #endif
 
 #define ED_THRESOLD1 1
@@ -28,7 +27,7 @@ typedef SArray<strid,float> syllable_dict_type;
 typedef SArrayIter<strid,float> syllable_dict_iterator;
 static syllable_dict_type syllable_dict;
 static strid special_ids[TOTAL_ID];
-static LeafNode* special_leaves[TOTAL_ID];
+static LeafNNode* special_leaves[TOTAL_ID];
 
 #ifdef sarch
 #undef sarch
@@ -182,7 +181,7 @@ strid get_id(int id)
 		return special_ids[UNK_ID];
 }
 
-LeafNode* get_special_node(int id)
+LeafNNode* get_special_node(int id)
 {
 	if (id < TOTAL_ID)
 		return special_leaves[id];

@@ -1,2 +1,2 @@
-SUBDIRS = libsrilm libvspell ui tests
+SUBDIRS = libvspell ui tests
 EXTRA_DIST = crosswin32.sh

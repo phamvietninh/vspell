@@ -525,8 +525,8 @@ bool Text::word_check()
 				ok = subok;
 			} else {
 				string s;
-				BranchNode *branch = warch.get_root();
-				LeafNode* leaf;
+				BranchNNode *branch = warch.get_root();
+				LeafNNode* leaf;
 				for (ii = 0;ii < len && branch;ii ++)
 					// follow the lowercase branch
 					branch = branch->get_branch(sarch[get_lowercased_syllable(sarch[st[seg[i].pos+ii].get_cid()])]);

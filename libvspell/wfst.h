@@ -69,16 +69,10 @@ public:
 class WFST
 {
 protected:
-	WordNNodePtr wl;
 	bool ngram_enabled;
 
 public:
-	WFST():wl(NULL),ngram_enabled(false) {}
-
-	bool set_wordlist(WordNNodePtr _wl) {
-		wl = _wl;
-		return true;
-	}
+	WFST():ngram_enabled(false) {}
 
 	void enable_ngram(bool enable = true) { ngram_enabled = enable; }
 

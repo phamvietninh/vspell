@@ -7,7 +7,7 @@
 #include <fstream>
 #include <cmath>
 #include <cstdio>
-#include <../libvspell/boost/format.hpp>
+#include <boost/format.hpp>
 #include "propername.h"
 
 using namespace std;

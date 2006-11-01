@@ -1,5 +1,6 @@
-LDADD = $(top_builddir)/libvspell/libvspell.a $(top_builddir)/libsrilm/libsrilm.a
-INCLUDES = -I$(top_builddir)/libsrilm  -I$(top_builddir)/libvspell @VSPELL_CFLAGS@
+SRILM_LIBADD = $(top_builddir)/srilm/lib/i686-gcc4/libdstruct.a $(top_builddir)/srilm/lib/i686-gcc4/libflm.a $(top_builddir)/srilm/lib/i686-gcc4/liblattice.a $(top_builddir)/srilm/lib/i686-gcc4/libmisc.a $(top_builddir)/srilm/lib/i686-gcc4/liboolm.a
+LDADD = $(top_builddir)/libvspell/libvspell.a $(SRILM_LIBADD)
+INCLUDES = -I$(top_builddir)/srilm/include  -I$(top_builddir)/libvspell @VSPELL_CFLAGS@
 
 bin_PROGRAMS = dictionary-test syllable-test wfst-train sytrain\
 	distance-test sentence-test wfst-test\

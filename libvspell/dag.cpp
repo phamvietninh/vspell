@@ -98,7 +98,7 @@ WordDAG2::WordDAG2(WordDAG *dag_):dag(dag_)
 		dag->get_next(v,nexts);
 		nn = nexts.size();
 		for (ii = l;ii < nn;ii ++) {
-			Node node;
+			NNode node;
 			node.n1 = v;
 			node.n2 = nexts[ii];
 			nodes.push_back(node);
@@ -123,8 +123,8 @@ void WordDAG2::get_next(uint node_id,std::vector<uint> &next_id) const
 	if (node_id == node_end())
 		return;
 
-	pair<Nodes::const_iterator,Nodes::const_iterator> p;
-	Node node;
+	pair<NNodes::const_iterator,NNodes::const_iterator> p;
+	NNode node;
 	if (node_id < nodes.size()) {
 		if (nodes[node_id].n2 == dag->node_end()) {
 			next_id.push_back(node_end()); // add node_end.
@@ -133,8 +133,8 @@ void WordDAG2::get_next(uint node_id,std::vector<uint> &next_id) const
 		node.n1 = nodes[node_id].n2; // we don't care n2 because node_cmp don't use it
 	} else
 		node.n1 = dag->node_begin();
-	p = equal_range(nodes.begin(),nodes.end(),node,node_cmp);
-	for (Nodes::const_iterator i = p.first;i != p.second; ++i)
+	p = equal_range(nodes.begin(),nodes.end(),node,NNode::node_cmp);
+	for (NNodes::const_iterator i = p.first;i != p.second; ++i)
 		next_id.push_back(i->id);
 }
 

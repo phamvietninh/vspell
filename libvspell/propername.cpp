@@ -1,7 +1,7 @@
 #include "propername.h"		// -*- tab-width: 2 -*-
 #include "dictionary.h"
 #include "syllable.h"
-#include <libsrilm/File.h>
+#include <File.h>
 #include <set>
 
 //using namespace Dictionary;

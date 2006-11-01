@@ -5,17 +5,17 @@
 using namespace std;
 static strid mainleaf_id,caseleaf_id;
 
-LeafNode* BranchNode::get_leaf(strid leaf) const
+LeafNNode* BranchNNode::get_leaf(strid leaf) const
 {
 	node_map::const_iterator iter;
 	iter = nodes.find(leaf);
 	if (iter != nodes.end())
-		return((LeafNode*)iter->second.get());
+		return((LeafNNode*)iter->second.get());
 	else
 		return NULL;
 }
 
-void BranchNode::get_leaves(std::vector<LeafNode*> &_nodes) const
+void BranchNNode::get_leaves(std::vector<LeafNNode*> &_nodes) const
 {
 	const vector<strid> leaf_id = warch.get_leaf_id();
 	node_map::const_iterator iter;
@@ -23,53 +23,53 @@ void BranchNode::get_leaves(std::vector<LeafNode*> &_nodes) const
 	for (i = 0;i < n;i ++) {
 		iter = nodes.find(leaf_id[i]);
 		if (iter != nodes.end())
-			_nodes.push_back((LeafNode*)iter->second.get());
+			_nodes.push_back((LeafNNode*)iter->second.get());
 	}
 }
 
-void BranchNode::get_branches(strid _id,std::vector<BranchNode*> &_nodes) const
+void BranchNNode::get_branches(strid _id,std::vector<BranchNNode*> &_nodes) const
 {
   const_np_range range;
 	range = nodes.equal_range(_id);
 	node_map::const_iterator iter;
 	for (iter = range.first;iter != range.second; ++iter)
 		if (!iter->second->is_leaf())
-			_nodes.push_back((BranchNode*)iter->second.get());
+			_nodes.push_back((BranchNNode*)iter->second.get());
 }
 
-BranchNode* BranchNode::get_branch(strid _id) const
+BranchNNode* BranchNNode::get_branch(strid _id) const
 {
 	const_np_range range;
 	range = nodes.equal_range(_id);
 	node_map::const_iterator iter;
 	for (iter = range.first;iter != range.second; ++iter)
 		if (!iter->second->is_leaf())
-			return (BranchNode*)iter->second.get();
+			return (BranchNNode*)iter->second.get();
 	return NULL;
 }
 
-void BranchNode::add(strid _id,NodeRef _branch)
+void BranchNNode::add(strid _id,NNodeRef _branch)
 {
 	nodes.insert(make_pair(_id,_branch));
 }
 
-BranchNode* BranchNode::add_path(std::vector<strid> toks)
+BranchNNode* BranchNNode::add_path(std::vector<strid> toks)
 {
 	uint i,n = toks.size();
-	BranchNode *me = this;
+	BranchNNode *me = this;
 	for (i = 0;i < n;i ++) {
-		BranchNode *next = me->get_branch(toks[i]);
+		BranchNNode *next = me->get_branch(toks[i]);
 		if (next == NULL) {
-			NodeRef branch(new BranchNode());
+			NNodeRef branch(new BranchNNode());
 			me->add(toks[i],branch);
-			next = (BranchNode*)branch.get();
+			next = (BranchNNode*)branch.get();
 		}
 		me = next;
 	}
 	return me;
 }
 
-WordArchive::WordArchive():root(new BranchNode)
+WordArchive::WordArchive():root(new BranchNNode)
 {
 	mainleaf_id = sarch["<mainleaf>"];
 	caseleaf_id = sarch["<caseleaf>"];
@@ -123,10 +123,10 @@ bool WordArchive::load(const char* filename)
 	return true;
 }
 
-LeafNode* WordArchive::add_special_entry(strid tok)
+LeafNNode* WordArchive::add_special_entry(strid tok)
 {
-	LeafNode *leaf = new LeafNode;
-	NodeRef noderef(leaf);
+	LeafNNode *leaf = new LeafNNode;
+	NNodeRef noderef(leaf);
 	vector<strid> toks;
 	toks.push_back(tok);
 	leaf->set_id(toks);
@@ -152,9 +152,9 @@ void WordArchive::add_entry(vector<string> toks)
 	}
 
 	vector<strid> path = syllables;
-	BranchNode* branch = get_root()->add_path(path);
-	NodeRef noderef(new LeafNode);
-	LeafNode *leaf = (LeafNode*)noderef.get();
+	BranchNNode* branch = get_root()->add_path(path);
+	NNodeRef noderef(new LeafNNode);
+	LeafNNode *leaf = (LeafNNode*)noderef.get();
 	//leaf->set_mask(MAIN_LEAF);
 	branch->add(mainleaf_id,noderef);
 	leaf->set_id(syllables);
@@ -198,9 +198,9 @@ void WordArchive::add_case_entry(vector<string> toks2)
 	}
 
 	vector<strid> path = syllables;
-	BranchNode* branch = get_root()->add_path(path);
-	NodeRef noderef(new LeafNode);
-	LeafNode *leaf = (LeafNode*)noderef.get();
+	BranchNNode* branch = get_root()->add_path(path);
+	NNodeRef noderef(new LeafNNode);
+	LeafNNode *leaf = (LeafNNode*)noderef.get();
 	//leaf->set_mask(CASE_LEAF);
 	branch->add(caseleaf_id,noderef);
 	leaf->set_id(real_syllables);
@@ -212,7 +212,7 @@ void WordArchive::register_leaf(strid id)
 		leaf_id.push_back(id);
 }
 
-void LeafNode::set_mask(uint maskval,bool mask)
+void LeafNNode::set_mask(uint maskval,bool mask)
 {
 	if (mask)
 		bitmask |= maskval;
@@ -220,7 +220,7 @@ void LeafNode::set_mask(uint maskval,bool mask)
 		bitmask &= ~maskval;
 }
 
-void LeafNode::set_id(const vector<strid> &_syllables)
+void LeafNNode::set_id(const vector<strid> &_syllables)
 {
 	syllables = _syllables;
 	string word;
@@ -233,7 +233,7 @@ void LeafNode::set_id(const vector<strid> &_syllables)
 	id = sarch[word];
 }
 
-std::ostream& operator << (std::ostream &os,const LeafNode &node)
+std::ostream& operator << (std::ostream &os,const LeafNNode &node)
 {
 	std::vector<strid> syll;
   node.get_syllables(syll);

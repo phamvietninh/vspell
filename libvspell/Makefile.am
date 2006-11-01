@@ -20,6 +20,6 @@ libvspell_a_SOURCES = types.h\
 	dag.h dag.cpp\
 	bellman.cpp bellman.h\
 	penalty.h penalty.cpp
-INCLUDES = -I$(top_builddir)/libsrilm
-libvspell_a_LIBADD = $(top_builddir)/libsrilm/libsrilm.a
+INCLUDES = -I$(top_builddir)/srilm/include
+#libvspell_a_LIBADD = $(top_builddir)/srilm/lib/i686-gcc4/libdstruct.a $(top_builddir)/srilm/lib/i686-gcc4/libflm.a $(top_builddir)/srilm/lib/i686-gcc4/liblattice.a $(top_builddir)/srilm/lib/i686-gcc4/libmisc.a $(top_builddir)/srilm/lib/i686-gcc4/liboolm.a
 #data_DATA = data/wordlist.wl data/ngram data/last-names.lst

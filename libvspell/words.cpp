@@ -10,7 +10,7 @@
 #include "syllable.h"
 #include "propername.h"
 #ifndef _SArray_cc_
-#include <libsrilm/SArray.cc>
+#include <SArray.cc>
 #endif
 
 
@@ -20,7 +20,7 @@ WordState::WordState(const WordState &ws):dnode(ws.dnode),sent(ws.sent),fuzid(ws
 {
 }
 
-void WordState::add_word(set<WordEntry> &we,LeafNode*leaf)
+void WordState::add_word(set<WordEntry> &we,LeafNNode*leaf)
 {
 	WordEntry e;
 	e.pos = pos;
@@ -33,14 +33,14 @@ void WordState::add_word(set<WordEntry> &we,LeafNode*leaf)
 
 void WordState::collect_words(set<WordEntry> &we)
 {
-	LeafNode *leaf = dnode.node->get_leaf(sarch["<mainleaf>"]);
+	LeafNNode *leaf = dnode.node->get_leaf(sarch["<mainleaf>"]);
 	if (leaf)
 		add_word(we,leaf);
 }
 
 void UpperWordState::collect_words(set<WordEntry> &we)
 {
-	LeafNode *leaf = dnode.node->get_leaf(sarch["<caseleaf>"]);
+	LeafNNode *leaf = dnode.node->get_leaf(sarch["<caseleaf>"]);
 	if (leaf)
 		add_word(we,leaf);
 }
@@ -57,7 +57,7 @@ void WordState::get_first(WordStates &states,uint _pos)
 void ExactWordState::get_next(WordStates &states)
 {
 	uint i = pos+len;
-	BranchNode *branch = dnode.node->get_branch(sent[i].get_cid());
+	BranchNNode *branch = dnode.node->get_branch(sent[i].get_cid());
 	if (branch == NULL) {
 		delete this;
 		return;
@@ -75,7 +75,7 @@ void LowerWordState::get_next(WordStates &states)
 	uint i = pos+len;
 	s1 = get_sarch()[sent[i].get_cid()];
 	s2 = get_lowercased_syllable(s1);
-	BranchNode *branch = dnode.node->get_branch(get_sarch()[s2]);
+	BranchNNode *branch = dnode.node->get_branch(get_sarch()[s2]);
 	if (branch == NULL) {
 		delete this;
 		return;
@@ -138,15 +138,15 @@ void FuzzyWordState::get_next(WordStates &states)
 	for (iter = syllset.begin();iter != syllset.end(); ++ iter) {
 		//cerr << iter->to_std_str() << endl;
 		string str = get_lowercased_syllable(iter->to_std_str());
-		BranchNode::const_np_range range = dnode.node->get_nodes().equal_range(get_sarch()[str]);
-		BranchNode::node_map::const_iterator pnode;
+		BranchNNode::const_np_range range = dnode.node->get_nodes().equal_range(get_sarch()[str]);
+		BranchNNode::node_map::const_iterator pnode;
 		for (pnode = range.first;pnode != range.second;++pnode)
 			if (!pnode->second->is_leaf()) {
 				//cerr << "Fuzzy: " << iter->to_std_str() << endl;
 				FuzzyWordState *s = new FuzzyWordState(*this);
 
 				// change the info
-				s->dnode.node = (BranchNode*)pnode->second.get();
+				s->dnode.node = (BranchNNode*)pnode->second.get();
 				s->len++;
 				if (s1 != str)
 					s->fuzid |= 1 << (_i-s->pos);

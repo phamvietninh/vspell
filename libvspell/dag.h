@@ -56,7 +56,7 @@ protected:
 		bool operator < (const NNode &n) const {
 			return n1 != n.n1 ? n1 < n.n1 : n2 < n.n2;
 		}
-		friend bool node_cmp (const NNode &n1,const NNode &n2) {
+		static bool node_cmp (const NNode &n1,const NNode &n2) {
 			return n1.n1 < n2.n1;
 		}
 

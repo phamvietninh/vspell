@@ -24,7 +24,7 @@
 #include <boost/shared_ptr.hpp>
 #endif
 
-#include <libsrilm/NgramStats.h>
+#include <NgramStats.h>
 
 typedef FloatCount NgramFractionalCount;
 

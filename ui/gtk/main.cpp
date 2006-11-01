@@ -294,9 +294,9 @@ int main(int argc,char **argv)
 	//	sarch["<root>"];
 
 	vspell.init();
-	vspell.set_penalty(0.9);
-	vspell.set_penalty2(0.1);
-	vspell.set_normalization(true);
+	vspell.set_penalty(0);
+	vspell.set_penalty2(1);
+	vspell.set_normalization(false);
 	vspell.set_trigram(true);
 	word_boundaries = true;
 

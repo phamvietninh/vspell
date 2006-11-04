@@ -45,7 +45,7 @@ AC_CHECK_FUNCS([memmove memset rint setlocale sqrt strchr strdup strrchr strtol]
 
 AC_CONFIG_FILES([Makefile
                  libvspell/Makefile
-                 tests/Makefile
+                 utils/Makefile
                  ui/Makefile
 		 ui/cli/Makefile
 		 ui/gtk/Makefile])

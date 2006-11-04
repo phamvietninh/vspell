@@ -11,3 +11,8 @@ config.log
 install-sh
 depcomp
 configure
+Makefile
+Makefile.in
+mkinstalldirs
+missing
+stamp-h1

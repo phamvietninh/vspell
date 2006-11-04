@@ -1,0 +1,11 @@
+all-words-test
+dictionary-test
+distance-test
+keyb-test
+posgen-test
+sc-train
+sentence-test
+syllable-test
+tokenize-test
+wfst-test
+wfst-train

@@ -301,7 +301,7 @@ void Lattice::post_construct(set<WordEntry> &we)
 		else {
 			int iiii,nnnn = s.size();
 			for (iiii = 0;iiii < nnnn;iiii ++)
-				if (viet_ispunct(s[i]))
+				if (viet_ispunct(s[iiii]))
 					break;
 			if (iiii < nnnn)
 				e.node = get_special_node(PUNCT_ID);

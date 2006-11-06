@@ -12,4 +12,5 @@ wfst-train
 utf8toviscii
 lm-test
 lattice-test
+sc2wngram
 test.*

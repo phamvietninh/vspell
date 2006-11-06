@@ -7,7 +7,7 @@ bin_PROGRAMS = dictionary-test syllable-test wfst-train sytrain\
 	segm-test tokenize-test shortestpath\
 	std-syllable sc-train keyb-test\
 	vspell-check\
-	utf8toviscii lm-test lattice-test
+	utf8toviscii lm-test lattice-test sc2wngram
 EXTRAS = data.test
 
 std_syllable_SOURCES = std-syllable.cpp
@@ -28,7 +28,7 @@ wfst_train_SOURCES = wfst-train.cpp
 wfst_train_LDADD = $(LDADD)
 sytrain_SOURCES = sytrain.cpp
 sytrain_LDADD = $(LDADD)
-sc_train_SOURCES = sc-train.cpp
+sc_train_SOURCES = sc-train.cpp softcount.cpp softcount.h
 sc_train_LDADD = $(LDADD)
 wfst_test_SOURCES = wfst-test.cpp
 wfst_test_LDADD = $(LDADD)
@@ -50,3 +50,4 @@ lm_test_SOURCES = lm-test.cpp
 lm_test_LDADD = $(LDADD)
 lattice_test_SOURCES = lattice-test.cpp
 lattice_test_LDADD = $(LDADD)
+sc2wngram_SOURCES = sc2wngram.c

@@ -1,12 +1,20 @@
 #include "softcount.h"		// -*- tab-width: 2 -*-
 #include <deque>
+#include <boost/format.hpp>
+
+/**
+   Soft counter.
+   Based on the article "Discovering Chinese Words from Unsegmented Text".
+   The idea is that we count all possible words in a sentence with a fraction count 
+   instead of just count the words of the best segmentation in the sentence (count=1)
+ */
 
 using namespace std;
 
 /**
 	 No short description.
  */
-void SoftCounter::count(const Lattice &w,NgramFractionalStats &stats)
+ostream& SoftCounter::count_lattice(const Lattice &w, ostream &os, bool first_count)
 {
 	vector<float> Sleft,Sright;
 	vector<vector<uint> > prev;
@@ -22,7 +30,7 @@ void SoftCounter::count(const Lattice &w,NgramFractionalStats &stats)
 	Sright.resize(w.we->size());
 	prev.resize(w.we->size());
 
-	vi[1] = Vocab_None;
+	vi[1] = 0;
 
 	// first pass: Sleft
 	for (i = 0;i < n;i ++) {
@@ -35,7 +43,7 @@ void SoftCounter::count(const Lattice &w,NgramFractionalStats &stats)
 
 			if (i == 0) {
 				vi[0] = get_id(START_ID);
-				Sleft[v] = -get_ngram().wordProb((*w.we)[v].node.node->get_id(),vi);
+				Sleft[v] = first_count ? 1 : -get_ngram().wordProb((*w.we)[v].node.node->get_id(),vi);
 				//cerr << "Sleft("  << vi[0] << "," << v << ") = " << Sleft[v] << endl;
 			}
 
@@ -47,7 +55,7 @@ void SoftCounter::count(const Lattice &w,NgramFractionalStats &stats)
 					// wers2[iii] is the second node (W').
 					vv = wers2[iii]->id;
 					vi[0] = (*w.we)[v].node.node->get_id();
-					add = Sleft[v]*(-get_ngram().wordProb((*w.we)[vv].node.node->get_id(),vi));
+					add = first_count ? 1 : Sleft[v]*(-get_ngram().wordProb((*w.we)[vv].node.node->get_id(),vi));
 					Sleft[vv] += add;
 					
 					//cerr << "Sleft("  << vi[0] << "," << vv << ") = " << Sleft[vv] << endl;
@@ -57,7 +65,7 @@ void SoftCounter::count(const Lattice &w,NgramFractionalStats &stats)
 				}
 			} else {
 				vi[0] = (*w.we)[v].node.node->get_id();
-				Sright[v] = -get_ngram().wordProb(get_id(STOP_ID),vi);
+				Sright[v] = first_count ? 1 : -get_ngram().wordProb(get_id(STOP_ID),vi);
 				//cerr << "Sright("  << vi[0] << "," << v << ") = " << Sright[v] << endl;
 				sum += Sleft[v];
 				//cerr << "Sum " << sum << endl;
@@ -81,7 +89,7 @@ void SoftCounter::count(const Lattice &w,NgramFractionalStats &stats)
 				// vv is the second node (W').
 				vv = prev[v][iii];
 				vi[0] = (*w.we)[vv].node.node->get_id();
-				add = Sright[v]*(-get_ngram().wordProb((*w.we)[v].node.node->get_id(),vi));
+				add = first_count ? 1 : Sright[v]*(-get_ngram().wordProb((*w.we)[v].node.node->get_id(),vi));
 				Sright[vv] += add;
 
 				//cerr << "Sright("  << vi[0] << "," << vv << ") = " << Sright[vv] << endl;
@@ -90,10 +98,11 @@ void SoftCounter::count(const Lattice &w,NgramFractionalStats &stats)
 				fc = Sleft[vv]*add/sum; // P(v/vv)
 				vi[0] = (*w.we)[vv].node.node->get_id();
 				vi[1] = (*w.we)[v].node.node->get_id();
-				vi[2] = Vocab_None;
-				*stats.insertCount(vi) += fc;
+				vi[2] = 0;
+				//*stats.insertCount(vi) += fc;
+				os << boost::format("%s %s %f\n") % get_ngram()[vi[0]] % get_ngram()[vi[1]] << fc;
 				//cerr << "Gram "  << vi[0] << "," << vi[1] << "+=" << fc << endl;
-				vi[1] = Vocab_None;
+				vi[1] = 0;
 			}
 		}
 	}
@@ -102,13 +111,14 @@ void SoftCounter::count(const Lattice &w,NgramFractionalStats &stats)
 	// we can use Sright with no problems becase there is only one edge
 	// from ends[i] to the end.
 	n = ends.size();
-	vi[2] = Vocab_None;
+	vi[2] = 0;
 	vi[1] = get_id(STOP_ID);
 	for (i = 0;i < n;i ++) {
 		fc = Sleft[ends[i]]*Sright[ends[i]]/sum;
 		vi[0] = (*w.we)[ends[i]].node.node->get_id();
 		//cerr << "Gram "  << vi[0] << "," << vi[1] << "+=" << fc << endl;
-		*stats.insertCount(vi) += fc;
+		//*stats.insertCount(vi) += fc;
+		os << boost::format("%s %s %f\n") % get_ngram()[vi[0]] % get_ngram()[vi[1]] << fc;
 	}
 
 	vi[0] = get_id(START_ID);
@@ -118,26 +128,24 @@ void SoftCounter::count(const Lattice &w,NgramFractionalStats &stats)
 		fc = Sleft[wers[i]->id]*Sright[wers[i]->id]/sum;
 		vi[1] = (*w.we)[wers[i]->id].node.node->get_id();
 		//cerr << "Gram "  << vi[0] << "," << vi[1] << "+=" << fc << endl;
-		*stats.insertCount(vi) += fc;
+		//*stats.insertCount(vi) += fc;
+		os << boost::format("%s %s %f\n") % get_ngram()[vi[0]] % get_ngram()[vi[1]] << fc;
 	}
+	return os;
 }
 
 
-void SoftCounter::count(const DAG &dag,NgramFractionalStats &stats)
+ostream& SoftCounter::count_dag(const DAG &dag,ostream &os,bool first_count)
 {
-	vector<float> Sleft,Sright;
-	vector<set<uint> > prev;
-	int i,n,v,vv;
+	int n = dag.node_count();
+	vector<float> Sleft(n),Sright(n);
+	vector<set<uint> > prev(n);
+	int i,v,vv;
 	float add;
 
-	n = dag.node_count();
-	Sleft.resize(n);
-	Sright.resize(n);
-	prev.resize(n);
 	//cerr << "Nodes: " << n << endl;
 
-	vector<bool> mark;
-	mark.resize(n);
+	vector<bool> mark(n);
 	deque<uint> traces;
 	Sleft[dag.node_begin()] = 1;
 	traces.push_back(dag.node_begin());
@@ -155,7 +163,7 @@ void SoftCounter::count(const DAG &dag,NgramFractionalStats &stats)
 
 		for (i = 0;i < n;i ++) {
 			vv = nexts[i];
-			add = Sleft[v]*LogPtoProb(-dag.edge_value(v,vv));
+			add = Sleft[v]*(first_count ? 1 : LogPtoProb(-dag.edge_value(v,vv)));
 			Sleft[vv] += add;
 					
 			traces.push_back(vv);
@@ -186,7 +194,7 @@ void SoftCounter::count(const DAG &dag,NgramFractionalStats &stats)
 			v = *iter;
 			traces.push_back(v);
 
-			add = Sright[vv]*LogPtoProb(-dag.edge_value(v,vv));
+			add = Sright[vv]*(first_count ? 1 : LogPtoProb(-dag.edge_value(v,vv)));
 			Sright[v] += add;
 
 			// collect fractional counts
@@ -195,22 +203,28 @@ void SoftCounter::count(const DAG &dag,NgramFractionalStats &stats)
 			VocabIndex vvv;
 			if (dag.fill_vi(v,vv,vvv,vi,9)) {
 				uint t,jn,j;
-				for (jn = 0;vi[jn] != Vocab_None && jn < 9; jn ++);
-				if (jn < 9 && vi[jn] == Vocab_None) {
+				for (jn = 0;vi[jn] != 0 && jn < 9; jn ++);
+				if (jn < 9 && vi[jn] == 0) {
 					for (j = 0;j < jn/2;j ++) {
 						t = vi[j];
 						vi[j] = vi[jn-j-1];
 						vi[jn-j-1] = t;
 					}
 					vi[jn] = vvv;
-					vi[jn+1] = Vocab_None;
+					vi[jn+1] = 0;
 					//stats.countSentence(vi,/*LogPtoProb(--fc)*/fc);
-					*stats.insertCount(vi) += fc;
+					//*stats.insertCount(vi) += fc;
+					// FIXME
+					for (int i_vi = 0; vi[i_vi] != 0; i_vi ++)
+						cout << get_ngram()[vi[i_vi]] << " ";
+					cout << fc;
+					cout << endl;
 				}
 			}
 		}
 	}
 	//cerr << "Sright done" << endl;
+	return os;
 }
 
 /*
@@ -218,7 +232,7 @@ void SoftCounter::count(const DAG &dag,NgramFractionalStats &stats)
 */
 
 
-void SoftCounter::count(const DAG &dag,NgramStats &stats)
+ostream& SoftCounter::count_dag_fixed(const DAG &dag,ostream &os,bool first_count)
 {
 	vector<double> Sleft,Sright;
 	vector<set<uint> > prev;
@@ -279,7 +293,7 @@ void SoftCounter::count(const DAG &dag,NgramStats &stats)
 	// second pass: Sright
 	double sum = Sleft[dag.node_end()];
 	if (sum == 0)
-		return;
+		return os;
 	//cout << "Sum " << sum << endl;
 
 	traces.clear();
@@ -315,30 +329,32 @@ void SoftCounter::count(const DAG &dag,NgramStats &stats)
 			// collect fractional counts
 			fc = 100-(unsigned int)((Sleft[v]*add)*100.0/sum); // P(vv/v)
 			//cout << Sleft[v] << "+" << dag.edge_value(v,vv) << Sright[vv]<<  "=("<< (Sleft[v]+add)<< ")"<<((Sleft[v]+add)/sum) <<"_" << fc << endl;
-			cout << v << " " << vv << " " << fc << endl;
+			cerr << v << " " << vv << " " << fc << endl;
 			if (fc != 0) {
 				VocabIndex vi[10];
 				VocabIndex vvv;
 				if (dag.fill_vi(v,vv,vvv,vi,9)) {
 					uint t,jn,j;
-					for (jn = 0;vi[jn] != Vocab_None && jn < 9; jn ++);
-					if (jn < 9 && vi[jn] == Vocab_None) {
+					for (jn = 0;vi[jn] != 0 && jn < 9; jn ++);
+					if (jn < 9 && vi[jn] == 0) {
 						for (j = 0;j < jn/2;j ++) {
 							t = vi[j];
 							vi[j] = vi[jn-j-1];
 							vi[jn-j-1] = t;
 						}
 						vi[jn] = vvv;
-						vi[jn+1] = Vocab_None;
+						vi[jn+1] = 0;
 						//stats.countSentence(vi,(unsigned int)(fc*10.0));
-						*stats.insertCount(vi) += fc;
+						//*stats.insertCount(vi) += fc;
+						// FIXME
 					}
 				}
 			}
 		}
 	}
-	cout << endl;
+	cerr << endl;
 	//double sum2 = Sright[dag.node_begin()];
 	//cout << sum2 << " " << (traces[ntrace-1] == dag.node_begin()) << " " << (sum2 == sum ? "Ok" : "Failed") << endl;
 	//cerr << "Sright done" << endl;
+	return os;
 }

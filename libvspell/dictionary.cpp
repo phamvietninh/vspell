@@ -10,9 +10,6 @@
 #include "propername.h"
 #include <math.h>
 #include <iterator>
-#ifndef _SArray_cc_
-#include <SArray.cc>
-#endif
 
 #define ED_THRESOLD1 1
 #define ED_THRESOLD2 2
@@ -23,19 +20,10 @@ using namespace std;
 	namespace Dictionary {
 */
 
-typedef SArray<strid,float> syllable_dict_type;
-typedef SArrayIter<strid,float> syllable_dict_iterator;
-static syllable_dict_type syllable_dict;
 static strid special_ids[TOTAL_ID];
 static LeafNNode* special_leaves[TOTAL_ID];
 
-#ifdef sarch
-#undef sarch
-#endif
-
-static StringArchive sarch;
-static Ngram ngram(sarch.get_dict(),3);
-static Ngram syngram(sarch.get_dict(),2);
+static LM ngram, syngram;
 static map<strid,strid_string> pnames;
 WordArchive warch;
 
@@ -47,7 +35,6 @@ bool dic_init()
 	viet_init();
 	syllable_init();
 	ed_init();
-	sarch["<reserved>"]; // 0, don't use
 	int i;
 	char *specials[TOTAL_ID] = {"<opaque>","<punct>","<prop>","<s>","</s>","<poem>","<digit>","<leaf>"};
 	for (i = 0;i < TOTAL_ID;i ++) {
@@ -55,34 +42,53 @@ bool dic_init()
 		special_leaves[i] = warch.add_special_entry(special_ids[i]);
 	}
 	proper_name_init();
+	warch.init();
 	return true;
 }
 
-void StringArchive::dump()
+void LM::dump()
 {
-	FILE *fp = fopen("dic.dump","wt");
-	int i,n = dict.numWords();
-	for (i = 0;i < n;i ++)
-		fprintf(fp,"%d %s\n",i,sarch[i]);
-	fclose(fp);
+	// FIXME
+}
+
+LM::LM()
+{
+	lm = NewModel (0, 0, 0);
+	lm->word_str = NULL;
+	lm->n_word_str = 0;
+}
+
+LM::~LM()
+{
+	if (lm != NULL) {
+		lm3g_free(lm);
+		lm = NULL;
+	}
+}
+
+bool LM::read(const char *filename)
+{
+	if (lm != NULL)
+		lm3g_free(lm);
+	lm = lm3g_read(filename);
+	oov.clear();
+	blocked = 0;
+	return lm != NULL;
+}
+
+double LM::wordProb(VocabIndex w1, VocabIndex *wn)
+{
+	if (w1 < 1 || w1 >= lm->n_word_str+1) return 0;
+	if (wn == NULL || wn[0] == 0) return lm3g_ug_score(lm, w1-1);
+	if (wn[0] < 1 || wn[0] >= lm->n_word_str+1) return 0;
+	if (wn[1] == 0) return lm3g_bg_score(lm, wn[0]-1, w1-1);
+	if (wn[1] < 1 || wn[1] >= lm->n_word_str+1) return 0;
+	if (wn[2] == 0) return lm3g_tg_score(lm, wn[0]-1, wn[1]-1, w1-1);
+	return 0;
 }
 
 void dic_clean()
 {
-}
-
-bool is_syllable_exist(strid syll)
-{
-	float* pprob = syllable_dict.find(syll);
-	return (pprob != NULL);
-}
-
-float get_syllable(strid syll)
-{
-	float* pprob = syllable_dict.find(syll);
-	if(pprob == NULL)
-		return 0;
-	return *pprob;
 }
 
 bool is_word_exist(const std::string &word)
@@ -96,53 +102,42 @@ float get_word(const std::string &word)
 }
 
 
-strid StringArchive::operator[] (VocabString s)
+strid LM::operator[] (const char* s)
 {
-	VocabIndex vi = dict.getIndex(s);
-	if (vi != Vocab_None)
+	VocabIndex vi = lm3g_wstr2wid(lm, s);
+	if (vi > 0)
 		return vi;
-	if (blocked) {
-		vi = rest->getIndex(s);
-		if (vi == Vocab_None) {
-			int i = rest->addWord(s)+dict.numWords();
-			//cerr << "New word " << s << " as " << i << endl;
-			return i;
-		}
-		return vi+dict.numWords();
-	}
-	return dict.addWord(s);
+	s = strdup(s);
+	oov.push_back(s);
+	vi = 1+lm->n_word_str + oov.size()-1; // the first one is a reserved id
+	hash_add (&(lm->HT), s, (caddr_t) vi);
+	return vi;
 }
 
-VocabString StringArchive::operator[] (strid i)
+const char* LM::operator[] (strid i)
 {
-	if (i >= dict.numWords())
-		return rest->getWord(i-dict.numWords());
-	return dict.getWord(i);
+	if (i >= 1 && i < 1+lm->n_word_str)
+		return lm->word_str[i-1];
+	if (i >= 1+lm->n_word_str && i < 1+lm->n_word_str+oov.size())
+		return oov[i-(1+lm->n_word_str)];
+	return NULL;
 }
 
-void StringArchive::set_blocked(bool _blocked)
+void LM::set_blocked(bool _blocked)
 {
-	blocked = _blocked;
-	if (blocked && rest == NULL)
-		rest = new Vocab;
-	if (!blocked && rest != NULL) {
-		delete rest;
-		rest = NULL;
-	}
+	blocked = _blocked ? oov.size() : 0;
 }
 
-void StringArchive::clear_rest()
+void LM::clear_rest()
 {
-	if (rest) {
-		delete rest;
-		rest = new Vocab;
-	}
+	if (blocked > 0)
+		oov.resize(blocked);
 }
 
-bool StringArchive::in_dict(VocabString s)
+bool LM::in_dict(const char* s)
 {
-	VocabIndex vi = dict.getIndex(s);
-	return vi != Vocab_None;
+	VocabIndex vi = lm3g_wstr2wid(lm, s);
+	return vi > 0 && vi < 1+lm->n_word_str;
 }
 
 strpair make_strpair(strid str)
@@ -158,17 +153,13 @@ strpair make_strpair(strid str)
 	pair.cid = sarch[st];
 	return pair;
 }
-StringArchive& get_sarch()
-{
-	return sarch;
-}
 
-Ngram& get_ngram()
+LM& get_ngram()
 {
 	return ngram;
 }
 
-Ngram& get_syngram()
+LM& get_syngram()
 {
 	return syngram;
 }
@@ -192,6 +183,12 @@ LeafNNode* get_special_node(int id)
 const std::map<strid,strid_string>& get_pnames()
 {
 	return pnames;
+}
+
+double LogPtoProb(double v)
+{
+	// FIXME
+	return v;
 }
 
 /*

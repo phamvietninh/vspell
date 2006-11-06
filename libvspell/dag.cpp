@@ -1,3 +1,4 @@
+#include <iostream>
 #include "dag.h" // -*- tab-width: 2 mode: c++ -*-
 
 using namespace std;
@@ -63,7 +64,7 @@ bool WordDAG::fill_vi(uint node_from,uint node_to,VocabIndex &v,VocabIndex *vi,i
 		return false;
 
 	const	WordEntries& we = *lattice->we;
-	vi[1] = Vocab_None;
+	vi[1] = 0;
 	uint n = we.size();
 
 	if (node_from < n && node_to < n) {
@@ -145,7 +146,7 @@ bool WordDAG2::fill_vi(uint node_from,uint node_to,VocabIndex &v2,VocabIndex *v,
 
 	uint n = nodes.size();
 	WordEntry *we;
-	v[2] = Vocab_None;
+	v[2] = 0;
 
 	if (node_from < n && node_to < n) {
 		if (nodes[node_from].n2 != nodes[node_to].n1)
@@ -166,11 +167,11 @@ bool WordDAG2::fill_vi(uint node_from,uint node_to,VocabIndex &v2,VocabIndex *v,
 
 	if (v[0] == v2 && v2 == get_id(STOP_ID)) {
 		v[0] = v[1];
-		v[1] = Vocab_None;
+		v[1] = 0;
 		return true;
 	}
 	if (v[0] == v[1] && v[1] == get_id(START_ID))	// back to 2-gram
-		v[1] = Vocab_None;
+		v[1] = 0;
 	return true;
 }
 

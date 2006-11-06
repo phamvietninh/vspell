@@ -1,6 +1,7 @@
 #include <stdlib.h>    // -*- tab-width:2 coding: viscii mode: c++ -*-
 #include <stdio.h>
 #include <string.h>
+#include <iostream>
 #include <sstream>
 #include <fstream>
 #include "config.h"
@@ -134,7 +135,7 @@ void MyText::show_wrong_syllables(unsigned p)
 
 		if (sug < suggestions.size()) {
 			int pos = st[suggestions[sug].id].start;
-			int pos2 = pos+strlen(get_sarch()[st[suggestions[sug].id].get_id()]);
+			int pos2 = pos+strlen(get_ngram()[st[suggestions[sug].id].get_id()]);
 			if (pos2 == c) {
 				cout << (p == sug ? ">" : "]");
 				sug ++;
@@ -180,7 +181,7 @@ void MyText::show_wrong_word(unsigned p)
 		if (sug < suggestions.size()) {
 			int st_pos = (*seg.we)[seg[suggestions[sug].id].id].pos+stid;
 			int pos = st[st_pos].start;
-			int pos2 = pos+strlen(get_sarch()[st[st_pos].get_id()]);
+			int pos2 = pos+strlen(get_ngram()[st[st_pos].get_id()]);
 			if (pos2 == c) {
 				stid ++;
 				if (pos2 == c && stid == n_stid) {
@@ -255,9 +256,9 @@ bool MyText::ui_syllable_check()
 			return true;							// force to exit
 
 		replace(st[suggestions[i].id].start, // from
-						strlen(get_sarch()[st[suggestions[i].id].get_id()]), // size
+						strlen(get_ngram()[st[suggestions[i].id].get_id()]), // size
 						s.c_str());					// text
-		vspell->add(get_sarch()[viet_to_viscii_force(s.c_str())]);
+		vspell->add(get_ngram()[viet_to_viscii_force(s.c_str())]);
 		return false;								// continue checking
 	}
 }
@@ -291,7 +292,7 @@ bool MyText::ui_word_check()
 		}
 
 		replace(st[pos].start, // from
-						st[pos2].start+strlen(get_sarch()[st[pos2].get_id()])-st[pos].start, // size
+						st[pos2].start+strlen(get_ngram()[st[pos2].get_id()])-st[pos].start, // size
 						s.c_str());					// text
 
 		// add separators after replacing the text, to have old separators removed

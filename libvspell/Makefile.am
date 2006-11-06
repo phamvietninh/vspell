@@ -9,7 +9,6 @@ libvspell_a_SOURCES = types.h\
 	pfs.cpp pfs.h\
 	words.cpp\
 	warch.cpp\
-	softcount.cpp softcount.h\
 	tokenize.ll tokenize.h\
 	debug.h mystring.h\
 	posgen.cpp posgen.h\
@@ -19,7 +18,6 @@ libvspell_a_SOURCES = types.h\
 	shuffle.h shuffle.cpp\
 	dag.h dag.cpp\
 	bellman.cpp bellman.h\
-	penalty.h penalty.cpp
-INCLUDES = -I$(top_builddir)/srilm/include
-#libvspell_a_LIBADD = $(top_builddir)/srilm/lib/i686-gcc4/libdstruct.a $(top_builddir)/srilm/lib/i686-gcc4/libflm.a $(top_builddir)/srilm/lib/i686-gcc4/liblattice.a $(top_builddir)/srilm/lib/i686-gcc4/libmisc.a $(top_builddir)/srilm/lib/i686-gcc4/liboolm.a
+	penalty.h penalty.cpp\
+	lm/lm_3g.c lm/err.c lm/salloc.c lm/list.c lm/hash.c lm/CM_funcs.c lm/linklist.c lm/strcasecmp.c
 #data_DATA = data/wordlist.wl data/ngram data/last-names.lst

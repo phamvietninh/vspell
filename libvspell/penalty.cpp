@@ -70,16 +70,16 @@ void Penalty2DAG::set_syllable_weights(const Segmentation &seg)
 		v[1] = i + 1 < n ? seg[i+1].node.node->get_id() : get_id(STOP_ID);
 		v[0] = i + 2 < n ? seg[i+2].node.node->get_id() : get_id(STOP_ID);
 
-		v[5] = Vocab_None;
+		v[5] = 0;
 		double v1 = LogPtoProb(get_ngram().wordProb(v[2],&v[3]));
 
 		ov = v[4];
-		v[4] = Vocab_None;
+		v[4] = 0;
 		double v2 = LogPtoProb(get_ngram().wordProb(v[1],&v[2]));
 		v[4] = ov;
 
 		ov = v[3];
-		v[3] = Vocab_None;
+		v[3] = 0;
 		double v3 = LogPtoProb(get_ngram().wordProb(v[0],&v[1]));
 		v[3] = ov;
 

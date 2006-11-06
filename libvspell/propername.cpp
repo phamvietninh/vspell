@@ -1,7 +1,7 @@
 #include "propername.h"		// -*- tab-width: 2 -*-
 #include "dictionary.h"
 #include "syllable.h"
-#include <File.h>
+#include <fstream>
 #include <set>
 
 //using namespace Dictionary;
@@ -11,18 +11,27 @@ bool find_capital_words(Sentence &st,int start,int &pos,int &len);
 
 static set<strid> propernames;
 
+static void chomp(string& s)
+{
+	const char *ss = s.c_str();
+	int len = s.size();
+	while (len > 0 &&
+		(ss[len-1] == '\n' || ss[len-1] == '\r' || ss[len-1] == ' '))
+		len --;
+	s.resize(len);
+}
+
 bool proper_name_init()
 {
-	File ifs("pname","rt");
+	ifstream ifs("pname");
 
-	if (ifs.error())
+	if (!ifs.is_open())
 		return false;
 
-	char *line;
-	while ((line = ifs.getline()) != NULL) {
-		while (line[strlen(line)-1] == '\n' || line[strlen(line)-1] == '\r' || line[strlen(line)-1] == ' ')
-			line[strlen(line)-1] = 0;
-		propernames.insert(get_sarch()[get_std_syllable(line)]);
+	string line;
+	while (getline(ifs,line)) {
+		chomp(line);
+		propernames.insert(get_ngram()[get_std_syllable(line)]);
 	}
 	return true;
 }

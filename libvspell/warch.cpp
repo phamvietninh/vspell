@@ -1,6 +1,9 @@
 #include "wordnode.h"		// -*- tab-width: 2 coding: viscii mode: c++ -*-
 #include "syllable.h"
 #include <utility>
+#include <fstream>
+#include <iostream>
+#include <boost/format.hpp>
 
 using namespace std;
 static strid mainleaf_id,caseleaf_id;
@@ -69,7 +72,7 @@ BranchNNode* BranchNNode::add_path(std::vector<strid> toks)
 	return me;
 }
 
-WordArchive::WordArchive():root(new BranchNNode)
+void WordArchive::init()
 {
 	mainleaf_id = sarch["<mainleaf>"];
 	caseleaf_id = sarch["<caseleaf>"];
@@ -79,30 +82,30 @@ WordArchive::WordArchive():root(new BranchNNode)
 
 bool WordArchive::load(const char* filename)
 {
-	File ifs(filename,"rt");
+	ifstream ifs(filename);
 
-	if (ifs.error())
+	if (!ifs.is_open())
 		return false;
 
 	int nr_lines = 0;
-	char *line;
+	string line;
 	int start,len,tmp_char;
 	string::size_type pos;
 	char *str_pos;
 	vector<string> toks;
-	while ((line = ifs.getline())) {
+	while (getline(ifs,line)) {
 		start = 0;
-		len = strlen(line);
+		len = line.size();
 		toks.clear();
 		while (start < len) {
-			str_pos = strchr(line+start,'#');
+			str_pos = strchr(line.c_str()+start,'#');
 			if (str_pos == NULL)
 				pos = len;
 			else
-				pos = str_pos - line;
+				pos = str_pos - line.c_str();
 			tmp_char = line[pos];
 			line[pos] = 0;
-			toks.push_back(line+start);
+			toks.push_back(line.c_str()+start);
 			line[pos] = tmp_char;
 			start = pos+1;
 		}
@@ -244,4 +247,3 @@ std::ostream& operator << (std::ostream &os,const LeafNNode &node)
 	}
 	return os;
 }
-

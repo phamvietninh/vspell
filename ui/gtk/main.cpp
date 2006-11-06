@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <iostream>
 #include <sstream>
 #include "config.h"
 #include <spell.h>
@@ -76,9 +77,9 @@ void MyText::show_wrong_syllables(unsigned p)
 	for (i = 0;i < n;i ++) {
 		int id = sugg[i].id;
 		int from = st[id].start;
-		int len = strlen(get_sarch()[st[id].id]);
+		int len = strlen(get_ngram()[st[id].id]);
 		printf("Syllable Mispelled: %d (%s) at %d\n",
-					 id,get_sarch()[st[id].id],from);
+					 id,get_ngram()[st[id].id],from);
 		iter_at(start,from);
 		iter_at(end,from+len);
 		gtk_text_buffer_apply_tag_by_name (textbuffer_main,
@@ -101,7 +102,7 @@ void MyText::show_words()
 			continue;
 		}
 		int from = st[cc].start;
-		int to = st[cc+nn-1].start+strlen(get_sarch()[st[cc+nn-1].id]);
+		int to = st[cc+nn-1].start+strlen(get_ngram()[st[cc+nn-1].id]);
 		printf("From %d to %d(%d)\n",from,to,n);
 		iter_at(start,from);
 		iter_at(end,to);
@@ -135,7 +136,7 @@ void MyText::show_wrong_words(unsigned p)
 		nn = seg[id].node.node->get_syllable_count();
 
 		int from = st[cc].start;
-		int to = st[cc+nn-1].start+strlen(get_sarch()[st[cc+nn-1].id]);
+		int to = st[cc+nn-1].start+strlen(get_ngram()[st[cc+nn-1].id]);
 		printf("Mispelled at %d\n",id);
 		iter_at(start,from);
 		iter_at(end,to);
@@ -486,8 +487,8 @@ void button_search_callback(GtkWidget *button, gpointer data)
 			pp = is.size();
 		s = is.substr(p,pp-p);
 		p = pp+1;
-		strid id = get_sarch()[s];
-		if (!get_sarch().in_dict(id)) {
+		strid id = get_ngram()[s];
+		if (!get_ngram().in_dict(id)) {
 			char *str = g_strdup_printf("%s not found",viet_to_utf8(s.c_str()));
 			gtk_label_set_text(GTK_LABEL(log_main),str);
 			g_free(str);
@@ -530,13 +531,13 @@ bool MyText::ui_syllable_check()
 		// query
 		int from,len;
 		from = st[suggestions[i].id].start;
-		len = strlen(get_sarch()[st[suggestions[i].id].id]);
+		len = strlen(get_ngram()[st[suggestions[i].id].id]);
 		string s = substr(from,len);
 		gtk_entry_set_text(GTK_ENTRY(spell_entry),s.c_str());
 		vector<string> candidates;
 		Candidates c;
 		candidates_reset();
-		get_syllable_candidates(get_sarch()[st[suggestions[i].id].id],c);
+		get_syllable_candidates(get_ngram()[st[suggestions[i].id].id],c);
 		c.get_list(candidates);
 		vector<string>::iterator iter;
 		for (iter = candidates.begin();iter != candidates.end();++ iter)
@@ -559,9 +560,9 @@ bool MyText::ui_syllable_check()
 				continue;										// i don't accept an empty string
 
 			replace(st[suggestions[i].id].start, // from
-							strlen(get_sarch()[st[suggestions[i].id].get_id()]), // size
+							strlen(get_ngram()[st[suggestions[i].id].get_id()]), // size
 							s);					// text
-			vspell->add(get_sarch()[viet_to_viscii_force(s)]);
+			vspell->add(get_ngram()[viet_to_viscii_force(s)]);
 
 			return false;
 		}
@@ -580,7 +581,7 @@ string MyText::word_to_utf8(unsigned seg_id)
 		if (i)
 			s += " ";
 		Syllable syll;
-		syll.parse(get_sarch()[sylls[i]]);
+		syll.parse(get_ngram()[sylls[i]]);
 		s += viet_to_utf8(syll.to_str().c_str());
 	}
 	return s;
@@ -599,7 +600,7 @@ bool MyText::ui_word_check()
 		pos2 = pos+count-1;
 		int from,len;
 		from = st[pos].start;
-		len = st[pos2].start+strlen(get_sarch()[st[pos2].id])-from;
+		len = st[pos2].start+strlen(get_ngram()[st[pos2].id])-from;
 		string s = substr(from,len);
 		gtk_entry_set_text(GTK_ENTRY(spell_entry),s.c_str());
 		candidates_reset();
@@ -631,7 +632,7 @@ bool MyText::ui_word_check()
 			}
 
 			replace(st[pos].start, // from
-							st[pos2].start+strlen(get_sarch()[st[pos2].get_id()])-st[pos].start, // size
+							st[pos2].start+strlen(get_ngram()[st[pos2].get_id()])-st[pos].start, // size
 							s.c_str());					// text
 			
 			// add separators after replacing the text, to have old separators removed

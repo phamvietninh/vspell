@@ -223,18 +223,14 @@ bool VSpell::init()
 	warch.load("wordlist");
 	cerr << "done" << endl;
 	cerr << "Loading ngram... ";
-	File f("ngram","rt");
-	if (!f.error()) {
-		get_ngram().read(f);
+	if (get_ngram().read("ngram"))
 		cerr << "done" << endl;
-	} else
+	else
 		cerr << "Ngram loading error. The result may be incorrect" << endl;
 	cerr << "Loading syngram... ";
-	File ff("syngram","rt");
-	if (!ff.error()) {
-		get_syngram().read(ff);
+	if (get_syngram().read("syngram"))
 		cerr << "done" << endl;
-	} else
+	else
 		cerr << "Syllable Ngram loading error. The result may be incorrect" << endl;
 	sarch.set_blocked(true);
 	return true;
@@ -1073,9 +1069,9 @@ bool Candidates::CandidateComparator::operator()(const std::string &s1,const std
 		return i1->priority > i2->priority;
 	float f1,f2;
 	VocabIndex v;
-	v = Vocab_None;
-	f1 = -get_syngram().wordProb(sarch[get_std_syllable(get_lowercased_syllable(s1))],&v);
-	f2 = -get_syngram().wordProb(sarch[get_std_syllable(get_lowercased_syllable(s2))],&v);
+	v = 0;
+	f1 = -get_syngram().wordProb(get_ngram()[get_std_syllable(get_lowercased_syllable(s1))],&v);
+	f2 = -get_syngram().wordProb(get_ngram()[get_std_syllable(get_lowercased_syllable(s2))],&v);
 	//cerr << f1 << "<>" << f2 << endl;
 	return f1 > f2;	// we want reverse order
 }

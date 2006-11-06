@@ -1,5 +1,6 @@
 // -*- coding: viscii tab-width: 2 mode: c++ -*-
 
+#include <iostream>
 #include "keyboard.h"
 #include "syllable.h"
 

@@ -9,9 +9,6 @@
 #include <set>
 #include "syllable.h"
 #include "propername.h"
-#ifndef _SArray_cc_
-#include <SArray.cc>
-#endif
 
 
 using namespace std;
@@ -73,9 +70,9 @@ void LowerWordState::get_next(WordStates &states)
 {
 	string s1,s2;
 	uint i = pos+len;
-	s1 = get_sarch()[sent[i].get_cid()];
+	s1 = get_ngram()[sent[i].get_cid()];
 	s2 = get_lowercased_syllable(s1);
-	BranchNNode *branch = dnode.node->get_branch(get_sarch()[s2]);
+	BranchNNode *branch = dnode.node->get_branch(get_ngram()[s2]);
 	if (branch == NULL) {
 		delete this;
 		return;
@@ -97,7 +94,7 @@ void FuzzyWordState::get_next(WordStates &states)
 	set<Syllable> syllset,syllset2;
 	Syllable _syll;
 	uint _i = pos+len;
-	string s1 = get_sarch()[sent[_i].get_cid()];
+	string s1 = get_ngram()[sent[_i].get_cid()];
 
 	_syll.parse(s1.c_str());
 
@@ -138,7 +135,7 @@ void FuzzyWordState::get_next(WordStates &states)
 	for (iter = syllset.begin();iter != syllset.end(); ++ iter) {
 		//cerr << iter->to_std_str() << endl;
 		string str = get_lowercased_syllable(iter->to_std_str());
-		BranchNNode::const_np_range range = dnode.node->get_nodes().equal_range(get_sarch()[str]);
+		BranchNNode::const_np_range range = dnode.node->get_nodes().equal_range(get_ngram()[str]);
 		BranchNNode::node_map::const_iterator pnode;
 		for (pnode = range.first;pnode != range.second;++pnode)
 			if (!pnode->second->is_leaf()) {
@@ -294,7 +291,7 @@ void Lattice::post_construct(set<WordEntry> &we)
 		e.len = 1;
 		e.fuzid = 0;
 		// if one starts with a cardinal number, then mark it number_id
-		string s = get_sarch()[(*st)[max].get_cid()];
+		string s = get_ngram()[(*st)[max].get_cid()];
 		//cerr << "Consider " << s;
 		if (strchr("0123456789",s[1]) != NULL)
 			e.node = get_special_node(NUMBER_ID);
@@ -404,7 +401,6 @@ std::ostream& operator << (std::ostream &os,const WordEntry &we)
 	os << format("%d %d %x %d") % we.pos % we.len % we.fuzid % we.id << we.node;
 	return os;
 }
-
 
 /**
 	 Construct a Lattice based on another Lattice.

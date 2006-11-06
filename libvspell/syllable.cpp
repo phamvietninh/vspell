@@ -875,12 +875,12 @@ string Syllable::to_std_str() const
 
 strid Syllable::to_id() const
 {
-	return get_sarch()[to_str()];
+	return get_ngram()[to_str()];
 }
 
 strid Syllable::to_std_id() const
 {
-	return get_sarch()[to_std_str()];
+	return get_ngram()[to_std_str()];
 }
 
 std::string Syllable::get_component(int i)

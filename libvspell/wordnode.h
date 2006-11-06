@@ -103,7 +103,8 @@ protected:
 	std::vector<strid> leaf_id;
 
 public:
-	WordArchive();
+	WordArchive():root(new BranchNNode) {}
+	void init(); // called after LM is initialized
 	BranchNNode* get_root() { return (BranchNNode*)root.get(); }
 	bool load(const char *filename);
 	LeafNNode* add_special_entry(strid);
@@ -124,4 +125,3 @@ std::ostream& operator << (std::ostream &os,const DNNode<T> &node)
 std::ostream& operator << (std::ostream &os,const LeafNNode &node);
 
 #endif
-

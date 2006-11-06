@@ -14,4 +14,6 @@ lm-test
 lattice-test
 sc2wngram
 dag-test
+vspell-check
+std-syllable
 test.*

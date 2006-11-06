@@ -263,7 +263,7 @@ bool MyText::ui_syllable_check()
 	for (i = 0;i < n;i ++) {
 		int from,len;
 		from = st[suggestions[i].id].start;
-		len = strlen(get_sarch()[st[suggestions[i].id].id]);
+		len = strlen(get_ngram()[st[suggestions[i].id].id]);
 		int utf8_from,utf8_len;
 		utf8_from = utf8_pos(from);
 		utf8_len = utf8_pos(from+len)-utf8_from;
@@ -288,7 +288,7 @@ bool MyText::ui_syllable_check()
 		vector<string> candidates;
 		Candidates c;
 		candidates_reset();
-		get_syllable_candidates(get_sarch()[st[suggestions[i].id].id],c);
+		get_syllable_candidates(get_ngram()[st[suggestions[i].id].id],c);
 		c.get_list(candidates);
 		*/
 		mytest->corrects ++;
@@ -310,7 +310,7 @@ bool MyText::ui_word_check()
 		pos2 = pos+count-1;
 		int from,len;
 		from = st[pos].start;
-		len = st[pos2].start+strlen(get_sarch()[st[pos2].id])-from;
+		len = st[pos2].start+strlen(get_ngram()[st[pos2].id])-from;
 		int utf8_from,utf8_len;
 		utf8_from = utf8_pos(from);
 		utf8_len = utf8_pos(from+len)-utf8_from;
@@ -375,7 +375,7 @@ string MyText::word_to_utf8(unsigned seg_id)
 		if (i)
 			s += " ";
 		Syllable syll;
-		syll.parse(get_sarch()[sylls[i]]);
+		syll.parse(get_ngram()[sylls[i]]);
 		s += viet_to_utf8(syll.to_str().c_str());
 	}
 	return s;

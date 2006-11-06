@@ -198,8 +198,7 @@ ostream& operator <<(ostream &os, const Sentence &st)
 {
 	int cc,i,n = st.get_syllable_count();
 	for (cc = i = 0;i < n;i ++) {
-		if (i) os << " ";
-		os << boost::format("%s(%d-%d[%s])") % get_ngram()[st[i].id] % st[i].id % st[i].cid % get_ngram()[st[i].cid];
+		os << boost::format("%s %s\n") % get_ngram()[st[i].id] % get_ngram()[st[i].cid];
 	}
 	//os << st.prob << endl;
 	

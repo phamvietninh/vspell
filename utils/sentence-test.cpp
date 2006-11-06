@@ -13,11 +13,12 @@ int main()
 
   dic_init();
   
+  int count = 0;
   while (getline(cin,str)) {
+    if (++count % 200 == 0) cerr << count << endl;
     vector<string> output;
     sentences_split(str,output);
-    cout << "Result: \n";
-    copy(output.begin(),output.end(),ostream_iterator<string>(cout,"\n*"));
+    copy(output.begin(),output.end(),ostream_iterator<string>(cout,"\n"));
   }
   return 0;
 }

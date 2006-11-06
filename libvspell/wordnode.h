@@ -61,22 +61,26 @@ class LeafNNode:public NNode
 {
 protected:
   strid id;			// word id
-	std::vector<strid> syllables;
-	uint bitmask;
+  std::vector<strid> syllables;
+  uint bitmask;
+  static std::map<strid,LeafNNode*> leaf_index;
 public:
-	LeafNNode():bitmask(0) {}
-  virtual ~LeafNNode() {}
+  LeafNNode():bitmask(0) {}
+  virtual ~LeafNNode() { leaf_index.erase(id); }
   bool is_leaf() const { return true; }
   strid get_id() const { return id; }
   void set_id(const std::vector<strid> &sy);
+  static LeafNNode* find_leaf(const std::vector<strid> &sy);
 
-	uint get_mask() const { return bitmask; }
-	void set_mask(uint maskval,bool mask = true);
-	bool filter(uint mask) const { return (bitmask & mask) == mask; }
+  uint get_mask() const { return bitmask; }
+  void set_mask(uint maskval,bool mask = true);
+  bool filter(uint mask) const { return (bitmask & mask) == mask; }
 
   uint get_syllable_count() const { return syllables.size(); }
   void get_syllables(std::vector<strid> &_syllables) const { _syllables = syllables; }
 
+  friend std::ostream& operator << (std::ostream &os,const LeafNNode &node);
+  friend std::istream& operator >> (std::istream &is,LeafNNode* &node);
 };
 
 template<class T>
@@ -108,6 +112,7 @@ public:
 	BranchNNode* get_root() { return (BranchNNode*)root.get(); }
 	bool load(const char *filename);
 	LeafNNode* add_special_entry(strid);
+	LeafNNode* find_leaf(const std::vector<strid> &syllables,uint bitmask);
 	void register_leaf(strid leaf);
 	const std::vector<strid>& get_leaf_id() const { return leaf_id; }
 };
@@ -118,10 +123,15 @@ extern WordArchive warch;
 template<class T>
 std::ostream& operator << (std::ostream &os,const DNNode<T> &node)
 {
-	os << *node.node;
+	os << node.distance << " " << *node.node;
 	return os;
 }
 
-std::ostream& operator << (std::ostream &os,const LeafNNode &node);
+template<class T>
+std::istream& operator >> (std::istream &is,DNNode<T> &node)
+{
+	is >> node.distance >> node.node;
+	return is;
+}
 
 #endif

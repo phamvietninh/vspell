@@ -7,7 +7,7 @@ bin_PROGRAMS = dictionary-test syllable-test wfst-train sytrain\
 	segm-test tokenize-test shortestpath\
 	std-syllable sc-train keyb-test\
 	vspell-check\
-	utf8toviscii lm-test
+	utf8toviscii lm-test lattice-test
 EXTRAS = data.test
 
 std_syllable_SOURCES = std-syllable.cpp
@@ -48,3 +48,5 @@ utf8toviscii_SOURCES = utf8toviscii.cpp
 utf8toviscii_LDADD = $(LDADD)
 lm_test_SOURCES = lm-test.cpp
 lm_test_LDADD = $(LDADD)
+lattice_test_SOURCES = lattice-test.cpp
+lattice_test_LDADD = $(LDADD)

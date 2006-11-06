@@ -7,6 +7,7 @@
 
 using namespace std;
 static strid mainleaf_id,caseleaf_id;
+std::map<strid,LeafNNode*> LeafNNode::leaf_index;
 
 LeafNNode* BranchNNode::get_leaf(strid leaf) const
 {
@@ -234,16 +235,47 @@ void LeafNNode::set_id(const vector<strid> &_syllables)
 		word += sarch[syllables[i]];
 	}
 	id = sarch[word];
+	leaf_index[id] = this;
+}
+
+LeafNNode* LeafNNode::find_leaf(const vector<strid> &syllables)
+{
+	string word;
+	int i,nr_syllables = syllables.size();
+	for (i = 0;i < nr_syllables;i ++) {
+		if (i)
+			word += "_";
+		word += sarch[syllables[i]];
+	}
+	strid id = sarch[word];
+	map<strid,LeafNNode*>::iterator iter = leaf_index.find(id);
+	return iter != leaf_index.end() ? iter->second : NULL;
 }
 
 std::ostream& operator << (std::ostream &os,const LeafNNode &node)
 {
 	std::vector<strid> syll;
-  node.get_syllables(syll);
+	node.get_syllables(syll);
+	os << boost::format("%04x %d") % node.bitmask % syll.size();
 	for (std::vector<strid>::size_type i = 0;i < syll.size();i ++) {
-		if (i)
-			os << " ";
-		os << sarch[syll[i]] << "(" << syll[i] << ") ";
+		os << " ";
+		os << sarch[syll[i]];
 	}
 	return os;
+}
+
+std::istream& operator >> (std::istream &is,LeafNNode* &node)
+{
+	std::vector<strid> syll;
+	int n;
+	uint bitmask;
+	is >> hex >> bitmask >> dec >> n;
+	syll.resize(n);
+	for (std::vector<strid>::size_type i = 0;i < syll.size();i ++) {
+		string s;
+		is >> s;
+		syll[i] = get_ngram()[s];
+	}
+	node = LeafNNode::find_leaf(syll);
+	return is;
 }

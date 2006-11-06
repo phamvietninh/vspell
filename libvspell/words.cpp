@@ -382,6 +382,31 @@ ostream& operator << (ostream &os, const Lattice &w)
 	return os;
 }
 
+istream& operator >> (istream &is, Lattice &w)
+{
+	int i,n;
+	w.we = boost::shared_ptr<WordEntries>(new WordEntries);
+
+	string s;
+	while (getline(is,s)) {
+		if (s.empty())
+			break;
+		istringstream iss(s);
+		w.we->push_back(WordEntry());
+		iss >> w.we->back();
+		if (w.we->back().node.node == NULL) {
+			cerr << "Invalid WordEntry!" << endl;
+			w.we->pop_back();
+		}
+	}
+	n = w.we->size();
+	for (i = 0;i < n;i ++) {
+		(*w.we)[i].id = i;
+	}
+	w.construct();
+	return is;
+}
+
 Lattice::~Lattice()
 {
 	/*
@@ -397,9 +422,14 @@ Lattice::~Lattice()
 
 std::ostream& operator << (std::ostream &os,const WordEntry &we)
 {
-	using namespace boost;
-	os << format("%d %d %x %d") % we.pos % we.len % we.fuzid % we.id << we.node;
+	os << boost::format("%d %d %04x ") % we.pos % we.len % we.fuzid << we.node;
 	return os;
+}
+
+std::istream& operator >> (std::istream &is,WordEntry &we)
+{
+	is >> we.pos >> we.len >> hex >> we.fuzid >> dec >> we.node;
+	return is;
 }
 
 /**

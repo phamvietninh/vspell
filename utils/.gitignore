@@ -11,4 +11,5 @@ wfst-test
 wfst-train
 utf8toviscii
 lm-test
+lattice-test
 test.*

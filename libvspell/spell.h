@@ -56,6 +56,7 @@ struct WordEntry {
 };
 
 std::ostream& operator << (std::ostream &os,const WordEntry &we);
+std::istream& operator >> (std::istream &is,WordEntry &we);
 
 typedef WordEntry* WordEntryRef;
 typedef std::vector<WordEntry> WordEntries;
@@ -196,6 +197,7 @@ public:
 	void add(WordEntry &w);
   
 	friend std::ostream& operator << (std::ostream& os,const Lattice &w);
+	friend std::istream& operator >> (std::istream& is,Lattice &w);
 }; 
 
 struct ExactWordState:public WordState {
@@ -245,7 +247,7 @@ public:
   public:
     unsigned int start;
     strid id;										/// real string
-		strid cid;									/// lowercased string
+    strid cid;									/// lowercased string
 		//strid iid,icid;
     //std::string::iterator start,end;
     Sentence *sent_;

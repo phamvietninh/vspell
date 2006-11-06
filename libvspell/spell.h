@@ -22,6 +22,12 @@
 #ifndef __STRING__
 #include <string>
 #endif
+#ifndef __IOSTREAM__
+#include <iostream>
+#endif
+#ifndef __SSTREAM__
+#include <sstream>
+#endif
 
 #ifndef BOOST_SHARED_PTR_HPP_INCLUDED
 #include <boost/shared_ptr.hpp>
@@ -258,7 +264,8 @@ private:
   void tokenize_punctuation(const std::string &s,std::vector<std::string> &ss);
 
 public:
-	Sentence() {}
+  Sentence() {}
+  Sentence(std::istream &is);
   Sentence(const std::string &st):sent_(st) {}
   void set(const std::string &st) { sent_ = st; syllables.clear(); }
   std::string get() { return sent_; }
@@ -271,7 +278,7 @@ public:
   //  Syllable& operator[] (int i) { return syllables[i]; }
   bool is_contiguous(unsigned int i);		// i & i+1 is contiguous ?
   void merge(unsigned int i);
-	friend std::ostream& operator <<(std::ostream &os, const Sentence &st);
+  friend std::ostream& operator <<(std::ostream &os, const Sentence &st);
 };
 
 typedef Sentence* SentenceRef;

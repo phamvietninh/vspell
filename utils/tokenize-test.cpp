@@ -7,26 +7,26 @@
 
 using namespace std;
 
-int main()
+int main(int argc, char **argv)
 {
+  bool revert = argc == 2 && string(argv[1]) == "-r";
   string str;
 
   dic_init();
 
+  int count = 0;
   while (getline(cin,str)) {
-    /*
-    Tokens output;
-    tokenize(str,output);
-    //copy(output.begin(),output.end(),ostream_iterator<string>(cout,"\n"));
-    for (int i = 0;i < output.size();i ++)
-      if (output[i].is_token)
-	cout << output[i].value << endl;
-    */
-    Sentence st(str);
-    st.standardize();
-    st.tokenize();
-    cout << st << endl;
+    if (++count % 200 == 0) cerr << count << endl;
+    if (revert) {
+      Sentence st(cin);
+      cout << st << endl;
+    }
+    else {
+      Sentence st(str);
+      st.standardize();
+      st.tokenize();
+      cout << st << endl;
+    }
   }
   return 0;
 }
-

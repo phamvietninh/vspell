@@ -205,6 +205,30 @@ ostream& operator <<(ostream &os, const Sentence &st)
 	return os;
 }
 
+Sentence::Sentence(istream &is)
+{
+	string s;
+	while (getline(is,s)) {
+		if (s.empty()) break;
+		istringstream iss(s);
+		string tok1, tok2;
+		iss >> tok1 >> tok2;
+		Syllable syl;
+		syl.id = get_ngram()[tok1];
+		syl.cid = get_ngram()[tok2];
+		syl.span = 1;
+		syl.sent_ = this;
+		syllables.push_back(syl);
+	}
+	int start = 0;
+	for (int i = 0;i < syllables.size();i ++) {
+		syllables[i].start = start;
+		sent_ += get_ngram()[syllables[i].id];
+		sent_ += " ";
+		start = sent_.size();
+	}
+}
+
 /*
 	std::string& Sentence::const_iterator::operator++()
 	{

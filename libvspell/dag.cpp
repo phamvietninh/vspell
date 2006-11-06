@@ -38,7 +38,7 @@ void WordDAG::get_next(uint node_id,vector<uint> &next_id) const
 		return;
 	}
 
-	if (node_id == node_begin()) {		// begin node
+	if (node_id == node_begin() && !we.empty()) {		// begin node
 		const WordEntryRefs& wes = lattice->get_we(0);
 		int i,n = wes.size();
 		for (i = 0;i < n;i ++)

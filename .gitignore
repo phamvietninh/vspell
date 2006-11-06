@@ -16,3 +16,5 @@ Makefile.in
 mkinstalldirs
 missing
 stamp-h1
+config.h
+compile

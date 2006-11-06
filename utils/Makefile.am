@@ -7,7 +7,7 @@ bin_PROGRAMS = dictionary-test syllable-test wfst-train sytrain\
 	segm-test tokenize-test shortestpath\
 	std-syllable sc-train keyb-test\
 	vspell-check\
-	utf8toviscii
+	utf8toviscii lm-test
 EXTRAS = data.test
 
 std_syllable_SOURCES = std-syllable.cpp
@@ -46,3 +46,5 @@ vspell_check_SOURCES = vspell-check.cpp
 vspell_check_LDADD = $(LDADD)
 utf8toviscii_SOURCES = utf8toviscii.cpp
 utf8toviscii_LDADD = $(LDADD)
+lm_test_SOURCES = lm-test.cpp
+lm_test_LDADD = $(LDADD)

@@ -10,4 +10,5 @@ tokenize-test
 wfst-test
 wfst-train
 utf8toviscii
+lm-test
 test.*

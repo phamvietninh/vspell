@@ -9,3 +9,5 @@ syllable-test
 tokenize-test
 wfst-test
 wfst-train
+utf8toviscii
+test.*

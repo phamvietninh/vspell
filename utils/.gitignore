@@ -13,4 +13,5 @@ utf8toviscii
 lm-test
 lattice-test
 sc2wngram
+dag-test
 test.*

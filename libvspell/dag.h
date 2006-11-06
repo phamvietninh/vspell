@@ -44,7 +44,6 @@ public:
 	virtual void get_next(uint node_id,std::vector<uint> &next_id) const;
 	virtual float edge_value(uint node_from,uint node_to) const;
 	virtual bool fill_vi(uint node_from,uint node_to,VocabIndex &v,VocabIndex *vi,int size) const;
-	
 };
 
 class WordDAG2 : public DAG {
@@ -78,5 +77,7 @@ public:
 	virtual float edge_value(uint node_from,uint node_to) const;
 	virtual bool fill_vi(uint node_from,uint node_to,VocabIndex &v,VocabIndex *vi,int size) const;
 };
+
+std::ostream& operator << (std::ostream& os, const DAG &dag);
 
 #endif

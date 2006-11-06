@@ -81,6 +81,27 @@ bool WordDAG::fill_vi(uint node_from,uint node_to,VocabIndex &v,VocabIndex *vi,i
 	return true;
 }
 
+ostream& operator << (ostream& os, const DAG &dag)
+{
+	if (dag.node_count() == 0)
+		return os;
+	vector<uint> stack;
+	stack.reserve(10);
+	stack.push_back(dag.node_begin());
+	while (!stack.empty()) {
+		uint u = stack.back();
+		stack.pop_back();
+		vector<uint> next;
+		vector<uint>::const_iterator  iter;
+		dag.get_next(u,next);
+		for (iter = next.begin();iter != next.end(); ++iter) {
+			os << get_ngram()[dag.node_id(u)] << " " << get_ngram()[dag.node_id(*iter)] << " " << dag.edge_value(u,*iter) << endl;
+			stack.push_back(*iter);
+		}
+	}
+	return os;
+}
+
 WordDAG2::WordDAG2(WordDAG *dag_):dag(dag_)
 {
 	vector<bool> done;

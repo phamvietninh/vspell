@@ -187,8 +187,7 @@ const std::map<strid,strid_string>& get_pnames()
 
 double LogPtoProb(double v)
 {
-	// FIXME
-	return v;
+	return exp10(v);
 }
 
 /*

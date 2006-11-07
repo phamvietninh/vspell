@@ -217,21 +217,23 @@ generalize all capitalized words.
 */
 bool VSpell::init()
 {
-	dic_init();
-
-	cerr << "Loading dictionary... ";
-	warch.load("wordlist");
-	cerr << "done" << endl;
 	cerr << "Loading ngram... ";
 	if (get_ngram().read("ngram"))
 		cerr << "done" << endl;
 	else
 		cerr << "Ngram loading error. The result may be incorrect" << endl;
+	/*
 	cerr << "Loading syngram... ";
 	if (get_syngram().read("syngram"))
 		cerr << "done" << endl;
 	else
 		cerr << "Syllable Ngram loading error. The result may be incorrect" << endl;
+	*/
+	dic_init();
+
+	cerr << "Loading dictionary... ";
+	warch.load("wordlist");
+	cerr << "done" << endl;
 	sarch.set_blocked(true);
 	return true;
 }

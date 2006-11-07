@@ -232,10 +232,10 @@ void    lm3g_free (lm_t *model);
 lm_t *  NewModel (int32 n_ug, int32 n_bg, int32 n_tg);
 lm_t *  lm3g_read(char const *filename);
 
-int32	lm3g_tg_score (lm_t *lm, int32 w1, int32 w2, int32 w3);
-int32	lm3g_bg_score (lm_t *lm, int32 w1, int32 w2);
-int32	lm3g_ug_score (lm_t *lm, int32 w);
-int32	lm3g_raw_score (lm_t *lm, int32 score);
+float	lm3g_tg_score (lm_t *lm, int32 w1, int32 w2, int32 w3);
+float	lm3g_bg_score (lm_t *lm, int32 w1, int32 w2);
+float	lm3g_ug_score (lm_t *lm, int32 w);
+float	lm3g_raw_score (lm_t *lm, int32 score);
 
 int     lm3g_word_str_size(lm_t *lm);
 int32   lm3g_wstr2wid (lm_t *model, const char *w);

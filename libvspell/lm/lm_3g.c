@@ -1010,12 +1010,12 @@ main (argc, argv)
 
 #define BINARY_SEARCH_THRESH	16
 
-int32 lm3g_ug_score (lm_t *lm, int32 wid)
+float lm3g_ug_score (lm_t *lm, int32 wid)
 {
     if (wid >= lm->ucount)
 	E_FATAL("dictwid[%d] not in LM\n", wid);
 
-    return (lm->unigrams[wid].prob1.l);
+    return (lm->unigrams[wid].prob1.f);
 }
 
 /* Locate a specific bigram within a bigram list */
@@ -1042,9 +1042,10 @@ static int32 find_bg (bigram_t *bg, int32 n, int32 w)
 }
 
 /* w1, w2 are dictionary (base-)word ids */
-int32 lm3g_bg_score (lm_t *lm, int32 w1, int32 w2)
+float lm3g_bg_score (lm_t *lm, int32 w1, int32 w2)
 {
-    int32 i, n, b, score;
+    int32 i, n, b;
+    float score;
     bigram_t *bg;
     
     /* lm->n_bg_score++; */
@@ -1059,10 +1060,10 @@ int32 lm3g_bg_score (lm_t *lm, int32 w1, int32 w2)
     bg = lm->bigrams + b;
     
     if ((i = find_bg (bg, n, w2)) >= 0) {
-	score = lm->prob2[bg[i].prob2].l;
+	score = lm->prob2[bg[i].prob2].f;
     } else {
 	/* lm->n_bg_bo++; */
-	score = lm->unigrams[w1].bo_wt1.l + lm->unigrams[w2].prob1.l;
+	score = lm->unigrams[w1].bo_wt1.f + lm->unigrams[w2].prob1.f;
     }
 
     return (score);
@@ -1088,7 +1089,7 @@ static void load_tginfo (lm_t *lm, int32 lw1, int32 lw2)
     bg = lm->bigrams + b;
     
     if ((n > 0) && ((i = find_bg (bg, n, lw2)) >= 0)) {
-	tginfo->bowt = lm->bo_wt2[bg[i].bo_wt2].l;
+	tginfo->bowt = lm->bo_wt2[bg[i].bo_wt2].f;
 	
 	/* Find t = Absolute first trigram index for bigram lw1,lw2 */
 	b += i;			/* b = Absolute index of bigram lw1,lw2 on disk */
@@ -1126,9 +1127,10 @@ static int32 find_tg (trigram_t *tg, int32 n, int32 w)
 }
 
 /* w1, w2, w3 are dictionary wids */
-int32 lm3g_tg_score (lm_t *lm, int32 w1, int32 w2, int32 w3)
+float lm3g_tg_score (lm_t *lm, int32 w1, int32 w2, int32 w3)
 {
-    int32 i, n, score;
+    int32 i, n;
+    float score;
     trigram_t *tg;
     tginfo_t *tginfo, *prev_tginfo;
     
@@ -1166,7 +1168,7 @@ int32 lm3g_tg_score (lm_t *lm, int32 w1, int32 w2, int32 w3)
     n = tginfo->n_tg;
     tg = tginfo->tg;
     if ((i = find_tg (tg, n, w3)) >= 0) {
-	score = lm->prob3[tg[i].prob3].l;
+	score = lm->prob3[tg[i].prob3].f;
     } else {
 	/* lm->n_tg_bo++; */
 	score = tginfo->bowt + lm3g_bg_score(lm, w2, w3);

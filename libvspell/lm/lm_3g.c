@@ -917,12 +917,14 @@ void lm3g_free (lm_t *model)
     if (model->HT.tab != NULL)
 	hash_free (&model->HT);
     
-    for (u = 0; u < model->max_ucount; u++)
-	for (tginfo = model->tginfo[u]; tginfo; tginfo = next_tginfo) {
-	    next_tginfo = tginfo->next;
-	    listelem_free ((void *)tginfo, sizeof(tginfo_t));
-	}
-    free (model->tginfo);
+    if (model->tginfo) {
+	for (u = 0; u < model->max_ucount; u++)
+	    for (tginfo = model->tginfo[u]; tginfo; tginfo = next_tginfo) {
+		next_tginfo = tginfo->next;
+		listelem_free ((void *)tginfo, sizeof(tginfo_t));
+	    }
+	free (model->tginfo);
+    }
 
     free (model);
 }

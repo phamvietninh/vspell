@@ -290,11 +290,8 @@ void word_boundaries_cb(GtkToggleButton *b,VSpell *vspell)
 
 int main(int argc,char **argv)
 {
-	gtk_init(&argc,&argv);
-
-	//	sarch["<root>"];
-
 	vspell.init();
+	gtk_init(&argc,&argv);
 	vspell.set_penalty(0);
 	vspell.set_penalty2(1);
 	vspell.set_normalization(false);

@@ -85,10 +85,10 @@
 #define ERR_ARG		1
 #define ERR_MALLOC	2
 
-int32 hash_count = 0;
-int32 rehash_count = 0;
-int32 hash_rebuild = 0;
-int32 hash_rebuild_ent = 0;
+static int32 hash_count = 0;
+static int32 rehash_count = 0;
+static int32 hash_rebuild = 0;
+static int32 hash_rebuild_ent = 0;
 
 static int exception (char const *rname, char const *s, int exc);
 static int32 hash_in(hash_t *ht, char const *sym, caddr_t val);

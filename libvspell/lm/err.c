@@ -65,7 +65,7 @@
 #include "s2types.h"
 #include "err.h"
 
-int32 verbosity_level = 1;
+static int32 verbosity_level = 1;
 
 void
 _E__pr_header(char const *f, long ln, char const *msg)

@@ -9,7 +9,7 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-  get_ngram().read("ngram");
+  get_ngram().read(argc == 2 ? argv[1] : "ngram");
   dic_init();
   warch.load("wordlist");
 

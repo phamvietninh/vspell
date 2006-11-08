@@ -1,0 +1,7 @@
+#!/bin/bash
+i=$1
+ii=$(($1-1))
+./sc-train test.arpa.$ii < test.lat 2>test.log.sc-train.$i | gzip > test.sc$i.gz
+gzip -d < test.sc$i.gz | LANG=C sort | ./sc2wngram 4 > test.wngram.$i
+../../CMU-Cam_Toolkit_v2/src/wngram2idngram -n 2 -vocab test.vocab < test.wngram.$i > test.idngram.$i 2>test.log.idngram.$i
+../../CMU-Cam_Toolkit_v2/src/idngram2lm -four_byte_counts -n 2 -vocab test.vocab -idngram test.idngram.$i -arpa test.arpa.$i -context test.ccs 2>test.log.lm.$i

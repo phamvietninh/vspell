@@ -18,14 +18,14 @@ int main(int argc,char **argv)
 		if (!strcmp(w1,ow1) && !strcmp(w2,ow2))
 			total_count += count;
 		else {
-			if ((int)(total_count*base) > 0)
-				printf("%s %s %d\n",ow1, ow2, (int)(total_count*base));
+			if (total_count > 0)
+				printf("%s %s %d\n",ow1, ow2, (int)(total_count*base) > 0 ? (int)(total_count*base) : 1);
 			strcpy(ow1,w1);
 			strcpy(ow2,w2);
 			total_count = count;
 		}
 	}
 	if ((int)(total_count*base) > 0)
-		printf("%s %s %d\n",ow1, ow2, (int)(total_count*base));
+		printf("%s %s %d\n",ow1, ow2, (int)(total_count*base) > 0 ? (int)(total_count*base) : 1);
 	return 0;
 }

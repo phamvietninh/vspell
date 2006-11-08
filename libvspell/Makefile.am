@@ -17,7 +17,6 @@ libvspell_a_SOURCES = types.h\
 	keyboard.h keyboard.cpp\
 	shuffle.h shuffle.cpp\
 	dag.h dag.cpp\
-	bellman.cpp bellman.h\
 	penalty.h penalty.cpp\
 	lm/lm_3g.c lm/err.c lm/salloc.c lm/list.c lm/hash.c lm/CM_funcs.c lm/linklist.c lm/strcasecmp.c
 #data_DATA = data/wordlist.wl data/ngram data/last-names.lst

@@ -48,18 +48,17 @@ typedef vector<Item> Items;
 
 struct Pattern
 {
-	int trigram,normalization,strich_checking;
+	int trigram,strich_checking;
 	float penalty,penalty2;
 	friend ostream& operator << (ostream &os,const Pattern &p) {
 		os << p.trigram 
-			 << "_" << p.normalization
 			 << "_" << p.strich_checking
 			 << "_" << p.penalty
 			 << "_" << p.penalty2;
 		return os;
 	}
 	friend istream& operator >> (istream &is,Pattern &pat) {
-		is >> pat.trigram >> pat.normalization >> pat.strich_checking >> pat.penalty >> pat.penalty2;
+		is >> pat.trigram >> pat.strich_checking >> pat.penalty >> pat.penalty2;
 		return is;
 	}
 };
@@ -84,7 +83,6 @@ void check_pattern(Pattern &pat)
 {
 	vspell.set_penalty(pat.penalty);
 	vspell.set_penalty2(pat.penalty2);
-	vspell.set_normalization(pat.normalization);
 	vspell.set_trigram(pat.trigram);
 	vspell.set_strict_word_checking(pat.strich_checking);
 	uint i_corpus,n_corpus = tests.size();

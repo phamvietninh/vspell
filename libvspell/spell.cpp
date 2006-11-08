@@ -13,7 +13,6 @@
 #include "keyboard.h"
 #include "shuffle.h"
 #include "penalty.h"
-#include "bellman.h"
 #include <math.h>
 
 // stolen from glib
@@ -369,13 +368,8 @@ bool Text::sentence_check(const char *pp)
 	}
 
 	Path path;
-	if (vspell->get_normalization()) {
-		Bellman pfs;
-		pfs.search(*dag,path);
-	} else {
-		PFS pfs;
-		pfs.search(*dag,path);
-	}
+	PFS pfs;
+	pfs.search(*dag,path);
 
 	if (vspell->get_trigram()) {
 		dagw2->demangle(path);
@@ -424,13 +418,8 @@ void Text::penalty2_construct(Segmentation &seg)
 	}
 
 	Path path;
-	if (vspell->get_normalization()) {
-		Bellman pfs;
-		pfs.search(*dag,path);
-	} else {
-		PFS pfs;
-		pfs.search(*dag,path);
-	}
+	PFS pfs;
+	pfs.search(*dag,path);
 
 	if (vspell->get_trigram()) {
 		dagw2->demangle(path);

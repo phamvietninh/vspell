@@ -252,13 +252,6 @@ void strict_spelling_checking_cb(GtkToggleButton *b,VSpell *vspell)
 	//gtk_toggle_button_set_active(b,state);
 }
 
-void length_normalization_cb(GtkToggleButton *b,VSpell *vspell)
-{
-	bool state = gtk_toggle_button_get_active(b);
-	vspell->set_normalization(state);
-	//gtk_toggle_button_set_active(b,state);
-}
-
 void penalty_modification_cb(GtkEntry *b,VSpell *vspell)
 {
 	const char *s = gtk_entry_get_text(b);
@@ -294,7 +287,6 @@ int main(int argc,char **argv)
 	gtk_init(&argc,&argv);
 	vspell.set_penalty(0);
 	vspell.set_penalty2(1);
-	vspell.set_normalization(false);
 	vspell.set_trigram(true);
 	word_boundaries = true;
 
@@ -428,11 +420,6 @@ int main(int argc,char **argv)
 	gtk_box_pack_start(GTK_BOX(vbox_main),w,FALSE,FALSE,0);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w),vspell.get_strict_word_checking());
 	g_signal_connect(G_OBJECT(w),"toggled",G_CALLBACK(strict_spelling_checking_cb),&vspell);
-
-	w = gtk_check_button_new_with_label("Length normalization");
-	gtk_box_pack_start(GTK_BOX(vbox_main),w,FALSE,FALSE,0);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w),vspell.get_normalization());
-	g_signal_connect(G_OBJECT(w),"toggled",G_CALLBACK(length_normalization_cb),&vspell);
 
 	w = gtk_check_button_new_with_label("Trigram");
 	gtk_box_pack_start(GTK_BOX(vbox_main),w,FALSE,FALSE,0);

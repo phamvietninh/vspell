@@ -1061,8 +1061,8 @@ bool Candidates::CandidateComparator::operator()(const std::string &s1,const std
 	float f1,f2;
 	VocabIndex v;
 	v = 0;
-	f1 = -get_syngram().wordProb(get_ngram()[get_std_syllable(get_lowercased_syllable(s1))],&v);
-	f2 = -get_syngram().wordProb(get_ngram()[get_std_syllable(get_lowercased_syllable(s2))],&v);
+	f1 = -get_ngram().wordProb(get_ngram()[get_std_syllable(get_lowercased_syllable(s1))],&v);
+	f2 = -get_ngram().wordProb(get_ngram()[get_std_syllable(get_lowercased_syllable(s2))],&v);
 	//cerr << f1 << "<>" << f2 << endl;
 	return f1 > f2;	// we want reverse order
 }

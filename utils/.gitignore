@@ -18,4 +18,5 @@ vspell-check
 std-syllable
 pf
 lattice2dot
+gen-tests
 test.*

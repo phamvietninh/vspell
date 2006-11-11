@@ -10,13 +10,18 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-  bool revert = argc >= 2 && string(argv[1]) == "-r";
+  bool revert = false;
+  bool use_fuzzy = false;
   int revert_level = 0;
-  if (argc == 3) {
-    if (string(argv[2]) == "--sentence" || string(argv[2]) == "2")
+  for (int i = 1;i < argc;i ++) {
+    if (string(argv[i]) == "-r")
+      revert = true;
+    if (string(argv[i]) == "--sentence" || string(argv[i]) == "2")
       revert_level = 2;
-    if (string(argv[2]) == "--token" || string(argv[2]) == "1")
+    if (string(argv[i]) == "--token" || string(argv[i]) == "1")
       revert_level = 1;
+    if (string(argv[i]) == "--fuzzy")
+      use_fuzzy = true;
   }
   dic_init();
   warch.load("wordlist");
@@ -39,25 +44,16 @@ int main(int argc, char **argv)
       WordStateFactories factories;
       ExactWordStateFactory exact;
       LowerWordStateFactory lower;
-      //FuzzyWordStateFactory fuzzy;
+      FuzzyWordStateFactory fuzzy;
       factories.push_back(&exact);
       factories.push_back(&lower);
-      //factories.push_back(&fuzzy);
+      if (use_fuzzy)
+        factories.push_back(&fuzzy);
       words.pre_construct(st,wes,factories);
       mark_proper_name(st,wes);
       words.post_construct(wes);
       cout << words << endl;
     }
-    //cerr << words << endl;
-    /*
-    WordDAG dagw(&words);
-    DAG *dag = &dagw;
-    WordDAG2 *dagw2;
-    if (trigram) {
-      dagw2 = new WordDAG2(&dagw);
-      dag = dagw2;
-    }
-    */
   }
   return 0;
 }

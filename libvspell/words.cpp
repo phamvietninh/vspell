@@ -349,6 +349,7 @@ ostream& operator << (ostream &os, const Lattice &w)
 		for (i = 0;i < n;i ++)
 			os << (*w.we)[i] << endl;
 	}
+
 	/*
 	n = w.wi.size();
 	for (i = 0;i < n;i ++) {
@@ -404,6 +405,7 @@ istream& operator >> (istream &is, Lattice &w)
 		(*w.we)[i].id = i;
 	}
 	w.construct();
+	w.st = new Sentence(w);
 	return is;
 }
 

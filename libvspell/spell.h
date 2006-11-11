@@ -267,10 +267,11 @@ private:
 
 public:
   Sentence() {}
+  Sentence(const Lattice& l);
   Sentence(std::istream &is);
   Sentence(const std::string &st):sent_(st) {}
   void set(const std::string &st) { sent_ = st; syllables.clear(); }
-  std::string get() { return sent_; }
+  std::string get() const { return sent_; }
   void tokenize();
   void standardize();
   unsigned int get_syllable_count() const { return syllables.size(); }

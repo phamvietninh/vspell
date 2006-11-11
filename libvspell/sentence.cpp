@@ -205,6 +205,42 @@ ostream& operator <<(ostream &os, const Sentence &st)
 	return os;
 }
 
+Sentence::Sentence(const Lattice &l)
+{
+	int i,n = l.get_word_count();
+	syllables.resize(n); // pre-allocation
+	for (i = 0;i < n;i ++) {
+		const WordEntryRefs &wers = l.get_we(i);
+		for (int j = 0;j < wers.size();j ++) {
+			const WordEntry *pwe = wers[j];
+			vector<strid> vsy;
+			pwe->node.node->get_syllables(vsy);
+			if (syllables.size() < i+vsy.size())
+				syllables.resize(i+vsy.size());
+			Sentence::Syllable sy;
+			sy.span = 1;
+			sy.sent_ = this;
+			sy.start = 0;
+			for (int pos = 0;pos < vsy.size(); pos ++) {
+				sy.id = vsy[pos];
+				sy.cid = get_ngram()[get_std_syllable(get_ngram()[sy.id])];
+				syllables[i+pos] = sy;
+			}
+		}
+	}
+	int start = 0;
+	for (i = 0;i < syllables.size();i ++) {
+		if (i > 0) {
+			sent_ += " ";
+			start ++;
+		}
+		string s = get_ngram()[syllables[i].id];
+		sent_ += s;
+		syllables[i].start = start;
+		start += s.size();
+	}
+}
+
 Sentence::Sentence(istream &is)
 {
 	string s;

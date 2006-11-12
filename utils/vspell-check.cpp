@@ -72,15 +72,16 @@ struct Test
 	set<uint> error;
 	int corrects,positives,candidates;
 	bool syllable_checked,word_checked;
+	ostream *os;
 };
 
 static Test* mytest;
-static ostream *os;
-	vector<Test> tests;
+vector<Test> tests;
 static string prefix("pattern");
 
 void check_pattern(Pattern &pat)
 {
+	ostream *os;
 	vspell.set_penalty(pat.penalty);
 	vspell.set_penalty2(pat.penalty2);
 	vspell.set_trigram(pat.trigram);
@@ -91,20 +92,28 @@ void check_pattern(Pattern &pat)
 	oss << prefix << "." << pat;
 	os = new ofstream(oss.str().c_str());
 	(*os) << "#Pattern " << pat << endl;
+	(*os) << "#Output test_errors syllable_check word_check corrects positive_errors candidate errors" << endl;
+	(*os) << endl;
+
 	for (i_corpus = 0;i_corpus < n_corpus;i_corpus ++) {
 		mytest = &tests[i_corpus];
+		ostringstream *oss;
+		mytest->os = oss = new ostringstream();
 		mytest->corrects = mytest->positives = mytest->candidates = 0;
 		mytest->syllable_checked = mytest->word_checked = false;
-		//(*os) << "#Sentence: " << mytest->sentence << endl;
-		vspell.check(tests[i_corpus].sentence.c_str());
+		(*os) << "#Sentence: " << mytest->sentence << endl;
+		vspell.check(mytest->sentence.c_str());
 		(*os) << boost::format("%d %d %d %d %d %d") %
+			mytest->error.size() %
 			mytest->syllable_checked %
 			mytest->word_checked %
 			mytest->corrects %
-			mytest->error.size() %
 			mytest->positives %
 			mytest->candidates
 			<< endl;
+		mytest->os = NULL;
+		(*os) << oss->str() << endl;
+		delete oss;
 	}
 	delete os;
 }
@@ -273,12 +282,10 @@ bool MyText::ui_syllable_check()
 				break;
 		if (ii == nn) {
 			mytest->positives ++;
-			/*
-			(*os) << "#Syllable " << utf8_from << "-" << utf8_len 
+			(*mytest->os) << "##SP " << utf8_from << "-" << utf8_len 
 					 << "(" << from << "-" << len << ")" << endl;
 			for (ii = 0;ii < nn;ii ++)
-				(*os) << "# " << mytest->pos[ii] << "-" << mytest->len[ii] << endl;
-			*/
+				(*mytest->os) << "##   " << mytest->pos[ii] << "-" << mytest->len[ii] << endl;
 			continue;
 		}
 
@@ -301,6 +308,20 @@ bool MyText::ui_word_check()
 	int pos,pos2,count;
 	unsigned ii,nn;
 
+	nn = seg.size();
+	ostringstream oss;
+	oss << "##W:";
+	for (ii = 0;ii < nn;ii ++) {
+		std::vector<strid> syll;
+		seg[ii].node.node->get_syllables(syll);
+		for (std::vector<strid>::size_type i = 0;i < syll.size();i ++) {
+			oss << (i > 0 ? "_" : " ");
+			oss << sarch[syll[i]];
+		}
+	}
+	oss << endl;
+	(*mytest->os) << viet_to_utf8(oss.str().c_str());
+
 	for (i = 0;i < n;i ++) {
 		// query
 		count = seg[suggestions[i].id].node->get_syllable_count();
@@ -320,11 +341,9 @@ bool MyText::ui_word_check()
 				break;
 		if (ii == nn) {
 			mytest->positives ++;
-			/*
-			(*os) << "#Word " << utf8_from << "-" << utf8_len 
+			(*mytest->os) << "##WP " << utf8_from << "-" << utf8_len 
 					 << "(" << from << "-" << len << ")"
 					 << endl;
-			*/
 			continue;
 		}
 
@@ -335,8 +354,8 @@ bool MyText::ui_word_check()
 			mytest->corrects ++;
 		else  {
 			mytest->candidates ++;
-			(*os) << "# " << mytest->sentence << endl;
-			(*os) << boost::format("#Word2 %d-%d(%d-%d) %s-%s (%s)" ) %
+//			(*os) << "# " << mytest->sentence << endl;
+			(*mytest->os) << boost::format("##WC %d-%d(%d-%d) %s-%s (%s)" ) %
 				utf8_from %
 				utf8_len %
 				from %

@@ -76,15 +76,17 @@ bool LM::read(const char *filename)
 	return lm != NULL;
 }
 
+#define MAXPROB -9999.0
+
 double LM::wordProb(VocabIndex w1, VocabIndex *wn)
 {
-	if (w1 < 1 || w1 >= lm->n_word_str+1) return 0;
+	if (w1 < 1 || w1 >= lm->n_word_str+1) return MAXPROB;
 	if (wn == NULL || wn[0] == 0) return lm3g_ug_score(lm, w1-1);
-	if (wn[0] < 1 || wn[0] >= lm->n_word_str+1) return 0;
+	if (wn[0] < 1 || wn[0] >= lm->n_word_str+1) return MAXPROB;
 	if (wn[1] == 0) return lm3g_bg_score(lm, wn[0]-1, w1-1);
-	if (wn[1] < 1 || wn[1] >= lm->n_word_str+1) return 0;
+	if (wn[1] < 1 || wn[1] >= lm->n_word_str+1) return MAXPROB;
 	if (wn[2] == 0) return lm3g_tg_score(lm, wn[0]-1, wn[1]-1, w1-1);
-	return 0;
+	return MAXPROB;
 }
 
 void dic_clean()

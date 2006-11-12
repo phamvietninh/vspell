@@ -8,7 +8,7 @@ bin_PROGRAMS = syllable-test \
 	std-syllable sc-train keyb-test\
 	vspell-check\
 	utf8toviscii lm-test lattice-test sc2wngram dag-test\
-	lattice2dot pf gen-tests
+	lattice2dot pf gen-tests pfs-test
 EXTRAS = data.test
 
 std_syllable_SOURCES = std-syllable.cpp
@@ -28,3 +28,4 @@ pf_SOURCES = pf.c
 dag_test_SOURCES = dag-test.cpp
 lattice2dot_SOURCES = lattice2dot.cpp
 gen_tests_SOURCES = gen-tests.cpp
+pfs_test_SOURCES = pfs-test.cpp

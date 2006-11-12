@@ -108,14 +108,6 @@ void Sections::construct(const Lattice &words)
 	}
 }
 
-std::ostream& operator <<(std::ostream &os,const Segmentation &seg)
-{
-           int i,n = seg.size();
-	for (i = 0;i < n;i ++)
-	            	os << "[" << seg[i].node << "] ";
-	return os;
-}
-
 void Section::segment_best(const Lattice &w,Segmentation &final_seg)
 {
 	Segmentation seg(w.we);

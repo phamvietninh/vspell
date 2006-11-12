@@ -293,3 +293,10 @@ std::ostream& Segmentation::pretty_print(std::ostream &os,const Sentence &st)
 	return os;
 }
 
+std::ostream& operator <<(std::ostream &os,const Segmentation &seg)
+{
+	int i,n = seg.size();
+	for (i = 0;i < n;i ++)
+		os << "[" << seg[i].node << "] ";
+	return os;
+}

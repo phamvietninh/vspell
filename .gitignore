@@ -18,3 +18,10 @@ missing
 stamp-h1
 config.h
 compile
+config.guess
+config.sub
+libtool
+ltmain.sh
+.libs
+*.lo
+*.la

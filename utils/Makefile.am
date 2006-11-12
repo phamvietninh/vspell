@@ -1,4 +1,4 @@
-LDADD = $(top_builddir)/libvspell/libvspell.a
+LDADD = $(top_builddir)/libvspell/libvspell.la
 INCLUDES = -I$(top_builddir)/libvspell @VSPELL_CFLAGS@
 
 bin_PROGRAMS = syllable-test \

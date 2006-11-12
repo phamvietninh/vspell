@@ -1,5 +1,5 @@
-noinst_LIBRARIES = libvspell.a
-libvspell_a_SOURCES = types.h\
+lib_LTLIBRARIES = libvspell.la
+libvspell_la_SOURCES = types.h\
 	syllable.cpp syllable.h\
 	dictionary.cpp dictionary.h wordnode.h\
 	propername.cpp propername.h\

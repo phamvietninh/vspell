@@ -179,6 +179,7 @@ void PFS::search(const DAG &dag,Path &seps)
 		for (ii = 0;ii < nn;ii ++) {
 		  vv = next_nodes[ii];
 		  add = dag.edge_value(v,vv);
+		  if (add == 0.0 || add == -0.0) continue; // quick hack
 		  value = val[v] + add;
 		  //cerr << "examine " << vv << "(" << vv << ")";
 

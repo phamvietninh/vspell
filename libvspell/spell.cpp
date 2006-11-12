@@ -376,6 +376,8 @@ bool Text::sentence_check(const char *pp)
 		delete dagw2;
 	}
 
+	if (path.empty() || path.size() <= 2)
+		return true;
 	seg.resize(path.size()-2);
 	// don't copy head/tail
 	copy(path.begin()+1,path.end()-1,seg.begin());

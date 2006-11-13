@@ -94,7 +94,6 @@ static int exception (char const *rname, char const *s, int exc);
 static int32 hash_in(hash_t *ht, char const *sym, caddr_t val);
 static int32 next_prime(int32 p);
 
-extern int mystrcasecmp(char const *, char const *);
 
 /* HASH_ADD
  *------------------------------------------------------------*
@@ -237,7 +236,7 @@ rehash:
 	return (-1);
     }
 
-    if (mystrcasecmp(ht->tab[key].obj, sym) == 0) {
+    if (strcmp(ht->tab[key].obj, sym) == 0) {
 	*val = ht->tab[key].val;
 	return (0);
     }

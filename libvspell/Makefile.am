@@ -18,5 +18,5 @@ libvspell_la_SOURCES = types.h\
 	shuffle.h shuffle.cpp\
 	dag.h dag.cpp\
 	penalty.h penalty.cpp\
-	lm/lm_3g.c lm/err.c lm/salloc.c lm/list.c lm/hash.c lm/CM_funcs.c lm/linklist.c lm/strcasecmp.c
+	lm/lm_3g.c lm/err.c lm/salloc.c lm/list.c lm/hash.c lm/CM_funcs.c lm/linklist.c
 #data_DATA = data/wordlist.wl data/ngram data/last-names.lst

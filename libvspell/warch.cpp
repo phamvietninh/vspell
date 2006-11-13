@@ -57,7 +57,7 @@ void BranchNNode::add(strid _id,NNodeRef _branch)
 	nodes.insert(make_pair(_id,_branch));
 }
 
-BranchNNode* BranchNNode::add_path(std::vector<strid> toks)
+BranchNNode* BranchNNode::add_path(const std::vector<strid> &toks)
 {
 	uint i,n = toks.size();
 	BranchNNode *me = this;

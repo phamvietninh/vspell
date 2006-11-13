@@ -53,7 +53,7 @@ public:
   BranchNNode* get_branch(strid) const;
   const node_map& get_nodes() const { return nodes; }
 
-  BranchNNode* add_path(std::vector<strid> toks);
+  BranchNNode* add_path(const std::vector<strid> &toks);
   void add(strid,NNodeRef);
 };
 

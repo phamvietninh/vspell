@@ -122,7 +122,7 @@ bool find_capital_words(Sentence &st,int start,int &pos,int &len)
 	bool found = false;
 	string sent = st.get();
 	for (i = start;i < sz;i ++) {
-		if (viet_isupper(sent[st[i].start])) {
+		if (viet_isupper((unsigned char)sent[st[i].start])) {
 			if (!found) {
 				found = true;
 				pos = i;

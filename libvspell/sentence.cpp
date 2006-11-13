@@ -176,7 +176,7 @@ void Sentence::tokenize()
 			const char *viet_token = tokens[i].value.c_str();
 			int jj,nn = strlen(viet_token);
 			for (jj = 0;jj < nn;jj ++)
-				if (viet_isalpha(viet_token[jj]) || viet_isdigit(viet_token[jj])) {
+				if (viet_isalpha((unsigned char)viet_token[jj]) || viet_isdigit((unsigned char)viet_token[jj])) {
 					string s = viet_token;
 					sy.id = get_ngram()[s];
 					sy.cid = get_ngram()[get_std_syllable(s)];

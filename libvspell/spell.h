@@ -130,10 +130,10 @@ protected:
 public:
 
 	boost::shared_ptr<WordEntries> we;
-	Sentence const * st;
+	boost::shared_ptr<const Sentence> st;
 
-	void construct(const Sentence &st);
-	void pre_construct(const Sentence &st,std::set<WordEntry> &wes,const WordStateFactories &f);
+	void construct(const boost::shared_ptr<const Sentence> &st);
+	void pre_construct(const boost::shared_ptr<const Sentence> &st,std::set<WordEntry> &wes,const WordStateFactories &f);
 	void post_construct(std::set<WordEntry> &wes);
 
 	/// Get the number of available positions, from 0 to n-1

@@ -315,11 +315,11 @@ void VSpell::add_word(const char *s)
 bool Text::sentence_check(const char *pp)
 {
 	// preprocess
-	st.set(pp);
-	st.standardize();
-	st.tokenize();
+	st->set(pp);
+	st->standardize();
+	st->tokenize();
 
-	if (!st.get_syllable_count())	// nothing to do but crash ;)
+	if (!st->get_syllable_count())	// nothing to do but crash ;)
 		return true;
 
 	// syllable checking
@@ -338,7 +338,7 @@ bool Text::sentence_check(const char *pp)
 	factories.push_back(&upper);
 	factories.push_back(&fuzzy);
 	w.pre_construct(st,wes,factories);
-	mark_proper_name(st,wes);
+	mark_proper_name(*st,wes);
 	apply_separators(wes);
 	w.post_construct(wes);
 	//cerr << w << endl;
@@ -406,7 +406,7 @@ void Text::penalty2_construct(Segmentation &seg)
 	Lattice lattice;
 	set<WordEntry> wes;
 	lattice.pre_construct(st,wes,factories);
-	mark_proper_name(st,wes);
+	mark_proper_name(*st,wes);
 	//apply_separators(wes);
 	lattice.post_construct(wes);
 
@@ -437,15 +437,15 @@ void Text::penalty2_construct(Segmentation &seg)
 
 bool Text::syllable_check(int i)
 {
-	if (vspell->in_dict(st[i].get_id()))
+	if (vspell->in_dict((*st)[i].get_id()))
 		return true;
 
-	string lcid = get_lowercased_syllable(sarch[st[i].get_cid()]);
+	string lcid = get_lowercased_syllable(sarch[(*st)[i].get_cid()]);
 	if (sarch.in_dict(lcid)) {
 		Syllable syl;							// diacritic check
 		if (syl.parse(lcid.c_str()) && syl.to_std_str() == lcid)
 			return true;
-		if (is_first_capitalized_word(sarch[st[i].get_id()]))
+		if (is_first_capitalized_word(sarch[(*st)[i].get_id()]))
 			return true;
 	}
 	return false;
@@ -453,7 +453,7 @@ bool Text::syllable_check(int i)
 
 bool Text::syllable_check()
 {
-	int i,n = st.get_syllable_count();
+	int i,n = st->get_syllable_count();
 
 	suggestions.clear();
 
@@ -489,8 +489,8 @@ bool Text::word_check()
 		sylls2.resize(len);
 		bool subok = true;
 		for (ii = 0;ii < len;ii ++) {
-			sylls2[ii] = st[seg[i].pos+ii].get_id();
-			if (subok && st[seg[i].pos+ii].get_cid() != sylls[ii])
+			sylls2[ii] = (*st)[seg[i].pos+ii].get_id();
+			if (subok && (*st)[seg[i].pos+ii].get_cid() != sylls[ii])
 				subok = false;
 		}
 
@@ -518,7 +518,7 @@ bool Text::word_check()
 				LeafNNode* leaf;
 				for (ii = 0;ii < len && branch;ii ++)
 					// follow the lowercase branch
-					branch = branch->get_branch(sarch[get_lowercased_syllable(sarch[st[seg[i].pos+ii].get_cid()])]);
+					branch = branch->get_branch(sarch[get_lowercased_syllable(sarch[(*st)[seg[i].pos+ii].get_cid()])]);
 
 				if (branch && (leaf = branch->get_leaf(sarch["<mainleaf>"])) != NULL) {
 					sylls.clear();
@@ -554,7 +554,7 @@ bool Text::word_check()
 
 unsigned Text::pos_from_syllable(const Suggestion &s)
 {
-	return offset+st[s.id].start;
+	return offset+(*st)[s.id].start;
 }
 
 unsigned Text::pos_from_word(const Suggestion &s)
@@ -603,11 +603,11 @@ void Text::apply_separators(set<WordEntry> &wes)
 	sort(seps.begin(),seps.end());
 	//copy(seps1.begin(),seps1.end(),inserter(seps,seps.begin()));
 	int sep = 0;
-	int i,n = st.get_syllable_count();
+	int i,n = st->get_syllable_count();
 
 	for (i = 0;i < n-1 && sep < seps.size();i ++) {
-		int p = offset+st[i].start+strlen(sarch[st[i].get_id()]);
-		if (p <= seps[sep] && seps[sep] <= offset+st[i+1].start) {
+		int p = offset+(*st)[i].start+strlen(sarch[(*st)[i].get_id()]);
+		if (p <= seps[sep] && seps[sep] <= offset+(*st)[i+1].start) {
 			apply_separator(wes,i);
 			sep ++;
 		}

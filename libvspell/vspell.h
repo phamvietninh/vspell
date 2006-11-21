@@ -33,12 +33,12 @@ protected:
 
 public:
 	int offset,length;
-	Sentence st;
+	boost::shared_ptr<Sentence> st;
 	Lattice w;
 	Segmentation seg;
 	Suggestions suggestions;
 
-	Text(VSpell *v):vspell(v) {}
+	Text(VSpell *v):vspell(v),st(new Sentence) {}
 	virtual ~Text() {}
 
 	virtual bool sentence_check(const char *pp);

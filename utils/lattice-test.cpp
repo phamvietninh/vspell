@@ -40,7 +40,7 @@ int main(int argc, char **argv)
       }
     }
     else {
-      Sentence st(cin);
+      boost::shared_ptr<Sentence> st(new Sentence(cin));
       WordStateFactories factories;
       ExactWordStateFactory exact;
       LowerWordStateFactory lower;
@@ -50,7 +50,7 @@ int main(int argc, char **argv)
       if (use_fuzzy)
         factories.push_back(&fuzzy);
       words.pre_construct(st,wes,factories);
-      mark_proper_name(st,wes);
+      mark_proper_name(*st,wes);
       words.post_construct(wes);
       cout << words << endl;
     }

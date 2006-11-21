@@ -269,8 +269,8 @@ bool MyText::ui_syllable_check()
 	unsigned ii,nn;
 	for (i = 0;i < n;i ++) {
 		int from,len;
-		from = st[suggestions[i].id].start;
-		len = strlen(get_ngram()[st[suggestions[i].id].id]);
+		from = (*st)[suggestions[i].id].start;
+		len = strlen(get_ngram()[(*st)[suggestions[i].id].id]);
 		int utf8_from,utf8_len;
 		utf8_from = utf8_pos(from);
 		utf8_len = utf8_pos(from+len)-utf8_from;
@@ -328,8 +328,8 @@ bool MyText::ui_word_check()
 		pos = (*seg.we)[seg[suggestions[i].id].id].pos;
 		pos2 = pos+count-1;
 		int from,len;
-		from = st[pos].start;
-		len = st[pos2].start+strlen(get_ngram()[st[pos2].id])-from;
+		from = (*st)[pos].start;
+		len = (*st)[pos2].start+strlen(get_ngram()[(*st)[pos2].id])-from;
 		int utf8_from,utf8_len;
 		utf8_from = utf8_pos(from);
 		utf8_len = utf8_pos(from+len)-utf8_from;

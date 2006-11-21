@@ -165,7 +165,7 @@ void FuzzyWordState::get_next(WordStates &states)
 	\param sent specify the input sentence
 	\param w must be cleared before calling this function
 */
-void Lattice::construct(const Sentence &sent)
+void Lattice::construct(const boost::shared_ptr<const Sentence> &sent)
 {
 	set<WordEntry> wes;
 	WordStateFactories factories;
@@ -178,7 +178,7 @@ void Lattice::construct(const Sentence &sent)
 	factories.push_back(&upper);
 	factories.push_back(&fuzzy);
 	pre_construct(sent,wes,factories);
-	mark_proper_name(sent,wes);
+	mark_proper_name(*sent,wes);
 	post_construct(wes);
 }
 
@@ -186,7 +186,7 @@ void Lattice::construct(const Sentence &sent)
 	The first phase of lattice creation. Create all possible words to we.
  */
 
-void Lattice::pre_construct(const Sentence &sent,set<WordEntry> &we,const WordStateFactories &f)
+void Lattice::pre_construct(const boost::shared_ptr<const Sentence> &st,set<WordEntry> &we,const WordStateFactories &f)
 {
 	Lattice &w = *this;
 	int i,n,ii,nn,k,nnn,iii;
@@ -194,14 +194,14 @@ void Lattice::pre_construct(const Sentence &sent,set<WordEntry> &we,const WordSt
 
 	//cerr << "construct\n";
 
-	w.st = &sent;
+	w.st = st;
 
 	WordStates states1;
 	WordStates states2;
 	states1.reserve(10);
 	states2.reserve(10);
 
-	n = sent.get_syllable_count();
+	n = st->get_syllable_count();
 
 	for (i = 0;i < n;i ++) {
 
@@ -211,7 +211,7 @@ void Lattice::pre_construct(const Sentence &sent,set<WordEntry> &we,const WordSt
 
 		// new states
 		for (fi = 0;fi < fn;fi ++)
-			f[fi]->create_new(states2,i,sent);
+			f[fi]->create_new(states2,i,*st);
 
 		// move old states to new states
 		nn = states1.size();
@@ -405,7 +405,8 @@ istream& operator >> (istream &is, Lattice &w)
 		(*w.we)[i].id = i;
 	}
 	w.construct();
-	w.st = new Sentence(w);
+	boost::shared_ptr<Sentence> st(new Sentence(w));
+	w.st = st;
 	return is;
 }
 

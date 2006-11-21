@@ -715,7 +715,7 @@ bool viet_utf8_to_viscii(const char *in,char *out) // pre-allocated
 		if (iter != utf8_viscii_map.end())
 			*out++ = (char)iter->second;
 		else {
-			fprintf(stderr,"Warning: unexpected unicode character %d",ch);
+			fprintf(stderr,"Warning: unexpected unicode character %d\n",ch);
 			return false;
 		}
 	}
@@ -739,7 +739,7 @@ bool viet_utf8_to_viscii_force(const char *in,char *out)
 		if (iter != utf8_viscii_map.end())
 			*out++ = (char)iter->second;
 		else {
-			fprintf(stderr,"Warning: unexpected unicode character %d",ch);
+			fprintf(stderr,"Warning: unexpected unicode character %d\n",ch);
 			*out += 'z';
 		}
 	}

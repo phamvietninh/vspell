@@ -250,8 +250,8 @@ log10_bo_biprob(WAS | ZWEIG)  ZWEIG  WAS   log10_bialpha(ZWEIG,WAS)
     int current_table;
     int j;
 
-    int ngcount;
-    int marg_count;
+    long long int ngcount;
+    long long int marg_count;
     double discounted_ngcount;
     
     double ngprob;
@@ -347,8 +347,8 @@ log10_bo_biprob(WAS | ZWEIG)  ZWEIG  WAS   log10_bialpha(ZWEIG,WAS)
 
 	      if (ngprob > 1.0) {
 		fprintf(stderr,
-			"discounted_ngcount = %f marg_count = %d %d %d %d\n",
-		       discounted_ngcount,marg_count,current_pos[0],
+			"discounted_ngcount = %f(%Ld) marg_count = %Ld %d %d %d\n",
+		       discounted_ngcount,ngcount,marg_count,current_pos[0],
 		       current_pos[1],current_pos[2]);
 		quit(-1,"Error : probablity of ngram is greater than one.\n");
 	      }

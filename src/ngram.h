@@ -99,9 +99,9 @@ typedef struct {
 				    unigrams. The normal unigram counts
 				    differ in that context cues have
 				    zero counts there, but not here */
-  int            **count4;       /* Alternative method of storing the counts,
+  long long int  **count4;       /* Alternative method of storing the counts,
 				    using 4 bytes. Not normally allocated */
-  int            *marg_counts4;  /* Ditto */
+  long long int  *marg_counts4;  /* Ditto */
   bo_weight_t    **bo_weight;    /* Pointer to array of back-off weights */
   four_byte_t    **bo_weight4;   /* Pointer to array of 4 byte
 				    back_off weights. Only one of
@@ -154,7 +154,7 @@ typedef struct {
   uni_probs_t    *uni_log_probs;         /* Log probs for each unigram */
   flag           *context_cue;           /* True if word with this id is
 					    a context cue */
-  int            n_unigrams;             /* Total number of unigrams in
+  long long int  n_unigrams;             /* Total number of unigrams in
 					    the training data */
   int            min_unicount;           /* Count to which infrequent unigrams
 					    will be bumped up */

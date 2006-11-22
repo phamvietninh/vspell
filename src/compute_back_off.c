@@ -31,7 +31,7 @@ void compute_back_off(ng_t *ng,int n, int verbosity) {
   int *end_pos;
   id__t *sought_ngram;
   int current_table;
-  int ng_count;
+  long long int ng_count;
   int i;
   double sum_cond_prob;
   double sum_bo_prob;

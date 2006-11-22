@@ -92,10 +92,15 @@ void load_lm(ng_t *ng,
   ng->vocab[0] = salloc("<UNK>");
 
   if (ng->four_byte_counts) {
-    ng->marg_counts4 = (int *) 
-      rr_malloc(sizeof(int)*(ng->vocab_size+1));
-    rr_fread(ng->marg_counts4,sizeof(int),ng->vocab_size+1,
+    int *temp = (int *)rr_malloc(sizeof(int)*(ng->vocab_size+1));
+    int i;
+    ng->marg_counts4 = (long long int *) 
+      rr_malloc(sizeof(long long int)*(ng->vocab_size+1));
+    rr_fread(temp,sizeof(int),ng->vocab_size+1,
 	     ng->bin_fp,"marg_counts",0);
+    for (i = 0;i < ng->vocab_size+1;i ++)
+      ng->marg_counts4[i] = temp[i];
+    free(temp);
   } 
   else {
     ng->marg_counts = (count_ind_t *) 
@@ -198,12 +203,12 @@ void load_lm(ng_t *ng,
   rr_fread(ng->num_kgrams,sizeof(int),ng->n,ng->bin_fp,"num_kgrams",0);
 
   ng->count = (count_ind_t **) rr_malloc(sizeof(count_ind_t *)*ng->n);
-  ng->count4 = (int **) rr_malloc(sizeof(int *)*ng->n);
+  ng->count4 = (long long int **) rr_malloc(sizeof(long long int *)*ng->n);
 
   if (ng->four_byte_counts) {
-    ng->count4[0] = (int *) rr_malloc(sizeof(int)*(ng->vocab_size+1));
+    ng->count4[0] = (long long int *) rr_malloc(sizeof(long long int)*(ng->vocab_size+1));
     for (i=1;i<=ng->n-1;i++) {
-      ng->count4[i] = (int *) rr_malloc(sizeof(int)*ng->num_kgrams[i]);
+      ng->count4[i] = (long long int *) rr_malloc(sizeof(long long int)*ng->num_kgrams[i]);
     }
   }
   else {

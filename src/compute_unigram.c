@@ -64,7 +64,7 @@ note: UNK is hardwired to id=0, here and elsewhere.
 void compute_unigram(ng_t *ng,int verbosity) {
 
   int i;
-  int count;
+  long long int count;
   int n_zerotons;
   int num_of_types;
   double floatN;

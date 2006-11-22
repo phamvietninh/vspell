@@ -24,7 +24,7 @@ results obtained from use of this software.
 void increment_context(ng_t *ng,int k,int verbosity) {
  
   
-  int current_count;
+  long long int current_count;
   int j;
   int current_table;
   int *current_pos;

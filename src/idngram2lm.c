@@ -44,7 +44,7 @@ int main (int argc, char **argv) {
   int test_cc_id;
   ngram current_ngram;
   ngram previous_ngram;
-  int *ng_count; /* Array indicating the number of occurrances of 
+  long long int *ng_count; /* Array indicating the number of occurrances of 
 		    the current 1-gram, 2-gram, ... ,n-gram */  
   int nlines;
   int pos_of_novelty;
@@ -547,7 +547,7 @@ int main (int argc, char **argv) {
   /* ----------- Allocate memory for tree structure -------------- */
 
   ng.count = (count_ind_t **) rr_malloc(sizeof(count_ind_t *)*ng.n);
-  ng.count4 = (int **) rr_malloc(sizeof(int *)*ng.n);
+  ng.count4 = (long long int **) rr_malloc(sizeof(long long int *)*ng.n);
 
 
   ng.count_table = (count_t **) rr_malloc(sizeof(count_t *)*ng.n);
@@ -561,7 +561,7 @@ int main (int argc, char **argv) {
 					       ng.table_sizes[0]);
   }
   else {
-    ng.marg_counts4 = (int *) rr_malloc(sizeof(int)*ng.table_sizes[0]);
+    ng.marg_counts4 = (long long int *) rr_malloc(sizeof(long long int)*ng.table_sizes[0]);
   }
 
   ng.word_id = (id__t **) rr_malloc(sizeof(id__t *)*ng.n);
@@ -577,7 +577,7 @@ int main (int argc, char **argv) {
   /* First table */
 
   if (ng.four_byte_counts) {
-    ng.count4[0] = (int *) rr_calloc(ng.table_sizes[0],sizeof(int));
+    ng.count4[0] = (long long int *) rr_calloc(ng.table_sizes[0],sizeof(long long int));
   }
   else {
     ng.count[0] = (count_ind_t *) rr_calloc(ng.table_sizes[0],
@@ -604,7 +604,7 @@ int main (int argc, char **argv) {
     
     ng.word_id[i] = (id__t *) rr_malloc(sizeof(id__t)*ng.table_sizes[i]);
     if (ng.four_byte_counts) {
-      ng.count4[i] = (int *) rr_malloc(sizeof(int)*ng.table_sizes[i]);
+      ng.count4[i] = (long long int *) rr_malloc(sizeof(long long int)*ng.table_sizes[i]);
     }
     else {
       ng.count[i] = (count_ind_t *) 
@@ -642,9 +642,9 @@ int main (int argc, char **argv) {
   ng.word_id[ng.n-1] = (id__t *) 
     rr_malloc(sizeof(id__t)*ng.table_sizes[ng.n-1]);
   if (ng.four_byte_counts) {
-    ng.count4[ng.n-1] = (int *) rr_malloc(sizeof(int)*ng.table_sizes[ng.n-1]);
+    ng.count4[ng.n-1] = (long long int *) rr_malloc(sizeof(long long int)*ng.table_sizes[ng.n-1]);
     pc_message(verbosity,2,"Allocated %d bytes to table for %d-grams.\n",
-	       (sizeof(int) + 
+	       (sizeof(long long int) + 
 		sizeof(id__t))*ng.table_sizes[ng.n-1],ng.n);
     
   }
@@ -717,7 +717,7 @@ int main (int argc, char **argv) {
   previous_ngram.n = ng.n;
   
   ng.num_kgrams = (int *) rr_calloc(ng.n,sizeof(int));
-  ng_count = (count_t *) rr_calloc(ng.n,sizeof(count_t));
+  ng_count = (long long int *) rr_calloc(ng.n,sizeof(long long int));
   nlines = 1;
   ng.n_unigrams = 0;
   

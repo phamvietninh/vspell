@@ -26,7 +26,7 @@ void store_count(flag four_byte_counts,
 		 int *count_table,
 		 int count_table_size,
 		 unsigned short *short_counts,
-		 int *long_counts,
+		 long long int *long_counts,
 		 int position,
 		 int count) {
 
@@ -40,10 +40,10 @@ void store_count(flag four_byte_counts,
   }
 }
 
-int return_count(flag four_byte_counts,
+long long int return_count(flag four_byte_counts,
 		 int *count_table,
 		 unsigned short *short_counts,
-		 int *long_counts,
+		 long long int *long_counts,
 		 int position) {
 
   if (four_byte_counts) {

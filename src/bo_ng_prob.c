@@ -44,8 +44,8 @@ void bo_ng_prob(int context_length,
   int ng_begin;
   int ng_end;
   int ng_middle;
-  int ncount;
-  int contcount;
+  long long int ncount;
+  long long int contcount;
   int *ng_index;
 
   int i;

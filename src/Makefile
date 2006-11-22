@@ -29,12 +29,12 @@ CC              = gcc
 # FIX_PROT_FLAG Needed for the gcc compiler on some SunOS machines in CUED. 
 
 OPT_FLAG	= -O
-#GDB_FLAG	= -ggdb
+GDB_FLAG	= -ggdb
 #BNDS_CHK_FLAG	= -fbounds-checking
-#WARNINGS_FLAG	= -Wall
+WARNINGS_FLAG	= -Wall  -Werror -ftrapv
 #ANSI_FLAG	= -Aa
 #POSIX_FLAG	= -D_INCLUDE_POSIX_SOURCE
-#BYTESWAP_FLAG	= -DSLM_SWAP_BYTES
+BYTESWAP_FLAG	= -DSLM_SWAP_BYTES
 #FIX_PROT_FLAG 	= -D__USE_FIXED_PROTOTYPES__ 
 
 CFLAGS		= $(OPT_FLAG) $(GDB_FLAG) $(BNDS_CHK_FLAG) $(WARNINGS_FLAG) $(ANSI_FLAG) $(POSIX_FLAG) $(BYTESWAP_FLAG) $(FIX_PROT_FLAG)

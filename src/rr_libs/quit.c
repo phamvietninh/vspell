@@ -19,6 +19,7 @@ results obtained from use of this software.
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <stdlib.h>
  
 int quit(int rc, char *msg, ...)
 {

@@ -53,7 +53,7 @@ results obtained from use of this software.
       MAIN FUNCTION
  ***************************/
 
-void main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
 
   int verbosity;
   int n;

@@ -145,7 +145,7 @@ void eval(double *sum_logprobs, double **fractions, int *tag_of, int *n_in_tag,
 }
 
 
-void main (int argc, char **argv) {
+int main (int argc, char **argv) {
 
   int use_tags=0; 
   int use_captions=0; 
@@ -692,6 +692,8 @@ void main (int argc, char **argv) {
    }
 
    if (n_test_items>0) exit((int) test_pp);
+
+   return 0;
 }
 
 

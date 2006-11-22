@@ -29,7 +29,7 @@ results obtained from use of this software.
 #include "evallm.h"
 
 
-void main (int argc,char **argv) {
+int main (int argc,char **argv) {
 
   char *bin_path;
   int verbosity;

@@ -57,7 +57,7 @@ unsigned short buffer_contents(int ypos,
       MAIN FUNCTION
  ***************************/
 
-void main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
 
   int i,j;
 
@@ -296,10 +296,12 @@ void main(int argc, char *argv[]) {
 
     for (i=0;i<=n-1;i++) {
       temp_ngram[i] = buffer_contents(0,i,buffer);
+      /* gcc warning: text2idngram.c:299: warning: comparison is always false due to limited range of data type
       if (temp_ngram[i] > MAX_VOCAB_SIZE) {
 	quit(-1,"Invalid trigram in buffer.\nAborting");
 
       }
+      */
     }
     temp_count = 1;
 

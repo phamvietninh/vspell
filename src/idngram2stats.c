@@ -35,7 +35,7 @@ typedef struct {
 
 int get_ngram(FILE *id_ngram_fp, ngram *ng, flag ascii);
 
-void main (int argc, char **argv) {
+int main (int argc, char **argv) {
 
   flag first_ngram;
   int n;
@@ -53,7 +53,7 @@ void main (int argc, char **argv) {
   int j;
   int t;
 
-  pos_of_novelty = n; /* Simply for warning-free compilation */
+  pos_of_novelty = 0; /* Simply for warning-free compilation */
 
   report_version(&argc,argv);
 

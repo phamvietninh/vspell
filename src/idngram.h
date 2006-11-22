@@ -205,11 +205,13 @@ void merge_tempfiles (int start_file,
 	}
       }
 
+      /* gcc warning: idngram.h:209: warning: comparison is always false due to limited range of data type
       for (i=0;i<=n-1;i++) {
 	if (smallest_ngram[i] > MAX_VOCAB_SIZE) {
 	  quit(-1,"Error : Temporary files corrupted, invalid n-gram found.\n");
 	}
       }
+      */
 	  
       /* For each of the files that are currently holding this ngram,
 	 add its count to the temporary count, and read in a new ngram

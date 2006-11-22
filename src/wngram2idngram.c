@@ -68,7 +68,7 @@ int compare_ngrams2(const void *ngram1,
 
 }
 
-void main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
 
   int verbosity;
   int vocab_size;

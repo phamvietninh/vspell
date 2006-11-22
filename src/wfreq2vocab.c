@@ -68,7 +68,7 @@ int sort_alpha(const void *rec1,const void *rec2) {
       MAIN FUNCTION
  ***************************/
 
-void main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
 
   int verbosity;
   int vocab_size;

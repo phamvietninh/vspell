@@ -286,7 +286,7 @@ void merge_tempfiles (int start_file,
 
 
 
-void main (int argc, char **argv) {
+int main (int argc, char **argv) {
 
   int n;
   int verbosity;

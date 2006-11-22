@@ -252,7 +252,7 @@ void *sih_val_read_from_file(sih_t *ht, FILE *fp, char *filename, int verbosity)
   pstring = string_block;
   past_end_of_block = string_block + total_string_space;
   for (islot=0; islot<ht->nslots; islot++) {
-     if (*pstring == NULL) {
+     if (*pstring == '\0') {
 	/* an empty entry: */
 	ht->slots[islot].string = NULL;
 	pstring++;

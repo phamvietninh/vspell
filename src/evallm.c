@@ -24,8 +24,9 @@ results obtained from use of this software.
 #include "rr_libs/general.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
-void main (int argc, char **argv) {
+int main (int argc, char **argv) {
 
   ng_t ng;
   arpa_lm_t arpa_ng;

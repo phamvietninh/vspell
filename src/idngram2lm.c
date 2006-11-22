@@ -28,7 +28,7 @@ results obtained from use of this software.
 #include <string.h>
 
 
-void main (int argc, char **argv) {
+int main (int argc, char **argv) {
 
   int i,j;
   ng_t ng;

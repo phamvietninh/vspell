@@ -103,38 +103,38 @@ clean:
 spotless: clean
 	rm -f $(EXECS) $(LIB) *~
 
-evallm: 
+evallm: evallm.c
 	$(CC) $(CFLAGS) -o evallm evallm.c $(LIB) $(LINKFLAGS) -lm
 
-text2wngram: 
+text2wngram: text2wngram.c
 	$(CC) $(CFLAGS) -o text2wngram text2wngram.c $(LIB) $(LINKFLAGS) -lm
 
-text2idngram:
+text2idngram: text2idngram.c
 	$(CC) $(CFLAGS) -o text2idngram text2idngram.c $(LIB) $(LINKFLAGS) -lm
 
-binlm2arpa:
+binlm2arpa: binlm2arpa.c
 	$(CC) $(CFLAGS) -o binlm2arpa binlm2arpa.c $(LIB) $(LINKFLAGS) -lm
 
-ngram2mgram: 
+ngram2mgram: ngram2mgram.c
 	$(CC) $(CFLAGS) -o ngram2mgram ngram2mgram.c $(LIB) $(LINKFLAGS) -lm
 
-idngram2stats:
+idngram2stats: idngram2stats.c
 	$(CC) $(CFLAGS) -o idngram2stats idngram2stats.c $(LIB) $(LINKFLAGS) -lm
 
-wfreq2vocab:
+wfreq2vocab: wfreq2vocab.c
 	$(CC) $(CFLAGS) -o wfreq2vocab wfreq2vocab.c $(LIB) $(LINKFLAGS) -lm
 
-text2wfreq:
+text2wfreq: text2wfreq.c
 	$(CC) $(CFLAGS) -o text2wfreq text2wfreq.c $(LIB) $(LINKFLAGS) -lm
 
-wngram2idngram:
+wngram2idngram: wngram2idngram.c
 	$(CC) $(CFLAGS) -o wngram2idngram wngram2idngram.c $(LIB) $(LINKFLAGS) -lm
 
-mergeidngram:
+mergeidngram: mergeidngram.c
 	$(CC) $(CFLAGS) -o mergeidngram mergeidngram.c $(LIB) $(LINKFLAGS) -lm
 
-idngram2lm: 
+idngram2lm:  idngram2lm.c
 	$(CC) $(CFLAGS) -o idngram2lm idngram2lm.c $(LIB) $(LINKFLAGS) -lm
 
-interpolate:
+interpolate: interpolate.c
 	$(CC) $(CFLAGS) -o interpolate interpolate.c $(LIB) $(LINKFLAGS) -lm

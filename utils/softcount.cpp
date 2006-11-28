@@ -16,15 +16,15 @@ using namespace std;
  */
 ostream& SoftCounter::count_lattice(const Lattice &w, ostream &os, bool first_count)
 {
-	vector<float> Sleft,Sright;
+	vector<double> Sleft,Sright;
 	vector<vector<uint> > prev;
 	//boost::shared_ptr<WordEntries> p_we = w.we;
 	//const WordEntries &we = *p_we;
 	int i,n = w.get_word_count(),v,vv;
-	float sum = 0;
+	double sum = 0;
 	VocabIndex vi[3];
 	vector<uint> ends;
-	float fc;
+	double fc;
 
 	Sleft.resize(w.we->size());
 	Sright.resize(w.we->size());
@@ -36,7 +36,7 @@ ostream& SoftCounter::count_lattice(const Lattice &w, ostream &os, bool first_co
 	for (i = 0;i < n;i ++) {
 		const WordEntryRefs &wers = w.get_we(i);
 		int ii,nn = wers.size();
-		float add;
+		double add;
 		for (ii = 0;ii < nn;ii ++) {
 			// wers[ii] is the first node (W).
 			v = wers[ii]->id;
@@ -79,7 +79,7 @@ ostream& SoftCounter::count_lattice(const Lattice &w, ostream &os, bool first_co
 	for (i = n-1;i >= 0;i --) {
 		const WordEntryRefs &wers = w.get_we(i);
 		int ii,nn = wers.size();
-		float add;
+		double add;
 		for (ii = 0;ii < nn;ii ++) {
 			// wers[ii] is the first node (W).
 			v = wers[ii]->id;
@@ -135,13 +135,13 @@ ostream& SoftCounter::count_lattice(const Lattice &w, ostream &os, bool first_co
 }
 
 
-ostream& SoftCounter::count_dag(const DAG &dag,ostream &os,bool first_count)
+ostream& SoftCounter::count_dag(const DAG &dag,ostream &os,int id, bool first_count)
 {
 	int n = dag.node_count();
-	vector<float> Sleft(n),Sright(n);
+	vector<double> Sleft(n),Sright(n);
 	vector<set<uint> > prev(n);
 	int i,v,vv;
-	float add;
+	double add;
 
 	//cerr << "Nodes: " << n << endl;
 
@@ -164,6 +164,8 @@ ostream& SoftCounter::count_dag(const DAG &dag,ostream &os,bool first_count)
 		for (i = 0;i < n;i ++) {
 			vv = nexts[i];
 			add = Sleft[v]*(first_count ? 1 : LogPtoProb(-dag.edge_value(v,vv)));
+			if (add == 0.0 || add == -0.0)
+				cerr << boost::format("WARNING: %d: Sleft addition for %d is zero (Sleft[%d] = %g, prob=%g)") % id % vv % v % Sleft[v] % LogPtoProb(-dag.edge_value(v,vv)) << endl;
 			Sleft[vv] += add;
 					
 			traces.push_back(vv);
@@ -175,9 +177,11 @@ ostream& SoftCounter::count_dag(const DAG &dag,ostream &os,bool first_count)
 
 	//cerr << "Sleft done" << endl;
 
-	float fc;
+	double fc;
 	// second pass: Sright
-	float sum = Sleft[dag.node_end()];
+	double sum = Sleft[dag.node_end()];
+	if (sum == 0.0 || sum == -0.0)
+		cerr << boost::format("WARNING: %d: Sum is zero") % id << endl;
 	Sright[dag.node_end()] = 1;
 	traces.clear();
 	traces.push_back(dag.node_end()); // the last v above
@@ -195,6 +199,8 @@ ostream& SoftCounter::count_dag(const DAG &dag,ostream &os,bool first_count)
 			traces.push_back(v);
 
 			add = Sright[vv]*(first_count ? 1 : LogPtoProb(-dag.edge_value(v,vv)));
+			if (add == 0.0 || add == -0.0)
+				cerr << boost::format("WARNING: %d: Sright addition for %d is zero") % id % v << endl;
 			Sright[v] += add;
 
 			// collect fractional counts

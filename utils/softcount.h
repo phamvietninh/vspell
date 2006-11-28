@@ -31,7 +31,7 @@
 namespace SoftCounter
 {
 	std::ostream& count_lattice(const Lattice &words,std::ostream &os,bool first_round = false);
-	std::ostream& count_dag(const DAG &words,std::ostream &os,bool first_round = false);
+	std::ostream& count_dag(const DAG &words,std::ostream &os,int id,bool first_round = false);
 	std::ostream& count_dag_fixed(const DAG &words,std::ostream &os,bool first_round = false);
 };
 

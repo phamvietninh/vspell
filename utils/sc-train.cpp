@@ -48,7 +48,7 @@ int main(int argc,char **argv)
 			dag = dagw2;
 		}
 		//sc.count(words,stats);
-		SoftCounter::count_dag(*dag,cout,first_count);
+		SoftCounter::count_dag(*dag,cout,count-1,first_count);
 		if (trigram)
 			delete (WordDAG2*)dag;
 	}

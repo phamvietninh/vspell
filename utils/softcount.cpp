@@ -233,6 +233,122 @@ ostream& SoftCounter::count_dag(const DAG &dag,ostream &os,int id, bool first_co
 	return os;
 }
 
+void SoftCounter::record2(const DAG &dag,FILE *fp,int id)
+{
+	int n = dag.node_count();
+	vector<set<uint> > prev(n);
+	int i,v,vv;
+
+	vector<bool> mark(n);
+	deque<uint> traces;
+	traces.push_back(dag.node_begin());
+
+	fprintf(fp,"%d %d %d\n",n,dag.node_begin(),dag.node_end());
+
+	while (!traces.empty()) {
+		v = traces.front();
+		traces.pop_front();
+		if (mark[v])
+			continue;
+		else
+			mark[v] = true;
+		std::vector<uint> nexts;
+		dag.get_next(v,nexts);
+		n = nexts.size();
+
+		for (i = 0;i < n;i ++) {
+			vv = nexts[i];
+
+	    VocabIndex edge_vi[2],edge_v;
+			dag.fill_vi(v,vv,edge_v,edge_vi,2);
+			fprintf(fp,"L %d %d %s %s\n",v,vv,get_ngram()[edge_vi[0]],get_ngram()[edge_v]);
+
+			traces.push_back(vv);
+
+			// init prev references for Sright phase
+			prev[vv].insert(v);
+		}
+	}
+
+	traces.clear();
+	traces.push_back(dag.node_end()); // the last v above
+	while (!traces.empty()) {
+		vv = traces.front();
+		traces.pop_front();
+		if (!mark[vv])
+			continue;
+		else
+			mark[vv] = false;
+
+		set<uint>::iterator iter;
+		for (iter = prev[vv].begin();iter != prev[vv].end(); ++iter) {
+			v = *iter;
+			traces.push_back(v);
+
+	    VocabIndex edge_vi[2],edge_v;
+			dag.fill_vi(v,vv,edge_v,edge_vi,2);
+			fprintf(fp,"R %d %d %s %s\n",v,vv,get_ngram()[edge_vi[0]],get_ngram()[edge_v]);
+		}
+	}
+	fprintf(fp,"E 0 0 none none\n");
+}
+
+int SoftCounter::replay2(FILE *fp_in,FILE *fp_out, int id,bool first_count)
+{
+	int n, node_begin, node_end;
+
+  if (fscanf(fp_in,"%d %d %d\n",&n,&node_begin,&node_end) != 3) {
+		fprintf(stderr,"Error: %d: Could not read dag count\n",id);
+		return -2;
+	}
+
+	vector<double> Sleft(n),Sright(n);
+	int i,v,vv;
+	double add;
+	char type[2]; // should not be longer than one
+	char str1[100],str2[100];
+	int right_mode = 0;
+	double sum;
+
+	//cerr << "Nodes: " << n << endl;
+
+	Sleft[node_begin] = 1;
+
+	while (fscanf(fp_in,"%s %d %d %s %s\n",type,&v,&vv,str1,str2) == 5) {
+		if (type[0] == 'E')
+			return 0;
+		//fprintf(stderr,"Got %s %d %d %s %s\n",type,v,vv,str1,str2);
+		VocabIndex edge_vi[2],edge_v;
+		edge_v = get_ngram()[str2];
+		edge_vi[0] = get_ngram()[str1];
+		edge_vi[1] = 0;
+		if (type[0] == 'L') {
+			add = Sleft[v]*(first_count ? 1 : LogPtoProb(get_ngram().wordProb(edge_v,edge_vi)));
+			if (add == 0.0 || add == -0.0)
+				fprintf(stderr,"WARNING: %d: Sleft addition for %d is zero (Sleft[%d] = %g, prob=%g %s %s)\n",id,vv,v,Sleft[v],LogPtoProb(get_ngram().wordProb(edge_v,edge_vi)),str1,str2);
+			Sleft[vv] += add;
+		}
+		else {
+			if (!right_mode) {
+				right_mode = 1;
+				sum = Sleft[node_end];
+				if (sum == 0.0 || sum == -0.0)
+					fprintf(stderr,"WARNING: %d: Sum is zero\n",id);
+				Sright[node_end] = 1;
+			}
+			add = Sright[vv]*(first_count ? 1 : LogPtoProb(get_ngram().wordProb(edge_v,edge_vi)));
+			if (add == 0.0 || add == -0.0)
+				fprintf(stderr,"WARNING: %d: Sright addition for %d is zero (%s %s)\n",id,v,str1,str2);
+			Sright[v] += add;
+
+			// collect fractional counts
+			double fc = Sleft[v]*add/sum; // P(vv/v)
+			fprintf(fp_out,"%s %s %g\n",str1,str2,fc);
+		}
+	}
+	return 0;
+}
+
 /*
 	 A work-around because NgramFractionalStats is still buggy.
 */

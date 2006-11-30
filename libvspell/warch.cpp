@@ -83,47 +83,25 @@ void WordArchive::init()
 
 bool WordArchive::load(const char* filename)
 {
-	ifstream ifs(filename);
+	if (filename != NULL) {
+		ifstream ifs(filename);
 
-	if (!ifs.is_open())
-		return false;
+		if (!ifs.is_open())
+			return false;
 
-	int nr_lines = 0;
-	string line;
-	int start,len,tmp_char;
-	string::size_type pos;
-	char *str_pos;
-	vector<string> toks;
-	while (getline(ifs,line)) {
-		start = 0;
-		len = line.size();
-		toks.clear();
-		while (start < len) {
-			str_pos = strchr(line.c_str()+start,'#');
-			if (str_pos == NULL)
-				pos = len;
-			else
-				pos = str_pos - line.c_str();
-			tmp_char = line[pos];
-			line[pos] = 0;
-			toks.push_back(line.c_str()+start);
-			line[pos] = tmp_char;
-			start = pos+1;
+		string word;
+		while (ifs >> word) {
+			add_entry(word.c_str());
+			add_case_entry(word.c_str());
 		}
-
-		if (!toks.size())
-			continue;			// unrecoverable error
-		if (toks.size() < 2)
-			toks.push_back("N");	// assume N
-		if (toks.size() < 3)
-			toks.push_back("0");	// assume 0
-
-		add_entry(toks);
-		add_case_entry(toks);
-
-		nr_lines ++;
 	}
-
+	else {
+		const lm_t * lm = get_ngram().get_lm();
+		for (int i = 0;i < lm->ucount;i ++) {
+			add_entry(lm->word_str[i]);
+			add_case_entry(lm->word_str[i]);
+		}
+	}
 	return true;
 }
 
@@ -139,21 +117,25 @@ LeafNNode* WordArchive::add_special_entry(strid tok)
 	return leaf;
 }
 
-void WordArchive::add_entry(vector<string> toks)
+void WordArchive::add_entry(const char *w)
 {
-	unsigned start,len,pos;
-	start = 0;
-	len = toks[0].size();
+	unsigned len,wlen;
+	const char *pos,*start;
+	char *buf;
+	len = strlen(w);
+	start = pos = w;
+	buf = (char *)malloc(len+1);
 	vector<VocabIndex> syllables;
-	while (start < len) {
-		pos = toks[0].find(' ',start);
-		if (pos == string::npos)
-			pos = len;
-		string s = toks[0].substr(start,pos-start);
-		VocabIndex id = sarch[get_std_syllable(s)];
+	while (pos) {
+		pos = strchr(start,'_');
+		wlen = pos ? pos - start : len - (start - w);
+		memcpy(buf,start,wlen);
+		buf[wlen] = '\0';
+		VocabIndex id = sarch[buf];
 		syllables.push_back(id);
 		start = pos+1;
 	}
+	free(buf);
 
 	vector<strid> path = syllables;
 	BranchNNode* branch = get_root()->add_path(path);
@@ -162,44 +144,52 @@ void WordArchive::add_entry(vector<string> toks)
 	//leaf->set_mask(MAIN_LEAF);
 	branch->add(mainleaf_id,noderef);
 	leaf->set_id(syllables);
-
 }
 
-void WordArchive::add_case_entry(vector<string> toks2)
+void WordArchive::add_case_entry(const char *w2)
 {
-	vector<string> toks = toks2;
-	unsigned start,len,pos;
-	start = 0;
-	len = toks[0].size();
-
-	transform(toks[0].begin(),toks[0].end(),toks[0].begin(),viet_tolower);
-
-	if (toks[0] == toks2[0])
+	unsigned i,same,len,wlen;
+	const char *pos,*start;
+	char *buf;
+	char *w;
+	len = strlen(w2);
+	w = (char *)malloc(len+1);
+	same = 1;
+	for (i = 0;i < len;i ++) {
+		w[i] = (char)viet_tolower(w2[i]);
+		if (same && w[i] != w2[i])
+			same = 0;
+	}
+	if (same) {
+		free(w);
 		return;
-
-	start = 0;										// path
-	vector<VocabIndex> syllables;
-	while (start < len) {
-		pos = toks[0].find(' ',start);
-		if (pos == string::npos)
-			pos = len;
-		string s = toks[0].substr(start,pos-start);
-		VocabIndex id = sarch[get_std_syllable(s)];
+	}
+	w[len] = '\0';
+	buf = (char *)malloc(len+1);
+	vector<VocabIndex> syllables,real_syllables;
+	start = pos = w;
+	while (pos) {
+		pos = strchr(start,'_');
+		wlen = pos ? pos - start : len - (start - w);
+		memcpy(buf,start,wlen);
+		buf[wlen] = '\0';
+		VocabIndex id = sarch[buf];
 		syllables.push_back(id);
 		start = pos+1;
 	}
+	free(w);
 
-	start = 0;										// real syllable
-	vector<VocabIndex> real_syllables;
-	while (start < len) {
-		pos = toks2[0].find(' ',start);
-		if (pos == string::npos)
-			pos = len;
-		string s = toks2[0].substr(start,pos-start);
-		VocabIndex id = sarch[get_std_syllable(s)];
+	start = pos = w2;
+	while (pos) {
+		pos = strchr(start,'_');
+		wlen = pos ? pos - start : len - (start - w2);
+		memcpy(buf,start,wlen);
+		buf[wlen] = '\0';
+		VocabIndex id = sarch[buf];
 		real_syllables.push_back(id);
 		start = pos+1;
 	}
+	free(buf);
 
 	vector<strid> path = syllables;
 	BranchNNode* branch = get_root()->add_path(path);

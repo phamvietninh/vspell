@@ -102,8 +102,8 @@ class WordArchive
 {
 protected:
 	NNodeRef root;
-	void add_entry(std::vector<std::string> toks);
-	void add_case_entry(std::vector<std::string> toks);
+	void add_entry(const char *);
+	void add_case_entry(const char *);
 	std::vector<strid> leaf_id;
 
 public:

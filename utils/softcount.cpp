@@ -180,8 +180,11 @@ ostream& SoftCounter::count_dag(const DAG &dag,ostream &os,int id, bool first_co
 	double fc;
 	// second pass: Sright
 	double sum = Sleft[dag.node_end()];
-	if (sum == 0.0 || sum == -0.0)
+	if (sum == 0.0 || sum == -0.0) {
 		cerr << boost::format("WARNING: %d: Sum is zero") % id << endl;
+		// Can do nothing more because sum is zero
+		return os;
+	}
 	Sright[dag.node_end()] = 1;
 	traces.clear();
 	traces.push_back(dag.node_end()); // the last v above
@@ -297,7 +300,7 @@ int SoftCounter::replay2(FILE *fp_in,FILE *fp_out, int id,bool first_count)
 {
 	int n, node_begin, node_end;
 
-  if (fscanf(fp_in,"%d %d %d\n",&n,&node_begin,&node_end) != 3) {
+	if (fscanf(fp_in,"%d %d %d\n",&n,&node_begin,&node_end) != 3) {
 		fprintf(stderr,"Error: %d: Could not read dag count\n",id);
 		return -2;
 	}
@@ -332,10 +335,13 @@ int SoftCounter::replay2(FILE *fp_in,FILE *fp_out, int id,bool first_count)
 			if (!right_mode) {
 				right_mode = 1;
 				sum = Sleft[node_end];
-				if (sum == 0.0 || sum == -0.0)
+				if (sum == 0.0 || sum == -0.0) {
 					fprintf(stderr,"WARNING: %d: Sum is zero\n",id);
+				}
 				Sright[node_end] = 1;
 			}
+			if (sum == 0.0 || sum == -0.0)
+				continue;
 			add = Sright[vv]*(first_count ? 1 : LogPtoProb(get_ngram().wordProb(edge_v,edge_vi)));
 			if (add == 0.0 || add == -0.0)
 				fprintf(stderr,"WARNING: %d: Sright addition for %d is zero (%s %s)\n",id,v,str1,str2);

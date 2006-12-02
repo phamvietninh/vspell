@@ -35,6 +35,7 @@ typedef struct {
 class LM {
 private:
 	lm_t *lm;
+	hash_t oov_ht;
 	std::vector<const char *> oov;
 	VocabIndex blocked;
 
@@ -47,7 +48,7 @@ public:
 	LM();
 	~LM();
 	void set_blocked(bool _blocked);
-	void clear_rest();
+	void clear_oov();
 
 	strid operator[] (const char* s);
 	strid operator[] (const std::string &s) { return (*this)[s.c_str()]; }

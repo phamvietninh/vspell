@@ -56,6 +56,10 @@ LM::LM()
 	lm = NewModel (0, 0, 0);
 	lm->word_str = NULL;
 	lm->n_word_str = 0;
+
+	oov_ht.size = 0;
+	oov_ht.inuse = 0;
+	oov_ht.tab = NULL;
 }
 
 LM::~LM()
@@ -109,10 +113,13 @@ strid LM::operator[] (const char* s)
 	VocabIndex vi = lm3g_wstr2wid(lm, s);
 	if (vi > 0)
 		return vi;
+	caddr_t val;
+	if (blocked > 0 && !hash_lookup(&oov_ht, s, &val))
+		return (strid)val;
 	s = strdup(s);
 	oov.push_back(s);
 	vi = 1+lm->n_word_str + oov.size()-1; // the first one is a reserved id
-	hash_add (&(lm->HT), s, (caddr_t) vi);
+	hash_add (blocked > 0 ? &oov_ht : &(lm->HT), s, (caddr_t) vi);
 	return vi;
 }
 
@@ -128,12 +135,21 @@ const char* LM::operator[] (strid i)
 void LM::set_blocked(bool _blocked)
 {
 	blocked = _blocked ? oov.size() : 0;
+	clear_oov();
 }
 
-void LM::clear_rest()
+void LM::clear_oov()
 {
-	if (blocked > 0)
+	if (blocked > 0) {
+		int i,len = oov.size();
+		hash_free(&oov_ht);
+		oov_ht.size = 0;
+		oov_ht.inuse = 0;
+		oov_ht.tab = NULL;
+		for (i = blocked;i < len;i ++)
+			free((void*)oov[i]);
 		oov.resize(blocked);
+	}
 }
 
 bool LM::in_dict(const char* s)

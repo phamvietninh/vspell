@@ -27,6 +27,7 @@ int main(int argc, char **argv)
   warch.load("wordlist");
 
   int count = 0;
+  get_ngram().set_blocked(true);
   while (!cin.eof()) {
     if (++count % 200 == 0) cerr << count << endl;
     Lattice words;
@@ -54,6 +55,7 @@ int main(int argc, char **argv)
       words.post_construct(wes);
       cout << words << endl;
     }
+    get_ngram().clear_oov();
   }
   return 0;
 }

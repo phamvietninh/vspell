@@ -15,6 +15,7 @@ int main(int argc, char **argv)
   dic_init();
 
   int count = 0;
+  get_ngram().set_blocked(true);
   while (getline(cin,str)) {
     if (++count % 200 == 0) cerr << count << endl;
     if (revert) {
@@ -27,6 +28,7 @@ int main(int argc, char **argv)
       st.tokenize();
       cout << st << endl;
     }
+    get_ngram().clear_oov();
   }
   return 0;
 }

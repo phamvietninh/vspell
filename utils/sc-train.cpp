@@ -82,6 +82,7 @@ int main(int argc,char **argv)
 			SoftCounter::count_dag(*dag,cout,count-1,first_count);
 		if (trigram && !record_sc)
 			delete (WordDAG2*)dag;
+		get_ngram().clear_oov();
 	}
 	return 0;
 }

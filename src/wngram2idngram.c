@@ -107,8 +107,9 @@ int main(int argc, char *argv[]) {
 
   unsigned short *current_ngram;
   int current_count;
+  long long int long_current_count;
   unsigned short *sort_ngram;
-  int sort_count;
+  long long int sort_count;
   
   /* Process command line */
 
@@ -275,13 +276,28 @@ int main(int argc, char *argv[]) {
 
   while (!rr_feof(stdin)) {
     
-    for (i=0;i<=n-1;i++) {
-      get_word(stdin,temp_word);
-      current_ngram[i]=index2(&vocabulary,temp_word);
-    }
-    if (scanf("%d",&current_count) != 1) {
-      if (!rr_feof(stdin)) {
-	quit(-1,"Error reading n-gram count from stdin.\n");
+    while (1) {
+      nlines ++;		/* starting at one */
+      for (i=0;i<=n-1;i++) {
+	get_word(stdin,temp_word);
+	current_ngram[i]=index2(&vocabulary,temp_word);
+      }
+      if (scanf("%Ld",&long_current_count) != 1) {
+	current_count = (int)long_current_count;
+	if (!rr_feof(stdin)) {
+	  quit(-1,"Error reading n-gram count from stdin (line %d).\n", nlines);
+	}
+	break;
+      }
+      else {
+	current_count = (int)long_current_count;
+	if ((long long int)current_count != long_current_count) {
+	  fprintf(stderr, "Current count %Ld at line %d is too large, ignore it\n",
+		  long_current_count,
+		  nlines);
+	}
+	else
+	  break;
       }
     }
 
@@ -349,7 +365,7 @@ int main(int argc, char *argv[]) {
 			  tempfile,"temporary n-gram ids");
 		sort_ngram[j] = buffer[i].word[j];
 	      }
-	      rr_fwrite(&sort_count,sizeof(int),1,tempfile,
+	      rr_fwrite(&sort_count,sizeof(long long int),1,tempfile,
 			"temporary n-gram counts");
 	      sort_count = buffer[i].count;
 	    }
@@ -358,7 +374,7 @@ int main(int argc, char *argv[]) {
 	    rr_fwrite(&sort_ngram[j],sizeof(unsigned short),1,
 		      tempfile,"temporary n-gram ids");
 	  }
-	  rr_fwrite(&sort_count,sizeof(int),1,tempfile,
+	  rr_fwrite(&sort_count,sizeof(long long int),1,tempfile,
 		    "temporary n-gram counts");
 	  rr_oclose(tempfile);
 	  position_in_buffer = 1;
@@ -374,7 +390,6 @@ int main(int argc, char *argv[]) {
       }
 
       else {
-
 	/* Write to temporary file */
 
 	for (i=0;i<=n-1;i++) {
@@ -382,7 +397,7 @@ int main(int argc, char *argv[]) {
 		    non_unk_fp,"temporary n-gram ids");
 
 	}
-	rr_fwrite(&current_count,sizeof(int),1,non_unk_fp,
+	rr_fwrite(&long_current_count,sizeof(long long int),1,non_unk_fp,
 		  "temporary n-gram counts");
 
       }
@@ -439,7 +454,7 @@ int main(int argc, char *argv[]) {
 		    tempfile,"temporary n-gram ids");
 	  sort_ngram[j] = buffer[i].word[j];
 	}
-	rr_fwrite(&sort_count,sizeof(int),1,tempfile,
+	rr_fwrite(&sort_count,sizeof(long long int),1,tempfile,
 		  "temporary n-gram counts");
 	sort_count = buffer[i].count;
       }
@@ -448,7 +463,7 @@ int main(int argc, char *argv[]) {
       rr_fwrite(&sort_ngram[j],sizeof(unsigned short),1,
 		tempfile,"temporary n-gram ids");
     }
-    rr_fwrite(&sort_count,sizeof(int),1,tempfile,
+    rr_fwrite(&sort_count,sizeof(long long int),1,tempfile,
 	      "temporary n-gram counts");
     fclose(tempfile);
     
@@ -491,4 +506,3 @@ int main(int argc, char *argv[]) {
   exit(0);
 
 }
-

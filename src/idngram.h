@@ -108,23 +108,23 @@ void merge_tempfiles (int start_file,
   FILE **temp_file;
   char **temp_filename;
   unsigned short **current_ngram;
-  int *current_ngram_count;
+  long long int *current_ngram_count;
   flag *finished;
   flag all_finished;
   unsigned short *smallest_ngram;
-  int temp_count;
+  long long int temp_count;
   int i,j,t;
 
   flag first_ngram;
   int **fof_array;
   int *num_kgrams;
   unsigned short *previous_ngram;
-  int *ng_count;
+  long long int *ng_count;
   int pos_of_novelty;
   
   pos_of_novelty = n; /* Simply for warning-free compilation */
   num_kgrams = (int *) rr_calloc(n-1,sizeof(int));
-  ng_count = (int *) rr_calloc(n-1,sizeof(int));
+  ng_count = (long long int *) rr_calloc(n-1,sizeof(long long int));
   first_ngram = 1;
   
   previous_ngram = (unsigned short *) rr_calloc(n,sizeof(unsigned short));
@@ -138,7 +138,7 @@ void merge_tempfiles (int start_file,
     current_ngram[i] = (unsigned short *) rr_malloc(sizeof(unsigned short)*n);
   }
 
-  current_ngram_count = (int *) rr_malloc(sizeof(int)*(end_file-start_file+1));
+  current_ngram_count = (long long int *) rr_malloc(sizeof(long long int)*(end_file-start_file+1));
   finished = (flag *) rr_malloc(sizeof(flag)*(end_file-start_file+1));
   smallest_ngram = (unsigned short *) rr_malloc(sizeof(unsigned short)*n);
   fof_array = (int **) rr_malloc(sizeof(int *)*(n-1));
@@ -180,7 +180,7 @@ void merge_tempfiles (int start_file,
 	  rr_fread(&current_ngram[i][j], sizeof(unsigned short),1,
 		   temp_file[i],"temporary n-gram ids",0);
 	}    
-	rr_fread(&current_ngram_count[i], sizeof(int),1,
+	rr_fread(&current_ngram_count[i], sizeof(long long int),1,
 		 temp_file[i],"temporary n-gram counts",0);
       }
     }
@@ -228,7 +228,7 @@ void merge_tempfiles (int start_file,
 		rr_fread(&current_ngram[i][j],sizeof(unsigned short),1,
 			 temp_file[i],"temporary n-gram ids",0);
 	      }
-	      rr_fread(&current_ngram_count[i],sizeof(int),1,
+	      rr_fread(&current_ngram_count[i],sizeof(long long int),1,
 		       temp_file[i],"temporary n-gram count",0);
 	    }
 	    else {
@@ -250,7 +250,7 @@ void merge_tempfiles (int start_file,
 	    quit(-1,"Write error encountered while attempting to merge temporary files.\nAborting, but keeping temporary files.\n");
 	  }
 	}
-	if (fprintf(outfile,"%d\n",temp_count) < 0)  {
+	if (fprintf(outfile,"%Ld\n",temp_count) < 0)  {
 	  quit(-1,"Write error encountered while attempting to merge temporary files.\nAborting, but keeping temporary files.\n");
 	}
       }
@@ -259,7 +259,7 @@ void merge_tempfiles (int start_file,
 	  rr_fwrite(&smallest_ngram[i],sizeof(unsigned short),1,
 		    outfile,"n-gram ids");
 	}
-	rr_fwrite(&temp_count,sizeof(int),1,outfile,"n-gram counts");
+	rr_fwrite(&temp_count,sizeof(long long int),1,outfile,"n-gram counts");
 	
 	   
       }

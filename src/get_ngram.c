@@ -65,7 +65,7 @@ int get_ngram(FILE *id_ngram_fp, ngram *ng, flag ascii) {
     if (rr_feof(id_ngram_fp)) {
       return 0;
     }
-    rr_fread(&ng->count,sizeof(count_t),1,id_ngram_fp,
+    rr_fread(&ng->count,sizeof(long long int),1,id_ngram_fp,
 	     "count from id_ngram file",0);
 
   }

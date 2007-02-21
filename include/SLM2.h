@@ -402,7 +402,7 @@ results obtained from use of this software.
 
 typedef unsigned short id__t; /* Double underscore, since id_t is
 				 already defined on some platforms */
-typedef int count_t;   /* The count as read in, rather than its index 
+typedef long long int count_t;   /* The count as read in, rather than its index
 			  in the count table. */
 typedef unsigned short count_ind_t; /* The count's index in the count 
 				       table. */

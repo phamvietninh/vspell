@@ -396,7 +396,7 @@ istream& operator >> (istream &is, Lattice &w)
 		w.we->push_back(WordEntry());
 		iss >> w.we->back();
 		if (w.we->back().node.node == NULL) {
-			cerr << "Invalid WordEntry!" << endl;
+			cerr << "Invalid WordEntry: " << s << endl;
 			w.we->pop_back();
 		}
 	}

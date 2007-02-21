@@ -93,6 +93,7 @@ int main(int argc, char *argv[]) {
   int nlines;
   int fof_size;
   int size_of_rec;
+  int cutoff;
   char *temp_file_root;
   char *temp_file_ext;
   char *host_name;
@@ -127,6 +128,7 @@ int main(int argc, char *argv[]) {
     fprintf(stderr,"                     [ -n 3 ]\n");
     fprintf(stderr,"                     [ -write_ascii ]\n");
     fprintf(stderr,"                     [ -fof_size 10 ]\n");
+    fprintf(stderr,"                     [ -cutoff N ]\n");
     fprintf(stderr,"                     < .wngram > .idngram\n");
     exit(1);
   }
@@ -142,6 +144,7 @@ int main(int argc, char *argv[]) {
 
   max_files = pc_intarg( &argc, argv, "-files",DEFAULT_MAX_FILES);
   fof_size = pc_intarg(&argc,argv,"-fof_size",10);
+  cutoff = pc_intarg(&argc,argv,"-cutoff",0);
   vocab_filename = salloc(pc_stringarg( &argc, argv, "-vocab", "" ));
   
   if (!strcmp("",vocab_filename)) {
@@ -287,7 +290,6 @@ int main(int argc, char *argv[]) {
 	if (!rr_feof(stdin)) {
 	  quit(-1,"Error reading n-gram count from stdin (line %d).\n", nlines);
 	}
-	break;
       }
       else {
 	current_count = (int)long_current_count;
@@ -295,10 +297,17 @@ int main(int argc, char *argv[]) {
 	  fprintf(stderr, "Current count %Ld at line %d is too large, ignore it\n",
 		  long_current_count,
 		  nlines);
+	  continue;
 	}
-	else
-	  break;
       }
+      if (cutoff && current_count >= cutoff) {
+	fprintf(stderr,"Current count %d at line %d exceeds cutoff %d, ignoring\n",
+		current_count,
+		nlines,
+		cutoff);
+      }
+      else
+	break;
     }
 
     if (!rr_feof(stdin)) {

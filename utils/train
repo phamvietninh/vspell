@@ -1,7 +1,12 @@
 #!/bin/bash
-i=$1
-ii=$(($1-1))
-./sc-train test.arpa.$ii < test.lat 2>test.log.sc-train.$i | gzip > test.sc$i.gz
-gzip -d < test.sc$i.gz | LANG=C sort | ./sc2wngram 4 > test.wngram.$i
-../../CMU-Cam_Toolkit_v2/src/wngram2idngram -n 2 -vocab test.vocab < test.wngram.$i > test.idngram.$i 2>test.log.idngram.$i
-../../CMU-Cam_Toolkit_v2/src/idngram2lm -four_byte_counts -n 2 -vocab test.vocab -idngram test.idngram.$i -arpa test.arpa.$i -context test.ccs 2>test.log.lm.$i
+O=$1
+i=$2
+[ "$i" = "0" ] || ii=${O}.arpa.$(($2-1))
+echo "sc-train --replay"
+time gzip -d < ${O}.scz.gz|./sc-train --replay $ii  2>${O}.log.sc-train.$i | gzip > ${O}.sc$i.gz
+echo sc2wngram
+time gzip -d < ${O}.sc$i.gz | LANG=C sort -S64M -T $(dirname $O)| ./sc2wngram 4 |gzip > ${O}.wngram.$i.gz
+echo wngram2idngram
+time gzip -d < ${O}.wngram.$i.gz|../../CMU-Cam_Toolkit_v2/src/wngram2idngram -n 2 -temp $(dirname $O) -vocab ${O}.vocab  > ${O}.idngram.$i 2>${O}.log.idngram.$i
+echo idngram2lm
+../../CMU-Cam_Toolkit_v2/src/idngram2lm -four_byte_counts -n 2 -vocab ${O}.vocab -idngram ${O}.idngram.$i -arpa ${O}.arpa.$i -context ${O}.ccs -witten_bell 2>${O}.log.lm.$i

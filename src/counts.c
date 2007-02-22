@@ -28,7 +28,7 @@ void store_count(flag four_byte_counts,
 		 unsigned short *short_counts,
 		 long long int *long_counts,
 		 int position,
-		 int count) {
+		 long long int count) {
 
   if (four_byte_counts) {
     long_counts[position] = count;

@@ -88,7 +88,7 @@ void store_count(flag four_byte_counts,
 		 unsigned short *short_counts,
 		 long long int *long_counts,
 		 int position,
-		 int count);
+		 long long int count);
 
 long long int return_count(flag four_byte_counts,
 		 int *count_table,

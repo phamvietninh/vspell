@@ -117,6 +117,7 @@ void MyText::show_wrong_syllables(unsigned p)
 
 	int i = 0,c = 0;
 	int sug = 0;
+	Sentence &st = *this->st;
 	while (*s) {
 		if (sug < suggestions.size()) {
 			int pos = st[suggestions[sug].id].start;
@@ -158,6 +159,7 @@ void MyText::show_wrong_word(unsigned p)
 	int sug = 0;
 	int stid = 0;
 	int n_stid = 0;
+	Sentence &st = *this->st;
 	while (*s) {
 		if (sug < suggestions.size()) {
 			if (stid == 0)
@@ -241,6 +243,7 @@ int main(int argc,char **argv)
 bool MyText::ui_syllable_check()
 {
 	unsigned i,n = suggestions.size();
+	Sentence &st = *this->st;
 	cout << "Syllable check: " << suggestions.size() << endl;
 	for (i = 0;i < n;i ++) {
 		show_wrong_syllables(i);
@@ -266,6 +269,7 @@ bool MyText::ui_syllable_check()
 bool MyText::ui_word_check()
 {
 	unsigned i,n = suggestions.size();
+	Sentence &st = *this->st;
 	cout << "Word check:" << suggestions.size()  << endl;
 	for (int i = 0;i < n;i ++) {
 		show_wrong_word(i);

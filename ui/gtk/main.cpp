@@ -74,6 +74,7 @@ void MyText::show_wrong_syllables(unsigned p)
 	iter_at(end,length);
 	gtk_text_buffer_apply_tag_by_name(textbuffer_main,
 																		"bg-syllable", &start, &end);
+	Sentence &st = *this->st;
 	for (i = 0;i < n;i ++) {
 		int id = sugg[i].id;
 		int from = st[id].start;
@@ -95,6 +96,7 @@ void MyText::show_words()
 
 	n = seg.size();
 	cc = 0;
+	Sentence &st = *this->st;
 	for (i = 0;i < n;i ++) {
 		nn = seg[i].node.node->get_syllable_count();
 		if (nn == 1 && !word_boundaries) {
@@ -128,6 +130,7 @@ void MyText::show_wrong_words(unsigned p)
 																		
 	show_words();
 	n = sugg.size();
+	Sentence &st = *this->st;
 	for (i = 0;i < n;i ++) {
 		int id = sugg[i].id;
 		for (cc = ii = 0;ii < id;ii ++)
@@ -510,6 +513,7 @@ void candidates_add(const gchar *s)
 bool MyText::ui_syllable_check()
 {
 	unsigned i,n = suggestions.size();
+	Sentence &st = *this->st;
 	for (i = 0;i < n;i ++) {
 		show_wrong_syllables(i);
 		// query
@@ -575,6 +579,7 @@ bool MyText::ui_word_check()
 {
 	unsigned i,n = suggestions.size();
 	int pos,pos2,count;
+	Sentence &st = *this->st;
 
 	for (i = 0;i < n;i ++) {
 		show_wrong_words(i);

@@ -6,4 +6,4 @@ INCLUDES = -I$(top_builddir)/libvspell -I$(top_builddir)/srilm/include #@VSPELL_
 #vspell_gtk_LDADD = $(top_builddir)/libvspell/libvspell.a $(top_builddir)/libsrilm/libsrilm.a  @VSPELL_LIBS@
 
 vspell_SOURCES = main.cpp
-vspell_LDADD = $(top_builddir)/libvspell/libvspell.a
+vspell_LDADD = $(top_builddir)/libvspell/libvspell.la

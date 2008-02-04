@@ -22,10 +22,16 @@ int main(int argc,char **argv)
 	bool record_sc = false;
 	bool replay_sc = false;
 	const char *str;
+	const char *wordlist = NULL;
 
 	int argi = 1;
 	argc --;
 
+	if (argc >= 2 && !strcmp(argv[argi], "--wordlist")) {
+		wordlist = argv[argi+1];
+		argi += 2;
+		argc -= 2;
+	}
 	if (argc >= 1 && !strcmp(argv[argi],"--record")) {
 		record_sc = true;
 		argc --;
@@ -47,8 +53,11 @@ int main(int argc,char **argv)
 	}
 	else
 		first_count = true;
+	if (first_count)
+		cerr << "First count " << endl;
 	dic_init();
-	warch.load("wordlist");
+	if (!warch.load(first_count ? wordlist : NULL))
+		cerr << "Error loading " << wordlist << endl;
 
 	get_ngram().set_blocked(true);
 

@@ -9,6 +9,7 @@
 #include "distance.h"
 #include "propername.h"
 #include <math.h>
+#include <cassert>
 #include <iterator>
 
 #define ED_THRESOLD1 1
@@ -184,18 +185,16 @@ LM& get_syngram()
 
 strid get_id(int id)
 {
-	if (id < TOTAL_ID)
-		return special_ids[id];
-	else
-		return special_ids[UNK_ID];
+	assert(id < TOTAL_ID);
+	assert(special_ids[id]);
+	return special_ids[id];
 }
 
 LeafNNode* get_special_node(int id)
 {
-	if (id < TOTAL_ID)
-		return special_leaves[id];
-	else
-		return special_leaves[UNK_ID];
+	assert(id < TOTAL_ID);
+	assert(special_leaves[id]);
+	return special_leaves[id];
 }
 
 const std::map<strid,strid_string>& get_pnames()

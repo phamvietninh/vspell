@@ -107,6 +107,8 @@ bool WordArchive::load(const char* filename)
 
 LeafNNode* WordArchive::add_special_entry(strid tok)
 {
+	return add_entry(sarch[tok]);
+	/*
 	LeafNNode *leaf = new LeafNNode;
 	NNodeRef noderef(leaf);
 	vector<strid> toks;
@@ -115,9 +117,10 @@ LeafNNode* WordArchive::add_special_entry(strid tok)
 	//leaf->set_mask(MAIN_LEAF);
 	get_root()->add(tok,noderef);
 	return leaf;
+	*/
 }
 
-void WordArchive::add_entry(const char *w)
+LeafNNode* WordArchive::add_entry(const char *w)
 {
 	unsigned len,wlen;
 	const char *pos,*start;
@@ -139,14 +142,16 @@ void WordArchive::add_entry(const char *w)
 
 	vector<strid> path = syllables;
 	BranchNNode* branch = get_root()->add_path(path);
+	assert (!branch->get_leaf(mainleaf_id));
 	NNodeRef noderef(new LeafNNode);
 	LeafNNode *leaf = (LeafNNode*)noderef.get();
 	//leaf->set_mask(MAIN_LEAF);
 	branch->add(mainleaf_id,noderef);
 	leaf->set_id(syllables);
+	return leaf;
 }
 
-void WordArchive::add_case_entry(const char *w2)
+LeafNNode* WordArchive::add_case_entry(const char *w2)
 {
 	unsigned i,same,len,wlen;
 	const char *pos,*start;
@@ -162,7 +167,7 @@ void WordArchive::add_case_entry(const char *w2)
 	}
 	if (same) {
 		free(w);
-		return;
+		return NULL;
 	}
 	w[len] = '\0';
 	buf = (char *)malloc(len+1);
@@ -193,11 +198,13 @@ void WordArchive::add_case_entry(const char *w2)
 
 	vector<strid> path = syllables;
 	BranchNNode* branch = get_root()->add_path(path);
+	assert(!branch->get_leaf(caseleaf_id));
 	NNodeRef noderef(new LeafNNode);
 	LeafNNode *leaf = (LeafNNode*)noderef.get();
 	//leaf->set_mask(CASE_LEAF);
 	branch->add(caseleaf_id,noderef);
 	leaf->set_id(real_syllables);
+	return leaf;
 }
 
 void WordArchive::register_leaf(strid id)
@@ -267,5 +274,6 @@ std::istream& operator >> (std::istream &is,LeafNNode* &node)
 		syll[i] = get_ngram()[s];
 	}
 	node = LeafNNode::find_leaf(syll);
+	assert(node);
 	return is;
 }

@@ -24,6 +24,8 @@
 #include "mystring.h"
 #endif
 
+#include <cassert>
+
 class NNode;
 class BranchNNode;
 class LeafNNode;
@@ -102,8 +104,8 @@ class WordArchive
 {
 protected:
 	NNodeRef root;
-	void add_entry(const char *);
-	void add_case_entry(const char *);
+	LeafNNode* add_entry(const char *);
+	LeafNNode* add_case_entry(const char *);
 	std::vector<strid> leaf_id;
 
 public:
@@ -123,6 +125,7 @@ extern WordArchive warch;
 template<class T>
 std::ostream& operator << (std::ostream &os,const DNNode<T> &node)
 {
+	assert(node.node);
 	os << node.distance << " " << *node.node;
 	return os;
 }
@@ -130,6 +133,7 @@ std::ostream& operator << (std::ostream &os,const DNNode<T> &node)
 template<class T>
 std::istream& operator >> (std::istream &is,DNNode<T> &node)
 {
+	assert(node.node);
 	is >> node.distance >> node.node;
 	return is;
 }

@@ -5,6 +5,7 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
+#include <cassert>
 #include <boost/format.hpp>
 #include <set>
 #include "syllable.h"
@@ -20,6 +21,9 @@ WordState::WordState(const WordState &ws):dnode(ws.dnode),sent(ws.sent),fuzid(ws
 void WordState::add_word(set<WordEntry> &we,LeafNNode*leaf)
 {
 	WordEntry e;
+
+	assert(leaf);
+
 	e.pos = pos;
 	e.len = len;
 	e.fuzid = fuzid;
@@ -30,6 +34,7 @@ void WordState::add_word(set<WordEntry> &we,LeafNNode*leaf)
 
 void WordState::collect_words(set<WordEntry> &we)
 {
+	assert(dnode.node);
 	LeafNNode *leaf = dnode.node->get_leaf(sarch["<mainleaf>"]);
 	if (leaf)
 		add_word(we,leaf);
@@ -37,6 +42,7 @@ void WordState::collect_words(set<WordEntry> &we)
 
 void UpperWordState::collect_words(set<WordEntry> &we)
 {
+	assert(dnode.node);
 	LeafNNode *leaf = dnode.node->get_leaf(sarch["<caseleaf>"]);
 	if (leaf)
 		add_word(we,leaf);
@@ -45,6 +51,7 @@ void UpperWordState::collect_words(set<WordEntry> &we)
 void WordState::get_first(WordStates &states,uint _pos)
 {
 	dnode.node = warch.get_root();
+	assert(dnode.node);
 	pos = _pos;
 	fuzid = 0;
 	len = 0;
@@ -54,6 +61,7 @@ void WordState::get_first(WordStates &states,uint _pos)
 void ExactWordState::get_next(WordStates &states)
 {
 	uint i = pos+len;
+	assert(dnode.node);
 	BranchNNode *branch = dnode.node->get_branch(sent[i].get_cid());
 	if (branch == NULL) {
 		delete this;
@@ -72,6 +80,7 @@ void LowerWordState::get_next(WordStates &states)
 	uint i = pos+len;
 	s1 = get_ngram()[sent[i].get_cid()];
 	s2 = get_lowercased_syllable(s1);
+	assert(dnode.node);
 	BranchNNode *branch = dnode.node->get_branch(get_ngram()[s2]);
 	if (branch == NULL) {
 		delete this;
@@ -96,6 +105,7 @@ void FuzzyWordState::get_next(WordStates &states)
 	uint _i = pos+len;
 	string s1 = get_ngram()[sent[_i].get_cid()];
 
+	assert(dnode.node);
 	_syll.parse(s1.c_str());
 
 	syllset2.insert(_syll);
@@ -144,6 +154,7 @@ void FuzzyWordState::get_next(WordStates &states)
 
 				// change the info
 				s->dnode.node = (BranchNNode*)pnode->second.get();
+				assert(s->dnode.node);
 				s->len++;
 				if (s1 != str)
 					s->fuzid |= 1 << (_i-s->pos);

@@ -16,15 +16,15 @@ using namespace std;
  */
 ostream& SoftCounter::count_lattice(const Lattice &w, ostream &os, bool first_count)
 {
-	vector<double> Sleft,Sright;
+	vector<long double> Sleft,Sright;
 	vector<vector<uint> > prev;
 	//boost::shared_ptr<WordEntries> p_we = w.we;
 	//const WordEntries &we = *p_we;
 	int i,n = w.get_word_count(),v,vv;
-	double sum = 0;
+	long double sum = 0;
 	VocabIndex vi[3];
 	vector<uint> ends;
-	double fc;
+	long double fc;
 
 	Sleft.resize(w.we->size());
 	Sright.resize(w.we->size());
@@ -36,14 +36,14 @@ ostream& SoftCounter::count_lattice(const Lattice &w, ostream &os, bool first_co
 	for (i = 0;i < n;i ++) {
 		const WordEntryRefs &wers = w.get_we(i);
 		int ii,nn = wers.size();
-		double add;
+		long double add;
 		for (ii = 0;ii < nn;ii ++) {
 			// wers[ii] is the first node (W).
 			v = wers[ii]->id;
 
 			if (i == 0) {
 				vi[0] = get_id(START_ID);
-				Sleft[v] = first_count ? 1 : -get_ngram().wordProb((*w.we)[v].node.node->get_id(),vi);
+				Sleft[v] = first_count ? 1 : -(long double)get_ngram().wordProb((*w.we)[v].node.node->get_id(),vi);
 				//cerr << "Sleft("  << vi[0] << "," << v << ") = " << Sleft[v] << endl;
 			}
 
@@ -55,7 +55,7 @@ ostream& SoftCounter::count_lattice(const Lattice &w, ostream &os, bool first_co
 					// wers2[iii] is the second node (W').
 					vv = wers2[iii]->id;
 					vi[0] = (*w.we)[v].node.node->get_id();
-					add = first_count ? 1 : Sleft[v]*(-get_ngram().wordProb((*w.we)[vv].node.node->get_id(),vi));
+					add = first_count ? 1 : Sleft[v]*(-(long double)get_ngram().wordProb((*w.we)[vv].node.node->get_id(),vi));
 					Sleft[vv] += add;
 					
 					//cerr << "Sleft("  << vi[0] << "," << vv << ") = " << Sleft[vv] << endl;
@@ -65,7 +65,7 @@ ostream& SoftCounter::count_lattice(const Lattice &w, ostream &os, bool first_co
 				}
 			} else {
 				vi[0] = (*w.we)[v].node.node->get_id();
-				Sright[v] = first_count ? 1 : -get_ngram().wordProb(get_id(STOP_ID),vi);
+				Sright[v] = first_count ? 1 : -(long double)get_ngram().wordProb(get_id(STOP_ID),vi);
 				//cerr << "Sright("  << vi[0] << "," << v << ") = " << Sright[v] << endl;
 				sum += Sleft[v];
 				//cerr << "Sum " << sum << endl;
@@ -79,7 +79,7 @@ ostream& SoftCounter::count_lattice(const Lattice &w, ostream &os, bool first_co
 	for (i = n-1;i >= 0;i --) {
 		const WordEntryRefs &wers = w.get_we(i);
 		int ii,nn = wers.size();
-		double add;
+		long double add;
 		for (ii = 0;ii < nn;ii ++) {
 			// wers[ii] is the first node (W).
 			v = wers[ii]->id;
@@ -89,7 +89,7 @@ ostream& SoftCounter::count_lattice(const Lattice &w, ostream &os, bool first_co
 				// vv is the second node (W').
 				vv = prev[v][iii];
 				vi[0] = (*w.we)[vv].node.node->get_id();
-				add = first_count ? 1 : Sright[v]*(-get_ngram().wordProb((*w.we)[v].node.node->get_id(),vi));
+				add = first_count ? 1 : Sright[v]*(-(long double)get_ngram().wordProb((*w.we)[v].node.node->get_id(),vi));
 				Sright[vv] += add;
 
 				//cerr << "Sright("  << vi[0] << "," << vv << ") = " << Sright[vv] << endl;
@@ -138,10 +138,10 @@ ostream& SoftCounter::count_lattice(const Lattice &w, ostream &os, bool first_co
 ostream& SoftCounter::count_dag(const DAG &dag,ostream &os,int id, bool first_count)
 {
 	int n = dag.node_count();
-	vector<double> Sleft(n),Sright(n);
+	vector<long double> Sleft(n),Sright(n);
 	vector<set<uint> > prev(n);
 	int i,v,vv;
-	double add;
+	long double add;
 
 	//cerr << "Nodes: " << n << endl;
 
@@ -165,7 +165,7 @@ ostream& SoftCounter::count_dag(const DAG &dag,ostream &os,int id, bool first_co
 			vv = nexts[i];
 			add = Sleft[v]*(first_count ? 1 : LogPtoProb(-dag.edge_value(v,vv)));
 			if (add == 0.0 || add == -0.0)
-				cerr << boost::format("WARNING: %d: Sleft addition for %d is zero (Sleft[%d] = %g, prob=%g)") % id % vv % v % Sleft[v] % LogPtoProb(-dag.edge_value(v,vv)) << endl;
+				cerr << boost::format("WARNING: %d: Sleft addition for %d is zero (Sleft[%d] = %Lg, prob=%g)") % id % vv % v % Sleft[v] % LogPtoProb(-dag.edge_value(v,vv)) << endl;
 			Sleft[vv] += add;
 					
 			traces.push_back(vv);
@@ -177,9 +177,9 @@ ostream& SoftCounter::count_dag(const DAG &dag,ostream &os,int id, bool first_co
 
 	//cerr << "Sleft done" << endl;
 
-	double fc;
+	long double fc;
 	// second pass: Sright
-	double sum = Sleft[dag.node_end()];
+	long double sum = Sleft[dag.node_end()];
 	if (sum == 0.0 || sum == -0.0) {
 		cerr << boost::format("WARNING: %d: Sum is zero") % id << endl;
 		// Can do nothing more because sum is zero
@@ -305,13 +305,13 @@ int SoftCounter::replay2(FILE *fp_in,FILE *fp_out, int id,bool first_count)
 		return -2;
 	}
 
-	vector<double> Sleft(n),Sright(n);
+	vector<long double> Sleft(n),Sright(n);
 	int i,v,vv;
-	double add;
+	long double add;
 	char type[2]; // should not be longer than one
 	char str1[100],str2[100];
 	int right_mode = 0;
-	double sum;
+	long double sum;
 
 	//cerr << "Nodes: " << n << endl;
 
@@ -326,9 +326,9 @@ int SoftCounter::replay2(FILE *fp_in,FILE *fp_out, int id,bool first_count)
 		edge_vi[0] = get_ngram()[str1];
 		edge_vi[1] = 0;
 		if (type[0] == 'L') {
-			add = Sleft[v]*(first_count ? 1 : LogPtoProb(get_ngram().wordProb(edge_v,edge_vi)));
+			add = Sleft[v]*(first_count ? 1 : (long double)LogPtoProb(get_ngram().wordProb(edge_v,edge_vi)));
 			if (add == 0.0 || add == -0.0)
-				fprintf(stderr,"WARNING: %d: Sleft addition for %d is zero (Sleft[%d] = %g, prob=%g %s %s)\n",id,vv,v,Sleft[v],LogPtoProb(get_ngram().wordProb(edge_v,edge_vi)),str1,str2);
+				fprintf(stderr,"WARNING: %d: Sleft addition for %d is zero (Sleft[%d] = %Lg, prob=%g %s %s)\n",id,vv,v,Sleft[v],LogPtoProb(get_ngram().wordProb(edge_v,edge_vi)),str1,str2);
 			Sleft[vv] += add;
 		}
 		else {
@@ -342,14 +342,14 @@ int SoftCounter::replay2(FILE *fp_in,FILE *fp_out, int id,bool first_count)
 			}
 			if (sum == 0.0 || sum == -0.0)
 				continue;
-			add = Sright[vv]*(first_count ? 1 : LogPtoProb(get_ngram().wordProb(edge_v,edge_vi)));
+			add = Sright[vv]*(first_count ? 1 : (long double)LogPtoProb(get_ngram().wordProb(edge_v,edge_vi)));
 			if (add == 0.0 || add == -0.0)
 				fprintf(stderr,"WARNING: %d: Sright addition for %d is zero (%s %s)\n",id,v,str1,str2);
 			Sright[v] += add;
 
 			// collect fractional counts
-			double fc = Sleft[v]*add/sum; // P(vv/v)
-			fprintf(fp_out,"%s %s %g\n",str1,str2,fc);
+			long double fc = Sleft[v]*add/sum; // P(vv/v)
+			fprintf(fp_out,"%s %s %Lg\n",str1,str2,fc);
 		}
 	}
 	return 0;
@@ -362,10 +362,10 @@ int SoftCounter::replay2(FILE *fp_in,FILE *fp_out, int id,bool first_count)
 
 ostream& SoftCounter::count_dag_fixed(const DAG &dag,ostream &os,bool first_count)
 {
-	vector<double> Sleft,Sright;
+	vector<long double> Sleft,Sright;
 	vector<set<uint> > prev;
 	int i,n,v,vv;
-	double add;
+	long double add;
 
 	n = dag.node_count();
 	Sleft.resize(n);
@@ -419,7 +419,7 @@ ostream& SoftCounter::count_dag_fixed(const DAG &dag,ostream &os,bool first_coun
 
 	unsigned int fc;
 	// second pass: Sright
-	double sum = Sleft[dag.node_end()];
+	long double sum = Sleft[dag.node_end()];
 	if (sum == 0)
 		return os;
 	//cout << "Sum " << sum << endl;
@@ -481,7 +481,7 @@ ostream& SoftCounter::count_dag_fixed(const DAG &dag,ostream &os,bool first_coun
 		}
 	}
 	cerr << endl;
-	//double sum2 = Sright[dag.node_begin()];
+	//long double sum2 = Sright[dag.node_begin()];
 	//cout << sum2 << " " << (traces[ntrace-1] == dag.node_begin()) << " " << (sum2 == sum ? "Ok" : "Failed") << endl;
 	//cerr << "Sright done" << endl;
 	return os;

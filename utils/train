@@ -3,8 +3,8 @@ O=$1
 i=$2
 [ "$i" = "0" ] || ii=${O}.arpa.$(($2-1))
 echo "sc-train --replay"
-echo "gzip -d < ${O}.scz.gz|./sc-train --replay $ii  2>${O}.log.sc-train.$i | gzip > ${O}.sc$i.gz"
-time gzip -d < ${O}.scz.gz|./sc-train --replay $ii  2>${O}.log.sc-train.$i | gzip > ${O}.sc$i.gz
+echo "gzip -d < ${O}.scz.gz|./sc-train --wordlist ${O}.vocab --replay $ii  2>${O}.log.sc-train.$i | gzip > ${O}.sc$i.gz"
+time gzip -d < ${O}.scz.gz|./sc-train --wordlist ${O}.vocab --replay $ii  2>${O}.log.sc-train.$i | gzip > ${O}.sc$i.gz
 echo sc2wngram
 echo "gzip -d < ${O}.sc$i.gz | LANG=C sort -S64M -T $(dirname $O)| ./sc2wngram 4 |gzip > ${O}.wngram.$i.gz"
 time gzip -d < ${O}.sc$i.gz | LANG=C sort -S64M -T $(dirname $O)| ./sc2wngram 4 |gzip > ${O}.wngram.$i.gz

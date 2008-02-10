@@ -38,7 +38,7 @@ while (<STDIN>) {
 #printf "P/L =\t\t%d/%d =\t%.02f\n",$positives,$line,$positives/$line;
 printf "(%d) C%.03f CA%.03f P%.03f E%.03f\n", $total, $count/$total, ($count+$candidates)/$total, $positives/$line, ($total-$count-$candidates)/$total;
 
-if ($ARGV[1] == '--detail') {
+if ($ARGV[0] eq '--detail') {
 
 for $i (0..1) {
     for  $j (0..1) {

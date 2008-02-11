@@ -12,5 +12,5 @@ echo wngram2idngram
 echo "gzip -d < ${O}.wngram.$i.gz|../../CMU-Cam_Toolkit_v2/src/wngram2idngram -n 2 -temp $(dirname $O) -vocab ${O}.vocab2  > ${O}.idngram.$i 2>${O}.log.idngram.$i"
 time gzip -d < ${O}.wngram.$i.gz|../../CMU-Cam_Toolkit_v2/src/wngram2idngram -n 2 -temp $(dirname $O) -vocab ${O}.vocab2  > ${O}.idngram.$i 2>${O}.log.idngram.$i
 echo idngram2lm
-echo "../../CMU-Cam_Toolkit_v2/src/idngram2lm -four_byte_counts -n 2 -vocab ${O}.vocab2 -idngram ${O}.idngram.$i -arpa ${O}.arpa.$i -context ${O}.ccs -witten_bell 2>${O}.log.lm.$i"
-../../CMU-Cam_Toolkit_v2/src/idngram2lm -four_byte_counts -n 2 -vocab ${O}.vocab2 -idngram ${O}.idngram.$i -arpa ${O}.arpa.$i -context ${O}.ccs -witten_bell 2>${O}.log.lm.$i
+echo "../../CMU-Cam_Toolkit_v2/src/idngram2lm -four_byte_counts -n 2 -vocab_type 0 -vocab ${O}.vocab2 -idngram ${O}.idngram.$i -arpa ${O}.arpa.$i -context ${O}.ccs -witten_bell 2>${O}.log.lm.$i"
+../../CMU-Cam_Toolkit_v2/src/idngram2lm -four_byte_counts -n 2 -vocab_type 0 -vocab ${O}.vocab2 -idngram ${O}.idngram.$i -arpa ${O}.arpa.$i -context ${O}.ccs -witten_bell 2>${O}.log.lm.$i

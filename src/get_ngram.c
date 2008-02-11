@@ -39,7 +39,7 @@ int get_ngram(FILE *id_ngram_fp, ngram *ng, flag ascii) {
 	quit(-1,"Error reading from id_ngram file.\n");
       }
     }
-    if (fscanf(id_ngram_fp,"%d",&ng->count) != 1) {
+    if (fscanf(id_ngram_fp,"%Ld",&ng->count) != 1) {
       if (rr_feof(id_ngram_fp)) {
 	return 0;
       }

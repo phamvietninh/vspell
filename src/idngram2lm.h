@@ -45,7 +45,7 @@ void compute_gt_discount(int            n,
 			 int cutoff,
 			 int verbosity,
 			 disc_val_t **discounted_values);
-int lookup_index_of(int *lookup_table, 
+int lookup_index_of(int *lookup_table,
 		    int lookup_table_size, 
 		    int intintval);
 void compute_unigram(ng_t *ng,int verbosity);
@@ -83,7 +83,7 @@ void read_voc(char *filename, int verbosity,
 	      unsigned short *p_vocab_size);
 
 void store_count(flag four_byte_counts,
-		 int *count_table,
+		 count_t *count_table,
 		 int count_table_size,
 		 unsigned short *short_counts,
 		 long long int *long_counts,
@@ -91,7 +91,7 @@ void store_count(flag four_byte_counts,
 		 long long int count);
 
 long long int return_count(flag four_byte_counts,
-		 int *count_table,
+		 count_t *count_table,
 		 unsigned short *short_counts,
 		 long long int *long_counts,
 		 int position);

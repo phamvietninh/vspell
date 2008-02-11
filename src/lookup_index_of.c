@@ -28,7 +28,7 @@ results obtained from use of this software.
 int lookup_index_of(lookup_table, lookup_table_size, intval)
 int *lookup_table, lookup_table_size, intval;
 {
-  count_t i;
+  int i;
   if (intval>0 && intval<lookup_table_size) {
      if (lookup_table[intval]==intval) return(intval);
      else if (lookup_table[intval]==0) {

@@ -23,7 +23,7 @@ we are dealing with two- or four-byte counts. */
 #include "idngram2lm.h"
 
 void store_count(flag four_byte_counts,
-		 int *count_table,
+		 count_t *count_table,
 		 int count_table_size,
 		 unsigned short *short_counts,
 		 long long int *long_counts,
@@ -34,14 +34,14 @@ void store_count(flag four_byte_counts,
     long_counts[position] = count;
   }
   else {
-    short_counts[position] = lookup_index_of(count_table,
+    short_counts[position] = lookup_index_of((int*)count_table,
 					     count_table_size,
 					     count);
   }
 }
 
 long long int return_count(flag four_byte_counts,
-		 int *count_table,
+		 count_t *count_table,
 		 unsigned short *short_counts,
 		 long long int *long_counts,
 		 int position) {

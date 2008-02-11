@@ -35,7 +35,7 @@ results obtained from use of this software.
 
 typedef struct {
   unsigned short *word;
-  int count;
+  long long int count;
 } ngram_rec;
 
 int compare_ngrams2(const void *ngram1,
@@ -107,7 +107,6 @@ int main(int argc, char *argv[]) {
   unsigned long M;
 
   unsigned short *current_ngram;
-  int current_count;
   long long int long_current_count;
   unsigned short *sort_ngram;
   long long int sort_count;
@@ -286,23 +285,13 @@ int main(int argc, char *argv[]) {
 	current_ngram[i]=index2(&vocabulary,temp_word);
       }
       if (scanf("%Ld",&long_current_count) != 1) {
-	current_count = (int)long_current_count;
 	if (!rr_feof(stdin)) {
 	  quit(-1,"Error reading n-gram count from stdin (line %d).\n", nlines);
 	}
       }
-      else {
-	current_count = (int)long_current_count;
-	if ((long long int)current_count != long_current_count) {
-	  fprintf(stderr, "Current count %Ld at line %d is too large, ignore it\n",
-		  long_current_count,
-		  nlines);
-	  continue;
-	}
-      }
-      if (cutoff && current_count >= cutoff) {
-	fprintf(stderr,"Current count %d at line %d exceeds cutoff %d, ignoring\n",
-		current_count,
+      if (cutoff && long_current_count >= cutoff) {
+	fprintf(stderr,"Current count %Ld at line %d exceeds cutoff %d, ignoring\n",
+		long_current_count,
 		nlines,
 		cutoff);
       }
@@ -394,7 +383,7 @@ int main(int argc, char *argv[]) {
 	  buffer[position_in_buffer-1].word[i] = current_ngram[i];
 	}
 
-	buffer[position_in_buffer-1].count = current_count;
+	buffer[position_in_buffer-1].count = long_current_count;
 
       }
 

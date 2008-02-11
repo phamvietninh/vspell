@@ -25,7 +25,7 @@ results obtained from use of this software.
 #include "pc_libs/pc_general.h"
 #include <stdlib.h>
 
-void compute_back_off(ng_t *ng,int n, int verbosity) {
+void compute_back_off(ng_t *ng,const int n, int verbosity) {
 
   int *current_pos;
   int *end_pos;
@@ -33,10 +33,10 @@ void compute_back_off(ng_t *ng,int n, int verbosity) {
   int current_table;
   long long int ng_count;
   int i;
-  double sum_cond_prob;
-  double sum_bo_prob;
-  double discounted_ngcount;
-  double cond_prob;
+  long double sum_cond_prob;
+  long double sum_bo_prob;
+  long double discounted_ngcount;
+  long double cond_prob;
   double bo_prob;
   double discount_mass;
   double leftout_bo_prob;
@@ -102,7 +102,7 @@ void compute_back_off(ng_t *ng,int n, int verbosity) {
 	      }
 	      break;
 	    case LINEAR:
-	      discounted_ngcount = ng->lin_disc_ratio[n] * ng_count;
+	      discounted_ngcount = (long double)ng->lin_disc_ratio[n] * ng_count;
 	      break;
 	    case ABSOLUTE:
 	      discounted_ngcount = ng_count - ng->abs_disc_const[n];
@@ -144,7 +144,7 @@ void compute_back_off(ng_t *ng,int n, int verbosity) {
 	    }
 
 	    if (n==1) {
-	      cond_prob = ((double) discounted_ngcount / 
+	      cond_prob = ((long double) discounted_ngcount /
 			   return_count(ng->four_byte_counts,
 					ng->count_table[0],
 					ng->marg_counts,
@@ -152,7 +152,7 @@ void compute_back_off(ng_t *ng,int n, int verbosity) {
 					current_pos[0]));
 	    }
 	    else {
-	      cond_prob = ((double) discounted_ngcount /  
+	      cond_prob = ((long double) discounted_ngcount /
 			   return_count(ng->four_byte_counts,
 					ng->count_table[n-1],
 					ng->count[n-1],
@@ -186,7 +186,7 @@ void compute_back_off(ng_t *ng,int n, int verbosity) {
 		pc_message(verbosity,2,"%s(id %d) ",ng->vocab[ng->word_id[i][current_pos[i]]],ng->word_id[i][current_pos[i]]);
 	      }
 	      pc_message(verbosity,2,
-			 "is set to 0 (sum of probs = %f).\nMay cause problems with zero probabilities.\n",sum_cond_prob);
+			 "is set to 0 (sum of probs = %Lg).\nMay cause problems with zero probabilities.\n",sum_cond_prob);
 	    }
 
 	    leftout_bo_prob = 1.0 - sum_bo_prob;

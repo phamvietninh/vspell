@@ -1236,8 +1236,8 @@ int main (int argc, char **argv) {
     ng.lin_disc_ratio = (disc_val_t *) rr_malloc(sizeof(disc_val_t)*ng.n);
     pc_message(verbosity,1,"Linear discounting ratios :\n");
     for (i=0;i<=ng.n-1;i++) {
-      ng.lin_disc_ratio[i] = 1 - ( (float) ng.freq_of_freq[i][1]/
-				   (float) ng.n_unigrams);
+      ng.lin_disc_ratio[i] = 1 - ( (long double) ng.freq_of_freq[i][1]/
+				   (long double) ng.n_unigrams);
       pc_message(verbosity,1,"%d-gram : %g\n",i+1,ng.lin_disc_ratio[i]);
     }
 

@@ -67,9 +67,9 @@ void compute_unigram(ng_t *ng,int verbosity) {
   long long int count;
   int n_zerotons;
   int num_of_types;
-  double floatN;
-  double prob;
-  double total_prob;
+  long double floatN;
+  long double prob;
+  long double total_prob;
   double discount_mass;
   double total_zeroton_mass;
   double prob_zeroton;
@@ -106,7 +106,7 @@ void compute_unigram(ng_t *ng,int verbosity) {
 
   /* Compute the discounted unigram, and the total */
 
-  floatN = (double) ng->n_unigrams;
+  floatN = (long double) ng->n_unigrams;
 
   total_prob = 0.0;
 
@@ -167,7 +167,7 @@ void compute_unigram(ng_t *ng,int verbosity) {
       }
       break;
     }
-    pc_message(verbosity,4,"   prob[%d] = %.8g count = %d \n",i,prob,count);
+    pc_message(verbosity,4,"   prob[%d] = %.8Lg count = %Ld \n",i,prob,count);
     ng->uni_probs[i] = prob;
     total_prob += prob;
   }
@@ -176,8 +176,8 @@ void compute_unigram(ng_t *ng,int verbosity) {
 
   discount_mass = 1.0 - total_prob;
 
-  pc_message(verbosity,2,"Unigrams's discount mass is %g (n1/N = %g)\n",
-	     discount_mass,ng->freq_of_freq[0][1]/floatN);
+  pc_message(verbosity,2,"Unigrams's discount mass is %g (n1/N = %Lg)\n",
+	     discount_mass,(long double)ng->freq_of_freq[0][1]/floatN);
 
   if (discount_mass < 1e-10 && discount_mass != 0.0) {
     discount_mass = 0.0;

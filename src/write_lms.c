@@ -343,7 +343,7 @@ log10_bo_biprob(WAS | ZWEIG)  ZWEIG  WAS   log10_bialpha(ZWEIG,WAS)
 		break;
 	      }
 
-	      ngprob = (double) discounted_ngcount / marg_count;
+	      ngprob = (long double) discounted_ngcount / marg_count;
 
 	      if (ngprob > 1.0) {
 		fprintf(stderr,

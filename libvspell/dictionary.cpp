@@ -83,7 +83,7 @@ bool LM::read(const char *filename)
 
 #define MAXPROB -9999.0
 
-double LM::wordProb(VocabIndex w1, VocabIndex *wn)
+double LM::wordProb(VocabIndex w1, const VocabIndex *wn)
 {
 	if (w1 < 1 || w1 >= lm->n_word_str+1) return MAXPROB;
 	if (wn == NULL || wn[0] == 0) return lm3g_ug_score(lm, w1-1);

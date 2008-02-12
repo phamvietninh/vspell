@@ -41,7 +41,7 @@ private:
 
 public:
 	bool read(const char *f);
-	double wordProb(VocabIndex w1, VocabIndex *wcontext);
+	double wordProb(VocabIndex w1, const VocabIndex *wcontext);
 	const lm_t* get_lm() const { return lm; }
 
 public:

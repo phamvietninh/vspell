@@ -327,8 +327,10 @@ int SoftCounter::replay2(FILE *fp_in,FILE *fp_out, int id,bool first_count)
 		edge_vi[1] = 0;
 		if (type[0] == 'L') {
 			add = Sleft[v]*(first_count ? 1 : (long double)LogPtoProb(get_ngram().wordProb(edge_v,edge_vi)));
-			if (add == 0.0 || add == -0.0)
+			if (add == 0.0 || add == -0.0) {
 				fprintf(stderr,"WARNING: %d: Sleft addition for %d is zero (Sleft[%d] = %Lg, prob=%g %s %s)\n",id,vv,v,Sleft[v],LogPtoProb(get_ngram().wordProb(edge_v,edge_vi)),str1,str2);
+				add = Sleft[v];
+			}
 			Sleft[vv] += add;
 		}
 		else {
@@ -343,8 +345,10 @@ int SoftCounter::replay2(FILE *fp_in,FILE *fp_out, int id,bool first_count)
 			if (sum == 0.0 || sum == -0.0)
 				continue;
 			add = Sright[vv]*(first_count ? 1 : (long double)LogPtoProb(get_ngram().wordProb(edge_v,edge_vi)));
-			if (add == 0.0 || add == -0.0)
+			if (add == 0.0 || add == -0.0) {
 				fprintf(stderr,"WARNING: %d: Sright addition for %d is zero (%s %s)\n",id,v,str1,str2);
+				add = Sright[vv];
+			}
 			Sright[v] += add;
 
 			// collect fractional counts

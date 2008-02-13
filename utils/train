@@ -15,6 +15,7 @@ time gzip -d < ${O}.scz.gz |
 
 time gzip -d < ${O}.sc$i.gz |
 	LANG=C sort \
+		--compress-program=gzip \
 		-S$MEMSIZE \
 		-T $(dirname $O)|
 	./sc2wngram $POINTCUT |
